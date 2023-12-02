@@ -4,15 +4,13 @@
 #include <map>
 #include <string>
 
-#define RREQUIRE(...) typename std::enable_if<bool(__VA_ARGS__), int>::type = 0
-
 struct Instantiable { virtual ~Instantiable() = default; };
 
 template <class ClassType>
 struct ReflectionRegistry;
 
 template <class ClassType>
-struct Reflection
+struct ReflectionType
 {
     template <typename T>
     using PureType = typename std::remove_reference<T>::type;
@@ -91,7 +89,7 @@ struct Reflection
 
         static decltype(auto) meta()
         {
-            static std::map<std::string, Instantiable*(*)()> data;
+            static std::map<std::string, std::function<Instantiable*()>> data;
             return (data);
         }
     };
@@ -105,7 +103,7 @@ struct Reflection
     };
 
     template <typename PropertyType>
-    Reflection& add_property(const std::string& name, PropertyType ClassType::* property)
+    ReflectionType& add_property(const std::string& name, PropertyType ClassType::* property)
     {
         Property::imeta()[name] = [property](ClassType *const self, std::any& result)
         {
@@ -121,34 +119,37 @@ struct Reflection
     }
 
     template <typename ReturnType, typename... ArgumentTypes>
-    Reflection& add_function(const std::string& name, ReturnType (ClassType::* function)(ArgumentTypes...))
+    ReflectionType& add_function(const std::string& name, ReturnType (ClassType::* function)(ArgumentTypes...))
+    {
+        return add_function_implementation(name, function, std::make_index_sequence<sizeof...(ArgumentTypes)>{});
+    }
+
+private:
+    template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
+    ReflectionType& add_function_implementation(const std::string& name, ReturnType (ClassType::* function)(ArgumentTypes...), std::index_sequence<I...>)
     {
         Function::meta()[name] = [function](ClassType *const self, std::any& result, std::va_list arguments)
         {
-            [function]<std::size_t... I>(ClassType *const self, std::any& result, std::va_list arguments, std::index_sequence<I...>) {
-                result = (self->*function)(*extended_va_arg<I, PureType<ArgumentTypes>...>(arguments)...);
-            }(self, result, arguments, std::make_index_sequence<sizeof...(ArgumentTypes)>{});
+            result = (self->*function)(*extended_va_arg<I, PureType<ArgumentTypes>...>(arguments)...);
         };
 
         return *this;
     }
 
-    template <typename... ArgumentTypes>
-    Reflection& add_function(const std::string& name, void (ClassType::* function)(ArgumentTypes...))
+    template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
+    ReflectionType& add_function_implementation(const std::string& name, void (ClassType::* function)(ArgumentTypes...), std::index_sequence<I...>)
     {
         Function::meta()[name] = [function](ClassType *const self, std::any& result, std::va_list arguments)
         {
-            [function]<std::size_t... I>(ClassType *const self, std::va_list arguments, std::index_sequence<I...>) {
-                (self->*function)(*extended_va_arg<I, PureType<ArgumentTypes>...>(arguments)...);
-            }(self, arguments, std::make_index_sequence<sizeof...(ArgumentTypes)>{});
+            (self->*function)(*extended_va_arg<I, PureType<ArgumentTypes>...>(arguments)...);
         };
 
         return *this;
     }
 
-    template <class ParentClassType,
-              RREQUIRE(std::is_base_of<ParentClassType, ClassType>::value)>
-    Reflection& add_parent(const std::string& name)
+public:
+    template <class ParentClassType>
+    ReflectionType& add_parent(const std::string& name)
     {
         Parent::meta()[name] = [](ClassType *const self, std::any& result)
         {
@@ -159,7 +160,7 @@ struct Reflection
     }
 
     template <class OtherClassType = ClassType>
-    Reflection& add_factory(const std::string& name)
+    ReflectionType& add_factory(const std::string& name)
     {
         Factory::meta()[name] = [](void)
         {
@@ -170,7 +171,8 @@ struct Reflection
 
 private:
     template <std::size_t ArgumentTypeIndex, typename... ArgumentTypes>
-    static auto extended_va_arg(std::va_list list) {
+    static auto extended_va_arg(std::va_list list)
+    {
         for (std::size_t i = 0; i < ArgumentTypeIndex; ++i) (void)va_arg(list, void*); // need for skip
 
         using type = typename std::tuple_element<ArgumentTypeIndex, std::tuple<ArgumentTypes...>>::type;
@@ -182,7 +184,7 @@ private:
 template <> struct ReflectionRegistry<__VA_ARGS__> { \
     using type = __VA_ARGS__; \
     inline static const auto name = #__VA_ARGS__; \
-    inline static const auto reflection = Reflection<type>()
+    inline static const auto reflection = ReflectionType<type>()
 
 #define PROPERTY(...) .add_property(#__VA_ARGS__, &type::__VA_ARGS__)
 #define FUNCTION(...) .add_function(#__VA_ARGS__, &type::__VA_ARGS__)
@@ -228,7 +230,7 @@ int main()
 {
     TObject object;
 
-    using TObjectType = Reflection<TObject>;
+    using TObjectType = ReflectionType<TObject>;
     using TObjectProperty = TObjectType::Property;
     using TObjectFunction = TObjectType::Function;
     using TObjectParent = TObjectType::Parent;
@@ -251,7 +253,7 @@ int main()
 
     auto base = *std::any_cast<TBase*>(result);
 
-    for(auto& [name, get]:TObjectProperty::imeta())
+    for (auto& [name, get] : TObjectProperty::imeta())
     {
         std::any value;
         get(&object, value);
