@@ -1,11 +1,13 @@
 #ifndef REW_HPP
 #define REW_HPP
 
-#include <cstdarg>
 #include <functional>
-#include <any>
 #include <map>
+#include <any>
 #include <string>
+#include <vector>
+
+//#define REW_UNSAFE_ENABLE
 
 #define REFLECTABLE(...)                                                                                \
     template <>                                                                                         \
@@ -84,23 +86,20 @@ public:
 class function_t
 {
 public:
-    std::map<const char*, std::function<void(void *const, std::any&, std::va_list)>> table;
-
+#ifdef REW_UNSAFE_ENABLE
+    std::map<const char*, std::function<void(void *const, std::any&, std::initializer_list<void*>)>> table;
+#else
+    std::map<const char*, std::function<void(void *const, std::any&, std::initializer_list<std::any>)>> table;
+#endif
 public:
     template <typename... ArgumentTypes>
     void call(const char* name, void *const self, std::any& result, ArgumentTypes&&... arguments)
     {
-        call_implementation(name, self, result, sizeof...(ArgumentTypes), std::addressof(arguments)...);
-    }
-
-private:
-    void call_implementation(const char* name, void *const self, std::any& result, int count, ...)
-    {
-        std::va_list arguments;
-
-        va_start(arguments, count);
-        table.at(name)(self, result, arguments);
-        va_end(arguments);
+    #ifdef REW_UNSAFE_ENABLE
+        table.at(name)(self, result, { std::addressof(arguments)... });
+    #else
+        table.at(name)(self, result, { std::forward<ArgumentTypes>(arguments)... });
+    #endif
     }
 };
 
@@ -176,26 +175,29 @@ public:
     }
 
 private:
-    template <typename T>
-    using PureType = typename std::remove_reference<T>::type;
-
     template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
     reflection_implementation_t& add_function_implementation(const char* name, ReturnType (ClassType::* function)(ArgumentTypes...), std::index_sequence<I...>)
     {
-        this->function.table[name] = [function](void *const self, std::any& result, std::va_list arguments)
+    #ifdef REW_UNSAFE_ENABLE
+        this->function.table[name] = [function](void *const self, std::any& result, std::initializer_list<void*> arguments)
         {
-            result = (static_cast<ClassType*>(self)->*function)(*extended_va_arg<I, PureType<ArgumentTypes>...>(arguments)...);
+            result = (static_cast<ClassType*>(self)->*function)(*static_cast<std::decay_t<ArgumentTypes>*>(arguments.begin()[I])...);
         };
-
+    #else
+        this->function.table[name] = [function](void *const self, std::any& result, std::initializer_list<std::any> arguments)
+        {
+            result = (static_cast<ClassType*>(self)->*function)(std::any_cast<ArgumentTypes>(arguments.begin()[I])...);
+        };
+    #endif
         return *this;
     }
 
     template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
     reflection_implementation_t& add_function_implementation(const char* name, void (ClassType::* function)(ArgumentTypes...), std::index_sequence<I...>)
     {
-        this->function.table[name] = [function](void *const self, std::any& result, std::va_list arguments)
+        this->function.table[name] = [function](void *const self, std::any& result, const std::vector<std::any>& arguments)
         {
-            (static_cast<ClassType*>(self)->*function)(*extended_va_arg<I, PureType<ArgumentTypes>...>(arguments)...);
+            (static_cast<ClassType*>(self)->*function)(std::any_cast<ArgumentTypes>(arguments[I])...);
         };
 
         return *this;
@@ -232,16 +234,6 @@ public:
     {
         this->meta.name = name;
         return *this;
-    }
-
-private:
-    template <std::size_t ArgumentTypeIndex, typename... ArgumentTypes>
-    static auto extended_va_arg(std::va_list list)
-    {
-        for (std::size_t i = 0; i < ArgumentTypeIndex; ++i) (void)va_arg(list, void*); // need for skip
-
-        using type = typename std::tuple_element<ArgumentTypeIndex, std::tuple<ArgumentTypes...>>::type;
-        return va_arg(list, type*);
     }
 };
 
