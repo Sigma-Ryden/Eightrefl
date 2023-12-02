@@ -5,4 +5,4 @@ project(Rew LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(Rew main.cpp)
+add_executable(Rew Rew.hpp main.cpp)
