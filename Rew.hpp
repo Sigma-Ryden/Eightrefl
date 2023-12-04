@@ -7,20 +7,52 @@
 #include <string>
 #include <vector>
 
-#define REFLECTABLE(...)                                                                                \
+#define CORE_REFLECTABLE(reflection_core, ...)                                                          \
     template <>                                                                                         \
     struct rew::detail::reflection_registry_impl_t<__VA_ARGS__> {                                       \
+        using registry = reflection_registry_t<__VA_ARGS__>;                                            \
         using type = __VA_ARGS__;                                                                       \
+        inline static const auto reflection = &reflection_core;                                         \
         inline static const auto name = #__VA_ARGS__;                                                   \
-        inline static const auto instance = reflection.add<type>(name)
+        inline static const auto instance = reflection_core.add<type>(name)
 
-#define PROPERTY(...) ->add_property(#__VA_ARGS__, &type::__VA_ARGS__)
-#define FUNCTION(...) ->add_function(#__VA_ARGS__, &type::__VA_ARGS__)
-#define PARENT(...) ->add_parent<__VA_ARGS__>(#__VA_ARGS__)
-#define FACTORY(...) ->add_factory<__VA_ARGS__>(#__VA_ARGS__)
-#define META(name, ...) ->add_meta(name, __VA_ARGS__)
+#define REFLECTABLE(...) CORE_REFLECTABLE(::rew::reflection_core, __VA_ARGS__)
 
-#define REFLECTABLE_INIT() ->add_factory(name)->add_default_meta(name); };
+#define PROPERTY(...)                                                                                   \
+    ->add_property({                                                                                    \
+        #__VA_ARGS__,                                                                                   \
+        registry::property_get_handler(&type::__VA_ARGS__),                                             \
+        registry::property_set_handler(&type::__VA_ARGS__)                                              \
+    })
+
+#define FUNCTION(...)                                                                                   \
+    ->add_function({                                                                                    \
+        #__VA_ARGS__,                                                                                   \
+        registry::function_is_static(&type::__VA_ARGS__),                                               \
+        registry::function_call_handler(&type::__VA_ARGS__)                                             \
+    })
+
+#define PARENT(...)                                                                                     \
+    ->add_parent({                                                                                      \
+        #__VA_ARGS__,                                                                                   \
+        registry::parent_get_handler<__VA_ARGS__>(),                                                    \
+        registry::parent_reflection_handler(#__VA_ARGS__, reflection)                                   \
+    })
+
+#define FACTORY(...)                                                                                    \
+    ->add_factory({                                                                                     \
+        #__VA_ARGS__,                                                                                   \
+        registry::factory_call_handler<__VA_ARGS__>()                                                   \
+    })
+
+#define META(name, ...)                                                                                 \
+    ->add_meta(name, __VA_ARGS__)
+
+#define REFLECTABLE_INIT()                                                                              \
+    ->add_factory({                                                                                     \
+        name,                                                                                           \
+        registry::factory_call_handler()                                                                \
+    }); };
 
 namespace rew
 {
@@ -34,263 +66,362 @@ struct is_complete : std::false_type {};
 template <typename T>
 struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
 
-struct reflection_t;
-
 template <class ClassType>
-class reflection_impl_t;
+class reflection_registry_impl_t;
+
+} // namespace detail
 
 class property_t
 {
 public:
-    std::map<const char*, std::function<void(void *const, std::any&)>> itable;
-    std::map<const char*, std::function<void(void *const, const std::any&)>> otable;
+    struct meta_t
+    {
+        const char *const name = nullptr;
+
+        const std::function<void(void *const, std::any&)> get = nullptr;
+        const std::function<void(void *const, const std::any&)> set = nullptr;
+    };
+
+    std::map<const char*, meta_t> all;
 
 public:
-    void get(const char* name, void *const self, std::any& result)
+    meta_t* find(const char* name)
     {
-        itable.at(name)(self, result);
+        auto it = all.find(name);
+        return it != all.end() ? &it->second : nullptr;
     }
 
-    template <typename ValueType>
-    void set(const char* name, void *const self, ValueType&& value)
+    bool add(const char* name, const meta_t& meta)
     {
-        otable.at(name)(self, value);
+        return all.emplace(name, meta).second;
+    }
+
+    bool remove(const char* name)
+    {
+        return all.erase(name)>0;
     }
 };
 
 class function_t
 {
 public:
-    std::map<const char*, std::function<void(void *const, std::any&, std::initializer_list<std::any>)>> table;
+    struct meta_t
+    {
+        const char *const name = nullptr;
+        const bool is_static = false;
+
+        const std::function<void(void *const, std::any&, std::initializer_list<std::any>)> call = nullptr;
+    };
+
+    std::map<const char*, meta_t> all;
 
 public:
-    template <typename... ArgumentTypes>
-    void call(const char* name, void *const self, std::any& result, ArgumentTypes&&... arguments)
+    meta_t* find(const char* name)
     {
-        table.at(name)(self, result, { std::forward<ArgumentTypes>(arguments)... });
+        auto it = all.find(name);
+        return it != all.end() ? &it->second : nullptr;
+    }
+
+    bool add(const char* name, const meta_t& meta)
+    {
+        return all.emplace(name, meta).second;
+    }
+
+    bool remove(const char* name)
+    {
+        return all.erase(name)>0;
     }
 };
+
+struct reflection_t;
 
 class parent_t
 {
 public:
-    std::map<const char*, std::function<void*(void *const)>> table;
-    std::map<const char*, std::function<reflection_t*(void)>> registry;
+    struct meta_t
+    {
+        const char *const name = nullptr;
+
+        const std::function<void*(void *const)> get = nullptr;
+        const std::function<reflection_t*(void)> reflection = nullptr;
+    };
+
+    std::map<const char*, meta_t> all;
 
 public:
-    void* get(const char* name, void *const self)
+    meta_t* find(const char* name)
     {
-        return table.at(name)(self);
+        auto it = all.find(name);
+        return it != all.end() ? &it->second : nullptr;
     }
 
-    reflection_t* reflection(const char* name)
+    bool add(const char* name, const meta_t& meta)
     {
-        return registry.at(name)();
+        return all.emplace(name, meta).second;
+    }
+
+    bool remove(const char* name)
+    {
+        return all.erase(name)>0;
     }
 };
 
 class factory_t
 {
 public:
-    std::map<const char*, std::function<void*(void)>> table;
+    struct meta_t
+    {
+        const char *const name = nullptr;
+
+        const std::function<void*()> call = nullptr;
+    };
+
+    std::map<const char*, meta_t> all;
 
 public:
-    void* call(const char* name)
+    meta_t* find(const char* name)
     {
-        return table.at(name)();
+        auto it = all.find(name);
+        return it != all.end() ? &it->second : nullptr;
+    }
+
+    bool add(const char* name, const meta_t& meta)
+    {
+        return all.emplace(name, meta).second;
+    }
+
+    bool remove(const char* name)
+    {
+        return all.erase(name)>0;
     }
 };
 
 class meta_t
 {
 public:
-    std::map<const char*, std::any> table;
-    std::string name;
+    std::map<const char*, std::any> all;
 
 public:
-    std::any get(const char* name)
+    std::any* find(const char* name)
     {
-        return table.at(name);
+        auto it = all.find(name);
+        return it != all.end() ? &it->second : nullptr;
+    }
+
+    bool add(const char* name, const std::any& data)
+    {
+        return all.emplace(name, data).second;
+    }
+
+    bool remove(const char* name)
+    {
+        return all.erase(name)>0;
     }
 };
 
 struct reflection_t
 {
+    const char *const name = nullptr;
+
+    parent_t parent;
     property_t property;
     function_t function;
-    parent_t parent;
     factory_t factory;
     meta_t meta;
-
-    virtual ~reflection_t() = default;
 };
 
 template <class ClassType>
-class reflection_registry_impl_t;
+class reflection_registry_t;
 
-class reflection_registry_t
+class reflection_core_t
 {
 public:
-    std::map<const char*, reflection_t*> table;
-    std::map<const char*, reflection_t*> rtti_table;
+    std::map<const char*, reflection_t*> all;
+    std::map<const char*, reflection_t*> rtti_all;
 
 public:
-    ~reflection_registry_t()
+    ~reflection_core_t()
     {
-        for (auto& [name, reflection] : table) delete reflection;
+        for (auto& [name, reflection] : all) delete reflection;
     }
 
-    reflection_t* get(const char* name)
+public:
+    reflection_t* find(const char* name)
     {
-        auto it = table.find(name);
-        return it != table.end() ? it->second : nullptr;
+        auto it = all.find(name);
+        return it != all.end() ? it->second : nullptr;
     }
 
-    reflection_t* get(const std::any& object)
+    reflection_t* find(const std::any& object)
     {
-        auto it = rtti_table.find(object.type().name());
-        return it != rtti_table.end() ? it->second : nullptr;
+        auto it = rtti_all.find(object.type().name());
+        return it != rtti_all.end() ? it->second : nullptr;
     }
 
     template <class ClassType>
-    reflection_t* get()
+    reflection_t* find()
     {
         return get(detail::reflection_registry_impl_t<ClassType>::name);
     }
 
-public:
     template <class ClassType>
-    detail::reflection_impl_t<ClassType>* add(const char* name)
+    reflection_registry_t<ClassType>* add(const char* name)
     {
-        auto reflection = new detail::reflection_impl_t<ClassType>();
-        table.emplace(name, reflection);
-        rtti_table.emplace(typeid(ClassType).name(), reflection);
-        return reflection;
+        auto reflection = new reflection_t{name};
+        all.emplace(name, reflection);
+        rtti_all.emplace(typeid(ClassType).name(), reflection);
+
+        return std::launder(reinterpret_cast<reflection_registry_t<ClassType>*>(reflection));
     }
 };
 
-} // namespace detail
-
-inline static detail::reflection_registry_t reflection;
-
-namespace detail
-{
+reflection_core_t reflection_core;
 
 template <class ClassType>
-class reflection_impl_t : public reflection_t
+class reflection_registry_t : public reflection_t
 {
 public:
     template <typename PropertyType>
-    reflection_impl_t* add_property(const char* name, PropertyType ClassType::* property)
+    static auto property_get_handler(PropertyType ClassType::* property)
     {
-        this->property.itable[name] = [property](void *const self, std::any& result)
+        return [property](void *const self, std::any& result)
         {
             result = static_cast<ClassType*>(self)->*property;
         };
+    }
 
-        this->property.otable[name] = [property](void *const self, const std::any& value)
+    template <typename PropertyType>
+    static auto property_set_handler(PropertyType ClassType::* property)
+    {
+        return [property](void *const self, const std::any& value)
         {
             static_cast<ClassType*>(self)->*property = std::any_cast<const PropertyType&>(value);
         };
+    }
 
+    reflection_registry_t* add_property(const property_t::meta_t& meta)
+    {
+        this->property.add(meta.name, meta);
         return this;
     }
 
+public:
     template <typename ReturnType, typename... ArgumentTypes>
-    reflection_impl_t* add_function(const char* name, ReturnType (*function)(ArgumentTypes...))
+    static auto function_call_handler(ReturnType (ClassType::* function)(ArgumentTypes...))
     {
-        return add_function_impl(name, function, std::make_index_sequence<sizeof...(ArgumentTypes)>{});
+        return function_call_handler_impl(function, std::make_index_sequence<sizeof...(ArgumentTypes)>{});
     }
 
     template <typename ReturnType, typename... ArgumentTypes>
-    reflection_impl_t* add_function(const char* name, ReturnType (ClassType::* function)(ArgumentTypes...))
+    static auto function_call_handler(ReturnType (*function)(ArgumentTypes...))
     {
-        return add_function_impl(name, function, std::make_index_sequence<sizeof...(ArgumentTypes)>{});
+        return function_call_handler_impl(function, std::make_index_sequence<sizeof...(ArgumentTypes)>{});
+    }
+
+    template <typename ReturnType, typename... ArgumentTypes>
+    static auto function_is_static(ReturnType (ClassType::* function)(ArgumentTypes...))
+    {
+        return false;
+    }
+
+    template <typename ReturnType, typename... ArgumentTypes>
+    static auto function_is_static(ReturnType (*function)(ArgumentTypes...))
+    {
+        return true;
+    }
+
+    reflection_registry_t* add_function(const function_t::meta_t& meta)
+    {
+        this->function.add(meta.name, meta);
+        return this;
     }
 
 private:
     template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
-    reflection_impl_t* add_function_impl(const char* name, ReturnType (ClassType::* function)(ArgumentTypes...), std::index_sequence<I...>)
+    static auto function_call_handler_impl(ReturnType (ClassType::* function)(ArgumentTypes...), std::index_sequence<I...>)
     {
-        this->function.table[name] = [function](void *const self, std::any& result, std::initializer_list<std::any> arguments)
+        return [function](void *const self, std::any& result, std::initializer_list<std::any> arguments)
         {
             result = (static_cast<ClassType*>(self)->*function)(std::any_cast<ArgumentTypes>(arguments.begin()[I])...);
         };
-
-        return this;
     }
 
     template <typename... ArgumentTypes, std::size_t... I>
-    reflection_impl_t* add_function_impl(const char* name, void (ClassType::* function)(ArgumentTypes...), std::index_sequence<I...>)
+    static auto function_call_handler_impl(void (ClassType::* function)(ArgumentTypes...), std::index_sequence<I...>)
     {
-        this->function.table[name] = [function](void *const self, std::any& result, const std::vector<std::any>& arguments)
+        return [function](void *const self, std::any& result, std::initializer_list<std::any> arguments)
         {
-            (static_cast<ClassType*>(self)->*function)(std::any_cast<ArgumentTypes>(arguments[I])...);
+            (static_cast<ClassType*>(self)->*function)(std::any_cast<ArgumentTypes>(arguments.begin()[I])...);
+            result.reset();
         };
-        return this;
     }
 
     template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
-    reflection_impl_t* add_function_impl(const char* name, ReturnType (*function)(ArgumentTypes...), std::index_sequence<I...>)
+    static auto function_call_handler_impl(ReturnType (*function)(ArgumentTypes...), std::index_sequence<I...>)
     {
-        this->function.table[name] = [function](void *const self, std::any& result, const std::vector<std::any>& arguments)
+        return [function](void *const self, std::any& result, std::initializer_list<std::any> arguments)
         {
-            result = function(std::any_cast<ArgumentTypes>(arguments[I])...);
+            result = function(std::any_cast<ArgumentTypes>(arguments.begin()[I])...);
         };
-        return this;
     }
 
     template <typename... ArgumentTypes, std::size_t... I>
-    reflection_impl_t* add_function_impl(const char* name, void (*function)(ArgumentTypes...), std::index_sequence<I...>)
+    static auto function_call_handler_impl(void (*function)(ArgumentTypes...), std::index_sequence<I...>)
     {
-        this->function.table[name] = [function](void *const self, std::any& result, const std::vector<std::any>& arguments)
+        return [function](void *const self, std::any& result, std::initializer_list<std::any> arguments)
         {
-            function(std::any_cast<ArgumentTypes>(arguments[I])...);
+            function(std::any_cast<ArgumentTypes>(arguments.begin()[I])...);
+            result.reset();
         };
-        return this;
     }
 
 public:
     template <class ParentClassType>
-    reflection_impl_t* add_parent(const char* name)
+    static auto parent_get_handler()
     {
-        this->parent.table[name] = [](void *const self)
+        return [](void *const self)
         {
             return static_cast<ParentClassType*>(static_cast<ClassType*>(self));
         };
+    }
 
-        this->parent.registry[name] = [name](void) -> reflection_t*
+    static auto parent_reflection_handler(const char* name, reflection_core_t* reflection)
+    {
+        return [name, reflection](void)
         {
-            return rew::reflection.get(name);
+            return reflection->find(name);
         };
+    }
 
+    reflection_registry_t* add_parent(const parent_t::meta_t& meta)
+    {
+        this->parent.add(meta.name, meta);
         return this;
     }
 
+public:
     template <class OtherClassType = ClassType>
-    reflection_impl_t* add_factory(const char* name)
+    static auto factory_call_handler()
     {
-        this->factory.table[name] = [](void)
+        return [](void)
         {
             return static_cast<void*>(new OtherClassType);
         };
+    }
+
+    reflection_registry_t* add_factory(const factory_t::meta_t& meta)
+    {
+        this->factory.add(meta.name, meta);
         return this;
     }
 
-    reflection_impl_t* add_default_meta(const char* name)
+public:
+    reflection_registry_t* add_meta(const char* name, const std::any& data)
     {
-        this->meta.name = name;
-        return this;
-    }
-
-    reflection_impl_t* add_meta(const char* name, const std::any& data)
-    {
-        this->meta.table[name] = data;
+        this->meta.add(name, data);
         return this;
     }
 };
-
-} // namespace detail
 
 } // namespace rew
 

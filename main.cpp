@@ -43,35 +43,42 @@ double TObject::Foo(int i, const std::string& s)
 
 int main()
 {
-    auto reflection = rew::reflection.get("TObject");
+    auto reflection = rew::reflection_core.find("TObject");
 
-    auto object = reflection->factory.call("TObject");
+    auto factory = reflection->factory.find("TObject");
+    auto object = factory->call();
+
     std::any result;
 
-    reflection->function.call("Foo", object, result, 128, std::string("Tom"));
+    auto function = reflection->function.find("Foo");
+    function->call(object, result, { 128, std::string("Tom") });
 
     println(std::any_cast<double>(result));
 
-    reflection->property.set("Var", object, 321);
-    reflection->property.get("Var", object, result);
+    auto property = reflection->property.find("Var");
+    property->set(object, 321);
+    property->get(object, result);
 
     println(std::any_cast<int>(result));
 
-    println(reflection->meta.name);
+    println(reflection->name);
 
-    result = reflection->meta.get("Hash");
+    auto meta = reflection->meta.find("Hash");
+    result = *meta;
     println(std::any_cast<int>(result));
 
-    auto base = reflection->parent.get("TBase", object);
-    auto base_reflection = reflection->parent.reflection("TBase");
+    auto parent = reflection->parent.find("TBase");
+    auto base = parent->get(object);
+    auto base_reflection = parent->reflection();
 
-    for (auto& [name, get] : base_reflection->property.itable)
+    for (auto& [name, meta] : base_reflection->property.all)
     {
         std::any value;
-        get(base, value);
+        meta.get(base, value);
     }
 
-    base_reflection->function.call("Boo", nullptr, result);
+    auto base_function = base_reflection->function.find("Boo");
+    base_function->call(nullptr, result, {});
 
     return 0;
 }
