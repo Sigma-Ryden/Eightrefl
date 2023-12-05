@@ -43,7 +43,8 @@ double TObject::Foo(int i, const std::string& s)
 
 int main()
 {
-    auto reflection = rew::reflection_core.find("TObject");
+    auto reflection = rew::reflection.find("TObject");
+    //rew::reflection.eval("TObject");
 
     auto factory = reflection->factory.find("TObject");
     auto object = factory->call();

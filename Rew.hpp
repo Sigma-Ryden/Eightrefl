@@ -16,7 +16,16 @@
         inline static const auto name = #__VA_ARGS__;                                                   \
         inline static const auto instance = reflection_core.add<type>(name)
 
-#define REFLECTABLE(...) CORE_REFLECTABLE(::rew::reflection_core, __VA_ARGS__)
+#define CORE_REFLECTABLE(reflection_core, ...)                                                          \
+    template <>                                                                                         \
+    struct rew::detail::reflection_registry_impl_t<__VA_ARGS__> {                                       \
+        using registry = reflection_registry_t<__VA_ARGS__>;                                            \
+        using type = __VA_ARGS__;                                                                       \
+        inline static const auto reflection = &reflection_core;                                         \
+        inline static const auto name = #__VA_ARGS__;                                                   \
+        inline static const auto instance = reflection_core.add<type>(name)
+
+#define REFLECTABLE(...) CORE_REFLECTABLE(::rew::reflection, __VA_ARGS__)
 
 #define PROPERTY(...)                                                                                   \
     ->add_property({                                                                                    \
@@ -40,16 +49,16 @@
     })
 
 #define FACTORY(...)                                                                                    \
-    ->add_factory({                                                                                     \
+    ->register_factory({                                                                                \
         #__VA_ARGS__,                                                                                   \
         registry::factory_call_handler<__VA_ARGS__>()                                                   \
     })
 
 #define META(name, ...)                                                                                 \
-    ->add_meta(name, __VA_ARGS__)
+    ->register_meta(name, __VA_ARGS__)
 
 #define REFLECTABLE_INIT()                                                                              \
-    ->add_factory({                                                                                     \
+    ->register_factory({                                                                                \
         name,                                                                                           \
         registry::factory_call_handler()                                                                \
     }); };
@@ -275,7 +284,41 @@ public:
     }
 };
 
-reflection_core_t reflection_core;
+reflection_core_t reflection;
+
+struct register_t : reflection_t
+{
+    template <typename PropertyType>
+    void property(const property_t::meta_t& meta)
+    {
+        reflection_t::property.add(meta.name, meta);
+    }
+
+    template <typename FunctionType>
+    void function(const function_t::meta_t& meta)
+    {
+        reflection_t::function.add(meta.name, meta);
+    }
+
+    template <class BaseClassType, class DerivedClassType>
+    void parent(const parent_t::meta_t& meta)
+    {
+        reflection_t::parent.add(meta.name, meta);
+    }
+
+    // TODO with args
+    template <class OtherClassType>
+    void factory(const factory_t::meta_t& meta)
+    {
+        reflection_t::factory.add(meta.name, meta);
+    }
+
+    template <typename MetaType>
+    void meta(const char* name, const std::any& data)
+    {
+        reflection_t::meta.add(name, data);
+    }
+};
 
 template <class ClassType>
 class reflection_registry_t : public reflection_t
@@ -302,6 +345,7 @@ public:
     reflection_registry_t* add_property(const property_t::meta_t& meta)
     {
         this->property.add(meta.name, meta);
+        //register_t::property<PropertyType>(meta);
         return this;
     }
 
@@ -333,6 +377,7 @@ public:
     reflection_registry_t* add_function(const function_t::meta_t& meta)
     {
         this->function.add(meta.name, meta);
+        //register_t::function<FunctionType>(meta);
         return this;
     }
 
@@ -396,6 +441,7 @@ public:
     reflection_registry_t* add_parent(const parent_t::meta_t& meta)
     {
         this->parent.add(meta.name, meta);
+        //register_t::parent<OtherClassType, ClassType>(meta);
         return this;
     }
 
@@ -409,16 +455,18 @@ public:
         };
     }
 
-    reflection_registry_t* add_factory(const factory_t::meta_t& meta)
+    reflection_registry_t* register_factory(const factory_t::meta_t& meta)
     {
         this->factory.add(meta.name, meta);
+        //register_t::factory<OtherClassType>(meta);
         return this;
     }
 
 public:
-    reflection_registry_t* add_meta(const char* name, const std::any& data)
+    reflection_registry_t* register_meta(const char* name, const std::any& data)
     {
         this->meta.add(name, data);
+        //register_t::meta<MetaType>(meta);
         return this;
     }
 };
