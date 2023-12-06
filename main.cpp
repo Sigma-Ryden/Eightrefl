@@ -31,6 +31,7 @@ REFLECTABLE(TObject)
     PROPERTY(Var)
     FUNCTION(Foo)
     PARENT(TBase)
+    FACTORY(TObject)
     META("Hash", 5678)
 REFLECTABLE_INIT()
 
@@ -41,13 +42,43 @@ double TObject::Foo(int i, const std::string& s)
     return 3.14;
 }
 
+struct register_t
+{
+    template <typename PropertyType>
+    void property(const rew::property_t::meta_t& meta)
+    {
+    }
+
+    template <typename FunctionType>
+    void function(const rew::function_t::meta_t& meta)
+    {
+    }
+
+    template <class BaseClassType, class DerivedClassType>
+    void parent(const rew::parent_t::meta_t& meta)
+    {
+    }
+
+    template <class OtherClassType, typename... ArgumentTypes>
+    void factory(const rew::factory_t::meta_t& meta)
+    {
+    }
+
+    template <typename MetaType>
+    void meta(const char* name, const MetaType& data)
+    {
+    }
+};
+
 int main()
 {
     auto reflection = rew::reflection.find("TObject");
-    //rew::reflection.eval("TObject");
+
+    //register_t r;
+    //rew::detail::reflection_registry_impl_t<TObject>::eval.call(r);
 
     auto factory = reflection->factory.find("TObject");
-    auto object = factory->call();
+    auto object = factory->call({});
 
     std::any result;
 
