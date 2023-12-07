@@ -14,9 +14,9 @@
         using type = __VA_ARGS__;                                                                       \
         inline static const auto reflection = &reflection_core;                                         \
         inline static const auto name = #__VA_ARGS__;                                                   \
-        struct eval_t {\
+        struct call_t {\
             template <class RegisterType>\
-            eval_t& call(RegisterType& registry) {\
+            call_t(RegisterType&& registry) {\
 
 
 #define REFLECTABLE(...) CORE_REFLECTABLE(::rew::reflection, __VA_ARGS__)
@@ -52,9 +52,8 @@
     registry.meta(name, __VA_ARGS__);
 
 #define REFLECTABLE_INIT()                                                                              \
-        return *this;\
     }};\
-    static inline auto eval = eval_t().call(*reflection->add<type>(name));\
+    static inline auto call = call_t(reflection->add<type>(name));\
     };
 
 namespace rew
@@ -233,7 +232,47 @@ struct reflection_t
     meta_t meta;
 };
 
-struct register_t;
+struct register_base_t
+{
+    virtual ~register_base_t() = default;
+};
+
+struct register_t : register_base_t
+{
+    register_t(reflection_t* reflection) : reflection(reflection) {}
+
+    template <typename PropertyType>
+    void property(const rew::property_t::meta_t& meta)
+    {
+        reflection->property.add(meta.name, meta);
+    }
+
+    template <typename FunctionType>
+    void function(const rew::function_t::meta_t& meta)
+    {
+        reflection->function.add(meta.name, meta);
+    }
+
+    template <class BaseClassType, class DerivedClassType>
+    void parent(const rew::parent_t::meta_t& meta)
+    {
+        reflection->parent.add(meta.name, meta);
+    }
+
+    template <class OtherClassType, typename... ArgumentTypes>
+    void factory(const rew::factory_t::meta_t& meta)
+    {
+        reflection->factory.add(meta.name, meta);
+    }
+
+    template <typename MetaType>
+    void meta(const char* name, const MetaType& data)
+    {
+        reflection->meta.add(name, data);
+    }
+
+    reflection_t* reflection = nullptr;
+};
 
 class reflection_core_t
 {
@@ -267,50 +306,16 @@ public:
     }
 
     template <class ClassType>
-    register_t* add(const char* name)
+    register_t add(const char* name)
     {
         auto reflection = new reflection_t{name};
         all.emplace(name, reflection);
         rtti_all.emplace(typeid(ClassType).name(), reflection);
-
-        return std::launder(reinterpret_cast<register_t*>(reflection));
+        return { reflection };
     }
 };
 
 reflection_core_t reflection;
-
-struct register_t : reflection_t
-{
-    template <typename PropertyType>
-    void property(const rew::property_t::meta_t& meta)
-    {
-        reflection_t::property.add(meta.name, meta);
-    }
-
-    template <typename FunctionType>
-    void function(const rew::function_t::meta_t& meta)
-    {
-        reflection_t::function.add(meta.name, meta);
-    }
-
-    template <class BaseClassType, class DerivedClassType>
-    void parent(const rew::parent_t::meta_t& meta)
-    {
-        reflection_t::parent.add(meta.name, meta);
-    }
-
-    template <class OtherClassType, typename... ArgumentTypes>
-    void factory(const rew::factory_t::meta_t& meta)
-    {
-        reflection_t::factory.add(meta.name, meta);
-    }
-
-    template <typename MetaType>
-    void meta(const char* name, const MetaType& data)
-    {
-        reflection_t::meta.add(name, data);
-    }
-};
 
 template <class ClassType>
 class reflection_registry_t

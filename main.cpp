@@ -42,7 +42,7 @@ double TObject::Foo(int i, const std::string& s)
     return 3.14;
 }
 
-struct register_t
+struct register_t : rew::register_base_t
 {
     template <typename PropertyType>
     void property(const rew::property_t::meta_t& meta)
@@ -69,13 +69,80 @@ struct register_t
     {
     }
 };
+#define SFREQUIRE(...) std::enable_if_t<__VA_ARGS__, int> = 0
+
+struct register_base_trait
+{
+    inline static std::map<std::size_t, std::size_t> rtti_table;
+};
+
+template <int Key> struct register_trait
+{
+    using type = void;
+};
+
+#define REFLECTABLE_REGISTRY(index, ...)                                                                \
+    template <> struct register_trait<index> {                                                          \
+        using type = __VA_ARGS__;                                                                       \
+        inline static auto _ = (register_base_trait::rtti_table[typeid(type).hash_code()] = index);     \
+    };
+
+REFLECTABLE_REGISTRY(0, rew::register_t)
+REFLECTABLE_REGISTRY(1, register_t)
+
+struct polymorphic_register_t
+{
+    template <class ReflectableType>
+    static void call(rew::register_base_t& registry)
+    {
+        auto key = register_base_trait::rtti_table.at(typeid(registry).hash_code());
+        try_call<ReflectableType>(registry, key);
+    }
+
+    template <class ReflectableType, std::size_t Key = 0>
+    static void try_call(rew::register_base_t& registry, int key)
+    {
+        if constexpr (Key < 8)
+        {
+            using derived_register_t = typename register_trait<Key>::type;
+
+            if constexpr (not std::is_same_v<derived_register_t, void>)
+            {
+                using call_t = typename rew::detail::reflection_registry_impl_t<ReflectableType>::call_t;
+                if (Key == key) call_t(dynamic_cast<derived_register_t&>(registry));
+            }
+            else
+            {
+                try_call<ReflectableType, Key + 1>(registry, key);
+            }
+        }
+        else
+        {
+            throw "bad registry";
+        }
+    }
+};
 
 int main()
 {
     auto reflection = rew::reflection.find("TObject");
+    std::map<std::string, std::function<void(rew::register_base_t&)>> mm = {
+        {
+            "TObject",
+            [](rew::register_base_t& r) {
+                polymorphic_register_t::call<TObject>(r);
+            }
+        },
+        {
+            "TBase",
+            [](rew::register_base_t& r) {
+                polymorphic_register_t::call<TBase>(r);
+            }
+        },
+    };
 
-    //register_t r;
-    //rew::detail::reflection_registry_impl_t<TObject>::eval.call(r);
+    register_t r;
+    mm.at("TObject")(r);
 
     auto factory = reflection->factory.find("TObject");
     auto object = factory->call({});
