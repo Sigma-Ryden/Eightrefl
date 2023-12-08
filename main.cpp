@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#define println(...) std::cout << '\t' << #__VA_ARGS__ << ' ' << __VA_ARGS__ << '\n';
+#define println(...) std::cout << #__VA_ARGS__ << ' ' << __VA_ARGS__ << '\n';
 
 struct TBase
 {
@@ -30,8 +30,8 @@ struct TObject : TBase
 REFLECTABLE(TObject)
     PROPERTY(Var)
     FUNCTION(Foo)
-    PARENT(TBase)
     FACTORY(TObject)
+    PARENT(TBase)
     META("Hash", 5678)
 REFLECTABLE_INIT()
 
@@ -42,21 +42,41 @@ double TObject::Foo(int i, const std::string& s)
     return 3.14;
 }
 
-struct register_t : rew::register_base_t
+template <typename PropertyType>
+struct property_traits;
+
+template <typename VariableType, class ClassType>
+struct property_traits<VariableType ClassType::*>
 {
+    using var_t = VariableType;
+    using class_t = ClassType;
+};
+
+struct custom_register_t : rew::register_t
+{
+    custom_register_t(void* object) : Object(object) {}
+
     template <typename PropertyType>
     void property(const rew::property_t::meta_t& meta)
     {
+        using var_t = typename property_traits<PropertyType>::var_t;
+        std::any var;
+        meta.get(Object, var);
+        std::cout << "property: " << meta.name << " value: " << std::any_cast<var_t>(var) << '\n';
     }
 
     template <typename FunctionType>
     void function(const rew::function_t::meta_t& meta)
     {
+        std::cout << std::boolalpha;
+        std::cout << "function: " << meta.name << " is_static: " << meta.is_static << '\n';
+        std::cout << std::noboolalpha;
     }
 
     template <class BaseClassType, class DerivedClassType>
     void parent(const rew::parent_t::meta_t& meta)
     {
+         std::cout <<"parent: " << meta.name << '\n';
     }
 
     template <class OtherClassType, typename... ArgumentTypes>
@@ -67,82 +87,17 @@ struct register_t : rew::register_base_t
     template <typename MetaType>
     void meta(const char* name, const MetaType& data)
     {
-    }
-};
-#define SFREQUIRE(...) std::enable_if_t<__VA_ARGS__, int> = 0
-
-struct register_base_trait
-{
-    inline static std::map<std::size_t, std::size_t> rtti_table;
-};
-
-template <int Key> struct register_trait
-{
-    using type = void;
-};
-
-#define REFLECTABLE_REGISTRY(index, ...)                                                                \
-    template <> struct register_trait<index> {                                                          \
-        using type = __VA_ARGS__;                                                                       \
-        inline static auto _ = (register_base_trait::rtti_table[typeid(type).hash_code()] = index);     \
-    };
-
-REFLECTABLE_REGISTRY(0, rew::register_t)
-REFLECTABLE_REGISTRY(1, register_t)
-
-struct polymorphic_register_t
-{
-    template <class ReflectableType>
-    static void call(rew::register_base_t& registry)
-    {
-        auto key = register_base_trait::rtti_table.at(typeid(registry).hash_code());
-        try_call<ReflectableType>(registry, key);
+         std::cout << "meta: "<< name << " value: " << data << '\n';
     }
 
-    template <class ReflectableType, std::size_t Key = 0>
-    static void try_call(rew::register_base_t& registry, int key)
-    {
-        if constexpr (Key < 8)
-        {
-            using derived_register_t = typename register_trait<Key>::type;
-
-            if constexpr (not std::is_same_v<derived_register_t, void>)
-            {
-                using call_t = typename rew::detail::reflection_registry_impl_t<ReflectableType>::call_t;
-                if (Key == key) call_t(dynamic_cast<derived_register_t&>(registry));
-            }
-            else
-            {
-                try_call<ReflectableType, Key + 1>(registry, key);
-            }
-        }
-        else
-        {
-            throw "bad registry";
-        }
-    }
+    void* Object = nullptr;
 };
 
 int main()
 {
-    auto reflection = rew::reflection.find("TObject");
-    std::map<std::string, std::function<void(rew::register_base_t&)>> mm = {
-        {
-            "TObject",
-            [](rew::register_base_t& r) {
-                polymorphic_register_t::call<TObject>(r);
-            }
-        },
-        {
-            "TBase",
-            [](rew::register_base_t& r) {
-                polymorphic_register_t::call<TBase>(r);
-            }
-        },
-    };
+    auto type = rew::reflection.find("TObject");
 
-    register_t r;
-    mm.at("TObject")(r);
+    auto reflection = type->reflection;
 
     auto factory = reflection->factory.find("TObject");
     auto object = factory->call({});
@@ -168,7 +123,7 @@ int main()
 
     auto parent = reflection->parent.find("TBase");
     auto base = parent->get(object);
-    auto base_reflection = parent->reflection();
+    auto base_reflection = parent->type()->reflection;
 
     for (auto& [name, meta] : base_reflection->property.all)
     {
@@ -179,5 +134,10 @@ int main()
     auto base_function = base_reflection->function.find("Boo");
     base_function->call(nullptr, result, {});
 
+    custom_register_t registry{object};
+    type->registry(registry);
+
     return 0;
 }
+
+REFLECTABLE_REGISTRY(1, custom_register_t)
