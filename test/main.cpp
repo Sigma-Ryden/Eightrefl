@@ -1,4 +1,4 @@
-#include "Rew.hpp"
+#include <Rew/Rew.hpp>
 
 #include <iostream>
 

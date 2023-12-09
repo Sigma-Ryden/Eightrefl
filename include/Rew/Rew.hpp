@@ -11,6 +11,7 @@
 #include <functional>
 #include <map>
 #include <vector>
+#include <string>
 #include <any>
 
 #include <type_traits>
@@ -99,7 +100,7 @@ class property_t
 public:
     struct meta_t
     {
-        const char *const name = nullptr;
+        const std::string name;
 
         const std::function<void(void *const, std::any&)> get = nullptr;
         const std::function<void(void *const, const std::any&)> set = nullptr;
@@ -107,21 +108,21 @@ public:
         // add type_t and reg for primitives
     };
 
-    std::map<const char*, meta_t> all;
+    std::map<std::string, meta_t> all;
 
 public:
-    meta_t* find(const char* name)
+    meta_t* find(const std::string& name)
     {
         auto it = all.find(name);
         return it != all.end() ? &it->second : nullptr;
     }
 
-    bool add(const char* name, const meta_t& meta)
+    bool add(const std::string& name, const meta_t& meta)
     {
         return all.emplace(name, meta).second;
     }
 
-    bool remove(const char* name)
+    bool remove(const std::string& name)
     {
         return all.erase(name)>0;
     }
@@ -132,7 +133,7 @@ class function_t
 public:
     struct meta_t
     {
-        const char *const name = nullptr;
+        const std::string name;
         const bool is_static = false;
 
         const std::function<void(void *const, std::any&, std::initializer_list<std::any>)> call = nullptr;
@@ -140,21 +141,21 @@ public:
         // add arguments count, arguments types
     };
 
-    std::map<const char*, meta_t> all;
+    std::map<std::string, meta_t> all;
 
 public:
-    meta_t* find(const char* name)
+    meta_t* find(const std::string& name)
     {
         auto it = all.find(name);
         return it != all.end() ? &it->second : nullptr;
     }
 
-    bool add(const char* name, const meta_t& meta)
+    bool add(const std::string& name, const meta_t& meta)
     {
         return all.emplace(name, meta).second;
     }
 
-    bool remove(const char* name)
+    bool remove(const std::string& name)
     {
         return all.erase(name)>0;
     }
@@ -169,7 +170,7 @@ struct register_t
 
 struct type_t
 {
-    const char *const name = nullptr;
+    const std::string name;
 
     reflection_t *const reflection = nullptr;
     const std::function<void(register_t&)> registry = nullptr;
@@ -180,27 +181,27 @@ class parent_t
 public:
     struct meta_t
     {
-        const char *const name = nullptr;
+        const std::string name;
 
         const std::function<void*(void *const)> get = nullptr;
         const std::function<type_t*(void)> type = nullptr;
     };
 
-    std::map<const char*, meta_t> all;
+    std::map<std::string, meta_t> all;
 
 public:
-    meta_t* find(const char* name)
+    meta_t* find(const std::string& name)
     {
         auto it = all.find(name);
         return it != all.end() ? &it->second : nullptr;
     }
 
-    bool add(const char* name, const meta_t& meta)
+    bool add(const std::string& name, const meta_t& meta)
     {
         return all.emplace(name, meta).second;
     }
 
-    bool remove(const char* name)
+    bool remove(const std::string& name)
     {
         return all.erase(name)>0;
     }
@@ -211,28 +212,28 @@ class factory_t
 public:
     struct meta_t
     {
-        const char *const name = nullptr;
+        const std::string name;
 
         const std::function<void*(std::initializer_list<std::any>)> call = nullptr;
         // TODO:
         // add arguments count, arguments type
     };
 
-    std::map<const char*, meta_t> all;
+    std::map<std::string, meta_t> all;
 
 public:
-    meta_t* find(const char* name)
+    meta_t* find(const std::string& name)
     {
         auto it = all.find(name);
         return it != all.end() ? &it->second : nullptr;
     }
 
-    bool add(const char* name, const meta_t& meta)
+    bool add(const std::string& name, const meta_t& meta)
     {
         return all.emplace(name, meta).second;
     }
 
-    bool remove(const char* name)
+    bool remove(const std::string& name)
     {
         return all.erase(name)>0;
     }
@@ -243,21 +244,21 @@ public:
 class meta_t
 {
 public:
-    std::map<const char*, std::any> all;
+    std::map<std::string, std::any> all;
 
 public:
-    std::any* find(const char* name)
+    std::any* find(const std::string& name)
     {
         auto it = all.find(name);
         return it != all.end() ? &it->second : nullptr;
     }
 
-    bool add(const char* name, const std::any& data)
+    bool add(const std::string& name, const std::any& data)
     {
         return all.emplace(name, data).second;
     }
 
-    bool remove(const char* name)
+    bool remove(const std::string& name)
     {
         return all.erase(name)>0;
     }
@@ -265,7 +266,7 @@ public:
 
 struct reflection_t
 {
-    const char *const name = nullptr;
+    const std::string name;
 
     parent_t parent;
     property_t property;
@@ -303,7 +304,7 @@ struct reflection_register_t : register_t
     }
 
     template <typename MetaType>
-    void meta(const char* name, const MetaType& data)
+    void meta(const std::string& name, const MetaType& data)
     {
         reflection->meta.add(name, data);
     }
@@ -359,7 +360,7 @@ struct polymorphic_register_t
 class reflection_core_t
 {
 public:
-    std::map<const char*, type_t> all;
+    std::map<std::string, type_t> all;
 
 public:
     ~reflection_core_t()
@@ -368,7 +369,7 @@ public:
     }
 
 public:
-    type_t* find(const char* name)
+    type_t* find(const std::string& name)
     {
         auto it = all.find(name);
         return it != all.end() ? &it->second : nullptr;
@@ -381,7 +382,7 @@ public:
     }
 
     template <class ClassType>
-    type_t* add(const char* name)
+    type_t* add(const std::string& name)
     {
         auto reflection = new reflection_t{ name };
 
@@ -486,7 +487,7 @@ auto parent_get_handler()
     };
 }
 
-auto parent_reflection_handler(const char* name, reflection_core_t* reflection)
+auto parent_reflection_handler(const std::string& name, reflection_core_t* reflection)
 {
     return [name, reflection](void)
     {
