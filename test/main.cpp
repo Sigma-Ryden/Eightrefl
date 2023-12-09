@@ -1,4 +1,4 @@
-#include <Rew/Rew.hpp>
+#include <Rew/Core.hpp>
 
 #include <iostream>
 
@@ -52,9 +52,9 @@ struct property_traits<VariableType ClassType::*>
     using class_t = ClassType;
 };
 
-struct custom_register_t : rew::register_t
+struct custom_visitor_t : rew::visitor_t
 {
-    custom_register_t(void* object) : Object(object) {}
+    custom_visitor_t(void* object) : Object(object) {}
 
     template <typename PropertyType>
     void property(const rew::property_t::meta_t& meta)
@@ -93,10 +93,11 @@ struct custom_register_t : rew::register_t
     void* Object = nullptr;
 };
 
+REFLECTABLE_VISITOR(1, custom_visitor_t)
+
 int main()
 {
-    auto type = rew::reflection.find("TObject");
-
+    auto type = rew::registry.find("TObject");
     auto reflection = type->reflection;
 
     auto factory = reflection->factory.find("TObject");
@@ -123,7 +124,8 @@ int main()
 
     auto parent = reflection->parent.find("TBase");
     auto base = parent->get(object);
-    auto base_reflection = parent->type()->reflection;
+    auto base_type = rew::registry.find(parent->name);
+    auto base_reflection = base_type->reflection;
 
     for (auto& [name, meta] : base_reflection->property.all)
     {
@@ -134,10 +136,8 @@ int main()
     auto base_function = base_reflection->function.find("Boo");
     base_function->call(nullptr, result, {});
 
-    custom_register_t registry{object};
-    type->registry(registry);
+    custom_visitor_t visitor{object};
+    type->evaluate(visitor);
 
     return 0;
 }
-
-REFLECTABLE_REGISTRY(1, custom_register_t)
