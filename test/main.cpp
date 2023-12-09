@@ -93,7 +93,7 @@ struct custom_visitor_t : rew::visitor_t
     void* Object = nullptr;
 };
 
-REFLECTABLE_VISITOR(1, custom_visitor_t)
+REFLECTABLE_VISITOR_REGISTRY(1, custom_visitor_t)
 
 int main()
 {

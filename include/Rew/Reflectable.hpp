@@ -73,4 +73,4 @@ struct reflection_visitor_t : visitor_t
 
 #endif // REW_REFLECTABLE_HPP
 
-REFLECTABLE_VISITOR(0, ::rew::reflection_visitor_t)
+REFLECTABLE_VISITOR_REGISTRY(0, ::rew::reflection_visitor_t)

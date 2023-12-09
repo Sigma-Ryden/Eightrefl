@@ -8,7 +8,7 @@
 
 #include <type_traits> // is_same
 
-#define REFLECTABLE_VISITOR(visitor_key, ...)                                                           \
+#define REFLECTABLE_VISITOR_REGISTRY(visitor_key, ...)                                                  \
     namespace rew {                                                                                     \
         template <> struct visitor_traits<visitor_key> {                                                \
             using type = __VA_ARGS__;                                                                   \
