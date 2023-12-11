@@ -11,13 +11,14 @@
 #define PARENT(...)                                                                                     \
     visitor.template parent<__VA_ARGS__, type>({                                                        \
         #__VA_ARGS__,                                                                                   \
-        parent_get_handler<__VA_ARGS__, type>()                                                         \
+        parent_get_handler<__VA_ARGS__, type>(),                                                        \
+        registry->find_or_add<__VA_ARGS__>(#__VA_ARGS__)                                                \
     });
 
 namespace rew
 {
 
-class registry_t;
+class type_t;
 
 struct parent_t : public attribute_t<parent_t>
 {
@@ -25,6 +26,7 @@ struct parent_t : public attribute_t<parent_t>
     {
         const std::string name;
         const std::function<void*(void*)> get = nullptr;
+        const type_t *const type = nullptr;
     };
 
     std::map<std::string, meta_t> all;

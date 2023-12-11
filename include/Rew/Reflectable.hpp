@@ -22,7 +22,7 @@
             };                                                                                          \
         private:                                                                                        \
             inline static auto _ = eval_t(                                                              \
-                reflection_visitor_t{ registry->add<type>(name)->reflection }                           \
+                reflection_visitor_t{ registry->find_or_add<type>(name)->reflection }                   \
             );                                                                                          \
         };                                                                                              \
     }

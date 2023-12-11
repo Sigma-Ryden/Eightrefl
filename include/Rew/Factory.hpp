@@ -13,7 +13,7 @@
 #define FACTORY(...)                                                                                    \
     visitor.template factory<__VA_ARGS__>({                                                             \
         #__VA_ARGS__,                                                                                   \
-        factory_call_handler<__VA_ARGS__>()                                                             \
+        factory_call_handler<type, __VA_ARGS__>()                                                       \
     });
 
 namespace rew

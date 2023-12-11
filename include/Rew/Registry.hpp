@@ -51,6 +51,13 @@ public:
         auto [it, success] = all.emplace(name, type_t{ name, reflection, evaluate });
         return &it->second;
     }
+
+    template <class ReflectableType>
+    type_t* find_or_add(const std::string& name)
+    {
+        auto type = find(name);
+        return type == nullptr ? add<ReflectableType>(name) : type;
+    }
 };
 
 inline registry_t registry;

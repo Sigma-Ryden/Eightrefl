@@ -23,6 +23,7 @@ void TBase::Boo()
 
 struct TObject : TBase
 {
+    TObject(int var, void* data);
     double Foo(int i, const std::string& s);
     int Var = 0;
 };
@@ -30,13 +31,16 @@ struct TObject : TBase
 REFLECTABLE(TObject)
     PROPERTY(Var)
     FUNCTION(Foo)
-    FACTORY(TObject)
+    FACTORY(int, void*)
     PARENT(TBase)
     META("Hash", 5678)
 REFLECTABLE_INIT()
 
+TObject::TObject(int var, void* data) : Var(var) {}
+
 double TObject::Foo(int i, const std::string& s)
 {
+    println(Var);
     println(i);
     println(s);
     return 3.14;
@@ -100,8 +104,8 @@ int main()
     auto type = rew::registry.find("TObject");
     auto reflection = type->reflection;
 
-    auto factory = reflection->factory.find("TObject");
-    auto object = factory->call({});
+    auto factory = reflection->factory.find("int, void*");
+    auto object = factory->call({ 256, (void*)nullptr });
 
     std::any result;
 
@@ -124,8 +128,7 @@ int main()
 
     auto parent = reflection->parent.find("TBase");
     auto base = parent->get(object);
-    auto base_type = rew::registry.find(parent->name);
-    auto base_reflection = base_type->reflection;
+    auto base_reflection = parent->type->reflection;
 
     for (auto& [name, meta] : base_reflection->property.all)
     {
