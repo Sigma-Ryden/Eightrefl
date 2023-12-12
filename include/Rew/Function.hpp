@@ -10,11 +10,10 @@
 
 #include <Rew/Attribute.hpp>
 
-#define FUNCTION(...)                                                                                   \
-    visitor.template function<decltype(&type::__VA_ARGS__)>({                                           \
-        #__VA_ARGS__,                                                                                   \
-        function_is_static(&type::__VA_ARGS__),                                                         \
-        function_call_handler(&type::__VA_ARGS__)                                                       \
+#define FUNCTION(name, ...)                                                                             \
+    visitor.template function<decltype(overload<__VA_ARGS__>(&type::name))>({                           \
+        assembly(#name, #__VA_ARGS__),                                                                  \
+        function_call_handler(overload<__VA_ARGS__>(&type::name))                                       \
     });
 
 namespace rew
@@ -25,12 +24,10 @@ struct function_t : attribute_t<function_t>
     struct meta_t
     {
         const std::string name;
-        const bool is_static = false;
 
         const std::function<void(void*, std::any&, std::initializer_list<std::any>)> call = nullptr;
         // TODO:
         // add arguments count, arguments types
-        // replace is_static to type
     };
 
     std::map<std::string, meta_t> all;
@@ -86,16 +83,21 @@ auto function_call_handler(ReturnType (*function)(ArgumentTypes...))
     return function_call_handler_impl(function, std::index_sequence_for<ArgumentTypes...>{});
 }
 
-template <class ClassType, typename ReturnType, typename... ArgumentTypes>
-auto function_is_static(ReturnType (ClassType::* function)(ArgumentTypes...))
-{
-    return false;
-}
+template <typename... ArgumentTypes, typename ReturnType, class ClassType>
+auto overload(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
 
-template <typename ReturnType, typename... ArgumentTypes>
-auto function_is_static(ReturnType (*function)(ArgumentTypes...))
+template <typename ReturnType, class ClassType>
+auto overload(ReturnType (ClassType::* function)(void)) { return function; }
+
+template <typename... ArgumentTypes, typename ReturnType>
+auto overload(ReturnType (*function)(ArgumentTypes...)) { return function; }
+
+template <typename ReturnType>
+auto overload(ReturnType (*function)(void)) { return function; }
+
+std::string assembly(const std::string& lhs, const std::string& rhs)
 {
-    return true;
+    return rhs.empty() ? lhs : lhs + ", " + rhs;
 }
 
 } // namespace rew

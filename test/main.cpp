@@ -72,9 +72,7 @@ struct custom_visitor_t : rew::visitor_t
     template <typename FunctionType>
     void function(const rew::function_t::meta_t& meta)
     {
-        std::cout << std::boolalpha;
-        std::cout << "function: " << meta.name << " is_static: " << meta.is_static << '\n';
-        std::cout << std::noboolalpha;
+        std::cout << "function: " << meta.name << '\n';
     }
 
     template <class BaseClassType, class DerivedClassType>
