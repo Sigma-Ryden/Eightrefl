@@ -9,29 +9,27 @@
 #include <initializer_list> // initializer_list
 
 #include <Rew/Attribute.hpp>
+#include <Rew/Meta.hpp>
 
 #define FUNCTION(name, ...)                                                                             \
-    visitor.template function<decltype(overload<__VA_ARGS__>(&type::name))>({                           \
+    visitor.template function<decltype(overload<__VA_ARGS__>(&reflectable_type::name))>({               \
         assembly(#name, #__VA_ARGS__),                                                                  \
-        function_call_handler(overload<__VA_ARGS__>(&type::name))                                       \
+        function_call_handler(overload<__VA_ARGS__>(&reflectable_type::name))                           \
     });
 
 namespace rew
 {
 
-struct function_t : attribute_t<function_t>
+struct function_meta_t
 {
-    struct meta_t
-    {
-        const std::string name;
-
-        const std::function<void(void*, std::any&, std::initializer_list<std::any>)> call = nullptr;
-        // TODO:
-        // add arguments count, arguments types
-    };
-
-    std::map<std::string, meta_t> all;
+    // TODO:
+    // add arguments count, arguments types
+    const std::string name;
+    const std::function<void(void*, std::any&, std::initializer_list<std::any>)> call = nullptr;
+    meta_t meta;
 };
+
+using function_t = attribute_t<function_meta_t>;
 
 template <class ClassType, typename ReturnType, typename... ArgumentTypes, std::size_t... I>
 auto function_call_handler_impl(ReturnType (ClassType::* function)(ArgumentTypes...), std::index_sequence<I...>)

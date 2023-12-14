@@ -2,35 +2,31 @@
 #define REW_ATTRIBUTE_HPP
 
 #include <string> // string
+#include <map> // map
 
 namespace rew
 {
 
-template <class ClassType>
+template <class MetaType>
 struct attribute_t
 {
     auto find(const std::string& name)
     {
-        auto it = self()->all.find(name);
-        return it != self()->all.end() ? &it->second : nullptr;
+        auto it = all.find(name);
+        return it != all.end() ? &it->second : nullptr;
     }
 
-    template <class MetaType>
     bool add(const std::string& name, const MetaType& meta)
     {
-        return self()->all.emplace(name, meta).second;
+        return all.emplace(name, meta).second;
     }
 
     bool remove(const std::string& name)
     {
-        return self()->all.erase(name)>0;
+        return all.erase(name)>0;
     }
 
-private:
-    ClassType* self()
-    {
-        return static_cast<ClassType*>(this);
-    }
+    std::map<std::string, MetaType> all;
 };
 
 } // namespace rew

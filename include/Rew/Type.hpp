@@ -14,7 +14,6 @@ struct visitor_t;
 struct type_t
 {
     const std::string name;
-
     reflection_t *const reflection = nullptr;
     const std::function<void(visitor_t&)> evaluate = nullptr;
 };

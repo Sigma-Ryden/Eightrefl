@@ -4,6 +4,67 @@
 
 #define println(...) std::cout << #__VA_ARGS__ << ' ' << __VA_ARGS__ << '\n';
 
+template <typename PropertyType>
+struct property_traits;
+
+template <typename VariableType, class ClassType>
+struct property_traits<VariableType ClassType::*>
+{
+    using var_t = VariableType;
+    using class_t = ClassType;
+};
+
+struct custom_visitor_t : rew::visitor_t
+{
+    void* object = nullptr;
+
+    custom_visitor_t(void* object) : object(object) {}
+
+    template <typename ClassType>
+    void type(const rew::type_t& type)
+    {
+        println(type.name);
+    }
+
+    template <typename PropertyType>
+    void property(const rew::property_meta_t& meta)
+    {
+        using var_t = typename property_traits<PropertyType>::var_t;
+
+        std::any var;
+        meta.get(object, var);
+
+        println(meta.name);
+        println(std::any_cast<var_t&>(var));
+    }
+
+    template <typename FunctionType>
+    void function(const rew::function_meta_t& meta)
+    {
+        println(meta.name);
+    }
+
+    template <class BaseClassType, class DerivedClassType>
+    void parent(const rew::parent_meta_t& meta)
+    {
+        println(meta.name);
+    }
+
+    template <class ClassType, typename... ArgumentTypes>
+    void factory(const rew::factory_meta_t& meta)
+    {
+        println(meta.name);
+    }
+
+    template <typename MetaType>
+    void meta(const std::string& name, const MetaType& data)
+    {
+        println(name);
+    }
+};
+
+REFLECTABLE_VISITOR_REGISTRY(1, custom_visitor_t)
+
 struct TBase
 {
     std::string Data = "abcd";
@@ -46,64 +107,13 @@ double TObject::Foo(int i, const std::string& s)
     return 3.14;
 }
 
-template <typename PropertyType>
-struct property_traits;
-
-template <typename VariableType, class ClassType>
-struct property_traits<VariableType ClassType::*>
-{
-    using var_t = VariableType;
-    using class_t = ClassType;
-};
-
-struct custom_visitor_t : rew::visitor_t
-{
-    custom_visitor_t(void* object) : Object(object) {}
-
-    template <typename PropertyType>
-    void property(const rew::property_t::meta_t& meta)
-    {
-        using var_t = typename property_traits<PropertyType>::var_t;
-        std::any var;
-        meta.get(Object, var);
-        std::cout << "property: " << meta.name << " value: " << std::any_cast<var_t>(var) << '\n';
-    }
-
-    template <typename FunctionType>
-    void function(const rew::function_t::meta_t& meta)
-    {
-        std::cout << "function: " << meta.name << '\n';
-    }
-
-    template <class BaseClassType, class DerivedClassType>
-    void parent(const rew::parent_t::meta_t& meta)
-    {
-         std::cout <<"parent: " << meta.name << '\n';
-    }
-
-    template <class OtherClassType, typename... ArgumentTypes>
-    void factory(const rew::factory_t::meta_t& meta)
-    {
-    }
-
-    template <typename MetaType>
-    void meta(const char* name, const MetaType& data)
-    {
-         std::cout << "meta: "<< name << " value: " << data << '\n';
-    }
-
-    void* Object = nullptr;
-};
-
-REFLECTABLE_VISITOR_REGISTRY(1, custom_visitor_t)
-
 int main()
 {
     auto type = rew::registry.find("TObject");
     auto reflection = type->reflection;
 
     auto factory = reflection->factory.find("int, void*");
-    auto object = factory->call({ 256, (void*)nullptr });
+    auto object = (TObject*)factory->call({ 256, (void*)nullptr });
 
     std::any result;
 
@@ -113,6 +123,7 @@ int main()
     println(std::any_cast<double>(result));
 
     auto property = reflection->property.find("Var");
+
     property->set(object, 321);
     property->get(object, result);
 

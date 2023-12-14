@@ -15,10 +15,7 @@ namespace rew
 
 // TODO:
 // improve meta class for better registration info
-struct meta_t : attribute_t<meta_t>
-{
-    std::map<std::string, std::any> all;
-};
+using meta_t = attribute_t<std::any>;
 
 } // namespace rew
 
