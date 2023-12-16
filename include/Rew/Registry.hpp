@@ -11,8 +11,11 @@
 namespace rew
 {
 
-template <class ReflectableType>
+template <typename ReflectableType>
 class reflection_registry_t;
+
+template <typename ReflectableType>
+class reflection_info_t;
 
 class registry_t
 {
@@ -32,13 +35,13 @@ public:
         return it != all.end() ? &it->second : nullptr;
     }
 
-    template <class ReflectableType>
+    template <typename ReflectableType>
     type_t* find()
     {
-        return get(reflection_registry_t<ReflectableType>::name);
+        return get(reflection_info_t<ReflectableType>::name);
     }
 
-    template <class ReflectableType>
+    template <typename ReflectableType>
     type_t* add(const std::string& name)
     {
         auto reflection = new reflection_t{ name };
@@ -48,11 +51,14 @@ public:
             polymorphic_visitor_t::call<ReflectableType>(visitor);
         };
 
-        auto [it, success] = all.emplace(name, type_t{ name, reflection, evaluate });
+        auto [it, success] = all.emplace(
+            name,
+            type_t{ name, reflection, evaluate, sizeof(ReflectableType) } 
+        );
         return &it->second;
     }
 
-    template <class ReflectableType>
+    template <typename ReflectableType>
     type_t* find_or_add(const std::string& name)
     {
         auto type = find(name);

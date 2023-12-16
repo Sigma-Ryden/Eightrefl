@@ -4,59 +4,47 @@
 
 #define println(...) std::cout << #__VA_ARGS__ << ' ' << __VA_ARGS__ << '\n';
 
-template <typename PropertyType>
-struct property_traits;
-
-template <typename VariableType, class ClassType>
-struct property_traits<VariableType ClassType::*>
-{
-    using var_t = VariableType;
-    using class_t = ClassType;
-};
-
 struct custom_visitor_t : rew::visitor_t
 {
     void* object = nullptr;
 
     custom_visitor_t(void* object) : object(object) {}
 
-    template <typename ClassType>
+    template <typename ReflectableType>
     void type(const rew::type_t& type)
     {
         println(type.name);
     }
 
-    template <typename PropertyType>
+    template <typename ReflectableType, typename PropertyType>
     void property(const rew::property_meta_t& meta)
     {
-        using var_t = typename property_traits<PropertyType>::var_t;
-
         std::any var;
         meta.get(object, var);
 
         println(meta.name);
-        println(std::any_cast<var_t&>(var));
+        println(std::any_cast<PropertyType&>(var));
     }
 
-    template <typename FunctionType>
+    template <typename ReflectableType, typename FunctionType>
     void function(const rew::function_meta_t& meta)
     {
         println(meta.name);
     }
 
-    template <class BaseClassType, class DerivedClassType>
+    template <typename ReflectableType, typename ParentReflectableType>
     void parent(const rew::parent_meta_t& meta)
     {
         println(meta.name);
     }
 
-    template <class ClassType, typename... ArgumentTypes>
+    template <typename ReflectableType, typename FunctionType>
     void factory(const rew::factory_meta_t& meta)
     {
         println(meta.name);
     }
 
-    template <typename MetaType>
+    template <typename ReflectableType, typename MetaType>
     void meta(const std::string& name, const MetaType& data)
     {
         println(name);
@@ -67,9 +55,12 @@ REFLECTABLE_VISITOR_REGISTRY(1, custom_visitor_t)
 
 struct TBase
 {
-    std::string Data = "abcd";
+    std::string data_ = "abcd";
 
-    static void Boo();
+    void Boo();
+    void Boo(int) {}
+    std::string& Data() { return data_; }
+    void Data(const std::string& data) { data_ = data; }
 };
 
 REFLECTABLE(TBase)
@@ -85,6 +76,8 @@ void TBase::Boo()
 struct TObject : TBase
 {
     TObject(int var, void* data);
+    TObject() = default;
+
     double Foo(int i, const std::string& s);
     int Var = 0;
 };
@@ -93,6 +86,7 @@ REFLECTABLE(TObject)
     PROPERTY(Var)
     FUNCTION(Foo)
     FACTORY(int, void*)
+    FACTORY(void)
     PARENT(TBase)
     META("Hash", 5678)
 REFLECTABLE_INIT()
@@ -150,6 +144,83 @@ int main()
 
     custom_visitor_t visitor{object};
     type->evaluate(visitor);
-
+    
     return 0;
+}
+
+#include <AutoTesting/Core.hpp>
+
+TEST(Library, Primitive)
+{
+    using reflectbale_type = int;
+
+    static std::string s_name = "int";
+
+    auto type = rew::registry.find(s_name);
+    
+    ASSERT("type-null", type != nullptr);
+    EXPECT("type-name", type->name == s_name);
+
+    ASSERT("type-evaluate-null", type->evaluate != nullptr);
+    
+    ASSERT("type-reflection-null", type->reflection != nullptr);
+
+    auto default_factory = type->reflection->factory.find("");
+    
+    ASSERT("type-reflection-factory-default-null", default_factory != nullptr);
+    ASSERT("type-reflection-factory-default-args_count", default_factory->args_count == 0);
+    
+    auto default_instance = default_factory->call({});
+
+    ASSERT("type-reflection-factory-default-instance-null", default_instance != nullptr);
+    
+    auto value = type->reflection->property.find("value");
+    
+    ASSERT("type-reflection-property-value-null", value != nullptr);
+    
+    ASSERT("type-reflection-property-value-get", value->get != nullptr);
+    
+    std::any default_result;
+    value->get(default_instance, default_result);
+    
+    ASSERT("type-reflection-property-value-get-result-default-null", default_result.has_value());
+    
+    auto default_value_address = std::any_cast<reflectbale_type>(&default_result);
+    
+    ASSERT("type-reflection-property-value-get-result-default-cast", default_value_address != nullptr);
+    EXPECT("type-reflection-property-value-get-result-default-value", *default_value_address == reflectbale_type{});
+
+    static reflectbale_type s_set_value{ 123 };
+        
+    ASSERT("type-reflection-property-value-set", value->set != nullptr);
+    
+    value->set(default_instance, s_set_value);
+    
+    std::any refreshed_result;
+    value->get(default_instance, refreshed_result);
+        
+    auto set_value_address = std::any_cast<reflectbale_type>(&refreshed_result);
+    
+    EXPECT("type-reflection-property-value-get-result-default-set-value", *set_value_address == s_set_value);
+    
+    static reflectbale_type s_instance_value{ 456 };
+
+    auto factory = type->reflection->factory.find(s_name);
+    
+    ASSERT("type-reflection-factory-null", factory != nullptr);
+    ASSERT("type-reflection-factory-args_count", factory->args_count == 1);
+
+    auto instance = factory->call({ s_instance_value });
+    
+    ASSERT("type-reflection-factory-instance-null", instance != nullptr);
+    
+    std::any initiate_result;
+    value->get(instance, initiate_result);
+    
+    ASSERT("type-reflection-property-value-get-result-null", initiate_result.has_value());
+    
+    auto instance_value_address = std::any_cast<reflectbale_type>(&initiate_result);
+        
+    ASSERT("type-reflection-property-value-get-result-cast", instance_value_address != nullptr);
+    EXPECT("type-reflection-property-value-get-result-value", *instance_value_address == s_instance_value);
 }

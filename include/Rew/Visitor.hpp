@@ -36,20 +36,20 @@ struct visitor_traits
     using type = void;
 };
 
-template <class ReflectableType>
+template <typename ReflectableType>
 class reflection_registry_t;
 
 class polymorphic_visitor_t
 {
 public:
-    template <class ReflectableType>
+    template <typename ReflectableType>
     static void call(visitor_t& visitor)
     {
         auto key = visitor_base_traits::rtti_table.at(typeid(visitor).hash_code());
         try_call<ReflectableType>(visitor, key);
     }
 
-    template <class ReflectableType, std::size_t VisitorKey = 0>
+    template <typename ReflectableType, std::size_t VisitorKey = 0>
     static void try_call(visitor_t& registry, std::size_t key)
     {
         if constexpr (VisitorKey < visitor_base_traits::max_size)

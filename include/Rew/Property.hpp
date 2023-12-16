@@ -11,10 +11,11 @@
 #include <Rew/Meta.hpp>
 
 #define PROPERTY(...)                                                                                   \
-    visitor.template property<decltype(&reflectable_type::__VA_ARGS__)>({                               \
+    visitor.template property<decltype(property_owner(&info_t::type::__VA_ARGS__)),                     \
+                              decltype(property_value(&info_t::type::__VA_ARGS__))>({                   \
         #__VA_ARGS__,                                                                                   \
-        property_get_handler(&reflectable_type::__VA_ARGS__),                                           \
-        property_set_handler(&reflectable_type::__VA_ARGS__)                                            \
+        property_get_handler(&info_t::type::__VA_ARGS__),                                               \
+        property_set_handler(&info_t::type::__VA_ARGS__)                                                \
     });
 
 namespace rew
@@ -32,21 +33,75 @@ struct property_meta_t
 
 using property_t = attribute_t<property_meta_t>;
 
-template <class ClassType, typename PropertyType>
-auto property_get_handler(PropertyType ClassType::* property)
+template <typename ReflectableType, typename PropertyType>
+ReflectableType property_owner(PropertyType ReflectableType::*);
+
+template <typename ReflectableType, typename PropertyType>
+ReflectableType property_owner(PropertyType (ReflectableType::*)(void));
+
+template <typename ReflectableType, typename PropertyType>
+ReflectableType property_owner();
+
+template <typename ReflectableType, typename PropertyType>
+PropertyType property_value(PropertyType ReflectableType::*);
+
+template <typename ReflectableType, typename PropertyType>
+PropertyType property_value(PropertyType (ReflectableType::*)(void));
+
+template <typename ReflectableType, typename PropertyType>
+PropertyType property_value();
+
+template <typename ReflectableType, typename PropertyType>
+auto property_get_handler(PropertyType ReflectableType::* property)
 {
     return [property](void* self, std::any& result)
     {
-        result = static_cast<ClassType*>(self)->*property;
+        result = static_cast<ReflectableType*>(self)->*property;
     };
 }
 
-template <class ClassType, typename PropertyType>
-auto property_set_handler(PropertyType ClassType::* property)
+template <typename ReflectableType, typename PropertyType>
+auto property_set_handler(PropertyType ReflectableType::* property)
 {
     return [property](void* self, const std::any& value)
     {
-        static_cast<ClassType*>(self)->*property = std::any_cast<const PropertyType&>(value);
+        static_cast<ReflectableType*>(self)->*property = std::any_cast<const PropertyType&>(value);
+    };
+}
+
+template <typename ReflectableType, typename PropertyType>
+auto property_get_handler(PropertyType (ReflectableType::* getter)(void))
+{
+    return [getter](void* self, std::any& value)
+    {
+        value = (static_cast<ReflectableType*>(self)->*getter)();
+    };
+}
+
+template <typename ReflectableType, typename PropertyType>
+auto property_set_handler(void (ReflectableType::* setter)(PropertyType))
+{
+    return [setter](void* self, const std::any& value)
+    {
+        (static_cast<ReflectableType*>(self)->*setter)(std::any_cast<const PropertyType&>(value));
+    };
+}
+
+template <typename ReflectableType, typename PropertyType>
+auto property_get_handler()
+{
+    return [](void* self, std::any& result)
+    {
+        result = *static_cast<PropertyType*>(self);
+    };
+}
+
+template <typename ReflectableType, typename PropertyType>
+auto property_set_handler()
+{
+    return [](void* self, const std::any& result)
+    {
+        *static_cast<PropertyType*>(self) = std::any_cast<PropertyType>(result);
     };
 }
 

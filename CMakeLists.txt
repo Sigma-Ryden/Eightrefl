@@ -19,14 +19,18 @@ set(REW
 	include/Rew/Registry.hpp
 	include/Rew/Visitor.hpp
 	include/Rew/Reflectable.hpp
+	include/Rew/Utility.hpp
 	include/Rew/Core.hpp
 )
 
 set(AUTO
-	test/main.cpp
+	include/AutoTesting/Core.hpp
+	include/AutoTesting/Core.cpp
 )
 
 add_executable(${PROJECT_NAME}
 	${REW}
 	${AUTO}
+
+	test/main.cpp
 )

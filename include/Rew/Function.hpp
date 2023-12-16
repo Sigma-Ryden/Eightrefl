@@ -1,8 +1,9 @@
 #ifndef REW_FUNCTION_HPP
 #define REW_FUNCTION_HPP
 
+#include <cstddef> // size_t
+
 #include <string> // string
-#include <map> // map
 #include <any> // any
 
 #include <functional> // function
@@ -11,10 +12,14 @@
 #include <Rew/Attribute.hpp>
 #include <Rew/Meta.hpp>
 
+#include <Rew/Utility.hpp>
+
 #define FUNCTION(name, ...)                                                                             \
-    visitor.template function<decltype(overload<__VA_ARGS__>(&reflectable_type::name))>({               \
+    visitor.template function<decltype(function_owner<__VA_ARGS__>(&info_t::type::name)),               \
+                              decltype(function_overload<__VA_ARGS__>(&info_t::type::name))>({          \
         assembly(#name, #__VA_ARGS__),                                                                  \
-        function_call_handler(overload<__VA_ARGS__>(&reflectable_type::name))                           \
+        function_call_handler(function_overload<__VA_ARGS__>(&info_t::type::name)),                     \
+        function_args_count(function_overload<__VA_ARGS__>(&info_t::type::name))                        \
     });
 
 namespace rew
@@ -22,30 +27,29 @@ namespace rew
 
 struct function_meta_t
 {
-    // TODO:
-    // add arguments count, arguments types
     const std::string name;
     const std::function<void(void*, std::any&, std::initializer_list<std::any>)> call = nullptr;
+    const std::size_t args_count = 0;
     meta_t meta;
 };
 
 using function_t = attribute_t<function_meta_t>;
 
-template <class ClassType, typename ReturnType, typename... ArgumentTypes, std::size_t... I>
-auto function_call_handler_impl(ReturnType (ClassType::* function)(ArgumentTypes...), std::index_sequence<I...>)
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes, std::size_t... I>
+auto function_call_handler_impl(ReturnType (ReflectableType::* function)(ArgumentTypes...), std::index_sequence<I...>)
 {
     return [function](void* self, std::any& result, std::initializer_list<std::any> arguments)
     {
-        result = (static_cast<ClassType*>(self)->*function)(std::any_cast<ArgumentTypes>(arguments.begin()[I])...);
+        result = (static_cast<ReflectableType*>(self)->*function)(std::any_cast<ArgumentTypes>(arguments.begin()[I])...);
     };
 }
 
-template <class ClassType, typename... ArgumentTypes, std::size_t... I>
-auto function_call_handler_impl(void (ClassType::* function)(ArgumentTypes...), std::index_sequence<I...>)
+template <typename ReflectableType, typename... ArgumentTypes, std::size_t... I>
+auto function_call_handler_impl(void (ReflectableType::* function)(ArgumentTypes...), std::index_sequence<I...>)
 {
     return [function](void* self, std::any& result, std::initializer_list<std::any> arguments)
     {
-        (static_cast<ClassType*>(self)->*function)(std::any_cast<ArgumentTypes>(arguments.begin()[I])...);
+        (static_cast<ReflectableType*>(self)->*function)(std::any_cast<ArgumentTypes>(arguments.begin()[I])...);
         result.reset();
     };
 }
@@ -69,8 +73,8 @@ auto function_call_handler_impl(void (*function)(ArgumentTypes...), std::index_s
     };
 }
 
-template <class ClassType, typename ReturnType, typename... ArgumentTypes>
-auto function_call_handler(ReturnType (ClassType::* function)(ArgumentTypes...))
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto function_call_handler(ReturnType (ReflectableType::* function)(ArgumentTypes...))
 {
     return function_call_handler_impl(function, std::index_sequence_for<ArgumentTypes...>{});
 }
@@ -82,21 +86,28 @@ auto function_call_handler(ReturnType (*function)(ArgumentTypes...))
 }
 
 template <typename... ArgumentTypes, typename ReturnType, class ClassType>
-auto overload(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
+ClassType function_owner(ReturnType (ClassType::* function)(ArgumentTypes...));
 
 template <typename ReturnType, class ClassType>
-auto overload(ReturnType (ClassType::* function)(void)) { return function; }
+ClassType function_owner(ReturnType (ClassType::* function)(void));
 
 template <typename... ArgumentTypes, typename ReturnType>
-auto overload(ReturnType (*function)(ArgumentTypes...)) { return function; }
+void function_owner(ReturnType (*function)(ArgumentTypes...));
 
 template <typename ReturnType>
-auto overload(ReturnType (*function)(void)) { return function; }
+void function_owner(ReturnType (*function)(void));
 
-std::string assembly(const std::string& lhs, const std::string& rhs)
-{
-    return rhs.empty() ? lhs : lhs + ", " + rhs;
-}
+template <typename ReturnType, class ClassType>
+auto function_overload(ReturnType (ClassType::* function)(void)) { return function; }
+
+template <typename... ArgumentTypes, typename ReturnType, class ClassType>
+auto function_overload(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
+
+template <typename... ArgumentTypes, typename ReturnType>
+auto function_overload(ReturnType (*function)(ArgumentTypes...)) { return function; }
+
+template <typename ReturnType>
+auto function_overload(ReturnType (*function)(void)) { return function; }
 
 } // namespace rew
 

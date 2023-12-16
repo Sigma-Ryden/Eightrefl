@@ -8,7 +8,7 @@
 #include <Rew/Attribute.hpp>
 
 #define META(name, ...)                                                                                 \
-    visitor.meta(name, __VA_ARGS__);
+    visitor.template meta<info_t::type>(name, __VA_ARGS__);
 
 namespace rew
 {

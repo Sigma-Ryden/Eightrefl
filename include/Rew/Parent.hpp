@@ -11,10 +11,10 @@
 #include <Rew/Meta.hpp>
 
 #define PARENT(...)                                                                                     \
-    visitor.template parent<__VA_ARGS__, reflectable_type>({                                            \
+    visitor.template parent<info_t::type, __VA_ARGS__>({                                                \
         #__VA_ARGS__,                                                                                   \
-        parent_get_handler<__VA_ARGS__, reflectable_type>(),                                            \
-        registry->find_or_add<__VA_ARGS__>(#__VA_ARGS__)                                                \
+        parent_get_handler<info_t::type, __VA_ARGS__>(),                                                \
+        info_t::registry->find_or_add<__VA_ARGS__>(#__VA_ARGS__)                                        \
     });
 
 namespace rew
@@ -32,12 +32,12 @@ struct parent_meta_t
 
 using parent_t = attribute_t<parent_meta_t>;
 
-template <class BaseClassType, class DerivedClassType>
+template <typename ReflectableType, typename ParentReflectableType>
 auto parent_get_handler()
 {
     return [](void* self)
     {
-        return static_cast<BaseClassType*>(static_cast<DerivedClassType*>(self));
+        return static_cast<ParentReflectableType*>(static_cast<ReflectableType*>(self));
     };
 }
 
