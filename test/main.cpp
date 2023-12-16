@@ -1,14 +1,16 @@
 #include <Rew/Core.hpp>
 
+#include <AutoTesting/Core.hpp>
+
 #include <iostream>
 
 #define println(...) std::cout << #__VA_ARGS__ << ' ' << __VA_ARGS__ << '\n';
 
 struct custom_visitor_t : rew::visitor_t
 {
-    void* object = nullptr;
+    std::any object;
 
-    custom_visitor_t(void* object) : object(object) {}
+    custom_visitor_t(const std::any& object) : object(object) {}
 
     template <typename ReflectableType>
     void type(const rew::type_t& type)
@@ -23,7 +25,7 @@ struct custom_visitor_t : rew::visitor_t
         meta.get(object, var);
 
         println(meta.name);
-        println(std::any_cast<PropertyType&>(var));
+        //println(std::any_cast<PropertyType&>(var));
     }
 
     template <typename ReflectableType, typename FunctionType>
@@ -57,9 +59,10 @@ struct TBase
 {
     std::string data_ = "abcd";
 
-    void Boo();
-    void Boo(int) {}
-    std::string& Data() { return data_; }
+    static void Boo();
+    static void Boo(int);
+
+    const std::string& Data() { return data_; }
     void Data(const std::string& data) { data_ = data; }
 };
 
@@ -68,10 +71,9 @@ REFLECTABLE(TBase)
     FUNCTION(Boo)
 REFLECTABLE_INIT()
 
-void TBase::Boo()
-{
-    println("TBase::Boo()");
-}
+void TBase::Boo() { println("TBase::Boo()"); }
+
+void TBase::Boo(int) { println("TBase::Boo(int)"); }
 
 struct TObject : TBase
 {
@@ -101,13 +103,13 @@ double TObject::Foo(int i, const std::string& s)
     return 3.14;
 }
 
-int main()
+TEST(TestDemo, TestExample)
 {
     auto type = rew::registry.find("TObject");
     auto reflection = type->reflection;
 
     auto factory = reflection->factory.find("int, void*");
-    auto object = (TObject*)factory->call({ 256, (void*)nullptr });
+    auto object = factory->call({ 256, (void*)nullptr });
 
     std::any result;
 
@@ -140,17 +142,17 @@ int main()
     }
 
     auto base_function = base_reflection->function.find("Boo");
-    base_function->call(nullptr, result, {});
+    std::any null;
+    base_function->call(null, result, {});
 
-    custom_visitor_t visitor{object};
+    custom_visitor_t visitor{std::any_cast<TObject*>(object)};
     type->evaluate(visitor);
-    
-    return 0;
 }
 
-#include <AutoTesting/Core.hpp>
+BUILTIN_REFLECTABLE(int)
+REFLECTABLE_INIT()
 
-TEST(Library, Primitive)
+TEST(TestLibrary, TestBuiltin)
 {
     using reflectbale_type = int;
 
@@ -172,7 +174,7 @@ TEST(Library, Primitive)
     
     auto default_instance = default_factory->call({});
 
-    ASSERT("type-reflection-factory-default-instance-null", default_instance != nullptr);
+    ASSERT("type-reflection-factory-default-instance-null", default_instance.has_value());
     
     auto value = type->reflection->property.find("value");
     
@@ -212,15 +214,21 @@ TEST(Library, Primitive)
 
     auto instance = factory->call({ s_instance_value });
     
-    ASSERT("type-reflection-factory-instance-null", instance != nullptr);
+    ASSERT("type-reflection-factory-instance-null", instance.has_value());
     
     std::any initiate_result;
     value->get(instance, initiate_result);
     
     ASSERT("type-reflection-property-value-get-result-null", initiate_result.has_value());
-    
     auto instance_value_address = std::any_cast<reflectbale_type>(&initiate_result);
         
     ASSERT("type-reflection-property-value-get-result-cast", instance_value_address != nullptr);
     EXPECT("type-reflection-property-value-get-result-value", *instance_value_address == s_instance_value);
+}
+
+int main()
+{
+    TRY_CATCH(EXECUTE_ALL());
+    TESTING_STAT();
+    return 0;
 }

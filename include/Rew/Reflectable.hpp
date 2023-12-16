@@ -32,7 +32,14 @@
         };                                                                                              \
     }
 
-#define REFLECTABLE(...) CORE_REFLECTABLE(::rew::registry, __VA_ARGS__)
+#define REFLECTABLE(...)                                                                                \
+    CORE_REFLECTABLE(::rew::registry, __VA_ARGS__)
+
+#define BUILTIN_REFLECTABLE(...)                                                                        \
+    CORE_REFLECTABLE(::rew::registry, __VA_ARGS__)                                                      \
+    BUILTIN_FACTORY()                                                                                   \
+    BUILTIN_FACTORY(__VA_ARGS__)                                                                        \
+    BUILTIN_PROPERTY(value)
 
 namespace rew
 {

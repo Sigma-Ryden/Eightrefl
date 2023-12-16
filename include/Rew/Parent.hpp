@@ -25,8 +25,8 @@ class type_t;
 struct parent_meta_t
 {
     const std::string name;
-    const std::function<void*(void*)> get = nullptr;
-    const type_t *const type = nullptr;
+    const std::function<std::any(std::any&)> get = nullptr;
+    type_t *const type = nullptr;
     meta_t meta;
 };
 
@@ -35,9 +35,9 @@ using parent_t = attribute_t<parent_meta_t>;
 template <typename ReflectableType, typename ParentReflectableType>
 auto parent_get_handler()
 {
-    return [](void* self)
+    return [](std::any& self) -> std::any
     {
-        return static_cast<ParentReflectableType*>(static_cast<ReflectableType*>(self));
+        return static_cast<ParentReflectableType*>(std::any_cast<ReflectableType*>(self));
     };
 }
 
