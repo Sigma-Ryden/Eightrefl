@@ -13,41 +13,40 @@ struct custom_visitor_t : rew::visitor_t
     custom_visitor_t(const std::any& object) : object(object) {}
 
     template <typename ReflectableType>
-    void type(const rew::type_t& type)
+    void type(rew::type_t& type)
     {
         println(type.name);
     }
 
     template <typename ReflectableType, typename PropertyType>
-    void property(const rew::property_meta_t& meta)
+    void property(rew::property_meta_t& meta)
     {
         std::any var;
         meta.get(object, var);
 
         println(meta.name);
-        //println(std::any_cast<PropertyType&>(var));
     }
 
     template <typename ReflectableType, typename FunctionType>
-    void function(const rew::function_meta_t& meta)
+    void function(rew::function_meta_t& meta)
     {
         println(meta.name);
     }
 
     template <typename ReflectableType, typename ParentReflectableType>
-    void parent(const rew::parent_meta_t& meta)
+    void parent(rew::parent_meta_t& meta)
     {
         println(meta.name);
     }
 
     template <typename ReflectableType, typename FunctionType>
-    void factory(const rew::factory_meta_t& meta)
+    void factory(rew::factory_meta_t& meta)
     {
         println(meta.name);
     }
 
     template <typename ReflectableType, typename MetaType>
-    void meta(const std::string& name, const MetaType& data)
+    void meta(const std::string& name, std::any& meta)
     {
         println(name);
     }
@@ -62,7 +61,7 @@ struct TBase
     static void Boo();
     static void Boo(int);
 
-    const std::string& Data() { return data_; }
+    const std::string& Data() const { return data_; }
     void Data(const std::string& data) { data_ = data; }
 };
 
@@ -80,7 +79,7 @@ struct TObject : TBase
     TObject(int var, void* data);
     TObject() = default;
 
-    double Foo(int i, const std::string& s);
+    double Foo(int i, std::string& s) const;
     int Var = 0;
 };
 
@@ -95,10 +94,11 @@ REFLECTABLE_INIT()
 
 TObject::TObject(int var, void* data) : Var(var) {}
 
-double TObject::Foo(int i, const std::string& s)
+double TObject::Foo(int i, std::string& s) const
 {
     println(Var);
     println(i);
+    s = "Jack";
     println(s);
     return 3.14;
 }
@@ -114,7 +114,9 @@ TEST(TestDemo, TestExample)
     std::any result;
 
     auto function = reflection->function.find("Foo");
-    function->call(object, result, { 128, std::string("Tom") });
+
+    std::string name = "Tom";
+    function->call(object, result, { 128, std::ref(name) });
 
     println(std::any_cast<double>(result));
 
@@ -159,7 +161,7 @@ TEST(TestLibrary, TestBuiltin)
     static std::string s_name = "int";
 
     auto type = rew::registry.find(s_name);
-    
+
     ASSERT("type-null", type != nullptr);
     EXPECT("type-name", type->name == s_name);
 
@@ -225,6 +227,21 @@ TEST(TestLibrary, TestBuiltin)
     ASSERT("type-reflection-property-value-get-result-cast", instance_value_address != nullptr);
     EXPECT("type-reflection-property-value-get-result-value", *instance_value_address == s_instance_value);
 }
+
+//enum class EColor
+//{
+//    Red,
+//    Green,
+//    Blue
+//};
+
+//BUILTIN_REFLECTABLE(EColor)
+//REFLECTABLE_INIT()
+
+//TEST(TestLibrary, TestEnum)
+//{
+//    auto type = rew::registry.find("EColor");
+//}
 
 int main()
 {

@@ -4,29 +4,32 @@
 #include <cstddef> // size_t
 
 #include <string> // string
+#include <vector> // vector
 #include <any> // any
 
 #include <functional> // function
-#include <initializer_list> // intializer_list
 
 #include <Rew/Attribute.hpp>
 #include <Rew/Meta.hpp>
 
 #include <Rew/Utility.hpp>
 
+#define CORE_FACTORY(factory_call_handler, ...)                                                         \
+    {                                                                                                   \
+        using __type = info_t::type (*)(__VA_ARGS__);                                                   \
+        auto __meta = reflection->factory.find(#__VA_ARGS__);                                           \
+        if (__meta == nullptr) __meta = &reflection->factory.add(                                       \
+            #__VA_ARGS__,                                                                               \
+            { #__VA_ARGS__, factory_call_handler(__type{}), function_args_count(__type{}) }             \
+        );                                                                                              \
+        visitor.template factory<info_t::type, __type>(*__meta);                                        \
+    }
+
 #define FACTORY(...)                                                                                    \
-    visitor.template factory<info_t::type, info_t::type (*)(__VA_ARGS__)>({                             \
-        #__VA_ARGS__,                                                                                   \
-        factory_call_handler(static_cast<info_t::type (*)(__VA_ARGS__)>(nullptr)),                      \
-        function_args_count(static_cast<info_t::type (*)(__VA_ARGS__)>(nullptr))                        \
-    });
+    CORE_FACTORY(::rew::factory_call_handler, __VA_ARGS__)
 
 #define BUILTIN_FACTORY(...)                                                                            \
-    visitor.template factory<info_t::type, info_t::type (*)(__VA_ARGS__)>({                             \
-        #__VA_ARGS__,                                                                                   \
-        builtin_factory_call_handler(static_cast<info_t::type (*)(__VA_ARGS__)>(nullptr)),              \
-        function_args_count(static_cast<info_t::type (*)(__VA_ARGS__)>(nullptr))                        \
-    });
+    CORE_FACTORY(::rew::builtin_factory_call_handler, __VA_ARGS__)
 
 namespace rew
 {
@@ -34,7 +37,7 @@ namespace rew
 struct factory_meta_t
 {
     const std::string name;
-    const std::function<std::any(std::initializer_list<std::any>)> call = nullptr;
+    const std::function<std::any(const std::vector<std::any>&)> call = nullptr;
     const std::size_t args_count = 0;
     meta_t meta;
 };
@@ -44,9 +47,12 @@ using factory_t = attribute_t<factory_meta_t>;
 template <typename ReflectableType, typename... ArgumentTypes, std::size_t... I>
 auto factory_call_handler_impl(std::index_sequence<I...>)
 {
-    return [](std::initializer_list<std::any> arguments) -> std::any
+    return [](const std::vector<std::any>& arguments) -> std::any
     {
-        return new ReflectableType{ std::any_cast<ArgumentTypes>(arguments.begin()[I])... };
+        return new ReflectableType
+        {
+            std::any_cast<typename function_type_traits<ArgumentTypes>::cast_t>(arguments.begin()[I])...
+        };
     };
 }
 
@@ -59,9 +65,12 @@ auto factory_call_handler(ReflectableType (*unused)(ArgumentTypes...))
 template <typename ReflectableType, typename... ArgumentTypes, std::size_t... I>
 auto builtin_factory_call_handler_impl(std::index_sequence<I...>)
 {
-    return [](std::initializer_list<std::any> arguments) -> std::any
+    return [](const std::vector<std::any>& arguments) -> std::any
     {
-        return ReflectableType{ std::any_cast<ArgumentTypes>(arguments.begin()[I])... };
+        return ReflectableType
+        {
+            std::any_cast<typename function_type_traits<ArgumentTypes>::cast_t>(arguments.begin()[I])...
+        };
     };
 }
 

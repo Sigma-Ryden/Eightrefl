@@ -1,9 +1,4 @@
 #ifndef REW_REFLECTABLE_HPP
-#define REW_REFLECTABLE_HPP
-
-#include <Rew/Reflection.hpp>
-#include <Rew/Visitor.hpp>
-#include <Rew/Type.hpp>
 
 // TODO:
 // replace reflection_registry_impl_t to normal name and hide to class registry_t
@@ -20,15 +15,15 @@
             using info_t = reflection_info_t<__VA_ARGS__>;                                              \
             struct eval_t {                                                                             \
                 template <class VisitorType> eval_t(VisitorType&& visitor) {                            \
-                    visitor.template type<info_t::type>(                                                \
-                        *info_t::registry->find_or_add<info_t::type>(info_t::name)                      \
-                    );
+                    auto type = info_t::registry->find_or_add<info_t::type>(info_t::name);              \
+                    auto reflection = type->reflection;                                                 \
+                    visitor.template type<info_t::type>(*type);
 
 #define REFLECTABLE_INIT(...)                                                                           \
                 }                                                                                       \
             };                                                                                          \
         private:                                                                                        \
-            inline static auto _ = eval_t(::rew::reflection_visitor_t{});                               \
+            inline static auto _ = eval_t(::rew::visitor_t{});                                          \
         };                                                                                              \
     }
 
@@ -40,51 +35,5 @@
     BUILTIN_FACTORY()                                                                                   \
     BUILTIN_FACTORY(__VA_ARGS__)                                                                        \
     BUILTIN_PROPERTY(value)
-
-namespace rew
-{
-
-struct reflection_visitor_t : visitor_t
-{
-    reflection_t* reflection = nullptr;
-
-    template <typename ReflectableType>
-    void type(const rew::type_t& type)
-    {
-        reflection = type.reflection;
-    }
-
-    template <typename ReflectableType, typename PropertyType>
-    void property(const rew::property_meta_t& meta)
-    {
-        reflection->property.add(meta.name, meta);
-    }
-
-    template <typename ReflectableType, typename FunctionType>
-    void function(const rew::function_meta_t& meta)
-    {
-        reflection->function.add(meta.name, meta);
-    }
-
-    template <typename ReflectableType, typename ParentReflectableType>
-    void parent(const rew::parent_meta_t& meta)
-    {
-        reflection->parent.add(meta.name, meta);
-    }
-
-    template <typename ReflectableType, typename FunctionType>
-    void factory(const rew::factory_meta_t& meta)
-    {
-        reflection->factory.add(meta.name, meta);
-    }
-
-    template <typename ReflectableType, typename MetaType>
-    void meta(const std::string& name, const MetaType& data)
-    {
-        reflection->meta.add(name, data);
-    }
-};
-
-} // namespace rew
 
 #endif // REW_REFLECTABLE_HPP
