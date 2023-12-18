@@ -28,17 +28,14 @@
 #define FACTORY(...)                                                                                    \
     CORE_FACTORY(::rew::factory_call_handler, __VA_ARGS__)
 
-#define BUILTIN_FACTORY(...)                                                                            \
-    CORE_FACTORY(::rew::builtin_factory_call_handler, __VA_ARGS__)
-
 namespace rew
 {
 
 struct factory_meta_t
 {
     const std::string name;
-    const std::function<std::any(const std::vector<std::any>&)> call = nullptr;
-    const std::size_t args_count = 0;
+    const std::function<void*(const std::vector<std::any>&)> call = nullptr;
+    const std::size_t arg_count = 0;
     meta_t meta;
 };
 
@@ -47,7 +44,7 @@ using factory_t = attribute_t<factory_meta_t>;
 template <typename ReflectableType, typename... ArgumentTypes, std::size_t... I>
 auto factory_call_handler_impl(std::index_sequence<I...>)
 {
-    return [](const std::vector<std::any>& arguments) -> std::any
+    return [](const std::vector<std::any>& arguments) -> void*
     {
         return new ReflectableType
         {
@@ -60,24 +57,6 @@ template <typename ReflectableType, typename... ArgumentTypes>
 auto factory_call_handler(ReflectableType (*unused)(ArgumentTypes...))
 {
     return factory_call_handler_impl<ReflectableType, ArgumentTypes...>(std::index_sequence_for<ArgumentTypes...>{});
-}
-
-template <typename ReflectableType, typename... ArgumentTypes, std::size_t... I>
-auto builtin_factory_call_handler_impl(std::index_sequence<I...>)
-{
-    return [](const std::vector<std::any>& arguments) -> std::any
-    {
-        return ReflectableType
-        {
-            std::any_cast<typename function_type_traits<ArgumentTypes>::cast_t>(arguments.begin()[I])...
-        };
-    };
-}
-
-template <typename ReflectableType, typename... ArgumentTypes>
-auto builtin_factory_call_handler(ReflectableType (*unused)(ArgumentTypes...))
-{
-    return builtin_factory_call_handler_impl<ReflectableType, ArgumentTypes...>(std::index_sequence_for<ArgumentTypes...>{});
 }
 
 } // namespace rew

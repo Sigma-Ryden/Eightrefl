@@ -1,9 +1,10 @@
-#ifndef REW_REFLECTABLE_HPP
-
 // TODO:
 // replace reflection_registry_impl_t to normal name and hide to class registry_t
 // add REFLECTABLE_ACCESS() macro for non-public registration
 // add support for use custom visitor in reflectable
+#ifndef REW_REFLECTABLE_HPP
+#define REW_REFLECTABLE_HPP
+
 #define CORE_REFLECTABLE(reflection_registry, ...)                                                      \
     namespace rew {                                                                                     \
         template <> struct reflection_info_t<__VA_ARGS__> {                                             \
@@ -29,11 +30,5 @@
 
 #define REFLECTABLE(...)                                                                                \
     CORE_REFLECTABLE(::rew::registry, __VA_ARGS__)
-
-#define BUILTIN_REFLECTABLE(...)                                                                        \
-    CORE_REFLECTABLE(::rew::registry, __VA_ARGS__)                                                      \
-    BUILTIN_FACTORY()                                                                                   \
-    BUILTIN_FACTORY(__VA_ARGS__)                                                                        \
-    BUILTIN_PROPERTY(value)
 
 #endif // REW_REFLECTABLE_HPP

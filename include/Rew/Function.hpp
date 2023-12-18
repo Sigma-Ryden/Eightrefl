@@ -36,8 +36,8 @@ namespace rew
 struct function_meta_t
 {
     const std::string name;
-    const std::function<void(std::any&, std::any&, const std::vector<std::any>&)> call = nullptr;
-    const std::size_t args_count = 0;
+    const std::function<void(void*, std::any&, const std::vector<std::any>&)> call = nullptr;
+    const std::size_t arg_count = 0;
     meta_t meta;
 };
 
@@ -46,9 +46,9 @@ using function_t = attribute_t<function_meta_t>;
 template <typename ReflectableType, typename... ArgumentTypes, typename FunctionType, std::size_t... I>
 auto function_call_handler_void_impl(FunctionType function, std::index_sequence<I...>)
 {
-    return [function](std::any& self, std::any& result, const std::vector<std::any>& arguments)
+    return [function](void* self, std::any& result, const std::vector<std::any>& arguments)
     {
-        (std::any_cast<ReflectableType*>(self)->*function)
+        (static_cast<ReflectableType*>(self)->*function)
         (
             std::any_cast<typename function_type_traits<ArgumentTypes>::cast_t>(arguments.begin()[I])...
         );
@@ -59,9 +59,9 @@ auto function_call_handler_void_impl(FunctionType function, std::index_sequence<
 template <typename ReflectableType, typename... ArgumentTypes, typename FunctionType, std::size_t... I>
 auto function_call_handler_return_impl(FunctionType function, std::index_sequence<I...>)
 {
-    return [function](std::any& self, std::any& result, const std::vector<std::any>& arguments)
+    return [function](void* self, std::any& result, const std::vector<std::any>& arguments)
     {
-        result = (std::any_cast<ReflectableType*>(self)->*function)
+        result = (static_cast<ReflectableType*>(self)->*function)
         (
             std::any_cast<typename function_type_traits<ArgumentTypes>::cast_t>(arguments.begin()[I])...
         );
@@ -71,7 +71,7 @@ auto function_call_handler_return_impl(FunctionType function, std::index_sequenc
 template <typename... ArgumentTypes, std::size_t... I>
 auto function_call_handler_void_impl(void (*function)(ArgumentTypes...), std::index_sequence<I...>)
 {
-    return [function](std::any& self, std::any& result, const std::vector<std::any>& arguments)
+    return [function](void* self, std::any& result, const std::vector<std::any>& arguments)
     {
         function
         (
@@ -84,7 +84,7 @@ auto function_call_handler_void_impl(void (*function)(ArgumentTypes...), std::in
 template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
 auto function_call_handler_return_impl(ReturnType (*function)(ArgumentTypes...), std::index_sequence<I...>)
 {
-    return [function](std::any& self, std::any& result, const std::vector<std::any>& arguments)
+    return [function](void* self, std::any& result, const std::vector<std::any>& arguments)
     {
         result = function
         (

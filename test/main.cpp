@@ -8,9 +8,9 @@
 
 struct custom_visitor_t : rew::visitor_t
 {
-    std::any object;
+    void* object = nullptr;
 
-    custom_visitor_t(const std::any& object) : object(object) {}
+    custom_visitor_t(void* object) : object(object) {}
 
     template <typename ReflectableType>
     void type(rew::type_t& type)
@@ -54,8 +54,21 @@ struct custom_visitor_t : rew::visitor_t
 
 REFLECTABLE_VISITOR_REGISTRY(1, custom_visitor_t)
 
+REFLECTABLE(std::string)
+FACTORY()
+REFLECTABLE_INIT()
+
+REFLECTABLE(void*)
+REFLECTABLE_INIT()
+
+REFLECTABLE(int)
+FACTORY()
+FACTORY(int)
+REFLECTABLE_INIT()
+
 struct TBase
 {
+    void* meta = nullptr;
     std::string data_ = "abcd";
 
     static void Boo();
@@ -74,6 +87,19 @@ void TBase::Boo() { println("TBase::Boo()"); }
 
 void TBase::Boo(int) { println("TBase::Boo(int)"); }
 
+enum class EColor
+{
+    Red,
+    Green,
+    Blue
+};
+
+REFLECTABLE(EColor)
+FACTORY()
+FACTORY(EColor)
+FACTORY(int)
+REFLECTABLE_INIT()
+
 struct TObject : TBase
 {
     TObject(int var, void* data);
@@ -81,9 +107,11 @@ struct TObject : TBase
 
     double Foo(int i, std::string& s) const;
     int Var = 0;
+    EColor Color = EColor::Green;
 };
 
 REFLECTABLE(TObject)
+    PROPERTY(Color)
     PROPERTY(Var)
     FUNCTION(Foo)
     FACTORY(int, void*)
@@ -134,7 +162,7 @@ TEST(TestDemo, TestExample)
     println(std::any_cast<int>(result));
 
     auto parent = reflection->parent.find("TBase");
-    auto base = parent->get(object);
+    auto base = (TBase*)parent->get(object);
     auto base_reflection = parent->type->reflection;
 
     for (auto& [name, meta] : base_reflection->property.all)
@@ -144,104 +172,54 @@ TEST(TestDemo, TestExample)
     }
 
     auto base_function = base_reflection->function.find("Boo");
-    std::any null;
-    base_function->call(null, result, {});
+    base_function->call(nullptr, result, {});
 
-    custom_visitor_t visitor{std::any_cast<TObject*>(object)};
+    custom_visitor_t visitor{object};
     type->evaluate(visitor);
-}
 
-BUILTIN_REFLECTABLE(int)
-REFLECTABLE_INIT()
+    *(std::string*)base_reflection->property.find("Data")->self(base) = "new value";
+}
 
 TEST(TestLibrary, TestBuiltin)
 {
     using reflectbale_type = int;
 
     static std::string s_name = "int";
+    static reflectbale_type s_instance_value{ 456 };
 
     auto type = rew::registry.find(s_name);
-
     ASSERT("type-null", type != nullptr);
     EXPECT("type-name", type->name == s_name);
 
     ASSERT("type-evaluate-null", type->evaluate != nullptr);
-    
+
     ASSERT("type-reflection-null", type->reflection != nullptr);
 
     auto default_factory = type->reflection->factory.find("");
-    
     ASSERT("type-reflection-factory-default-null", default_factory != nullptr);
-    ASSERT("type-reflection-factory-default-args_count", default_factory->args_count == 0);
+    ASSERT("type-reflection-factory-default-args_count", default_factory->arg_count == 0);
     
     auto default_instance = default_factory->call({});
+    ASSERT("type-reflection-factory-default-instance-null", default_instance != nullptr);
 
-    ASSERT("type-reflection-factory-default-instance-null", default_instance.has_value());
-    
-    auto value = type->reflection->property.find("value");
-    
-    ASSERT("type-reflection-property-value-null", value != nullptr);
-    
-    ASSERT("type-reflection-property-value-get", value->get != nullptr);
-    
-    std::any default_result;
-    value->get(default_instance, default_result);
-    
-    ASSERT("type-reflection-property-value-get-result-default-null", default_result.has_value());
-    
-    auto default_value_address = std::any_cast<reflectbale_type>(&default_result);
-    
-    ASSERT("type-reflection-property-value-get-result-default-cast", default_value_address != nullptr);
-    EXPECT("type-reflection-property-value-get-result-default-value", *default_value_address == reflectbale_type{});
-
-    static reflectbale_type s_set_value{ 123 };
-        
-    ASSERT("type-reflection-property-value-set", value->set != nullptr);
-    
-    value->set(default_instance, s_set_value);
-    
-    std::any refreshed_result;
-    value->get(default_instance, refreshed_result);
-        
-    auto set_value_address = std::any_cast<reflectbale_type>(&refreshed_result);
-    
-    EXPECT("type-reflection-property-value-get-result-default-set-value", *set_value_address == s_set_value);
-    
-    static reflectbale_type s_instance_value{ 456 };
+    auto default_instance_value = *static_cast<reflectbale_type*>(default_instance);
+    EXPECT("type-reflection-property-value-get-result-default-value", default_instance_value == reflectbale_type{});
 
     auto factory = type->reflection->factory.find(s_name);
-    
     ASSERT("type-reflection-factory-null", factory != nullptr);
-    ASSERT("type-reflection-factory-args_count", factory->args_count == 1);
+    ASSERT("type-reflection-factory-args_count", factory->arg_count == 1);
 
-    auto instance = factory->call({ s_instance_value });
+    auto initialized_instance = factory->call({ s_instance_value });
+    ASSERT("type-reflection-factory-instance-null", initialized_instance != nullptr);
     
-    ASSERT("type-reflection-factory-instance-null", instance.has_value());
-    
-    std::any initiate_result;
-    value->get(instance, initiate_result);
-    
-    ASSERT("type-reflection-property-value-get-result-null", initiate_result.has_value());
-    auto instance_value_address = std::any_cast<reflectbale_type>(&initiate_result);
-        
-    ASSERT("type-reflection-property-value-get-result-cast", instance_value_address != nullptr);
-    EXPECT("type-reflection-property-value-get-result-value", *instance_value_address == s_instance_value);
+    auto initialized_instance_value = *static_cast<reflectbale_type*>(initialized_instance);
+    EXPECT("type-reflection-property-value-get-result-value", initialized_instance_value == s_instance_value);
 }
 
-//enum class EColor
-//{
-//    Red,
-//    Green,
-//    Blue
-//};
-
-//BUILTIN_REFLECTABLE(EColor)
-//REFLECTABLE_INIT()
-
-//TEST(TestLibrary, TestEnum)
-//{
-//    auto type = rew::registry.find("EColor");
-//}
+TEST(TestLibrary, TestEnum)
+{
+    auto type = rew::registry.find("EColor");
+}
 
 int main()
 {
