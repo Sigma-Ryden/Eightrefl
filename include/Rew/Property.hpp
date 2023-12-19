@@ -24,14 +24,14 @@
                 info_t::registry->find_or_add<__type>(reflection_info_t<__type>::name),                 \
                 property_get_handler(&info_t::type::__VA_ARGS__),                                       \
                 property_set_handler(&info_t::type::__VA_ARGS__),                                       \
-                property_self_handler(&info_t::type::__VA_ARGS__)                                       \
+                property_ptr_handler(&info_t::type::__VA_ARGS__)                                        \
             }                                                                                           \
         );                                                                                              \
         visitor.template property<info_t::type, __type>(*__meta);                                       \
     }
 
 #define PROPERTY(...)                                                                                   \
-    CORE_PROPERTY(property_get_handler, property_set_handler, property_self_handler, __VA_ARGS__)
+    CORE_PROPERTY(property_get_handler, property_set_handler, property_ref_handler, __VA_ARGS__)
 
 namespace rew
 {
@@ -44,7 +44,7 @@ struct property_meta_t
     type_t *const type = nullptr;
     const std::function<void(void*, std::any&)> get = nullptr;
     const std::function<void(void*, const std::any&)> set = nullptr;
-    const std::function<void*(void*)> self = nullptr;
+    const std::function<void*(void*)> ptr = nullptr;
     meta_t meta;
 };
 
@@ -81,37 +81,6 @@ auto property_get_handler(PropertyType (ReflectableType::* getter)(void))
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_self_handler(PropertyType ReflectableType::* property)
-{
-    return [property](void* self) -> void*
-    {
-        return std::addressof(static_cast<ReflectableType*>(self)->*property);
-    };
-}
-
-template <typename ReflectableType, typename PropertyGetterType>
-auto property_self_handler_impl(PropertyGetterType getter)
-{
-    return [getter](void* self)
-    {
-        auto address = std::addressof((static_cast<ReflectableType*>(self)->*getter)());
-        return const_cast<void*>(static_cast<const void*>(address));
-    };
-}
-
-template <typename ReflectableType, typename PropertyType>
-auto property_self_handler(PropertyType (ReflectableType::* getter)(void) const)
-{
-    return property_self_handler_impl<ReflectableType>(getter);
-}
-
-template <typename ReflectableType, typename PropertyType>
-auto property_self_handler(PropertyType (ReflectableType::* getter)(void))
-{
-    return property_self_handler_impl<ReflectableType>(getter);
-}
-
-template <typename ReflectableType, typename PropertyType>
 auto property_set_handler(PropertyType ReflectableType::* property)
 {
     return [property](void* self, const std::any& value)
@@ -127,6 +96,52 @@ auto property_set_handler(void (ReflectableType::* setter)(PropertyType))
     {
         (static_cast<ReflectableType*>(self)->*setter)(std::any_cast<const PropertyType&>(value));
     };
+}
+
+template <typename ReflectableType, typename PropertyType>
+auto property_ptr_handler(PropertyType ReflectableType::* property)
+{
+    return [property](void* self) -> void*
+    {
+        return std::addressof(static_cast<ReflectableType*>(self)->*property);
+    };
+}
+
+template <typename ReflectableType, typename PropertyGetterType>
+auto property_ptr_handler_impl(PropertyGetterType getter)
+{
+    return [getter](void* self) -> void*
+    {
+        using result_t = decltype(property_value(getter));
+        if constexpr (std::is_reference_v<result_t>)
+        {
+            auto address = std::addressof((static_cast<ReflectableType*>(self)->*getter)());
+            if constexpr (std::is_const_v<std::remove_reference_t<result_t>>)
+            {
+                return const_cast<void*>(static_cast<const void*>(address));
+            }
+            else
+            {
+                return address;
+            }
+        }
+        else
+        {
+            return nullptr;
+        }
+    };
+}
+
+template <typename ReflectableType, typename PropertyType>
+auto property_ptr_handler(PropertyType (ReflectableType::* getter)(void) const)
+{
+    return property_ptr_handler_impl<ReflectableType>(getter);
+}
+
+template <typename ReflectableType, typename PropertyType>
+auto property_ptr_handler(PropertyType (ReflectableType::* getter)(void))
+{
+    return property_ptr_handler_impl<ReflectableType>(getter);
 }
 
 } // namespace rew

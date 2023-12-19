@@ -20,7 +20,11 @@
         auto __meta = reflection->factory.find(#__VA_ARGS__);                                           \
         if (__meta == nullptr) __meta = &reflection->factory.add(                                       \
             #__VA_ARGS__,                                                                               \
-            { #__VA_ARGS__, factory_call_handler(__type{}), function_args_count(__type{}) }             \
+            {                                                                                           \
+                #__VA_ARGS__,                                                                           \
+                factory_call_handler(__type{}),                                                         \
+                function_args_count(__type{}),                                                          \
+            }                                                                                           \
         );                                                                                              \
         visitor.template factory<info_t::type, __type>(*__meta);                                        \
     }

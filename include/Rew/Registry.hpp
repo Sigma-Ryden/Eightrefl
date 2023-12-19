@@ -51,9 +51,17 @@ public:
             polymorphic_visitor_t::call<ReflectableType>(visitor);
         };
 
-        auto [it, success] = all.emplace(
+        auto [it, success] = all.emplace
+        (
             name,
-            type_t{ name, reflection, evaluate, sizeof(ReflectableType) } 
+            type_t
+            {
+                name,
+                reflection,
+                evaluate,
+                type_ref_handler<ReflectableType>(),
+                sizeof(ReflectableType)
+            }
         );
         return &it->second;
     }

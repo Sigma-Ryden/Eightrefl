@@ -37,6 +37,12 @@ struct function_type_traits<ArgumentType&>
     using cast_t = std::reference_wrapper<ArgumentType>;
 };
 
+template <typename ArgumentType>
+struct function_type_traits<const ArgumentType> : function_type_traits<ArgumentType> {};
+
+template <typename ArgumentType>
+struct function_type_traits<const ArgumentType&> : function_type_traits<ArgumentType&> {};
+
 template <typename... ArgumentTypes, typename ReturnType, class ClassType>
 constexpr std::size_t function_args_count(ReturnType (ClassType::* function)(ArgumentTypes...))
 {

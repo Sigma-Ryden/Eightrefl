@@ -20,8 +20,6 @@
 namespace rew
 {
 
-// TODO:
-// improve meta class for better registration info
 using meta_t = attribute_t<std::any>;
 
 } // namespace rew

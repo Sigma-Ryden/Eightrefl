@@ -105,7 +105,7 @@ struct TObject : TBase
     TObject(int var, void* data);
     TObject() = default;
 
-    double Foo(int i, std::string& s) const;
+    double Foo(int i, const std::string& s) const;
     int Var = 0;
     EColor Color = EColor::Green;
 };
@@ -122,11 +122,10 @@ REFLECTABLE_INIT()
 
 TObject::TObject(int var, void* data) : Var(var) {}
 
-double TObject::Foo(int i, std::string& s) const
+double TObject::Foo(int i, const std::string& s) const
 {
     println(Var);
     println(i);
-    s = "Jack";
     println(s);
     return 3.14;
 }
@@ -143,8 +142,13 @@ TEST(TestDemo, TestExample)
 
     auto function = reflection->function.find("Foo");
 
-    std::string name = "Tom";
-    function->call(object, result, { 128, std::ref(name) });
+    auto parent = reflection->parent.find("TBase");
+    auto base = (TBase*)parent->ptr(object);
+    auto base_reflection = parent->type->reflection;
+    auto data_property = base_reflection->property.find("Data");
+    auto str = data_property->type->ref(data_property->ptr(base));
+
+    function->call(object, result, { 128, str });
 
     println(std::any_cast<double>(result));
 
@@ -161,10 +165,6 @@ TEST(TestDemo, TestExample)
     result = *meta;
     println(std::any_cast<int>(result));
 
-    auto parent = reflection->parent.find("TBase");
-    auto base = (TBase*)parent->get(object);
-    auto base_reflection = parent->type->reflection;
-
     for (auto& [name, meta] : base_reflection->property.all)
     {
         std::any value;
@@ -176,8 +176,6 @@ TEST(TestDemo, TestExample)
 
     custom_visitor_t visitor{object};
     type->evaluate(visitor);
-
-    *(std::string*)base_reflection->property.find("Data")->self(base) = "new value";
 }
 
 TEST(TestLibrary, TestBuiltin)
