@@ -2,7 +2,6 @@
 #define REW_PROPERTY_HPP
 
 #include <string> // string
-#include <map> // map
 #include <any> // any
 
 #include <functional> // function
@@ -112,6 +111,7 @@ auto property_ptr_handler_impl(PropertyGetterType getter)
 {
     return [getter](void* self) -> void*
     {
+        // temp, add info to #include
         using result_t = decltype(property_value(getter));
         if constexpr (std::is_reference_v<result_t>)
         {

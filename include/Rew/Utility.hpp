@@ -26,22 +26,53 @@ template <typename T>
 using pure_t = typename pure_type<T>::type;
 
 template <typename ArgumentType>
-struct function_type_traits
+struct argument_type_traits
 {
-    using cast_t = ArgumentType;
+    using type = ArgumentType;
 };
 
 template <typename ArgumentType>
-struct function_type_traits<ArgumentType&>
+struct argument_type_traits<ArgumentType&>
 {
-    using cast_t = std::reference_wrapper<ArgumentType>;
+    using type = std::reference_wrapper<ArgumentType>;
 };
 
 template <typename ArgumentType>
-struct function_type_traits<const ArgumentType> : function_type_traits<ArgumentType> {};
+struct argument_type_traits<const ArgumentType> : argument_type_traits<ArgumentType> {};
 
 template <typename ArgumentType>
-struct function_type_traits<const ArgumentType&> : function_type_traits<ArgumentType&> {};
+struct argument_type_traits<const ArgumentType&> : argument_type_traits<ArgumentType&> {};
+
+template <typename...>
+struct function_type_traits;
+
+template <typename ReturnType, typename... ArgumentTypes>
+struct function_type_traits<ReturnType, ArgumentTypes...>
+{
+    using return_type = ReturnType;
+    using function_type = ReturnType(*)(ArgumentTypes...);
+};
+
+template <typename ReturnType>
+struct function_type_traits<ReturnType, void>
+{
+    using return_type = ReturnType;
+    using function_type = ReturnType(*)(void);
+};
+
+template <typename ReturnType, typename... ArgumentTypes>
+struct function_type_traits<ReturnType(ArgumentTypes...)>
+{
+    using return_type = ReturnType;
+    using function_type = ReturnType(*)(ArgumentTypes...);
+};
+
+template <typename ReturnType>
+struct function_type_traits<ReturnType(void)>
+{
+    using return_type = ReturnType;
+    using function_type = ReturnType(*)(void);
+};
 
 template <typename... ArgumentTypes, typename ReturnType, class ClassType>
 constexpr std::size_t function_args_count(ReturnType (ClassType::* function)(ArgumentTypes...))
@@ -91,7 +122,7 @@ PropertyType property_value(PropertyType (ReflectableType::*)(void));
 template <typename ReflectableType, typename PropertyType>
 PropertyType property_value();
 
-std::string function_args_assembly(const std::string& lhs, const std::string& rhs)
+inline std::string function_args_assembly(const std::string& lhs, const std::string& rhs)
 {
     std::string result;
     result.reserve(lhs.size()+rhs.size()+1);

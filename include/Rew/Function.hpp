@@ -50,7 +50,7 @@ auto function_call_handler_void_impl(FunctionType function, std::index_sequence<
     {
         (static_cast<ReflectableType*>(self)->*function)
         (
-            std::any_cast<typename function_type_traits<ArgumentTypes>::cast_t>(arguments.begin()[I])...
+            std::any_cast<typename argument_type_traits<ArgumentTypes>::type>(arguments.begin()[I])...
         );
         result.reset();
     };
@@ -63,7 +63,7 @@ auto function_call_handler_return_impl(FunctionType function, std::index_sequenc
     {
         result = (static_cast<ReflectableType*>(self)->*function)
         (
-            std::any_cast<typename function_type_traits<ArgumentTypes>::cast_t>(arguments.begin()[I])...
+            std::any_cast<typename argument_type_traits<ArgumentTypes>::type>(arguments.begin()[I])...
         );
     };
 }
@@ -75,7 +75,7 @@ auto function_call_handler_void_impl(void (*function)(ArgumentTypes...), std::in
     {
         function
         (
-            std::any_cast<typename function_type_traits<ArgumentTypes>::cast_t>(arguments.begin()[I])...
+            std::any_cast<typename argument_type_traits<ArgumentTypes>::type>(arguments.begin()[I])...
         );
         result.reset();
     };
@@ -88,7 +88,7 @@ auto function_call_handler_return_impl(ReturnType (*function)(ArgumentTypes...),
     {
         result = function
         (
-            std::any_cast<typename function_type_traits<ArgumentTypes>::cast_t>(arguments.begin()[I])...
+            std::any_cast<typename argument_type_traits<ArgumentTypes>::type>(arguments.begin()[I])...
         );
     };
 }

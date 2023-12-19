@@ -4,7 +4,10 @@
 #include <string> // string
 #include <map> // map
 
+#include <typeindex> // type_index
+
 #include <Rew/Type.hpp>
+#include <Rew/Cast.hpp>
 #include <Rew/Reflection.hpp>
 #include <Rew/Visitor.hpp>
 
@@ -21,6 +24,7 @@ class registry_t
 {
 public:
     std::map<std::string, type_t> all;
+    std::map<std::type_index, cast_meta_t> cast;
 
 public:
     ~registry_t()
@@ -41,6 +45,7 @@ public:
         return get(reflection_info_t<ReflectableType>::name);
     }
 
+public:
     template <typename ReflectableType>
     type_t* add(const std::string& name)
     {
@@ -51,17 +56,21 @@ public:
             polymorphic_visitor_t::call<ReflectableType>(visitor);
         };
 
+        auto ptr = [this](std::any& object) -> void*
+        {
+            auto it = cast.find(object.type());
+            return it == cast.end() ? nullptr : it->second.call(object);
+        };
+
+        auto ref = [](void* object) -> std::any
+        {
+            return std::ref(*static_cast<ReflectableType*>(object));
+        };
+
         auto [it, success] = all.emplace
         (
             name,
-            type_t
-            {
-                name,
-                reflection,
-                evaluate,
-                type_ref_handler<ReflectableType>(),
-                sizeof(ReflectableType)
-            }
+            type_t { name, reflection, evaluate, ptr, ref, sizeof(ReflectableType) }
         );
         return &it->second;
     }

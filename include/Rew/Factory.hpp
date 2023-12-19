@@ -10,23 +10,29 @@
 #include <functional> // function
 
 #include <Rew/Attribute.hpp>
+#include <Rew/Cast.hpp>
 #include <Rew/Meta.hpp>
 
 #include <Rew/Utility.hpp>
 
 #define CORE_FACTORY(factory_call_handler, ...)                                                         \
     {                                                                                                   \
-        using __type = info_t::type (*)(__VA_ARGS__);                                                   \
+        using __function_type = function_type_traits<__VA_ARGS__>::function_type;                       \
+        using __return_type = function_type_traits<__VA_ARGS__>::return_type;                           \
         auto __meta = reflection->factory.find(#__VA_ARGS__);                                           \
         if (__meta == nullptr) __meta = &reflection->factory.add(                                       \
             #__VA_ARGS__,                                                                               \
             {                                                                                           \
                 #__VA_ARGS__,                                                                           \
-                factory_call_handler(__type{}),                                                         \
-                function_args_count(__type{}),                                                          \
+                factory_call_handler(__function_type{}),                                                \
+                function_args_count(__function_type{}),                                                 \
             }                                                                                           \
         );                                                                                              \
-        visitor.template factory<info_t::type, __type>(*__meta);                                        \
+        visitor.template factory<info_t::type, __function_type>(*__meta);                               \
+        info_t::registry->cast.try_emplace(                                                             \
+            std::type_index{ typeid(__return_type) },                                                   \
+            cast_meta_t { cast_call_handler<__return_type>() }                                          \
+        );                                                                                              \
     }
 
 #define FACTORY(...)                                                                                    \
@@ -38,7 +44,7 @@ namespace rew
 struct factory_meta_t
 {
     const std::string name;
-    const std::function<void*(const std::vector<std::any>&)> call = nullptr;
+    const std::function<std::any(const std::vector<std::any>&)> call = nullptr;
     const std::size_t arg_count = 0;
     meta_t meta;
 };
@@ -48,17 +54,17 @@ using factory_t = attribute_t<factory_meta_t>;
 template <typename ReflectableType, typename... ArgumentTypes, std::size_t... I>
 auto factory_call_handler_impl(std::index_sequence<I...>)
 {
-    return [](const std::vector<std::any>& arguments) -> void*
+    return [](const std::vector<std::any>& arguments) -> std::any
     {
-        return new ReflectableType
+        return ReflectableType
         {
-            std::any_cast<typename function_type_traits<ArgumentTypes>::cast_t>(arguments.begin()[I])...
+            std::any_cast<typename argument_type_traits<ArgumentTypes>::type>(arguments.begin()[I])...
         };
     };
 }
 
 template <typename ReflectableType, typename... ArgumentTypes>
-auto factory_call_handler(ReflectableType (*unused)(ArgumentTypes...))
+auto factory_call_handler(ReflectableType (*)(ArgumentTypes...))
 {
     return factory_call_handler_impl<ReflectableType, ArgumentTypes...>(std::index_sequence_for<ArgumentTypes...>{});
 }

@@ -16,6 +16,7 @@ set(REW
 	include/Rew/Property.hpp
 	include/Rew/Meta.hpp
 	include/Rew/Reflection.hpp
+	include/Rew/Cast.hpp
 	include/Rew/Registry.hpp
 	include/Rew/Visitor.hpp
 	include/Rew/Reflectable.hpp
@@ -32,5 +33,8 @@ add_executable(${PROJECT_NAME}
 	${REW}
 	${AUTO}
 
+	test/TestFactory.cpp
+
+	test/RewTestingBase.hpp
 	test/main.cpp
 )

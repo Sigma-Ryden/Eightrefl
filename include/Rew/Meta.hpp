@@ -2,7 +2,6 @@
 #define REW_META_HPP
 
 #include <string> // string
-#include <map> // map
 #include <any> // any
 
 #include <Rew/Attribute.hpp>
