@@ -3,7 +3,7 @@
 
 #include <cstddef> // size_t
 
-#include <string> // string
+#include <any> // any
 #include <utility> // reference_wrapper
 
 #include <type_traits> // decay_t, enable_if_t, is_pointer_v
@@ -74,6 +74,12 @@ struct function_type_traits<ReturnType(void)>
     using function_type = ReturnType(*)(void);
 };
 
+template <typename ValueType>
+ValueType argument_cast(const std::any& object)
+{
+    return std::any_cast<typename argument_type_traits<ValueType>::type>(object);
+}
+
 template <typename... ArgumentTypes, typename ReturnType, class ClassType>
 constexpr std::size_t function_args_count(ReturnType (ClassType::* function)(ArgumentTypes...))
 {
@@ -121,16 +127,6 @@ PropertyType property_value(PropertyType (ReflectableType::*)(void));
 
 template <typename ReflectableType, typename PropertyType>
 PropertyType property_value();
-
-inline std::string function_args_assembly(const std::string& lhs, const std::string& rhs)
-{
-    std::string result;
-    result.reserve(lhs.size()+rhs.size()+1);
-    result.append(lhs);
-    if (not rhs.empty()) result.append(", ");
-    result.append(rhs);
-    return result;
-}
 
 } // namespace rew
 

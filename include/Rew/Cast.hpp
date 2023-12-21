@@ -1,34 +1,16 @@
 #ifndef REW_CAST_HPP
 #define REW_CAST_HPP
 
-#include <string> // string
 #include <any> // any
 
 #include <memory> // unique_otr, weak_ptr, shared_ptr
-#include <functional> // function
-
-#include <Rew/Attribute.hpp>
-#include <Rew/Meta.hpp>
+#include <utility> // addressof
 
 namespace rew
 {
 
-struct cast_meta_t
-{
-    const std::function<void*(std::any&)> call = nullptr;
-};
-
 template <typename Type>
 struct cast_type_traits;
-
-template <typename Type>
-auto cast_call_handler()
-{
-    return [](std::any& object) -> void*
-    {
-        return cast_type_traits<Type>{}(object);
-    };
-}
 
 template <typename Type>
 struct cast_type_traits

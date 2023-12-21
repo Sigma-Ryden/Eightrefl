@@ -16,13 +16,13 @@
 
 #define CORE_FUNCTION(function_call_handler, name, ...)                                                 \
     {                                                                                                   \
-        auto __function = function_overload<__VA_ARGS__>(&info_t::type::name);                          \
+        auto __function = ::rew::function_overload<__VA_ARGS__>(&info_t::type::name);                   \
         using __type = decltype(__function);                                                            \
-        auto __name = function_args_assembly(#name, #__VA_ARGS__);                                      \
+        auto __name = #name+std::string(*(#__VA_ARGS__) ? ", " #__VA_ARGS__ : "");                      \
         auto __meta = reflection->function.find(__name);                                                \
         if (__meta == nullptr) __meta = &reflection->function.add(                                      \
             __name,                                                                                     \
-            { __name, function_call_handler(__function), function_args_count(__function) }              \
+            { __name, function_call_handler(__function), ::rew::function_args_count(__function) }       \
         );                                                                                              \
         visitor.template function<info_t::type, __type>(*__meta);                                       \
     }
@@ -48,10 +48,7 @@ auto function_call_handler_void_impl(FunctionType function, std::index_sequence<
 {
     return [function](void* self, std::any& result, const std::vector<std::any>& arguments)
     {
-        (static_cast<ReflectableType*>(self)->*function)
-        (
-            std::any_cast<typename argument_type_traits<ArgumentTypes>::type>(arguments.begin()[I])...
-        );
+        (static_cast<ReflectableType*>(self)->*function)(argument_cast<ArgumentTypes>(arguments[I])...);
         result.reset();
     };
 }
@@ -61,10 +58,7 @@ auto function_call_handler_return_impl(FunctionType function, std::index_sequenc
 {
     return [function](void* self, std::any& result, const std::vector<std::any>& arguments)
     {
-        result = (static_cast<ReflectableType*>(self)->*function)
-        (
-            std::any_cast<typename argument_type_traits<ArgumentTypes>::type>(arguments.begin()[I])...
-        );
+        result = (static_cast<ReflectableType*>(self)->*function)(argument_cast<ArgumentTypes>(arguments[I])...);
     };
 }
 
@@ -73,10 +67,7 @@ auto function_call_handler_void_impl(void (*function)(ArgumentTypes...), std::in
 {
     return [function](void* self, std::any& result, const std::vector<std::any>& arguments)
     {
-        function
-        (
-            std::any_cast<typename argument_type_traits<ArgumentTypes>::type>(arguments.begin()[I])...
-        );
+        function(argument_cast<ArgumentTypes>(arguments[I])...);
         result.reset();
     };
 }
@@ -86,10 +77,7 @@ auto function_call_handler_return_impl(ReturnType (*function)(ArgumentTypes...),
 {
     return [function](void* self, std::any& result, const std::vector<std::any>& arguments)
     {
-        result = function
-        (
-            std::any_cast<typename argument_type_traits<ArgumentTypes>::type>(arguments.begin()[I])...
-        );
+        result = function(argument_cast<ArgumentTypes>(arguments[I])...);
     };
 }
 

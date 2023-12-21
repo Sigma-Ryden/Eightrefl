@@ -2,7 +2,7 @@
 #define REW_ATTRIBUTE_HPP
 
 #include <string> // string
-#include <map> // map
+#include <unordered_map> // unordered_map
 
 namespace rew
 {
@@ -26,7 +26,7 @@ struct attribute_t
         return all.erase(name)>0;
     }
 
-    std::map<std::string, MetaType> all;
+    std::unordered_map<std::string, MetaType> all;
 };
 
 } // namespace rew

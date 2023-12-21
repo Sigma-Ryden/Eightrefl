@@ -16,6 +16,18 @@ REFLECTABLE(TObject)
     FACTORY(int())
 REFLECTABLE_INIT()
 
+REFLECTABLE(int)
+REFLECTABLE_INIT()
+
+REFLECTABLE(void*)
+REFLECTABLE_INIT()
+
+REFLECTABLE(TObject*)
+REFLECTABLE_INIT()
+
+REFLECTABLE(std::shared_ptr<void>)
+REFLECTABLE_INIT()
+
 TEST(TestLibrary, TestFactory)
 {
     auto type = rew::registry.find("TObject");
@@ -24,7 +36,9 @@ TEST(TestLibrary, TestFactory)
         ASSERT("shared_ptr-factory-null", factory != nullptr);
 
         auto instance = factory->call({ std::make_shared<TObject>() });
-        auto ptr = type->ptr(instance); // return static_cast<void*>(std::any_cast<std::shared_ptr<void>&>(instance).get())
+
+        // same as static_cast<void*>(std::any_cast<std::shared_ptr<void>&>(instance).get())
+        auto ptr = rew::registry.find(instance)->ptr(instance);
         EXPECT("shared_ptr-ptr", ptr != nullptr);
     }
     {
@@ -32,7 +46,9 @@ TEST(TestLibrary, TestFactory)
         ASSERT("void*-factory-null", factory != nullptr);
 
         auto instance = factory->call({ new TObject });
-        auto ptr = type->ptr(instance); // return static_cast<void*>(std::any_cast<void*&>(instance))
+
+        // same as static_cast<void*>(std::any_cast<void*&>(instance))
+        auto ptr = rew::registry.find(instance)->ptr(instance);
         EXPECT("void*-ptr", ptr != nullptr);
     }
     {
@@ -40,7 +56,9 @@ TEST(TestLibrary, TestFactory)
         ASSERT("type*-factory-null", factory != nullptr);
 
         auto instance = factory->call({ new TObject });
-        auto ptr = type->ptr(instance); // return static_cast<void*>(std::any_cast<TObject*&>(instance))
+
+        // same as static_cast<void*>(std::any_cast<TObject*&>(instance))
+        auto ptr = rew::registry.find(instance)->ptr(instance);
         EXPECT("type*-ptr", ptr != nullptr);
     }
     {
@@ -48,7 +66,10 @@ TEST(TestLibrary, TestFactory)
         ASSERT("int-factory-null", factory != nullptr);
 
         auto instance = factory->call({});
-        auto ptr = type->ptr(instance); // return static_cast<void*>(std::addressof(std::any_cast<int&>(instance)))
-        EXPECT("int-ptr", ptr != nullptr); // but obtained pointer is not refered to TObject type
+
+        // same as static_cast<void*>(std::addressof(std::any_cast<int&>(instance)))
+        // but obtained pointer is not refered to TObject type
+        auto ptr = rew::registry.find(instance)->ptr(instance);
+        EXPECT("int-ptr", ptr != nullptr);
     }
 }

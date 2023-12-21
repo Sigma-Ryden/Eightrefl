@@ -17,22 +17,18 @@
 
 #define CORE_FACTORY(factory_call_handler, ...)                                                         \
     {                                                                                                   \
-        using __function_type = function_type_traits<__VA_ARGS__>::function_type;                       \
-        using __return_type = function_type_traits<__VA_ARGS__>::return_type;                           \
+        using __function_type = ::rew::function_type_traits<__VA_ARGS__>::function_type;                \
+        using __return_type = ::rew::function_type_traits<__VA_ARGS__>::return_type;                    \
         auto __meta = reflection->factory.find(#__VA_ARGS__);                                           \
         if (__meta == nullptr) __meta = &reflection->factory.add(                                       \
             #__VA_ARGS__,                                                                               \
             {                                                                                           \
                 #__VA_ARGS__,                                                                           \
                 factory_call_handler(__function_type{}),                                                \
-                function_args_count(__function_type{}),                                                 \
+                ::rew::function_args_count(__function_type{}),                                          \
             }                                                                                           \
         );                                                                                              \
         visitor.template factory<info_t::type, __function_type>(*__meta);                               \
-        info_t::registry->cast.try_emplace(                                                             \
-            std::type_index{ typeid(__return_type) },                                                   \
-            cast_meta_t { cast_call_handler<__return_type>() }                                          \
-        );                                                                                              \
     }
 
 #define FACTORY(...)                                                                                    \
@@ -56,10 +52,7 @@ auto factory_call_handler_impl(std::index_sequence<I...>)
 {
     return [](const std::vector<std::any>& arguments) -> std::any
     {
-        return ReflectableType
-        {
-            std::any_cast<typename argument_type_traits<ArgumentTypes>::type>(arguments.begin()[I])...
-        };
+        return ReflectableType{ argument_cast<ArgumentTypes>(arguments[I])... };
     };
 }
 

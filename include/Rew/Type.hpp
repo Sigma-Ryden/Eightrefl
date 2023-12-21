@@ -6,7 +6,6 @@
 #include <string> // string
 #include <any> // any
 
-#include <utility> // ref
 #include <functional> // function
 
 namespace rew

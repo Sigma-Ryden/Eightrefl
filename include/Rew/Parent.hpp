@@ -3,21 +3,20 @@
 #define REW_PARENT_HPP
 
 #include <string> // string
-#include <any> // any
 
 #include <functional> // function
 
 #include <Rew/Attribute.hpp>
 #include <Rew/Meta.hpp>
 
-#define CORE_PARENT(parent_address_handler, ...)                                                        \
+#define CORE_PARENT(parent_cast_handler, ...)                                                           \
     {                                                                                                   \
         auto __meta = reflection->parent.find(#__VA_ARGS__);                                            \
         if (__meta == nullptr) __meta = &reflection->parent.add(                                        \
             #__VA_ARGS__,                                                                               \
             {                                                                                           \
                 #__VA_ARGS__,                                                                           \
-                info_t::registry->find_or_add<__VA_ARGS__>(#__VA_ARGS__),                               \
+                ::rew::find_or_add<__VA_ARGS__>(info_t::registry, #__VA_ARGS__),                        \
                 parent_cast_handler<info_t::type, __VA_ARGS__>()                                        \
             }                                                                                           \
         );                                                                                              \
@@ -25,7 +24,7 @@
     }
 
 #define PARENT(...)                                                                                     \
-    CORE_PARENT(::rew::parent_get_handler, __VA_ARGS__)
+    CORE_PARENT(::rew::parent_cast_handler, __VA_ARGS__)
 
 namespace rew
 {

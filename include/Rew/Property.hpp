@@ -7,20 +7,22 @@
 #include <functional> // function
 #include <utility> // addressof
 
+#include <type_traits> // is_reference_v, is_const_v, remove_reference_t
+
 #include <Rew/Attribute.hpp>
 #include <Rew/Meta.hpp>
 
 #include <Rew/Utility.hpp>
 
-#define CORE_PROPERTY(property_get_handler, property_set_handler, property_self_handler, ...)           \
+#define CORE_PROPERTY(property_get_handler, property_set_handler, property_ptr_handler, ...)            \
     {                                                                                                   \
-        using __type = rew::pure_t<decltype(property_value(&info_t::type::__VA_ARGS__))>;               \
+        using __type = rew::pure_t<decltype(::rew::property_value(&info_t::type::__VA_ARGS__))>;        \
         auto __meta = reflection->property.find(#__VA_ARGS__);                                          \
         if (__meta == nullptr) __meta = &reflection->property.add(                                      \
             #__VA_ARGS__,                                                                               \
             {                                                                                           \
                 #__VA_ARGS__,                                                                           \
-                info_t::registry->find_or_add<__type>(reflection_info_t<__type>::name),                 \
+                ::rew::find_or_add<__type>(info_t::registry, ::rew::reflection_info_t<__type>::name),   \
                 property_get_handler(&info_t::type::__VA_ARGS__),                                       \
                 property_set_handler(&info_t::type::__VA_ARGS__),                                       \
                 property_ptr_handler(&info_t::type::__VA_ARGS__)                                        \
@@ -30,7 +32,7 @@
     }
 
 #define PROPERTY(...)                                                                                   \
-    CORE_PROPERTY(property_get_handler, property_set_handler, property_ref_handler, __VA_ARGS__)
+    CORE_PROPERTY(::rew::property_get_handler, ::rew::property_set_handler, ::rew::property_ptr_handler, __VA_ARGS__)
 
 namespace rew
 {
@@ -111,7 +113,6 @@ auto property_ptr_handler_impl(PropertyGetterType getter)
 {
     return [getter](void* self) -> void*
     {
-        // temp, add info to #include
         using result_t = decltype(property_value(getter));
         if constexpr (std::is_reference_v<result_t>)
         {

@@ -33,7 +33,9 @@ add_executable(${PROJECT_NAME}
 	${REW}
 	${AUTO}
 
+	test/TestBuiltin.cpp
 	test/TestFactory.cpp
+	test/TestExample.cpp
 
 	test/RewTestingBase.hpp
 	test/main.cpp

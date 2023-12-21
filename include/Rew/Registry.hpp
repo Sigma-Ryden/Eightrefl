@@ -2,7 +2,7 @@
 #define REW_REGISTRY_HPP
 
 #include <string> // string
-#include <map> // map
+#include <unordered_map> // unordered_map
 
 #include <typeindex> // type_index
 
@@ -11,32 +11,42 @@
 #include <Rew/Reflection.hpp>
 #include <Rew/Visitor.hpp>
 
+template <typename ReflectableType>
+struct rew_reflection_registry_t;
+
 namespace rew
 {
 
 template <typename ReflectableType>
-class reflection_registry_t;
-
-template <typename ReflectableType>
-class reflection_info_t;
+struct reflection_info_t;
 
 class registry_t
 {
 public:
-    std::map<std::string, type_t> all;
-    std::map<std::type_index, cast_meta_t> cast;
+    std::unordered_map<std::string, type_t*> all;
+    std::unordered_map<std::type_index, type_t*> rtti_all;
 
 public:
     ~registry_t()
     {
-        for (auto& [name, meta] : all) delete meta.reflection;
+        for (auto& [name, meta] : all)
+        {
+            delete meta->reflection;
+            delete meta;
+        }
     }
 
 public:
     type_t* find(const std::string& name)
     {
         auto it = all.find(name);
-        return it != all.end() ? &it->second : nullptr;
+        return it != all.end() ? it->second : nullptr;
+    }
+
+    type_t* find(std::any& object)
+    {
+        auto it = rtti_all.find(object.type());
+        return it != rtti_all.end() ? it->second : nullptr;
     }
 
     template <typename ReflectableType>
@@ -49,6 +59,9 @@ public:
     template <typename ReflectableType>
     type_t* add(const std::string& name)
     {
+        auto& type = all[name];
+        if (type != nullptr) return type;
+
         auto reflection = new reflection_t{ name };
 
         auto evaluate = [](visitor_t& visitor)
@@ -56,10 +69,9 @@ public:
             polymorphic_visitor_t::call<ReflectableType>(visitor);
         };
 
-        auto ptr = [this](std::any& object) -> void*
+        auto ptr = [](std::any& object) -> void*
         {
-            auto it = cast.find(object.type());
-            return it == cast.end() ? nullptr : it->second.call(object);
+            return cast_type_traits<ReflectableType>{}(object);
         };
 
         auto ref = [](void* object) -> std::any
@@ -67,23 +79,23 @@ public:
             return std::ref(*static_cast<ReflectableType*>(object));
         };
 
-        auto [it, success] = all.emplace
-        (
-            name,
-            type_t { name, reflection, evaluate, ptr, ref, sizeof(ReflectableType) }
-        );
-        return &it->second;
-    }
+        type = new type_t { name, reflection, evaluate, ptr, ref, sizeof(ReflectableType) };
 
-    template <typename ReflectableType>
-    type_t* find_or_add(const std::string& name)
-    {
-        auto type = find(name);
-        return type == nullptr ? add<ReflectableType>(name) : type;
+        all.emplace(name, type);
+        rtti_all.emplace(typeid(ReflectableType), type);
+
+        return type;
     }
 };
 
 inline registry_t registry;
+
+template <typename ReflectableType>
+type_t* find_or_add(registry_t* registry, const std::string& name)
+{
+    auto type = registry->find(name);
+    return type == nullptr ? registry->add<ReflectableType>(name) : type;
+}
 
 } // namespace rew
 
