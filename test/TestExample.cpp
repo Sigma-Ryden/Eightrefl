@@ -4,54 +4,6 @@
 
 #define println(...) std::cout << #__VA_ARGS__ << ' ' << __VA_ARGS__ << '\n';
 
-struct custom_visitor_t : rew::visitor_t
-{
-    void* object = nullptr;
-
-    custom_visitor_t(void* object) : object(object) {}
-
-    template <typename ReflectableType>
-    void type(rew::type_t& type)
-    {
-        println(type.name);
-    }
-
-    template <typename ReflectableType, typename PropertyType>
-    void property(rew::property_meta_t& meta)
-    {
-        std::any var;
-        meta.get(object, var);
-
-        println(meta.name);
-    }
-
-    template <typename ReflectableType, typename FunctionType>
-    void function(rew::function_meta_t& meta)
-    {
-        println(meta.name);
-    }
-
-    template <typename ReflectableType, typename ParentReflectableType>
-    void parent(rew::parent_meta_t& meta)
-    {
-        println(meta.name);
-    }
-
-    template <typename ReflectableType, typename FunctionType>
-    void factory(rew::factory_meta_t& meta)
-    {
-        println(meta.name);
-    }
-
-    template <typename ReflectableType, typename MetaType>
-    void meta(const std::string& name, std::any& meta)
-    {
-        println(name);
-    }
-};
-
-REFLECTABLE_VISITOR_REGISTRY(1, custom_visitor_t)
-
 REFLECTABLE(std::string)
     FACTORY(std::string)
 REFLECTABLE_INIT()
@@ -64,11 +16,15 @@ REFLECTABLE(int)
     FACTORY(int, int)
 REFLECTABLE_INIT()
 
-struct TBase
+class TBase
 {
+public:
     void* meta = nullptr;
+
+private:
     std::string data_ = "abcd";
 
+public:
     static void Boo();
     static void Boo(int);
 
@@ -98,17 +54,18 @@ REFLECTABLE(EColor)
     FACTORY(EColor, int)
 REFLECTABLE_INIT()
 
-struct TObject : TBase
+class TObject : public TBase
 {
+    REFLECTABLE_ACCESS()
+
+public:
     TObject(int var, void* data);
     TObject() = default;
 
     double Foo(int i, const std::string& s) const;
+
+private:
     int Var = 0;
-
-    REFLECTABLE_ACCESS()
-
-    private:
     EColor Color = EColor::Green;
 };
 
@@ -119,7 +76,7 @@ REFLECTABLE(TObject)
     FACTORY(TObject, int, void*)
     FACTORY(TObject)
     PARENT(TBase)
-    META("Hash", 5678)
+    META("hash", 5678)
 REFLECTABLE_INIT()
 
 TObject::TObject(int var, void* data) : Var(var) {}
@@ -138,8 +95,8 @@ TEST(TestDemo, TestExample)
     auto reflection = type->reflection;
 
     auto factory = reflection->factory.find("TObject, int, void*");
-    auto object = factory->call({ 256, (void*)nullptr });
-    auto object_ptr = type->ptr(object);
+    auto object = factory->call({256, (void*)nullptr});
+    auto object_ptr = type->context(object);
 
     std::any result;
 
@@ -151,7 +108,7 @@ TEST(TestDemo, TestExample)
     auto data_property = base_reflection->property.find("Data");
     auto str = data_property->type->ref(data_property->ptr(base_ptr));
 
-    function->call(object_ptr, result, { 128, str });
+    function->call(object_ptr, result, {128, str});
 
     println(std::any_cast<double>(result));
 
@@ -164,7 +121,7 @@ TEST(TestDemo, TestExample)
 
     println(reflection->name);
 
-    auto meta = reflection->meta.find("Hash");
+    auto meta = reflection->meta.find("hash");
     result = *meta;
     println(std::any_cast<int>(result));
 
@@ -176,7 +133,4 @@ TEST(TestDemo, TestExample)
 
     auto base_function = base_reflection->function.find("Boo");
     base_function->call(nullptr, result, {});
-
-    custom_visitor_t visitor{object_ptr};
-    type->evaluate(visitor);
 }

@@ -38,7 +38,7 @@ TEST(TestLibrary, TestFactory)
         auto instance = factory->call({ std::make_shared<TObject>() });
 
         // same as static_cast<void*>(std::any_cast<std::shared_ptr<void>&>(instance).get())
-        auto ptr = rew::registry.find(instance)->ptr(instance);
+        auto ptr = rew::registry.find(instance)->context(instance);
         EXPECT("shared_ptr-ptr", ptr != nullptr);
     }
     {
@@ -48,7 +48,7 @@ TEST(TestLibrary, TestFactory)
         auto instance = factory->call({ new TObject });
 
         // same as static_cast<void*>(std::any_cast<void*&>(instance))
-        auto ptr = rew::registry.find(instance)->ptr(instance);
+        auto ptr = rew::registry.find(instance)->context(instance);
         EXPECT("void*-ptr", ptr != nullptr);
     }
     {
@@ -58,7 +58,7 @@ TEST(TestLibrary, TestFactory)
         auto instance = factory->call({ new TObject });
 
         // same as static_cast<void*>(std::any_cast<TObject*&>(instance))
-        auto ptr = rew::registry.find(instance)->ptr(instance);
+        auto ptr = rew::registry.find(instance)->context(instance);
         EXPECT("type*-ptr", ptr != nullptr);
     }
     {
@@ -69,7 +69,7 @@ TEST(TestLibrary, TestFactory)
 
         // same as static_cast<void*>(std::addressof(std::any_cast<int&>(instance)))
         // but obtained pointer is not refered to TObject type
-        auto ptr = rew::registry.find(instance)->ptr(instance);
+        auto ptr = rew::registry.find(instance)->context(instance);
         EXPECT("int-ptr", ptr != nullptr);
     }
 }

@@ -43,9 +43,9 @@ struct property_meta_t
 {
     const std::string name;
     type_t *const type = nullptr;
-    const std::function<void(void*, std::any&)> get = nullptr;
-    const std::function<void(void*, const std::any&)> set = nullptr;
-    const std::function<void*(void*)> ptr = nullptr;
+    const std::function<void(void* context, std::any& result)> get = nullptr;
+    const std::function<void(void* context, const std::any& value)> set = nullptr;
+    const std::function<void*(void* context)> ptr = nullptr;
     meta_t meta;
 };
 
@@ -54,18 +54,18 @@ using property_t = attribute_t<property_meta_t>;
 template <typename ReflectableType, typename PropertyType>
 auto property_get_handler(PropertyType ReflectableType::* property)
 {
-    return [property](void* self, std::any& result)
+    return [property](void* context, std::any& result)
     {
-        result = static_cast<ReflectableType*>(self)->*property;
+        result = static_cast<ReflectableType*>(context)->*property;
     };
 }
 
 template <typename ReflectableType, typename PropertyGetterType>
 auto property_get_handler_impl(PropertyGetterType getter)
 {
-    return [getter](void* self, std::any& value)
+    return [getter](void* context, std::any& value)
     {
-        value = (static_cast<ReflectableType*>(self)->*getter)();
+        value = (static_cast<ReflectableType*>(context)->*getter)();
     };
 }
 
@@ -84,47 +84,44 @@ auto property_get_handler(PropertyType (ReflectableType::* getter)(void))
 template <typename ReflectableType, typename PropertyType>
 auto property_set_handler(PropertyType ReflectableType::* property)
 {
-    return [property](void* self, const std::any& value)
+    return [property](void* context, const std::any& value)
     {
-        static_cast<ReflectableType*>(self)->*property = std::any_cast<const PropertyType&>(value);
+        static_cast<ReflectableType*>(context)->*property = std::any_cast<const PropertyType&>(value);
     };
 }
 
 template <typename ReflectableType, typename PropertyType>
 auto property_set_handler(void (ReflectableType::* setter)(PropertyType))
 {
-    return [setter](void* self, const std::any& value)
+    return [setter](void* context, const std::any& value)
     {
-        (static_cast<ReflectableType*>(self)->*setter)(std::any_cast<const PropertyType&>(value));
+        (static_cast<ReflectableType*>(context)->*setter)(std::any_cast<const PropertyType&>(value));
     };
 }
 
 template <typename ReflectableType, typename PropertyType>
 auto property_ptr_handler(PropertyType ReflectableType::* property)
 {
-    return [property](void* self) -> void*
+    return [property](void* context) -> void*
     {
-        return std::addressof(static_cast<ReflectableType*>(self)->*property);
+        return std::addressof(static_cast<ReflectableType*>(context)->*property);
     };
 }
 
 template <typename ReflectableType, typename PropertyGetterType>
 auto property_ptr_handler_impl(PropertyGetterType getter)
 {
-    return [getter](void* self) -> void*
+    return [getter](void* context) -> void*
     {
         using result_t = decltype(property_value(getter));
         if constexpr (std::is_reference_v<result_t>)
         {
-            auto address = std::addressof((static_cast<ReflectableType*>(self)->*getter)());
-            if constexpr (std::is_const_v<std::remove_reference_t<result_t>>)
-            {
-                return const_cast<void*>(static_cast<const void*>(address));
-            }
-            else
-            {
-                return address;
-            }
+            constexpr auto is_const_value = std::is_const_v<std::remove_reference_t<result_t>>;
+
+            auto address = std::addressof((static_cast<ReflectableType*>(context)->*getter)());
+
+            if constexpr (is_const_value) return const_cast<void*>(static_cast<const void*>(address));
+            else return address;
         }
         else
         {

@@ -15,7 +15,7 @@ struct cast_type_traits;
 template <typename Type>
 struct cast_type_traits
 {
-    void* operator()(std::any& object)
+    void* operator()(std::any& object) const
     {
         return std::addressof(std::any_cast<Type&>(object));
     }
@@ -24,7 +24,7 @@ struct cast_type_traits
 template <typename Type>
 struct cast_type_traits<std::unique_ptr<Type>>
 {
-    void* operator()(std::any& object)
+    void* operator()(std::any& object) const
     {
         return std::any_cast<std::unique_ptr<Type>&>(object).get();
     }
@@ -33,7 +33,7 @@ struct cast_type_traits<std::unique_ptr<Type>>
 template <typename Type>
 struct cast_type_traits<std::weak_ptr<Type>>
 {
-    void* operator()(std::any& object)
+    void* operator()(std::any& object) const
     {
         return std::any_cast<std::weak_ptr<Type>&>(object).lock().get();
     }
@@ -42,7 +42,7 @@ struct cast_type_traits<std::weak_ptr<Type>>
 template <typename Type>
 struct cast_type_traits<std::shared_ptr<Type>>
 {
-    void* operator()(std::any& object)
+    void* operator()(std::any& object) const
     {
         return std::any_cast<std::shared_ptr<Type>&>(object).get();
     }

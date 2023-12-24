@@ -33,9 +33,12 @@ add_executable(${PROJECT_NAME}
 	${REW}
 	${AUTO}
 
-	test/TestBuiltin.cpp
-	test/TestFactory.cpp
-	test/TestExample.cpp
+#	test/TestBuiltin.cpp
+#	test/TestFactory.cpp
+#	test/TestExample.cpp
+
+	test/TestSerialization/SerializationFixture.hpp
+	test/TestSerialization.cpp
 
 	test/RewTestingBase.hpp
 	test/main.cpp

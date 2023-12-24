@@ -5,6 +5,7 @@
 #include <unordered_map> // unordered_map
 
 #include <typeindex> // type_index
+#include <utility> // ref
 
 #include <Rew/Type.hpp>
 #include <Rew/Cast.hpp>
@@ -43,10 +44,15 @@ public:
         return it != all.end() ? it->second : nullptr;
     }
 
+    type_t* find(std::type_index typeindex)
+    {
+        auto it = rtti_all.find(typeindex);
+        return it != rtti_all.end() ? it->second : nullptr;
+    }
+
     type_t* find(std::any& object)
     {
-        auto it = rtti_all.find(object.type());
-        return it != rtti_all.end() ? it->second : nullptr;
+        return find(object.type());
     }
 
     template <typename ReflectableType>

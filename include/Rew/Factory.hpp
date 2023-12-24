@@ -40,7 +40,7 @@ namespace rew
 struct factory_meta_t
 {
     const std::string name;
-    const std::function<std::any(const std::vector<std::any>&)> call = nullptr;
+    const std::function<std::any(const std::vector<std::any>& args)> call = nullptr;
     const std::size_t arg_count = 0;
     meta_t meta;
 };
