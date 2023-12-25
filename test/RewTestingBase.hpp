@@ -4,4 +4,6 @@
 #include <Rew/Core.hpp>
 #include <AutoTesting/Core.hpp>
 
+#include "SerializableVisitor.hpp"
+
 #endif // REW_TESTING_BASE_HPP

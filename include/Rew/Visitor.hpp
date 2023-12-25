@@ -50,7 +50,10 @@ struct visitor_t
 };
 
 template <std::size_t VisitorKey>
-struct visitor_traits;
+struct visitor_traits
+{
+    using type = visitor_t;
+};
 
 static constexpr auto visitor_rtti_all_max_size = 4;
 inline std::unordered_map<std::type_index, std::size_t> visitor_rtti_all;
@@ -66,31 +69,20 @@ public:
     }
 
 private:
-    template <typename T, typename enable = void>
-    struct is_complete : std::false_type {};
-
-    template <typename T>
-    struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
-
-    template <typename ReflectableType, std::size_t VisitorKey = 1>
+    template <typename ReflectableType, std::size_t VisitorKey = 0>
     static void try_call(visitor_t& registry, std::size_t key)
     {
         if constexpr (VisitorKey < visitor_rtti_all_max_size)
         {
-            if constexpr (is_complete<visitor_traits<VisitorKey>>::value)
+            using eval_t = typename ::rew_reflection_registry_t<ReflectableType>::eval_t;
+            if (VisitorKey == key)
             {
-                using eval_t = typename ::rew_reflection_registry_t<ReflectableType>::eval_t;
-                if (VisitorKey == key)
-                {
-                    eval_t(dynamic_cast<typename visitor_traits<VisitorKey>::type&>(registry));
-                    return;
-                }
+                eval_t(dynamic_cast<typename visitor_traits<VisitorKey>::type&>(registry));
             }
-            try_call<ReflectableType, VisitorKey + 1>(registry, key);
-        }
-        else
-        {
-            throw "The visitor is not registered.";
+            else
+            {
+                try_call<ReflectableType, VisitorKey + 1>(registry, key);
+            }
         }
     }
 };

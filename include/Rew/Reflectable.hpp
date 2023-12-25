@@ -17,17 +17,31 @@
                 auto reflection = type->reflection;                                                     \
                 visitor.template type<info_t::type>(*type);
 
-#define REFLECTABLE_INIT(...)                                                                           \
+#define CORE_REFLECTABLE_INIT(...)                                                                      \
             }                                                                                           \
         };                                                                                              \
     private:                                                                                            \
         inline static auto _ = eval_t(::rew::visitor_t{});                                              \
     };                                                                                                  \
 
-#define REFLECTABLE(...)                                                                                \
-    CORE_REFLECTABLE(::rew::registry, __VA_ARGS__)
+#ifndef REFLECTABLE
+    #define REFLECTABLE(...)                                                                            \
+        CORE_REFLECTABLE(::rew::registry, __VA_ARGS__)
+#endif // REFLECTABLE
+
+#ifndef REFLECTABLE_INIT
+    #define REFLECTABLE_INIT(...)                                                                       \
+        CORE_REFLECTABLE_INIT(__VA_RGS__)
+#endif // REFLECTABLE
 
 #define REFLECTABLE_ACCESS(...)                                                                         \
     template <typename> friend struct rew_reflection_registry_t;
+
+namespace rew
+{
+
+struct Reflectable { virtual ~Reflectable() = default; };
+
+} // namespace rew
 
 #endif // REW_REFLECTABLE_HPP

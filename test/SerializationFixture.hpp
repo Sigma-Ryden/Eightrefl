@@ -118,8 +118,10 @@ namespace detail
 
 template <typename T, typename = void> struct dereference_implementation { using type = T; };
 
-template <> struct dereference_implementation<void*> { using type = void; };
+template <typename T> struct dereference_implementation<T*> { using type = T; };
 template <typename T> struct dereference_implementation<std::weak_ptr<T>> { using type = T; };
+template <typename T> struct dereference_implementation<std::shared_ptr<T>> { using type = T; };
+template <typename T> struct dereference_implementation<std::unique_ptr<T>> { using type = T; };
 
 template <typename T> struct dereference_implementation<T, SFVOID(*std::declval<T>())>
     : std::remove_reference<decltype(*std::declval<T>())> {};
@@ -429,6 +431,8 @@ template <typename T> struct is_registered_extern
 #else
     : is_registered<T> {};
 #endif // SF_TYPE_REGISTRY_DISABLE
+
+template <typename T> struct is_serializable : all<negation<is_unsupported<T>>, is_registered<T>> {};
 
 } // namespace meta
 

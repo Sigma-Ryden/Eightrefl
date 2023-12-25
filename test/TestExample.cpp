@@ -16,7 +16,7 @@ REFLECTABLE(int)
     FACTORY(int, int)
 REFLECTABLE_INIT()
 
-class TBase
+class TBase //: public rew::Reflectable
 {
 public:
     void* meta = nullptr;
