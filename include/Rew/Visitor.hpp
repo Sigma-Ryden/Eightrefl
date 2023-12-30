@@ -75,14 +75,9 @@ private:
         if constexpr (VisitorKey < visitor_rtti_all_max_size)
         {
             using eval_t = typename ::rew_reflection_registry_t<ReflectableType>::eval_t;
-            if (VisitorKey == key)
-            {
-                eval_t(dynamic_cast<typename visitor_traits<VisitorKey>::type&>(registry));
-            }
-            else
-            {
-                try_call<ReflectableType, VisitorKey + 1>(registry, key);
-            }
+
+            if (VisitorKey == key) eval_t(dynamic_cast<typename visitor_traits<VisitorKey>::type&>(registry));
+            else try_call<ReflectableType, VisitorKey + 1>(registry, key);
         }
     }
 };

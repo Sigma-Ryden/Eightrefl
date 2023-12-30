@@ -1,6 +1,6 @@
 #include "RewTestingBase.hpp"
 
-REFLECTABLE(int)
+BUILTIN_REFLECTABLE(int)
     FACTORY(int())
     FACTORY(int(int))
 REFLECTABLE_INIT()

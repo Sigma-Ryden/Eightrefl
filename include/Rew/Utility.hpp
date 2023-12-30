@@ -74,6 +74,29 @@ struct function_type_traits<ReturnType(void)>
     using function_type = ReturnType(*)(void);
 };
 
+template <typename T, typename enable = void>
+struct is_complete : std::false_type {};
+
+template <typename T>
+struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
+
+template <typename T>
+struct builtin_reflection_info_t;
+
+template <typename T>
+struct reflection_info_t;
+
+template <typename T>
+struct is_builtin_reflectable : is_complete<builtin_reflection_info_t<T>> {};
+
+template <typename T>
+struct is_reflectable : is_complete<reflection_info_t<T>> {};
+
+template <typename T>
+struct is_custom_reflectable
+    : std::conjunction<rew::is_reflectable<T>,
+                       std::negation<rew::is_builtin_reflectable<T>>> {};
+
 template <typename ValueType>
 ValueType argument_cast(const std::any& object)
 {

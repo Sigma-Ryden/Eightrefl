@@ -3,7 +3,7 @@
 TEST_SPACE()
 {
 
-struct TBaseData : rew::Reflectable
+struct TBaseData
 {
     int x = 0;
 };
@@ -15,7 +15,7 @@ struct TData : TBaseData
 
 } // TEST_SPACE
 
-REFLECTABLE(int)
+BUILTIN_REFLECTABLE(int)
 REFLECTABLE_INIT()
 
 REFLECTABLE(TBaseData)

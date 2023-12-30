@@ -2,32 +2,31 @@
 #define SERIALIZABLE_VISITOR_HPP
 
 #include <Rew/Core.hpp>
-
-#define INSTANTIABLE_TYPE ::rew::Reflectable
 #include "SerializationFixture.hpp"
 
 struct serializable_visitor_t : rew::visitor_t
 {
-    inline static const auto save_mode_v = "save";
-    inline static const auto load_mode_v = "load";
+public:
+    inline static const auto save_mode = "save";
+    inline static const auto load_mode = "load";
 
+public:
     using saveload_function_t = std::function<void(sf::core::IOArchive&, void*)>;
 
+public:
     template <typename ReflectableType>
     void type(rew::type_t& type)
     {
-        /*
-        if constexpr (sf::meta::is_registered<ReflectableType>::value)
+        if constexpr (sf::meta::is_serializable<ReflectableType>::value)
         {
-            //sf::serializable<ReflectableType>();
+            sf::serializable<ReflectableType>();
         }
-        */
     }
 
     template <typename ReflectableType, typename PropertyType>
     void property(rew::property_meta_t& meta)
     {
-        if constexpr (sf::meta::is_unsupported<PropertyType>::value)
+        if constexpr (sf::meta::is_serializable<PropertyType>::value)
         {
             saveload_function_t save = [](sf::core::IOArchive& archive, void* data)
             {
@@ -39,51 +38,42 @@ struct serializable_visitor_t : rew::visitor_t
                 archive >> *static_cast<PropertyType*>(data);
             };
 
-            meta.meta.add(save_mode_v, save);
-            meta.meta.add(load_mode_v, load);
+            meta.meta.add(save_mode, save);
+            meta.meta.add(load_mode, load);
         }
     }
 
     template <typename ReflectableType, typename ParentReflectableType>
     void parent(rew::parent_meta_t& meta)
     {
-        saveload_function_t save = [](sf::core::IOArchive& archive, void* child)
+        if constexpr (sf::meta::is_serializable<ParentReflectableType>::value)
         {
-            archive << sf::hierarchy<ParentReflectableType>(*static_cast<ReflectableType*>(child));
-        };
+            saveload_function_t save = [](sf::core::IOArchive& archive, void* child)
+            {
+                archive << sf::hierarchy<ParentReflectableType>(*static_cast<ReflectableType*>(child));
+            };
 
-        saveload_function_t load = [](sf::core::IOArchive& archive, void* child)
-        {
-            archive >> sf::hierarchy<ParentReflectableType>(*static_cast<ReflectableType*>(child));
-        };
+            saveload_function_t load = [](sf::core::IOArchive& archive, void* child)
+            {
+                archive >> sf::hierarchy<ParentReflectableType>(*static_cast<ReflectableType*>(child));
+            };
 
-        meta.meta.add(save_mode_v, save);
-        meta.meta.add(load_mode_v, load);
+            meta.meta.add(save_mode, save);
+            meta.meta.add(load_mode, load);
+        }
     }
 };
 
-void saveload_impl(sf::core::IOArchive& archive, rew::Reflectable& reflectable, std::type_index typeindex, const char* mode);
+void reflectable_saveload(sf::core::IOArchive& archive, void* context, std::type_index typeindex, const char* mode);
 
-template <typename T, typename enable = void>
-struct is_complete : std::false_type {};
-
-template <typename T>
-struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
-
-CONDITIONAL_SERIALIZATION(Save, is_complete<rew_reflection_registry_t<T>>::value)
+CONDITIONAL_SERIALIZATION(Save, rew::is_custom_reflectable<T>::value)
 {
-    if constexpr (std::is_base_of_v<rew::Reflectable, T>)
-    {
-        saveload_impl(archive, self, typeid(T), serializable_visitor_t::save_mode_v);
-    }
+    reflectable_saveload(archive, std::addressof(self), typeid(T), serializable_visitor_t::save_mode);
 }
 
-CONDITIONAL_SERIALIZATION(Load, is_complete<rew_reflection_registry_t<T>>::value)
+CONDITIONAL_SERIALIZATION(Load, rew::is_custom_reflectable<T>::value)
 {
-    if constexpr (std::is_base_of_v<rew::Reflectable, T>)
-    {
-        saveload_impl(archive, self, typeid(T), serializable_visitor_t::load_mode_v);
-    }
+    reflectable_saveload(archive, std::addressof(self), typeid(T), serializable_visitor_t::load_mode);
 }
 
 REFLECTABLE_VISITOR_REGISTRY(0, serializable_visitor_t)

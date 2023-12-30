@@ -4,19 +4,19 @@
 
 #define println(...) std::cout << #__VA_ARGS__ << ' ' << __VA_ARGS__ << '\n';
 
-REFLECTABLE(std::string)
+BUILTIN_REFLECTABLE(std::string)
     FACTORY(std::string)
 REFLECTABLE_INIT()
 
-REFLECTABLE(void*)
+BUILTIN_REFLECTABLE(void*)
 REFLECTABLE_INIT()
 
-REFLECTABLE(int)
+BUILTIN_REFLECTABLE(int)
     FACTORY(int)
     FACTORY(int, int)
 REFLECTABLE_INIT()
 
-class TBase //: public rew::Reflectable
+class TBase
 {
 public:
     void* meta = nullptr;
@@ -48,7 +48,7 @@ enum class EColor
     Blue
 };
 
-REFLECTABLE(EColor)
+BUILTIN_REFLECTABLE(EColor)
     FACTORY(EColor, EColor)
     FACTORY(EColor)
     FACTORY(EColor, int)
