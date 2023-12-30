@@ -11,7 +11,7 @@ public:
     inline static const auto load_mode = "load";
 
 public:
-    using saveload_function_t = std::function<void(sf::core::IOArchive&, void*)>;
+    using saveload_function_t = void(*)(sf::core::IOArchive&, void*);
 
 public:
     template <typename ReflectableType>

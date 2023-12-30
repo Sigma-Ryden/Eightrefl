@@ -46,11 +46,4 @@
 #define REFLECTABLE_ACCESS(...)                                                                         \
     template <typename> friend struct rew_reflection_registry_t;
 
-namespace rew
-{
-
-struct Reflectable { virtual ~Reflectable() = default; };
-
-} // namespace rew
-
 #endif // REW_REFLECTABLE_HPP

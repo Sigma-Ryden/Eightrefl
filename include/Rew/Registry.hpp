@@ -18,7 +18,10 @@ struct rew_reflection_registry_t;
 namespace rew
 {
 
-template <typename ReflectableType>
+template <typename T>
+struct builtin_reflection_info_t;
+
+template <typename T>
 struct reflection_info_t;
 
 class registry_t

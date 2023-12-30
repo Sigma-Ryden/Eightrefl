@@ -29,6 +29,8 @@ set(AUTO
 	include/AutoTesting/Core.cpp
 )
 
+include_directories(test)
+
 add_executable(${PROJECT_NAME}
 	${REW}
 	${AUTO}
@@ -36,11 +38,12 @@ add_executable(${PROJECT_NAME}
 	test/TestBuiltin.cpp
 	test/TestFactory.cpp
 	test/TestExample.cpp
-	test/TestSerialization.cpp
 
-	test/SerializableVisitor.hpp
-	test/SerializableVisitor.cpp
-	test/SerializationFixture.hpp
+	test/examples/serialization/SerializationFixture.hpp
+	test/examples/serialization/SerializableVisitor.hpp
+	test/examples/serialization/SerializableVisitor.cpp
+	test/examples/serialization/TestSerialization.cpp
+
 	test/RewTestingBase.hpp
 
 	test/main.cpp

@@ -1,4 +1,6 @@
-#include "RewTestingBase.hpp"
+#include <RewTestingBase.hpp>
+
+#include "SerializableVisitor.hpp"
 
 TEST_SPACE()
 {
