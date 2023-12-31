@@ -9,6 +9,9 @@
 namespace rew
 {
 
+namespace meta
+{
+
 template <typename Type>
 struct cast_type_traits;
 
@@ -47,6 +50,8 @@ struct cast_type_traits<std::shared_ptr<Type>>
         return std::any_cast<std::shared_ptr<Type>&>(object).get();
     }
 };
+
+} // namespace meta
 
 } // namespace rew
 

@@ -32,7 +32,7 @@ REFLECTABLE_INIT()
 TEST(TestLibrary, TestSerialization)
 {
     serializable_visitor_t serializable;
-    for (auto& [name, type] : rew::registry.all) type->evaluate(serializable);
+    for (auto& [name, type] : rew::global.all) type->evaluate(serializable);
 
     static int s_x = 123;
     static int s_y = 456;

@@ -16,11 +16,11 @@ struct reflection_t
 {
     const std::string name;
 
-    parent_t parent;
-    function_t function;
-    factory_t factory;
-    property_t property;
-    meta_t meta;
+    attribute_t<parent_t> parent;
+    attribute_t<function_t> function;
+    attribute_t<factory_t> factory;
+    attribute_t<property_t> property;
+    attribute_t<std::any> meta;
 };
 
 } // namespace rew

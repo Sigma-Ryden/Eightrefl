@@ -10,6 +10,10 @@
 
 namespace rew
 {
+
+namespace meta
+{
+
 template <typename T, typename enable = void>
 struct pure_type
 {
@@ -94,29 +98,33 @@ struct is_reflectable : is_complete<reflection_info_t<T>> {};
 
 template <typename T>
 struct is_custom_reflectable
-    : std::conjunction<rew::is_reflectable<T>,
-                       std::negation<rew::is_builtin_reflectable<T>>> {};
+    : std::conjunction<is_reflectable<T>, std::negation<is_builtin_reflectable<T>>> {};
+
+} // namespace meta
+
+namespace utility
+{
 
 template <typename ValueType>
 ValueType argument_cast(const std::any& object)
 {
-    return std::any_cast<typename argument_type_traits<ValueType>::type>(object);
+    return std::any_cast<typename meta::argument_type_traits<ValueType>::type>(object);
 }
 
 template <typename... ArgumentTypes, typename ReturnType, class ClassType>
-constexpr std::size_t function_args_count(ReturnType (ClassType::* function)(ArgumentTypes...))
+constexpr std::size_t function_arg_count(ReturnType (ClassType::* function)(ArgumentTypes...))
 {
     return sizeof...(ArgumentTypes);
 }
 
 template <typename... ArgumentTypes, typename ReturnType, class ClassType>
-constexpr std::size_t function_args_count(ReturnType (ClassType::* function)(ArgumentTypes...) const)
+constexpr std::size_t function_arg_count(ReturnType (ClassType::* function)(ArgumentTypes...) const)
 {
     return sizeof...(ArgumentTypes);
 }
 
 template <typename... ArgumentTypes, typename ReturnType>
-constexpr std::size_t function_args_count(ReturnType (*function)(ArgumentTypes...))
+constexpr std::size_t function_arg_count(ReturnType (*function)(ArgumentTypes...))
 {
     return sizeof...(ArgumentTypes);
 }
@@ -150,6 +158,8 @@ PropertyType property_value(PropertyType (ReflectableType::*)(void));
 
 template <typename ReflectableType, typename PropertyType>
 PropertyType property_value();
+
+} // namespace utility
 
 } // namespace rew
 

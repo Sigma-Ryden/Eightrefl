@@ -21,7 +21,7 @@
             #__VA_ARGS__,                                                                               \
             {                                                                                           \
                 #__VA_ARGS__,                                                                           \
-                ::rew::find_or_add<__VA_ARGS__>(info_t::registry, #__VA_ARGS__),                        \
+                info_t::registry->find_or_add<__VA_ARGS__>(#__VA_ARGS__),                               \
                 parent_cast_handler<info_t::type, __VA_ARGS__>()                                        \
             }                                                                                           \
         );                                                                                              \
@@ -29,31 +29,34 @@
     }
 
 #define PARENT(...)                                                                                     \
-    CORE_PARENT(::rew::parent_cast_handler, __VA_ARGS__)
+    CORE_PARENT(::rew::handler::parent_cast, __VA_ARGS__)
 
 namespace rew
 {
 
 class type_t;
 
-struct parent_meta_t
+struct parent_t
 {
     const std::string name;
     type_t *const type = nullptr;
     const std::function<void*(void* child_context)> cast = nullptr;
-    meta_t meta;
+    attribute_t<std::any> meta;
 };
 
-using parent_t = attribute_t<parent_meta_t>;
+namespace handler
+{
 
 template <typename ReflectableType, typename ParentReflectableType>
-auto parent_cast_handler()
+auto parent_cast()
 {
     return [](void* child_context) -> void*
     {
         return static_cast<ParentReflectableType*>(static_cast<ReflectableType*>(child_context));
     };
 }
+
+} // namespace handler
 
 } // namespace rew
 

@@ -16,13 +16,14 @@
 
 #define CORE_PROPERTY(property_get_handler, property_set_handler, property_ptr_handler, ...)            \
     {                                                                                                   \
-        using __type = rew::pure_t<decltype(::rew::property_value(&info_t::type::__VA_ARGS__))>;        \
+        using __dirty_type = decltype(::rew::utility::property_value(&info_t::type::__VA_ARGS__));      \
+        using __type = ::rew::meta::pure_t<__dirty_type>;                                               \
         auto __meta = reflection->property.find(#__VA_ARGS__);                                          \
         if (__meta == nullptr) __meta = &reflection->property.add(                                      \
             #__VA_ARGS__,                                                                               \
             {                                                                                           \
                 #__VA_ARGS__,                                                                           \
-                ::rew::find_or_add<__type>(info_t::registry, ::rew::reflection_info_t<__type>::name),   \
+                info_t::registry->find_or_add<__type>(::rew::meta::reflection_info_t<__type>::name),    \
                 property_get_handler(&info_t::type::__VA_ARGS__),                                       \
                 property_set_handler(&info_t::type::__VA_ARGS__),                                       \
                 property_ptr_handler(&info_t::type::__VA_ARGS__)                                        \
@@ -32,27 +33,32 @@
     }
 
 #define PROPERTY(...)                                                                                   \
-    CORE_PROPERTY(::rew::property_get_handler, ::rew::property_set_handler, ::rew::property_ptr_handler, __VA_ARGS__)
+    CORE_PROPERTY(                                                                                      \
+        ::rew::handler::property_get,                                                                   \
+        ::rew::handler::property_set,                                                                   \
+        ::rew::handler::property_ptr,                                                                   \
+        __VA_ARGS__)
 
 namespace rew
 {
 
 struct type_t;
 
-struct property_meta_t
+struct property_t
 {
     const std::string name;
     type_t *const type = nullptr;
     const std::function<void(void* context, std::any& result)> get = nullptr;
     const std::function<void(void* context, const std::any& value)> set = nullptr;
     const std::function<void*(void* context)> ptr = nullptr;
-    meta_t meta;
+    attribute_t<std::any> meta;
 };
 
-using property_t = attribute_t<property_meta_t>;
+namespace handler
+{
 
 template <typename ReflectableType, typename PropertyType>
-auto property_get_handler(PropertyType ReflectableType::* property)
+auto property_get(PropertyType ReflectableType::* property)
 {
     return [property](void* context, std::any& result)
     {
@@ -60,8 +66,13 @@ auto property_get_handler(PropertyType ReflectableType::* property)
     };
 }
 
+} // namespace handler
+
+namespace detail
+{
+
 template <typename ReflectableType, typename PropertyGetterType>
-auto property_get_handler_impl(PropertyGetterType getter)
+auto property_get_impl(PropertyGetterType getter)
 {
     return [getter](void* context, std::any& value)
     {
@@ -69,20 +80,25 @@ auto property_get_handler_impl(PropertyGetterType getter)
     };
 }
 
-template <typename ReflectableType, typename PropertyType>
-auto property_get_handler(PropertyType (ReflectableType::* getter)(void) const)
+} // namespace detail
+
+namespace handler
 {
-    return property_get_handler_impl<ReflectableType>(getter);
+
+template <typename ReflectableType, typename PropertyType>
+auto property_get(PropertyType (ReflectableType::* getter)(void) const)
+{
+    return detail::property_get_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_get_handler(PropertyType (ReflectableType::* getter)(void))
+auto property_get(PropertyType (ReflectableType::* getter)(void))
 {
-    return property_get_handler_impl<ReflectableType>(getter);
+    return detail::property_get_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_set_handler(PropertyType ReflectableType::* property)
+auto property_set(PropertyType ReflectableType::* property)
 {
     return [property](void* context, const std::any& value)
     {
@@ -91,7 +107,7 @@ auto property_set_handler(PropertyType ReflectableType::* property)
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_set_handler(void (ReflectableType::* setter)(PropertyType))
+auto property_set(void (ReflectableType::* setter)(PropertyType))
 {
     return [setter](void* context, const std::any& value)
     {
@@ -100,7 +116,7 @@ auto property_set_handler(void (ReflectableType::* setter)(PropertyType))
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_ptr_handler(PropertyType ReflectableType::* property)
+auto property_ptr(PropertyType ReflectableType::* property)
 {
     return [property](void* context) -> void*
     {
@@ -108,12 +124,17 @@ auto property_ptr_handler(PropertyType ReflectableType::* property)
     };
 }
 
+} // namespace handler
+
+namespace detail
+{
+
 template <typename ReflectableType, typename PropertyGetterType>
-auto property_ptr_handler_impl(PropertyGetterType getter)
+auto property_ptr_impl(PropertyGetterType getter)
 {
     return [getter](void* context) -> void*
     {
-        using result_t = decltype(property_value(getter));
+        using result_t = decltype(utility::property_value(getter));
         if constexpr (std::is_reference_v<result_t>)
         {
             constexpr auto is_const_value = std::is_const_v<std::remove_reference_t<result_t>>;
@@ -130,17 +151,24 @@ auto property_ptr_handler_impl(PropertyGetterType getter)
     };
 }
 
-template <typename ReflectableType, typename PropertyType>
-auto property_ptr_handler(PropertyType (ReflectableType::* getter)(void) const)
+} // namespace detail
+
+namespace handler
 {
-    return property_ptr_handler_impl<ReflectableType>(getter);
+
+template <typename ReflectableType, typename PropertyType>
+auto property_ptr(PropertyType (ReflectableType::* getter)(void) const)
+{
+    return detail::property_ptr_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_ptr_handler(PropertyType (ReflectableType::* getter)(void))
+auto property_ptr(PropertyType (ReflectableType::* getter)(void))
 {
-    return property_ptr_handler_impl<ReflectableType>(getter);
+    return detail::property_ptr_impl<ReflectableType>(getter);
 }
+
+} // namespace handler
 
 } // namespace rew
 

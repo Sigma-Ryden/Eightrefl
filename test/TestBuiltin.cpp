@@ -12,7 +12,7 @@ TEST(TestLibrary, TestBuiltin)
     static std::string s_name = "int";
     static reflectbale_type s_instance_value{ 456 };
 
-    auto type = rew::registry.find(s_name);
+    auto type = rew::global.find(s_name);
     ASSERT("type-null", type != nullptr);
     EXPECT("type-name", type->name == s_name);
 

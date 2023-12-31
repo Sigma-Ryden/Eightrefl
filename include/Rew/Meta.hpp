@@ -15,11 +15,4 @@
 #define META(name, ...)                                                                                 \
     CORE_META(name, __VA_ARGS__)
 
-namespace rew
-{
-
-using meta_t = attribute_t<std::any>;
-
-} // namespace rew
-
 #endif // REW_META_HPP

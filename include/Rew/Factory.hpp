@@ -17,50 +17,58 @@
 
 #define CORE_FACTORY(factory_call_handler, ...)                                                         \
     {                                                                                                   \
-        using __function_type = ::rew::function_type_traits<__VA_ARGS__>::function_type;                \
-        using __return_type = ::rew::function_type_traits<__VA_ARGS__>::return_type;                    \
+        using __function_type = ::rew::meta::function_type_traits<__VA_ARGS__>::function_type;          \
+        using __return_type = ::rew::meta::function_type_traits<__VA_ARGS__>::return_type;              \
         auto __meta = reflection->factory.find(#__VA_ARGS__);                                           \
         if (__meta == nullptr) __meta = &reflection->factory.add(                                       \
             #__VA_ARGS__,                                                                               \
             {                                                                                           \
                 #__VA_ARGS__,                                                                           \
                 factory_call_handler(__function_type{}),                                                \
-                ::rew::function_args_count(__function_type{}),                                          \
+                ::rew::utility::function_arg_count(__function_type{}),                                  \
             }                                                                                           \
         );                                                                                              \
         visitor.template factory<info_t::type, __function_type>(*__meta);                               \
     }
 
 #define FACTORY(...)                                                                                    \
-    CORE_FACTORY(::rew::factory_call_handler, __VA_ARGS__)
+    CORE_FACTORY(::rew::handler::factory_call, __VA_ARGS__)
 
 namespace rew
 {
 
-struct factory_meta_t
+struct factory_t
 {
     const std::string name;
     const std::function<std::any(const std::vector<std::any>& args)> call = nullptr;
     const std::size_t arg_count = 0;
-    meta_t meta;
+    attribute_t<std::any> meta;
 };
 
-using factory_t = attribute_t<factory_meta_t>;
+namespace detail
+{
 
 template <typename ReflectableType, typename... ArgumentTypes, std::size_t... I>
-auto factory_call_handler_impl(std::index_sequence<I...>)
+auto factory_call_impl(std::index_sequence<I...>)
 {
     return [](const std::vector<std::any>& arguments) -> std::any
     {
-        return ReflectableType{ argument_cast<ArgumentTypes>(arguments[I])... };
+        return ReflectableType{ utility::argument_cast<ArgumentTypes>(arguments[I])... };
     };
 }
 
-template <typename ReflectableType, typename... ArgumentTypes>
-auto factory_call_handler(ReflectableType (*)(ArgumentTypes...))
+} // namespace detail
+
+namespace handler
 {
-    return factory_call_handler_impl<ReflectableType, ArgumentTypes...>(std::index_sequence_for<ArgumentTypes...>{});
+
+template <typename ReflectableType, typename... ArgumentTypes>
+auto factory_call(ReflectableType (*)(ArgumentTypes...))
+{
+    return detail::factory_call_impl<ReflectableType, ArgumentTypes...>(std::index_sequence_for<ArgumentTypes...>{});
 }
+
+} // namespace handler
 
 } // namespace rew
 

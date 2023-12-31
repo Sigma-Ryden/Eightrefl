@@ -4,7 +4,7 @@ void reflectable_saveload(sf::core::IOArchive& archive, void* context, std::type
 {
     using saveload_function_t = serializable_visitor_t::saveload_function_t;
 
-    auto type = rew::registry.find(typeindex);
+    auto type = rew::global.find(typeindex);
 
     for (auto& [name, parent] : type->reflection->parent.all)
     {

@@ -91,7 +91,7 @@ double TObject::Foo(int i, const std::string& s) const
 
 TEST(TestDemo, TestExample)
 {
-    auto type = rew::registry.find("TObject");
+    auto type = rew::global.find("TObject");
     auto reflection = type->reflection;
 
     auto factory = reflection->factory.find("TObject, int, void*");

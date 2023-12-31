@@ -24,7 +24,7 @@ public:
     }
 
     template <typename ReflectableType, typename PropertyType>
-    void property(rew::property_meta_t& meta)
+    void property(rew::property_t& property)
     {
         if constexpr (sf::meta::is_serializable<PropertyType>::value)
         {
@@ -38,13 +38,13 @@ public:
                 archive >> *static_cast<PropertyType*>(data);
             };
 
-            meta.meta.add(save_mode, save);
-            meta.meta.add(load_mode, load);
+            property.meta.add(save_mode, save);
+            property.meta.add(load_mode, load);
         }
     }
 
     template <typename ReflectableType, typename ParentReflectableType>
-    void parent(rew::parent_meta_t& meta)
+    void parent(rew::parent_t& parent)
     {
         if constexpr (sf::meta::is_serializable<ParentReflectableType>::value)
         {
@@ -58,20 +58,20 @@ public:
                 archive >> sf::hierarchy<ParentReflectableType>(*static_cast<ReflectableType*>(child));
             };
 
-            meta.meta.add(save_mode, save);
-            meta.meta.add(load_mode, load);
+            parent.meta.add(save_mode, save);
+            parent.meta.add(load_mode, load);
         }
     }
 };
 
 void reflectable_saveload(sf::core::IOArchive& archive, void* context, std::type_index typeindex, const char* mode);
 
-CONDITIONAL_SERIALIZATION(Save, rew::is_custom_reflectable<T>::value)
+CONDITIONAL_SERIALIZATION(Save, rew::meta::is_custom_reflectable<T>::value)
 {
     reflectable_saveload(archive, std::addressof(self), typeid(T), serializable_visitor_t::save_mode);
 }
 
-CONDITIONAL_SERIALIZATION(Load, rew::is_custom_reflectable<T>::value)
+CONDITIONAL_SERIALIZATION(Load, rew::meta::is_custom_reflectable<T>::value)
 {
     reflectable_saveload(archive, std::addressof(self), typeid(T), serializable_visitor_t::load_mode);
 }

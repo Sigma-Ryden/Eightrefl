@@ -16,106 +16,113 @@
 
 #define CORE_FUNCTION(function_call_handler, name, ...)                                                 \
     {                                                                                                   \
-        auto __function = ::rew::function_overload<__VA_ARGS__>(&info_t::type::name);                   \
-        using __type = decltype(__function);                                                            \
+        auto __ptr = ::rew::utility::function_overload<__VA_ARGS__>(&info_t::type::name);               \
         auto __name = #name+std::string(*(#__VA_ARGS__) ? ", " #__VA_ARGS__ : "");                      \
         auto __meta = reflection->function.find(__name);                                                \
         if (__meta == nullptr) __meta = &reflection->function.add(                                      \
             __name,                                                                                     \
-            { __name, function_call_handler(__function), ::rew::function_args_count(__function) }       \
+            { __name, function_call_handler(__ptr), ::rew::utility::function_arg_count(__ptr) }         \
         );                                                                                              \
-        visitor.template function<info_t::type, __type>(*__meta);                                       \
+        visitor.template function<info_t::type, decltype(__ptr)>(*__meta);                              \
     }
 
 #define FUNCTION(name, ...)                                                                             \
-    CORE_FUNCTION(::rew::function_call_handler, name, __VA_ARGS__)
+    CORE_FUNCTION(::rew::handler::function_call, name, __VA_ARGS__)
 
 namespace rew
 {
 
-struct function_meta_t
+struct function_t
 {
     const std::string name;
     const std::function<void(void* context, std::any& result, const std::vector<std::any>& args)> call = nullptr;
     const std::size_t arg_count = 0;
-    meta_t meta;
+    attribute_t<std::any> meta;
 };
 
-using function_t = attribute_t<function_meta_t>;
+namespace detail
+{
 
 template <typename ReflectableType, typename... ArgumentTypes, typename FunctionType, std::size_t... I>
-auto function_call_handler_void_impl(FunctionType function, std::index_sequence<I...>)
+auto function_call_void_impl(FunctionType function, std::index_sequence<I...>)
 {
     return [function](void* context, std::any& result, const std::vector<std::any>& arguments)
     {
-        (static_cast<ReflectableType*>(context)->*function)(argument_cast<ArgumentTypes>(arguments[I])...);
+        (static_cast<ReflectableType*>(context)->*function)(utility::argument_cast<ArgumentTypes>(arguments[I])...);
         result.reset();
     };
 }
 
 template <typename ReflectableType, typename... ArgumentTypes, typename FunctionType, std::size_t... I>
-auto function_call_handler_return_impl(FunctionType function, std::index_sequence<I...>)
+auto function_call_return_impl(FunctionType function, std::index_sequence<I...>)
 {
     return [function](void* context, std::any& result, const std::vector<std::any>& arguments)
     {
-        result = (static_cast<ReflectableType*>(context)->*function)(argument_cast<ArgumentTypes>(arguments[I])...);
+        result = (static_cast<ReflectableType*>(context)->*function)(utility::argument_cast<ArgumentTypes>(arguments[I])...);
     };
 }
 
 template <typename... ArgumentTypes, std::size_t... I>
-auto function_call_handler_void_impl(void (*function)(ArgumentTypes...), std::index_sequence<I...>)
+auto function_call_void_impl(void (*function)(ArgumentTypes...), std::index_sequence<I...>)
 {
     return [function](void* context, std::any& result, const std::vector<std::any>& arguments)
     {
-        function(argument_cast<ArgumentTypes>(arguments[I])...);
+        function(utility::argument_cast<ArgumentTypes>(arguments[I])...);
         result.reset();
     };
 }
 
 template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
-auto function_call_handler_return_impl(ReturnType (*function)(ArgumentTypes...), std::index_sequence<I...>)
+auto function_call_return_impl(ReturnType (*function)(ArgumentTypes...), std::index_sequence<I...>)
 {
     return [function](void* context, std::any& result, const std::vector<std::any>& arguments)
     {
-        result = function(argument_cast<ArgumentTypes>(arguments[I])...);
+        result = function(utility::argument_cast<ArgumentTypes>(arguments[I])...);
     };
 }
 
-template <typename ReflectableType, typename... ArgumentTypes>
-auto function_call_handler(void (ReflectableType::* function)(ArgumentTypes...) const)
+} // namespace detail
+
+namespace handler
 {
-    return function_call_handler_void_impl<ReflectableType, ArgumentTypes...>(function, std::index_sequence_for<ArgumentTypes...>{});
+
+template <typename ReflectableType, typename... ArgumentTypes>
+auto function_call(void (ReflectableType::* function)(ArgumentTypes...) const)
+{
+    return detail::function_call_void_impl<ReflectableType, ArgumentTypes...>(function, std::index_sequence_for<ArgumentTypes...>{});
 }
 
 template <typename ReflectableType, typename... ArgumentTypes>
-auto function_call_handler(void (ReflectableType::* function)(ArgumentTypes...))
+auto function_call(void (ReflectableType::* function)(ArgumentTypes...))
 {
-    return function_call_handler_void_impl<ReflectableType, ArgumentTypes...>(function, std::index_sequence_for<ArgumentTypes...>{});
+    return detail::function_call_void_impl<ReflectableType, ArgumentTypes...>(function, std::index_sequence_for<ArgumentTypes...>{});
 }
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto function_call_handler(ReturnType (ReflectableType::* function)(ArgumentTypes...) const)
+auto function_call(ReturnType (ReflectableType::* function)(ArgumentTypes...) const)
 {
-    return function_call_handler_return_impl<ReflectableType, ArgumentTypes...>(function, std::index_sequence_for<ArgumentTypes...>{});
+    return detail::function_call_return_impl<ReflectableType, ArgumentTypes...>(function, std::index_sequence_for<ArgumentTypes...>{});
 }
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto function_call_handler(ReturnType (ReflectableType::* function)(ArgumentTypes...))
+auto function_call(ReturnType (ReflectableType::* function)(ArgumentTypes...))
 {
-    return function_call_handler_return_impl<ReflectableType, ArgumentTypes...>(function, std::index_sequence_for<ArgumentTypes...>{});
+    return detail::function_call_return_impl<ReflectableType, ArgumentTypes...>(function, std::index_sequence_for<ArgumentTypes...>{});
 }
 
 template <typename... ArgumentTypes>
-auto function_call_handler(void (*function)(ArgumentTypes...))
+auto function_call(void (*function)(ArgumentTypes...))
 {
-    return function_call_handler_void_impl(function, std::index_sequence_for<ArgumentTypes...>{});
+    return detail::function_call_void_impl(function, std::index_sequence_for<ArgumentTypes...>{});
 }
 
 template <typename ReturnType, typename... ArgumentTypes>
-auto function_call_handler(ReturnType (*function)(ArgumentTypes...))
+auto function_call(ReturnType (*function)(ArgumentTypes...))
 {
-    return function_call_handler_return_impl(function, std::index_sequence_for<ArgumentTypes...>{});
+    return detail::function_call_return_impl(function, std::index_sequence_for<ArgumentTypes...>{});
 }
+
+} // namespace handler
 
 } // namespace rew
 

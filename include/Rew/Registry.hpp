@@ -18,11 +18,16 @@ struct rew_reflection_registry_t;
 namespace rew
 {
 
+namespace meta
+{
+
 template <typename T>
 struct builtin_reflection_info_t;
 
 template <typename T>
 struct reflection_info_t;
+
+} // namespace meta
 
 class registry_t
 {
@@ -40,7 +45,6 @@ public:
         }
     }
 
-public:
     type_t* find(const std::string& name)
     {
         auto it = all.find(name);
@@ -61,10 +65,9 @@ public:
     template <typename ReflectableType>
     type_t* find()
     {
-        return get(reflection_info_t<ReflectableType>::name);
+        return get(meta::reflection_info_t<ReflectableType>::name);
     }
 
-public:
     template <typename ReflectableType>
     type_t* add(const std::string& name)
     {
@@ -75,12 +78,12 @@ public:
 
         auto evaluate = [](visitor_t& visitor)
         {
-            polymorphic_visitor_t::call<ReflectableType>(visitor);
+            detail::polymorphic_visitor_t::call<ReflectableType>(visitor);
         };
 
         auto ptr = [](std::any& object) -> void*
         {
-            return cast_type_traits<ReflectableType>{}(object);
+            return meta::cast_type_traits<ReflectableType>{}(object);
         };
 
         auto ref = [](void* object) -> std::any
@@ -95,16 +98,16 @@ public:
 
         return type;
     }
+
+    template <typename ReflectableType>
+    type_t* find_or_add(const std::string& name)
+    {
+        auto type = find(name);
+        return type == nullptr ? add<ReflectableType>(name) : type;
+    }
 };
 
-inline registry_t registry;
-
-template <typename ReflectableType>
-type_t* find_or_add(registry_t* registry, const std::string& name)
-{
-    auto type = registry->find(name);
-    return type == nullptr ? registry->add<ReflectableType>(name) : type;
-}
+inline registry_t global;
 
 } // namespace rew
 
