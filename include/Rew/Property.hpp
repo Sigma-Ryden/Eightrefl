@@ -23,7 +23,7 @@
             #__VA_ARGS__,                                                                               \
             {                                                                                           \
                 #__VA_ARGS__,                                                                           \
-                info_t::registry->find_or_add<__type>(::rew::meta::reflection_info_t<__type>::name),    \
+                info_t::registry->all[::rew::meta::reflection_info_t<__type>::name],                    \
                 property_get_handler(&info_t::type::__VA_ARGS__),                                       \
                 property_set_handler(&info_t::type::__VA_ARGS__),                                       \
                 property_ptr_handler(&info_t::type::__VA_ARGS__)                                        \
@@ -47,7 +47,7 @@ struct type_t;
 struct property_t
 {
     const std::string name;
-    type_t *const type = nullptr;
+    type_t *const& type = nullptr;
     const std::function<void(void* context, std::any& result)> get = nullptr;
     const std::function<void(void* context, const std::any& value)> set = nullptr;
     const std::function<void*(void* context)> ptr = nullptr;

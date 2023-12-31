@@ -21,7 +21,7 @@
             #__VA_ARGS__,                                                                               \
             {                                                                                           \
                 #__VA_ARGS__,                                                                           \
-                info_t::registry->find_or_add<__VA_ARGS__>(#__VA_ARGS__),                               \
+                info_t::registry->all[#__VA_ARGS__],                                                    \
                 parent_cast_handler<info_t::type, __VA_ARGS__>()                                        \
             }                                                                                           \
         );                                                                                              \
@@ -39,7 +39,7 @@ class type_t;
 struct parent_t
 {
     const std::string name;
-    type_t *const type = nullptr;
+    type_t *const& type = nullptr;
     const std::function<void*(void* child_context)> cast = nullptr;
     attribute_t<std::any> meta;
 };

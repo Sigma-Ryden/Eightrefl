@@ -11,10 +11,7 @@ REFLECTABLE_INIT()
 BUILTIN_REFLECTABLE(void*)
 REFLECTABLE_INIT()
 
-BUILTIN_REFLECTABLE(int)
-    FACTORY(int)
-    FACTORY(int, int)
-REFLECTABLE_INIT()
+REFLECTABLE_DECLARATION(int)
 
 class TBase
 {
@@ -113,6 +110,7 @@ TEST(TestDemo, TestExample)
     println(std::any_cast<double>(result));
 
     auto property = reflection->property.find("Var");
+    auto property_type = property->type;
 
     property->set(object_ptr, 321);
     property->get(object_ptr, result);
