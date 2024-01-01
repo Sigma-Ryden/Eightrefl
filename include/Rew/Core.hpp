@@ -3,5 +3,6 @@
 
 #include <Rew/Registry.hpp>
 #include <Rew/Reflectable.hpp>
+#include <Rew/BuiltIn.hpp>
 
 #endif // REW_CORE_HPP

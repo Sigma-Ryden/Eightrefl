@@ -22,9 +22,6 @@ namespace meta
 {
 
 template <typename T>
-struct builtin_reflection_info_t;
-
-template <typename T>
 struct reflection_info_t;
 
 } // namespace meta

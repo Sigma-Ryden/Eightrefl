@@ -4,11 +4,11 @@
 
 #define println(...) std::cout << #__VA_ARGS__ << ' ' << __VA_ARGS__ << '\n';
 
-BUILTIN_REFLECTABLE(std::string)
+REFLECTABLE(std::string)
     FACTORY(std::string)
 REFLECTABLE_INIT()
 
-BUILTIN_REFLECTABLE(void*)
+REFLECTABLE(void*)
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(int)
@@ -45,7 +45,7 @@ enum class EColor
     Blue
 };
 
-BUILTIN_REFLECTABLE(EColor)
+REFLECTABLE(EColor)
     FACTORY(EColor, EColor)
     FACTORY(EColor)
     FACTORY(EColor, int)

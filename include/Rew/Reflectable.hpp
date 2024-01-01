@@ -28,12 +28,6 @@
         inline static auto _ = eval_t(::rew::visitor_t{});                                              \
     };                                                                                                  \
 
-#define CORE_BUILTIN_REFLECTABLE(reflection_registry, ...)                                              \
-    namespace rew { namespace meta {                                                                    \
-        template <> struct builtin_reflection_info_t<__VA_ARGS__> {};                                   \
-    }}                                                                                                  \
-    CORE_REFLECTABLE(reflection_registry, __VA_ARGS__)
-
 #define REFLECTABLE_ACCESS(...)                                                                         \
     template <typename> friend struct rew_reflection_registry_t;
 
@@ -46,11 +40,6 @@
     #define REFLECTABLE(...)                                                                            \
         CORE_REFLECTABLE(::rew::global, __VA_ARGS__)
 #endif // REFLECTABLE
-
-#ifndef BUILTIN_REFLECTABLE
-    #define BUILTIN_REFLECTABLE(...)                                                                    \
-        CORE_BUILTIN_REFLECTABLE(::rew::global, __VA_ARGS__)
-#endif // BUILTIN_REFLECTABLE
 
 #ifndef REFLECTABLE_INIT
     #define REFLECTABLE_INIT(...)                                                                       \

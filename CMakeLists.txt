@@ -20,6 +20,7 @@ set(REW
 	include/Rew/Registry.hpp
 	include/Rew/Visitor.hpp
 	include/Rew/Reflectable.hpp
+	include/Rew/BuiltIn.hpp
 	include/Rew/Utility.hpp
 	include/Rew/Core.hpp
 )

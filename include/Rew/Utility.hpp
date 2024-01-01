@@ -3,16 +3,25 @@
 
 #include <cstddef> // size_t
 
-#include <any> // any
+#include <any> // any, any_cast
 #include <utility> // reference_wrapper
 
-#include <type_traits> // decay_t, enable_if_t, is_pointer_v
+#include <type_traits> // decay_t, enable_if_t, is_pointer_v, void_t, false_type, true_type
 
 namespace rew
 {
 
 namespace meta
 {
+
+template <typename T, typename enable = void>
+struct is_complete : std::false_type {};
+
+template <typename T>
+struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
+
+template <typename... Bn> using all = std::conjunction<Bn...>;
+template <typename... Bn> using one = std::disjunction<Bn...>;
 
 template <typename T, typename enable = void>
 struct pure_type
@@ -77,28 +86,6 @@ struct function_type_traits<ReturnType(void)>
     using return_type = ReturnType;
     using function_type = ReturnType(*)(void);
 };
-
-template <typename T, typename enable = void>
-struct is_complete : std::false_type {};
-
-template <typename T>
-struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
-
-template <typename T>
-struct builtin_reflection_info_t;
-
-template <typename T>
-struct reflection_info_t;
-
-template <typename T>
-struct is_builtin_reflectable : is_complete<builtin_reflection_info_t<T>> {};
-
-template <typename T>
-struct is_reflectable : is_complete<reflection_info_t<T>> {};
-
-template <typename T>
-struct is_custom_reflectable
-    : std::conjunction<is_reflectable<T>, std::negation<is_builtin_reflectable<T>>> {};
 
 } // namespace meta
 
