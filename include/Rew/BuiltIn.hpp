@@ -23,6 +23,8 @@
 #include <bitset> // bitset
 #include <utility> // pair
 #include <tuple> // tuple
+#include <atomic> // atomic
+#include <complex> // complex
 #include <any> // any
 #include <variant> // variant
 #include <optional> // optional
@@ -120,6 +122,12 @@ struct is_builtin_reflectable<std::pair<T, U>> : std::true_type {};
 
 template <typename... Tn>
 struct is_builtin_reflectable<std::tuple<Tn...>> : std::true_type {};
+
+template <typename T>
+struct is_builtin_reflectable<std::atomic<T>> : std::true_type {};
+
+template <typename T>
+struct is_builtin_reflectable<std::complex<T>> : std::true_type {};
 
 template <>
 struct is_builtin_reflectable<std::any> : std::true_type {};
