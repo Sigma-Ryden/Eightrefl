@@ -16,7 +16,7 @@
 
 #define CORE_FUNCTION(function_call_handler, name, ...)                                                 \
     {                                                                                                   \
-        auto __ptr = ::rew::utility::function_overload<__VA_ARGS__>(&info_t::type::name);               \
+        auto __ptr = ::rew::utility::overload<__VA_ARGS__>::of(&info_t::type::name);               \
         auto __name = #name+std::string(*(#__VA_ARGS__) ? ", " #__VA_ARGS__ : "");                      \
         auto __meta = reflection->function.find(__name);                                                \
         if (__meta == nullptr) __meta = &reflection->function.add(                                      \

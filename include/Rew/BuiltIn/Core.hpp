@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_HPP
-#define REW_BUILT_IN_HPP
+#ifndef REW_BUILT_IN_CORE_HPP
+#define REW_BUILT_IN_CORE_HPP
 
 #include <cstddef> // size_t
 
@@ -25,7 +25,6 @@
 #include <tuple> // tuple
 #include <atomic> // atomic
 #include <complex> // complex
-#include <any> // any
 #include <variant> // variant
 #include <optional> // optional
 
@@ -129,8 +128,6 @@ struct is_builtin_reflectable<std::atomic<T>> : std::true_type {};
 template <typename T>
 struct is_builtin_reflectable<std::complex<T>> : std::true_type {};
 
-template <>
-struct is_builtin_reflectable<std::any> : std::true_type {};
 
 template <typename... Tn>
 struct is_builtin_reflectable<std::variant<Tn...>> : std::true_type {};
@@ -142,4 +139,4 @@ struct is_builtin_reflectable<std::optional<T>> : std::true_type {};
 
 } // namespace rew
 
-#endif // REW_BUILT_IN_HPP
+#endif // REW_BUILT_IN_CORE_HPP

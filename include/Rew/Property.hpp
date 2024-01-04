@@ -23,7 +23,7 @@
             #__VA_ARGS__,                                                                               \
             {                                                                                           \
                 #__VA_ARGS__,                                                                           \
-                info_t::registry->all[::rew::meta::reflection_info_t<__type>::name],                    \
+                info_t::registry->all[name_t<__type>::value()],                    \
                 property_get_handler(&info_t::type::__VA_ARGS__),                                       \
                 property_set_handler(&info_t::type::__VA_ARGS__),                                       \
                 property_ptr_handler(&info_t::type::__VA_ARGS__)                                        \

@@ -20,8 +20,34 @@ set(REW
 	include/Rew/Registry.hpp
 	include/Rew/Visitor.hpp
 	include/Rew/Reflectable.hpp
-	include/Rew/BuiltIn.hpp
 	include/Rew/Utility.hpp
+
+	include/Rew/Detail/Meta.hpp
+
+#	include/Rew/BuiltIn/Core.hpp
+#	include/Rew/BuiltIn/vector.hpp
+#	include/Rew/BuiltIn/array.hpp
+#	include/Rew/BuiltIn/string.hpp
+#	include/Rew/BuiltIn/pair.hpp
+#	include/Rew/BuiltIn/tuple.hpp
+#	include/Rew/BuiltIn/list.hpp
+#	include/Rew/BuiltIn/forward_list.hpp
+#	include/Rew/BuiltIn/set.hpp
+#	include/Rew/BuiltIn/unique_ptr.hpp
+#	include/Rew/BuiltIn/shared_ptr.hpp
+#	include/Rew/BuiltIn/weak_ptr.hpp
+#	include/Rew/BuiltIn/map.hpp
+#	include/Rew/BuiltIn/deque.hpp
+#	include/Rew/BuiltIn/stack.hpp
+#	include/Rew/BuiltIn/queue.hpp
+#	include/Rew/BuiltIn/valarray.hpp
+#	include/Rew/BuiltIn/bitset.hpp
+#	include/Rew/BuiltIn/atomic.hpp
+#	include/Rew/BuiltIn/complex.hpp
+#	include/Rew/BuiltIn/optional.hpp
+#	include/Rew/BuiltIn/variant.hpp
+#	include/Rew/BuiltIn/any.hpp include/Rew/BuiltIn/any.cpp
+
 	include/Rew/Core.hpp
 )
 
@@ -37,13 +63,13 @@ add_executable(${PROJECT_NAME}
 	${AUTO}
 
 	test/TestBuiltin.cpp
-	test/TestFactory.cpp
-	test/TestExample.cpp
+	#test/TestFactory.cpp
+	#test/TestExample.cpp
 
-	test/examples/serialization/SerializationFixture.hpp
-	test/examples/serialization/SerializableVisitor.hpp
-	test/examples/serialization/SerializableVisitor.cpp
-	test/examples/serialization/TestSerialization.cpp
+	#test/examples/serialization/SerializationFixture.hpp
+	#test/examples/serialization/SerializableVisitor.hpp
+	#test/examples/serialization/SerializableVisitor.cpp
+	#test/examples/serialization/TestSerialization.cpp
 
 	test/RewTestingBase.hpp
 

@@ -1,8 +1,57 @@
 #include "RewTestingBase.hpp"
 
+#include <string>
+
 REFLECTABLE(int)
     FACTORY(int())
     FACTORY(int(int))
+REFLECTABLE_INIT()
+
+//REFLECTABLE(void*)
+//REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(void*)
+
+template <typename>
+struct name_t;
+
+template <>
+struct name_t<int>
+{
+    static std::string value() { return"int"; }
+};
+
+template <>
+struct name_t<void*>
+{
+    static std::string value() { return"void*"; }
+};
+
+template <typename T, typename Allocator>
+struct name_t<std::vector<T, Allocator>>
+{
+    static std::string value() {
+        return "std::vector<" + name_t<T>::value() + ">";
+    }
+};
+
+template <typename>
+struct is_std_vector : std::false_type {};
+
+template <typename T, typename Allocator>
+struct is_std_vector<std::vector<T, Allocator>> : std::true_type {};
+
+CONDITIONAL_REFLECTABLE(is_std_vector<T>::value)
+REFLECTABLE_INIT()
+
+struct FSomeData
+{
+    std::vector<void*> data;
+};
+
+REFLECTABLE(FSomeData)
+    (void)::rew_reflection_registry_t<decltype(rew::utility::property_value(&FSomeData::data))>{};
+    PROPERTY(data)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestBuiltin)

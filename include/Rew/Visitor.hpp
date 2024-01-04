@@ -20,7 +20,7 @@
         };                                                                                              \
     }}
 
-template <typename ReflectableType>
+template <typename ReflectableType, typename enable = void>
 struct rew_reflection_registry_t;
 
 namespace rew

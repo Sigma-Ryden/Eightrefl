@@ -12,19 +12,8 @@
 #include <Rew/Reflection.hpp>
 #include <Rew/Visitor.hpp>
 
-template <typename ReflectableType>
-struct rew_reflection_registry_t;
-
 namespace rew
 {
-
-namespace meta
-{
-
-template <typename T>
-struct reflection_info_t;
-
-} // namespace meta
 
 class registry_t
 {

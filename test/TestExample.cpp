@@ -60,7 +60,7 @@ public:
     TObject() = default;
 
     double Foo(int i, const std::string& s) const;
-
+    double Foo(int i, const std::string& s, int j) const;
 private:
     int Var = 0;
     EColor Color = EColor::Green;
@@ -69,9 +69,9 @@ private:
 REFLECTABLE(TObject)
     PROPERTY(Color)
     PROPERTY(Var)
-    FUNCTION(Foo)
+    FUNCTION(Foo, int, const std::string&, int)
+    FUNCTION(Foo, int, const std::string&)
     FACTORY(TObject, int, void*)
-    FACTORY(TObject)
     PARENT(TBase)
     META("hash", 5678)
 REFLECTABLE_INIT()
@@ -86,9 +86,15 @@ double TObject::Foo(int i, const std::string& s) const
     return 3.14;
 }
 
+double TObject::Foo(int i, const std::string& s, int j) const
+{
+    return 0;
+}
+
 TEST(TestDemo, TestExample)
 {
     auto type = rew::global.find("TObject");
+
     auto reflection = type->reflection;
 
     auto factory = reflection->factory.find("TObject, int, void*");
