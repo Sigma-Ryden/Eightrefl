@@ -10,15 +10,15 @@
 #include <functional> // function
 
 #include <Rew/Attribute.hpp>
-#include <Rew/Cast.hpp>
 #include <Rew/Meta.hpp>
 
 #include <Rew/Utility.hpp>
 
 #define CORE_FACTORY(factory_call_handler, ...)                                                         \
     {                                                                                                   \
-        using __function_type = ::rew::meta::function_type_traits<__VA_ARGS__>::function_type;          \
-        using __return_type = ::rew::meta::function_type_traits<__VA_ARGS__>::return_type;              \
+        using __function_traits = ::rew::meta::function_type_traits<__VA_ARGS__>;                       \
+        using __function_type = __function_traits::function_type;                                       \
+        using __return_type = __function_traits::return_type;                                           \
         auto __meta = reflection->factory.find(#__VA_ARGS__);                                           \
         if (__meta == nullptr) __meta = &reflection->factory.add(                                       \
             #__VA_ARGS__,                                                                               \
@@ -28,7 +28,7 @@
                 ::rew::utility::function_arg_count(__function_type{}),                                  \
             }                                                                                           \
         );                                                                                              \
-        visitor.template factory<info_t::type, __function_type>(*__meta);                               \
+        visitor.template factory<reflectable, __function_type>(*__meta);                                \
     }
 
 #define FACTORY(...)                                                                                    \

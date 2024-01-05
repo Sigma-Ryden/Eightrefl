@@ -3,10 +3,14 @@
 
 #include <cstddef> // size_t
 
+#include <string> // string
 #include <any> // any, any_cast
 #include <utility> // reference_wrapper
 
 #include <type_traits> // decay_t, enable_if_t, is_pointer_v, void_t, false_type, true_type
+
+template <typename ReflectableType, typename enable = void>
+struct rew_reflection_registry_t;
 
 namespace rew
 {
@@ -23,10 +27,19 @@ struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
 template <typename... Bn> using all = std::conjunction<Bn...>;
 template <typename... Bn> using one = std::disjunction<Bn...>;
 
-template <typename T, typename enable = void>
-struct reflection_info_t;
+template <typename T>
+struct reflectable_name_t;
 
-template <typename T> struct is_reflectable : is_complete<reflection_info_t<T>> {};
+template <typename T>
+struct reflectable_name_t<T*>
+{
+    static std::string get() { return reflectable_name_t<T>::get() + "*"; }
+};
+
+template <typename T, typename enable = void>
+struct reflectable_traits_t;
+
+template <typename T> struct is_reflectable : is_complete<reflectable_traits_t<T>> {};
 
 template <typename T> struct is_builtin_reflectable
     : one<std::is_arithmetic<T>,
@@ -100,15 +113,6 @@ struct function_type_traits<ReturnType(void)>
     using return_type = ReturnType;
     using function_type = ReturnType(*)(void);
 };
-
-template <typename T>
-struct identity
-{
-    using type = T;
-};
-
-template <typename T>
-using identity_t = typename identity<T>::type;
 
 } // namespace meta
 

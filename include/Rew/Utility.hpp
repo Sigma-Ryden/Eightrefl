@@ -74,6 +74,20 @@ PropertyType property_value(PropertyType (ReflectableType::*)(void));
 template <typename ReflectableType, typename PropertyType>
 PropertyType property_value();
 
+template <typename ReflectableType>
+void conditional_reflectable_register()
+{
+    if constexpr (meta::reflectable_traits_t<ReflectableType>::conditional)
+    {
+        static_assert
+        (
+            meta::is_complete<::rew_reflection_registry_t<ReflectableType>>::value,
+            "Conditional reflectable must be complete type."
+        );
+        (void)::rew_reflection_registry_t<ReflectableType>{};
+    }
+}
+
 } // namespace utility
 
 } // namespace rew

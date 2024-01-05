@@ -12,20 +12,22 @@
 
 #define CORE_PARENT(parent_cast_handler, ...)                                                           \
     {                                                                                                   \
+        using __type = __VA_ARGS__;                                                                     \
         static_assert(                                                                                  \
-            std::is_base_of_v<__VA_ARGS__, info_t::type>,                                               \
+            std::is_base_of_v<__type, reflectable>,                                                     \
             "The " #__VA_ARGS__ " type is not parent of reflectable type."                              \
         );                                                                                              \
+        ::rew::utility::conditional_reflectable_register<__type>();                                     \
         auto __meta = reflection->parent.find(#__VA_ARGS__);                                            \
         if (__meta == nullptr) __meta = &reflection->parent.add(                                        \
             #__VA_ARGS__,                                                                               \
             {                                                                                           \
                 #__VA_ARGS__,                                                                           \
-                info_t::registry->all[#__VA_ARGS__],                                                    \
-                parent_cast_handler<info_t::type, __VA_ARGS__>()                                        \
+                ::rew::meta::reflectable_traits_t<__type>::registry()->all[#__VA_ARGS__],               \
+                parent_cast_handler<reflectable, __type>()                                              \
             }                                                                                           \
         );                                                                                              \
-        visitor.template parent<info_t::type, __VA_ARGS__>(*__meta);                                    \
+        visitor.template parent<reflectable, __type>(*__meta);                                          \
     }
 
 #define PARENT(...)                                                                                     \

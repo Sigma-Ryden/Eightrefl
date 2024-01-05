@@ -8,7 +8,7 @@
 #include <utility> // ref
 
 #include <Rew/Type.hpp>
-#include <Rew/Cast.hpp>
+#include <Rew/Context.hpp>
 #include <Rew/Reflection.hpp>
 #include <Rew/Visitor.hpp>
 
@@ -51,7 +51,7 @@ public:
     template <typename ReflectableType>
     type_t* find()
     {
-        return get(meta::reflection_info_t<ReflectableType>::name);
+        return get(meta::reflectable_name_t<ReflectableType>::get());
     }
 
     template <typename ReflectableType>
@@ -67,9 +67,9 @@ public:
             detail::polymorphic_visitor_t::call<ReflectableType>(visitor);
         };
 
-        auto ptr = [](std::any& object) -> void*
+        auto context = [](std::any& object) -> void*
         {
-            return meta::cast_type_traits<ReflectableType>{}(object);
+            return meta::context_traits_t<ReflectableType>{}(object);
         };
 
         auto ref = [](void* object) -> std::any
@@ -77,7 +77,7 @@ public:
             return std::ref(*static_cast<ReflectableType*>(object));
         };
 
-        type = new type_t { name, reflection, evaluate, ptr, ref, sizeof(ReflectableType) };
+        type = new type_t { name, reflection, evaluate, context, ref, sizeof(ReflectableType) };
 
         all.emplace(name, type);
         rtti_all.emplace(typeid(ReflectableType), type);
