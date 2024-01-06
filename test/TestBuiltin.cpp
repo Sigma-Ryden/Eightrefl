@@ -28,7 +28,11 @@ struct rew::meta::reflectable_name_t<std::vector<T, Allocator>>
 CONDITIONAL_REFLECTABLE(is_std_vector<T>::value)
 REFLECTABLE_INIT()
 
-struct FSomeData
+struct FSomeDataBase
+{
+    int i;
+};
+struct FSomeData : FSomeDataBase
 {
     std::vector<int*> data;
 
@@ -53,9 +57,11 @@ REFLECTABLE_INIT()
 
 REFLECTABLE(FSomeData)
     PROPERTY(data)
+    PROPERTY(i)
     FUNCTION(Foo)
     FACTORY(std::shared_ptr<FSomeData>(std::shared_ptr<FSomeData>))
 REFLECTABLE_INIT()
+
 
 TEST(TestLibrary, Test)
 {
@@ -71,6 +77,9 @@ TEST(TestLibrary, Test)
 
     auto function = fsome_data_type->reflection->function.find("Foo");
     function->call(fsome_data_context, {});
+    auto fsome_data_property = fsome_data_type->reflection->property.find("i");
+    std::any result;
+    fsome_data_property->get(fsome_data_context, result);
 }
 
 TEST(TestLibrary, TestBuiltin)

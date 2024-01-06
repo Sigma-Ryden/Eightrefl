@@ -28,9 +28,9 @@
                 ::rew::meta::reflectable_traits_t<__type>::registry()->all[                             \
                     ::rew::meta::reflectable_name_t<__type>::get()                                      \
                 ],                                                                                      \
-                property_get_handler(&reflectable::__VA_ARGS__),                                        \
-                property_set_handler(&reflectable::__VA_ARGS__),                                        \
-                property_ptr_handler(&reflectable::__VA_ARGS__)                                         \
+                property_get_handler<reflectable>(&reflectable::__VA_ARGS__),                           \
+                property_set_handler<reflectable>(&reflectable::__VA_ARGS__),                           \
+                property_ptr_handler<reflectable>(&reflectable::__VA_ARGS__)                            \
             }                                                                                           \
         );                                                                                              \
         visitor.template property<reflectable, __type>(*__meta);                                        \
@@ -58,20 +58,6 @@ struct property_t
     attribute_t<std::any> meta;
 };
 
-namespace handler
-{
-
-template <typename ReflectableType, typename PropertyType>
-auto property_get(PropertyType ReflectableType::* property)
-{
-    return [property](std::any& context, std::any& result)
-    {
-        result = std::any_cast<ReflectableType*>(context)->*property;
-    };
-}
-
-} // namespace handler
-
 namespace detail
 {
 
@@ -89,20 +75,29 @@ auto property_get_impl(PropertyGetterType getter)
 namespace handler
 {
 
-template <typename ReflectableType, typename PropertyType>
-auto property_get(PropertyType (ReflectableType::* getter)(void) const)
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+auto property_get(PropertyType ParentReflectableType::* property)
+{
+    return [property](std::any& context, std::any& result)
+    {
+        result = std::any_cast<ReflectableType*>(context)->*property;
+    };
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+auto property_get(PropertyType (ParentReflectableType::* getter)(void) const)
 {
     return detail::property_get_impl<ReflectableType>(getter);
 }
 
-template <typename ReflectableType, typename PropertyType>
-auto property_get(PropertyType (ReflectableType::* getter)(void))
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+auto property_get(PropertyType (ParentReflectableType::* getter)(void))
 {
     return detail::property_get_impl<ReflectableType>(getter);
 }
 
-template <typename ReflectableType, typename PropertyType>
-auto property_set(PropertyType ReflectableType::* property)
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+auto property_set(PropertyType ParentReflectableType::* property)
 {
     return [property](std::any& context, const std::any& value)
     {
@@ -110,21 +105,12 @@ auto property_set(PropertyType ReflectableType::* property)
     };
 }
 
-template <typename ReflectableType, typename PropertyType>
-auto property_set(void (ReflectableType::* setter)(PropertyType))
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+auto property_set(void (ParentReflectableType::* setter)(PropertyType))
 {
     return [setter](std::any& context, const std::any& value)
     {
         (std::any_cast<ReflectableType*>(context)->*setter)(std::any_cast<const PropertyType&>(value));
-    };
-}
-
-template <typename ReflectableType, typename PropertyType>
-auto property_ptr(PropertyType ReflectableType::* property)
-{
-    return [property](std::any& context) -> std::any
-    {
-        return std::addressof(std::any_cast<ReflectableType*>(context)->*property);
     };
 }
 
@@ -160,14 +146,23 @@ auto property_ptr_impl(PropertyGetterType getter)
 namespace handler
 {
 
-template <typename ReflectableType, typename PropertyType>
-auto property_ptr(PropertyType (ReflectableType::* getter)(void) const)
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+auto property_ptr(PropertyType ParentReflectableType::* property)
+{
+    return [property](std::any& context) -> std::any
+    {
+        return std::addressof(std::any_cast<ReflectableType*>(context)->*property);
+    };
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+auto property_ptr(PropertyType (ParentReflectableType::* getter)(void) const)
 {
     return detail::property_ptr_impl<ReflectableType>(getter);
 }
 
-template <typename ReflectableType, typename PropertyType>
-auto property_ptr(PropertyType (ReflectableType::* getter)(void))
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+auto property_ptr(PropertyType (ParentReflectableType::* getter)(void))
 {
     return detail::property_ptr_impl<ReflectableType>(getter);
 }
