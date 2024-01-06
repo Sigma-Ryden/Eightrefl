@@ -55,7 +55,7 @@ auto parent_cast()
 {
     return [](std::any& child_context) -> std::any
     {
-        return utility::context_cast<ReflectableType, ParentReflectableType>(child_context);
+        return static_cast<ParentReflectableType*>(std::any_cast<ReflectableType*>(child_context));
     };
 }
 

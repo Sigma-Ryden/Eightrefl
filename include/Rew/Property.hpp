@@ -66,7 +66,7 @@ auto property_get(PropertyType ReflectableType::* property)
 {
     return [property](std::any& context, std::any& result)
     {
-        result = utility::context_access<ReflectableType>(context)->*property;
+        result = std::any_cast<ReflectableType*>(context)->*property;
     };
 }
 
@@ -80,7 +80,7 @@ auto property_get_impl(PropertyGetterType getter)
 {
     return [getter](std::any& context, std::any& value)
     {
-        value = (utility::context_access<ReflectableType>(context)->*getter)();
+        value = (std::any_cast<ReflectableType*>(context)->*getter)();
     };
 }
 
@@ -106,7 +106,7 @@ auto property_set(PropertyType ReflectableType::* property)
 {
     return [property](std::any& context, const std::any& value)
     {
-        utility::context_access<ReflectableType>(context)->*property = std::any_cast<const PropertyType&>(value);
+        std::any_cast<ReflectableType*>(context)->*property = std::any_cast<const PropertyType&>(value);
     };
 }
 
@@ -115,7 +115,7 @@ auto property_set(void (ReflectableType::* setter)(PropertyType))
 {
     return [setter](std::any& context, const std::any& value)
     {
-        (utility::context_access<ReflectableType>(context)->*setter)(std::any_cast<const PropertyType&>(value));
+        (std::any_cast<ReflectableType*>(context)->*setter)(std::any_cast<const PropertyType&>(value));
     };
 }
 
@@ -124,7 +124,7 @@ auto property_ptr(PropertyType ReflectableType::* property)
 {
     return [property](std::any& context) -> std::any
     {
-        return std::addressof(utility::context_access<ReflectableType>(context)->*property);
+        return std::addressof(std::any_cast<ReflectableType*>(context)->*property);
     };
 }
 
@@ -143,7 +143,7 @@ auto property_ptr_impl(PropertyGetterType getter)
         {
             constexpr auto is_const_value = std::is_const_v<std::remove_reference_t<result_t>>;
 
-            auto address = std::addressof((utility::context_access<ReflectableType>(context)->*getter)());
+            auto address = std::addressof((std::any_cast<ReflectableType*>(context)->*getter)());
 
             if constexpr (is_const_value) return const_cast<void*>(static_cast<const void*>(address));
             else return address;

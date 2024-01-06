@@ -8,7 +8,6 @@
 #include <utility> // ref
 
 #include <Rew/Type.hpp>
-#include <Rew/Context.hpp>
 #include <Rew/Reflection.hpp>
 #include <Rew/Visitor.hpp>
 
@@ -69,7 +68,7 @@ public:
 
         auto context = [](std::any& object) -> std::any
         {
-            return meta::context_traits_t<ReflectableType>::context(object);
+            return std::addressof(std::any_cast<ReflectableType&>(object));
         };
 
         auto ref = [](std::any& context) -> std::any

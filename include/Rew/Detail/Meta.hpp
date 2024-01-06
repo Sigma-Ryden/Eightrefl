@@ -115,12 +115,6 @@ struct function_type_traits<ReturnType(void)>
     using function_type = ReturnType(*)(void);
 };
 
-template <typename T>
-struct identity
-{
-    using type = T;
-};
-
 } // namespace meta
 
 } // namespace rew

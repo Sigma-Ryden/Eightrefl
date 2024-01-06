@@ -57,10 +57,6 @@ REFLECTABLE(FSomeData)
     FACTORY(std::shared_ptr<FSomeData>(std::shared_ptr<FSomeData>))
 REFLECTABLE_INIT()
 
-template <typename ... Args>
-void g(int* (std::shared_ptr<int>::*__get)(Args...) const) {}
-void f(int* (std::shared_ptr<int>::*__get)() const) {}
-
 TEST(TestLibrary, Test)
 {
     auto fsome_data_type = rew::global.find("FSomeData");
@@ -68,16 +64,10 @@ TEST(TestLibrary, Test)
     auto factory = fsome_data_type->reflection->factory.find("std::shared_ptr<FSomeData>(std::shared_ptr<FSomeData>)");
     auto fsome_data_shared_ptr = factory->call({ std::make_shared<FSomeData>() });
 
-    rew::handler::function_call<std::shared_ptr<int>, int*>(&std::shared_ptr<int>::get);
-
-    //rew::utility::overload<>::of(&std::shared_ptr<int>::get);
-
     auto shared_ptr_type = rew::global.find(fsome_data_shared_ptr);
     auto shared_ptr_context = shared_ptr_type->context(fsome_data_shared_ptr);
     auto get_function = shared_ptr_type->reflection->function.find("get");
     auto fsome_data_context = get_function->call(shared_ptr_context, {});
-
-    int* (std::shared_ptr<int>::*__get)() const = &std::shared_ptr<int>::get;
 
     auto function = fsome_data_type->reflection->function.find("Foo");
     function->call(fsome_data_context, {});

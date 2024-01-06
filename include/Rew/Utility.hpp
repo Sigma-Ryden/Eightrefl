@@ -8,8 +8,6 @@
 
 #include <type_traits> // decay_t, enable_if_t, is_pointer_v, void_t, false_type, true_type
 
-#include <Rew/Context.hpp>
-
 #include <Rew/Detail/Meta.hpp>
 
 namespace rew
@@ -22,18 +20,6 @@ template <typename ValueType>
 ValueType argument_cast(const std::any& object)
 {
     return std::any_cast<typename meta::argument_type_traits<ValueType>::type>(object);
-}
-
-template <typename ReflectableType>
-auto context_access(std::any& context)
-{
-    return meta::context_traits_t<ReflectableType>::access(context);
-}
-
-template <typename ReflectableType, typename OtherReflectableType>
-auto context_cast(std::any& context)
-{
-    return meta::context_traits_t<ReflectableType>::template cast<OtherReflectableType>(context);
 }
 
 template <typename... ArgumentTypes>
