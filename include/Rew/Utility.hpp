@@ -8,6 +8,8 @@
 
 #include <type_traits> // decay_t, enable_if_t, is_pointer_v, void_t, false_type, true_type
 
+#include <Rew/Context.hpp>
+
 #include <Rew/Detail/Meta.hpp>
 
 namespace rew
@@ -22,6 +24,18 @@ ValueType argument_cast(const std::any& object)
     return std::any_cast<typename meta::argument_type_traits<ValueType>::type>(object);
 }
 
+template <typename ReflectableType>
+auto context_access(std::any& context)
+{
+    return meta::context_traits_t<ReflectableType>::access(context);
+}
+
+template <typename ReflectableType, typename OtherReflectableType>
+auto context_cast(std::any& context)
+{
+    return meta::context_traits_t<ReflectableType>::template cast<OtherReflectableType>(context);
+}
+
 template <typename... ArgumentTypes>
 struct overload
 {
@@ -34,10 +48,10 @@ struct overload
     template <typename ReturnType>
     static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
 
-    template <typename... OtherArgumentTypes, typename ClassType, typename ReturnType>
+    template <typename ClassType, typename... OtherArgumentTypes, typename ReturnType>
     static constexpr auto of(ReturnType (ClassType::* function)(OtherArgumentTypes...) const) { return function; }
 
-    template <typename... OtherArgumentTypes, typename ClassType, typename ReturnType>
+    template <typename ClassType, typename... OtherArgumentTypes, typename ReturnType>
     static constexpr auto of(ReturnType (ClassType::* function)(OtherArgumentTypes...)) { return function; }
 
     template <typename... OtherArgumentTypes, typename ReturnType>
@@ -79,12 +93,7 @@ void conditional_reflectable_register()
 {
     if constexpr (meta::reflectable_traits_t<ReflectableType>::conditional)
     {
-        static_assert
-        (
-            meta::is_complete<::rew_reflection_registry_t<ReflectableType>>::value,
-            "Conditional reflectable must be complete type."
-        );
-        (void)::rew_reflection_registry_t<ReflectableType>{};
+        (void)::rew_reflection_registry_t<ReflectableType>{}; // explicit instancing
     }
 }
 

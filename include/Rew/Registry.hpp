@@ -67,14 +67,14 @@ public:
             detail::polymorphic_visitor_t::call<ReflectableType>(visitor);
         };
 
-        auto context = [](std::any& object) -> void*
+        auto context = [](std::any& object) -> std::any
         {
-            return meta::context_traits_t<ReflectableType>{}(object);
+            return meta::context_traits_t<ReflectableType>::context(object);
         };
 
-        auto ref = [](void* object) -> std::any
+        auto ref = [](std::any& context) -> std::any
         {
-            return std::ref(*static_cast<ReflectableType*>(object));
+            return std::ref(*std::any_cast<ReflectableType*>(context));
         };
 
         type = new type_t { name, reflection, evaluate, context, ref, sizeof(ReflectableType) };

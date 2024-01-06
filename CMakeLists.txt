@@ -16,8 +16,8 @@ set(REW
 	include/Rew/Property.hpp
 	include/Rew/Meta.hpp
 	include/Rew/Reflection.hpp
-	include/Rew/Context.hpp
 	include/Rew/Registry.hpp
+	include/Rew/Context.hpp
 	include/Rew/Visitor.hpp
 	include/Rew/Reflectable.hpp
 	include/Rew/Utility.hpp

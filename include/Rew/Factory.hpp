@@ -19,6 +19,7 @@
         using __function_traits = ::rew::meta::function_type_traits<__VA_ARGS__>;                       \
         using __function_type = __function_traits::function_type;                                       \
         using __return_type = __function_traits::return_type;                                           \
+        ::rew::utility::conditional_reflectable_register<__return_type>();                              \
         auto __meta = reflection->factory.find(#__VA_ARGS__);                                           \
         if (__meta == nullptr) __meta = &reflection->factory.add(                                       \
             #__VA_ARGS__,                                                                               \

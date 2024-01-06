@@ -9,6 +9,7 @@
 
 #include <Rew/Attribute.hpp>
 #include <Rew/Meta.hpp>
+#include <Rew/Utility.hpp>
 
 #define CORE_PARENT(parent_cast_handler, ...)                                                           \
     {                                                                                                   \
@@ -42,7 +43,7 @@ struct parent_t
 {
     const std::string name;
     type_t *const& type = nullptr;
-    const std::function<void*(void* child_context)> cast = nullptr;
+    const std::function<std::any(std::any& child_context)> cast = nullptr;
     attribute_t<std::any> meta;
 };
 
@@ -52,9 +53,9 @@ namespace handler
 template <typename ReflectableType, typename ParentReflectableType>
 auto parent_cast()
 {
-    return [](void* child_context) -> void*
+    return [](std::any& child_context) -> std::any
     {
-        return static_cast<ParentReflectableType*>(static_cast<ReflectableType*>(child_context));
+        return utility::context_cast<ReflectableType, ParentReflectableType>(child_context);
     };
 }
 
