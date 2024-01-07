@@ -3,6 +3,7 @@
 
 #include <cstddef> // size_t
 
+#include <string> // string
 #include <any> // any, any_cast
 #include <utility> // reference_wrapper
 
@@ -20,6 +21,18 @@ template <typename ValueType>
 ValueType argument_cast(const std::any& object)
 {
     return std::any_cast<typename meta::argument_type_traits<ValueType>::type>(object);
+}
+
+template <typename ArgumentType>
+std::string argument_name()
+{
+    return meta::reflectable_name_t<ArgumentType>::get();
+}
+
+template <>
+inline std::string argument_name<void>()
+{
+    return "";
 }
 
 template <typename... ArgumentTypes>
@@ -74,13 +87,22 @@ PropertyType property_value(PropertyType (ReflectableType::*)(void));
 template <typename ReflectableType, typename PropertyType>
 PropertyType property_value();
 
-template <typename ReflectableType>
-void conditional_reflectable_register()
+template <typename ArgumentType = void, typename ... ArgumentTypes>
+std::string full_function_name(const std::string& name)
 {
-    if constexpr (meta::reflectable_traits_t<ReflectableType>::conditional)
-    {
-        (void)::rew_reflection_registry_t<ReflectableType>{}; // explicit instancing
-    }
+    return name +
+        "(" + (
+            argument_name<ArgumentType>() + ... + (", " + argument_name<ArgumentTypes>())
+        ) + ")";
+}
+
+template <typename ReturnType, typename ... ArgumentTypes>
+std::string full_factory_name(ReturnType (*)(ArgumentTypes...))
+{
+    return full_function_name<ArgumentTypes...>
+    (
+        meta::reflectable_name_t<ReturnType>::get()
+    );
 }
 
 } // namespace utility

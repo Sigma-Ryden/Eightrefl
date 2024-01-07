@@ -17,14 +17,15 @@
 #define CORE_FACTORY(factory_call_handler, ...)                                                         \
     {                                                                                                   \
         using __function_traits = ::rew::meta::function_type_traits<__VA_ARGS__>;                       \
-        using __function_type = __function_traits::function_type;                                       \
-        using __return_type = __function_traits::return_type;                                           \
-        ::rew::utility::conditional_reflectable_register<__return_type>();                              \
+        using __function_type = typename __function_traits::function_type;                              \
+        using __return_type = typename __function_traits::return_type;                                  \
+        ::rew::reflectable<__return_type>();                                                            \
+        auto __name = ::rew::utility::full_factory_name(__function_type{});                             \
         auto __meta = reflection->factory.find(#__VA_ARGS__);                                           \
         if (__meta == nullptr) __meta = &reflection->factory.add(                                       \
-            #__VA_ARGS__,                                                                               \
+            __name,                                                                                     \
             {                                                                                           \
-                #__VA_ARGS__,                                                                           \
+                __name,                                                                                 \
                 factory_call_handler(__function_type{}),                                                \
                 ::rew::utility::function_arg_count(__function_type{}),                                  \
             }                                                                                           \

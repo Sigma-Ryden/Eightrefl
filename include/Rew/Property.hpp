@@ -16,10 +16,10 @@
 
 #define CORE_PROPERTY(property_get_handler, property_set_handler, property_ptr_handler, ...)            \
     {                                                                                                   \
-        using __type = ::rew::meta::pure_t<                                                             \
+        using __type = std::decay_t<                                                                    \
             decltype(::rew::utility::property_value(&reflectable::__VA_ARGS__))                         \
         >;                                                                                              \
-        ::rew::utility::conditional_reflectable_register<__type>();                                     \
+        ::rew::reflectable<__type>();                                                                   \
         auto __meta = reflection->property.find(#__VA_ARGS__);                                          \
         if (__meta == nullptr) __meta = &reflection->property.add(                                      \
             #__VA_ARGS__,                                                                               \

@@ -80,4 +80,25 @@
         CORE_REFLECTABLE_INIT(__VA_RGS__)
 #endif // REFLECTABLE_INIT
 
+namespace rew
+{
+
+template <typename ReflectableType>
+void reflectable()
+{
+    if constexpr (meta::reflectable_traits_t<ReflectableType>::conditional)
+    {
+        (void)::rew_reflection_registry_t<ReflectableType>{}; // explicit instancing
+    }
+}
+
+template <typename ReflectableType>
+ReflectableType&& reflectable(ReflectableType&& object)
+{
+    reflectable<std::decay_t<ReflectableType>>();
+    return std::forward<ReflectableType>(object);
+}
+
+} // namespace rew
+
 #endif // REW_REFLECTABLE_HPP

@@ -11,6 +11,8 @@
 #include <Rew/Reflection.hpp>
 #include <Rew/Visitor.hpp>
 
+#define REW_REGISTRY_LIMIT std::size_t(4096)
+
 namespace rew
 {
 
@@ -21,6 +23,11 @@ public:
     std::unordered_map<std::type_index, type_t*> rtti_all;
 
 public:
+    registry_t()
+    {
+        all.reserve(REW_REGISTRY_LIMIT);
+    }
+
     ~registry_t()
     {
         for (auto& [name, meta] : all)

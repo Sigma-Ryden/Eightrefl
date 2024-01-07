@@ -14,10 +14,25 @@ REFLECTABLE(int)
     FACTORY(int(int))
 REFLECTABLE_INIT()
 
+template <>
+struct rew::meta::reflectable_name_t<void>
+{
+    static std::string get() { return "void"; }
+};
+
+
 //REFLECTABLE(void*)
 //REFLECTABLE_INIT()
 
-REFLECTABLE_DECLARATION(void*)
+CONDITIONAL_REFLECTABLE(std::is_pointer_v<T>)
+    //FACTORY(T)
+REFLECTABLE_INIT()
+
+template <typename T>
+struct rew::meta::reflectable_name_t<T*>
+{
+    static std::string get() { return reflectable_name_t<T>::get() + "*"; }
+};
 
 template <typename T, typename Allocator>
 struct rew::meta::reflectable_name_t<std::vector<T, Allocator>>
@@ -28,15 +43,33 @@ struct rew::meta::reflectable_name_t<std::vector<T, Allocator>>
 CONDITIONAL_REFLECTABLE(is_std_vector<T>::value)
 REFLECTABLE_INIT()
 
+template <typename T>
 struct FSomeDataBase
 {
-    int i;
+    T* i;
 };
-struct FSomeData : FSomeDataBase
-{
-    std::vector<int*> data;
 
-    void Foo() {}
+template <typename>
+struct is_f_base : std::false_type {};
+
+template <typename T>
+struct is_f_base<FSomeDataBase<T>> : std::true_type {};
+
+CONDITIONAL_REFLECTABLE(is_f_base<T>::value)
+REFLECTABLE_INIT()
+
+template <typename T>
+struct rew::meta::reflectable_name_t<FSomeDataBase<T>>
+{
+    static std::string get() { return "FSomeDataBase<" + reflectable_name_t<T>::get() + ">"; }
+};
+
+template <typename T>
+struct FSomeData : FSomeDataBase<T>
+{
+    std::vector<T*> data;
+
+    void Foo(T) {}
 };
 
 template <typename>
@@ -55,28 +88,51 @@ CONDITIONAL_REFLECTABLE(is_std_shared_ptr<T>::value)
     FUNCTION(get)
 REFLECTABLE_INIT()
 
-REFLECTABLE(FSomeData)
+template <typename>
+struct is_f : std::false_type {};
+
+template <typename T>
+struct is_f<FSomeData<T>> : std::true_type {};
+
+template <typename T>
+struct f_traits;
+
+template <typename T>
+struct f_traits<FSomeData<T>>
+{
+    using type = T;
+};
+
+CONDITIONAL_REFLECTABLE(is_f<T>::value)
+    PARENT(FSomeDataBase<typename f_traits<T>::type>)
     PROPERTY(data)
     PROPERTY(i)
-    FUNCTION(Foo)
-    FACTORY(std::shared_ptr<FSomeData>(std::shared_ptr<FSomeData>))
+    FUNCTION(Foo, typename f_traits<T>::type)
+    FACTORY(std::shared_ptr<T>(std::shared_ptr<T>))
 REFLECTABLE_INIT()
 
+template <typename T>
+struct rew::meta::reflectable_name_t<FSomeData<T>>
+{
+    static std::string get() { return "FSomeData<" + reflectable_name_t<T>::get() + ">"; }
+};
 
 TEST(TestLibrary, Test)
 {
-    auto fsome_data_type = rew::global.find("FSomeData");
+    rew::reflectable<FSomeData<void*>>();
+    auto fsome_data_type = rew::global.find("FSomeData<void*>");
+    auto fsome_data_base_type = fsome_data_type->reflection->parent.find("FSomeDataBase<void*>");
 
-    auto factory = fsome_data_type->reflection->factory.find("std::shared_ptr<FSomeData>(std::shared_ptr<FSomeData>)");
-    auto fsome_data_shared_ptr = factory->call({ std::make_shared<FSomeData>() });
+    auto factory = fsome_data_type->reflection->factory.find("std::shared_ptr<FSomeData<void*>>(std::shared_ptr<FSomeData<void*>>)");
+    auto fsome_data_shared_ptr = factory->call({ std::make_shared<FSomeData<void*>>() });
 
     auto shared_ptr_type = rew::global.find(fsome_data_shared_ptr);
     auto shared_ptr_context = shared_ptr_type->context(fsome_data_shared_ptr);
-    auto get_function = shared_ptr_type->reflection->function.find("get");
+    auto get_function = shared_ptr_type->reflection->function.find("get()");
     auto fsome_data_context = get_function->call(shared_ptr_context, {});
 
-    auto function = fsome_data_type->reflection->function.find("Foo");
-    function->call(fsome_data_context, {});
+    auto function = fsome_data_type->reflection->function.find("Foo(void*)");
+    function->call(fsome_data_context, {(void*)nullptr});
     auto fsome_data_property = fsome_data_type->reflection->property.find("i");
     std::any result;
     fsome_data_property->get(fsome_data_context, result);
