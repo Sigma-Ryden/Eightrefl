@@ -47,14 +47,14 @@ struct overload
     template <typename ReturnType>
     static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
 
-    template <typename ClassType, typename... OtherArgumentTypes, typename ReturnType>
-    static constexpr auto of(ReturnType (ClassType::* function)(OtherArgumentTypes...) const) { return function; }
+//    template <typename ClassType, typename... OtherArgumentTypes, typename ReturnType>
+//    static constexpr auto of(ReturnType (ClassType::* function)(OtherArgumentTypes...) const) { return function; }
 
-    template <typename ClassType, typename... OtherArgumentTypes, typename ReturnType>
-    static constexpr auto of(ReturnType (ClassType::* function)(OtherArgumentTypes...)) { return function; }
+//    template <typename ClassType, typename... OtherArgumentTypes, typename ReturnType>
+//    static constexpr auto of(ReturnType (ClassType::* function)(OtherArgumentTypes...)) { return function; }
 
-    template <typename... OtherArgumentTypes, typename ReturnType>
-    static constexpr auto of(ReturnType (*function)(OtherArgumentTypes...)) { return function; }
+//    template <typename... OtherArgumentTypes, typename ReturnType>
+//    static constexpr auto of(ReturnType (*function)(OtherArgumentTypes...)) { return function; }
 };
 
 template <typename... ArgumentTypes, typename ReturnType, class ClassType>

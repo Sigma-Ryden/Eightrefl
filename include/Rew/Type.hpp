@@ -20,7 +20,7 @@ struct type_t
     reflection_t *const reflection = nullptr;
     const std::function<void(visitor_t& visitor)> evaluate = nullptr;
     const std::function<std::any(std::any& object)> context = nullptr;
-    const std::function<std::any(std::any& context)> ref = nullptr;
+    const std::function<std::any(std::any& context)> alias = nullptr;
     const std::size_t size = 0;
 };
 

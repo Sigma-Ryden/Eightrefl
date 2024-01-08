@@ -11,7 +11,7 @@
 #include <Rew/Reflection.hpp>
 #include <Rew/Visitor.hpp>
 
-#define REW_REGISTRY_LIMIT std::size_t(4096)
+#define REW_REGISTRY_RESERVE_SIZE std::size_t(4096)
 
 namespace rew
 {
@@ -25,7 +25,7 @@ public:
 public:
     registry_t()
     {
-        all.reserve(REW_REGISTRY_LIMIT);
+        all.reserve(REW_REGISTRY_RESERVE_SIZE);
     }
 
     ~registry_t()
@@ -78,12 +78,12 @@ public:
             return std::addressof(std::any_cast<ReflectableType&>(object));
         };
 
-        auto ref = [](std::any& context) -> std::any
+        auto alias = [](std::any& context) -> std::any
         {
             return std::ref(*std::any_cast<ReflectableType*>(context));
         };
 
-        type = new type_t { name, reflection, evaluate, context, ref, sizeof(ReflectableType) };
+        type = new type_t { name, reflection, evaluate, context, alias, sizeof(ReflectableType) };
 
         all.emplace(name, type);
         rtti_all.emplace(typeid(ReflectableType), type);

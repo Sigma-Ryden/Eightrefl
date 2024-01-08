@@ -31,6 +31,11 @@ template <typename... Bn> using one = std::disjunction<Bn...>;
 template <typename T>
 struct reflectable_name_t;
 
+template <> struct reflectable_name_t<void>
+{
+    static std::string get() { return "void"; }
+};
+
 template <typename T, typename enable = void>
 struct reflectable_traits_t;
 
