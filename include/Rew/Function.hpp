@@ -13,10 +13,10 @@
 #include <Rew/Meta.hpp>
 #include <Rew/Utility.hpp>
 
-#define CORE_FUNCTION(function_call_handler, name, ...)                                                 \
+#define CORE_FUNCTION(function_call_handler, function_overload, full_function_name, name, ...)          \
     {                                                                                                   \
-        auto __ptr = ::rew::utility::overload<__VA_ARGS__>::of(&reflectable::name);                     \
-        auto __name = ::rew::utility::full_function_name(#name, __ptr);                                 \
+        auto __ptr = function_overload<__VA_ARGS__>::of(&reflectable::name);                            \
+        auto __name = full_function_name(#name, __ptr);                                                 \
         auto __meta = reflection->function.find(__name);                                                \
         if (__meta == nullptr) __meta = &reflection->function.add(                                      \
             __name,                                                                                     \
@@ -29,8 +29,22 @@
         visitor.template function<reflectable, decltype(__ptr)>(*__meta);                               \
     }
 
+#define READONLY_FUNCTION(name, ...)                                                                    \
+    CORE_FUNCTION(                                                                                      \
+        ::rew::handler::function_call,                                                                  \
+        ::rew::utility::readonly_overload,                                                              \
+        ::rew::utility::readonly_full_function_name,                                                    \
+        name,                                                                                           \
+        __VA_ARGS__)
+
 #define FUNCTION(name, ...)                                                                             \
-    CORE_FUNCTION(::rew::handler::function_call, name, __VA_ARGS__)
+    CORE_FUNCTION(                                                                                      \
+        ::rew::handler::function_call,                                                                  \
+        ::rew::utility::overload,                                                                       \
+        ::rew::utility::full_function_name,                                                             \
+        name,                                                                                           \
+        __VA_ARGS__)
+
 
 namespace rew
 {

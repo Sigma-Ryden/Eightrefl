@@ -28,12 +28,20 @@ struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
 template <typename... Bn> using all = std::conjunction<Bn...>;
 template <typename... Bn> using one = std::disjunction<Bn...>;
 
-template <typename T>
-struct reflectable_name_t;
+template <typename T, typename enable = void>
+struct reflectable_name_t
+{
+    static std::string get() { return "auto"; }
+};
 
 template <> struct reflectable_name_t<void>
 {
     static std::string get() { return "void"; }
+};
+
+template <> struct reflectable_name_t<std::nullptr_t>
+{
+    static std::string get() { return "std::nullptr_t"; }
 };
 
 template <typename T, typename enable = void>

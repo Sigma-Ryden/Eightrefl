@@ -36,19 +36,29 @@ inline std::string argument_name<void>()
 }
 
 template <typename... ArgumentTypes>
-struct overload
+struct readonly_overload
 {
     template <typename ClassType, typename ReturnType>
     static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) const) { return function; }
-
-    template <typename ClassType, typename ReturnType>
-    static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
 
     template <typename ReturnType>
     static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
 
     template <typename ClassType, typename... OtherArgumentTypes, typename ReturnType>
     static constexpr auto of(ReturnType (ClassType::* function)(OtherArgumentTypes...) const) { return function; }
+
+    template <typename... OtherArgumentTypes, typename ReturnType>
+    static constexpr auto of(ReturnType (*function)(OtherArgumentTypes...)) { return function; }
+};
+
+template <typename... ArgumentTypes>
+struct overload
+{
+    template <typename ClassType, typename ReturnType>
+    static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
+
+    template <typename ReturnType>
+    static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
 
     template <typename ClassType, typename... OtherArgumentTypes, typename ReturnType>
     static constexpr auto of(ReturnType (ClassType::* function)(OtherArgumentTypes...)) { return function; }
@@ -97,12 +107,6 @@ std::string full_function_name(const std::string& name)
 }
 
 template <typename ReturnType, typename ClassType, typename ... ArgumentTypes>
-std::string full_function_name(const std::string& name, ReturnType (ClassType::*)(ArgumentTypes...) const)
-{
-    return full_function_name<ArgumentTypes...>(name);
-}
-
-template <typename ReturnType, typename ClassType, typename ... ArgumentTypes>
 std::string full_function_name(const std::string& name, ReturnType (ClassType::*)(ArgumentTypes...))
 {
     return full_function_name<ArgumentTypes...>(name);
@@ -112,6 +116,18 @@ template <typename ReturnType, typename ClassType, typename ... ArgumentTypes>
 std::string full_function_name(const std::string& name, ReturnType (*)(ArgumentTypes...))
 {
     return full_function_name<ArgumentTypes...>(name);
+}
+
+template <typename ArgumentType = void, typename ... ArgumentTypes>
+std::string readonly_full_function_name(const std::string& name)
+{
+    return full_function_name<ArgumentType, ArgumentTypes...>(name) + " const";
+}
+
+template <typename ReturnType, typename ClassType, typename ... ArgumentTypes>
+std::string readonly_full_function_name(const std::string& name, ReturnType (ClassType::*)(ArgumentTypes...) const)
+{
+    return readonly_full_function_name<ArgumentTypes...>(name);
 }
 
 template <typename ReturnType, typename ... ArgumentTypes>
