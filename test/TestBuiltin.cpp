@@ -12,6 +12,13 @@ TEMPLATE_REFLECTABLE((template <typename T>), (T*), (NAMEOF(T)+"*"))
     FACTORY(T*)
 REFLECTABLE_INIT()
 
+TEMPLATE_REFLECTABLE((template <typename T>), (T&), (NAMEOF(T)+"&"))
+REFLECTABLE_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename T>), (T const), (NAMEOF(T)+" const"))
+    FACTORY(T)
+REFLECTABLE_INIT()
+
 TEMPLATE_REFLECTABLE((template <typename T, typename Allocator>), (std::vector<T, Allocator>), ("std::vector<"+NAMEOF(T)+">"))
 REFLECTABLE_INIT()
 
@@ -29,7 +36,8 @@ struct FSomeData : FSomeDataBase<T>
 {
     std::vector<T*> data;
 
-    void Foo(T) {}
+    void Foo(const T *const&) {}
+
 };
 
 TEMPLATE_REFLECTABLE((template <typename T>), (std::shared_ptr<T>), ("std::shared_ptr<"+NAMEOF(T)+">"))
@@ -46,7 +54,7 @@ TEMPLATE_REFLECTABLE((template <typename T>), (FSomeData<T>), ("FSomeData<"+NAME
     PARENT(FSomeDataBase<T>)
     PROPERTY(data)
     PROPERTY(i)
-    FUNCTION(Foo, T)
+    FUNCTION(Foo)
     FACTORY(std::shared_ptr<FSomeData<T>>(std::shared_ptr<FSomeData<T>>))
 REFLECTABLE_INIT()
 
@@ -59,7 +67,6 @@ TEST(TestLibrary, Test)
 {
     //void(std::shared_ptr<int>::*__p)() = &std::shared_ptr<int>::reset;
     //::rew::utility::overload<>::of(&std::shared_ptr<int>::reset);
-    ::rew::utility::overload<>::of(&X::f);
     rew::reflectable<FSomeData<void*>>();
     auto fsome_data_type = rew::global.find("FSomeData<void*>");
     auto fsome_data_base_type = fsome_data_type->reflection->parent.find("FSomeDataBase<void*>");
