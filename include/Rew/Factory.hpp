@@ -20,9 +20,9 @@
         using __function_type = typename __function_traits::function_type;                              \
         using __return_type = typename __function_traits::return_type;                                  \
         ::rew::reflectable<__return_type>();                                                            \
-        auto __name = ::rew::utility::full_factory_name(__function_type{});                             \
-        auto __meta = reflection->factory.find(#__VA_ARGS__);                                           \
-        if (__meta == nullptr) __meta = &reflection->factory.add(                                       \
+        static auto __name = ::rew::utility::full_factory_name(__function_type{});                      \
+        auto __meta = __reflection->factory.find(__name);                                               \
+        if (__meta == nullptr) __meta = &__reflection->factory.add(                                     \
             __name,                                                                                     \
             {                                                                                           \
                 __name,                                                                                 \
@@ -30,7 +30,7 @@
                 ::rew::utility::function_arg_count(__function_type{}),                                  \
             }                                                                                           \
         );                                                                                              \
-        visitor.template factory<reflectable, __function_type>(*__meta);                                \
+        visitor.template factory<__reflectable_type, __function_type>(*__meta);                         \
     }
 
 #define FACTORY(...)                                                                                    \

@@ -14,19 +14,20 @@
 #define CORE_PARENT(parent_cast_handler, ...)                                                           \
     {                                                                                                   \
         using __type = __VA_ARGS__;                                                                     \
-        static_assert(std::is_base_of_v<__type, reflectable>);                                          \
+        using __traits = ::rew::meta::reflectable_traits_t<__type>;                                     \
+        static_assert(std::is_base_of_v<__type, __reflectable_type>);                                   \
         ::rew::reflectable<__type>();                                                                   \
-        auto __name = ::rew::meta::reflectable_traits_t<__type>::name();                                \
-        auto __meta = reflection->parent.find(__name);                                                  \
-        if (__meta == nullptr) __meta = &reflection->parent.add(                                        \
+        static auto __name = __traits::name();                                                          \
+        auto __meta = __reflection->parent.find(__name);                                                \
+        if (__meta == nullptr) __meta = &__reflection->parent.add(                                      \
             __name,                                                                                     \
             {                                                                                           \
                 __name,                                                                                 \
-                ::rew::meta::reflectable_traits_t<__type>::registry()->all[__name],                     \
-                parent_cast_handler<reflectable, __type>()                                              \
+                __traits::registry()->all[__name],                                                      \
+                parent_cast_handler<__reflectable_type, __type>()                                       \
             }                                                                                           \
         );                                                                                              \
-        visitor.template parent<reflectable, __type>(*__meta);                                          \
+        visitor.template parent<__reflectable_type, __type>(*__meta);                                   \
     }
 
 #define PARENT(...)                                                                                     \

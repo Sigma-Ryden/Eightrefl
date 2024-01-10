@@ -17,23 +17,23 @@
 #define CORE_PROPERTY(property_get_handler, property_set_handler, property_ptr_handler, ...)            \
     {                                                                                                   \
         using __type = std::decay_t<                                                                    \
-            decltype(::rew::utility::property_value(&reflectable::__VA_ARGS__))                         \
+            decltype(::rew::utility::property_value(&__reflectable_type::__VA_ARGS__))                  \
         >;                                                                                              \
+        using __traits = ::rew::meta::reflectable_traits_t<__type>;                                     \
         ::rew::reflectable<__type>();                                                                   \
-        auto __meta = reflection->property.find(#__VA_ARGS__);                                          \
-        if (__meta == nullptr) __meta = &reflection->property.add(                                      \
-            #__VA_ARGS__,                                                                               \
+        static auto __name = #__VA_ARGS__;                                                              \
+        auto __meta = __reflection->property.find(__name);                                              \
+        if (__meta == nullptr) __meta = &__reflection->property.add(                                    \
+            __name,                                                                                     \
             {                                                                                           \
-                #__VA_ARGS__,                                                                           \
-                ::rew::meta::reflectable_traits_t<__type>::registry()->all[                             \
-                    ::rew::meta::reflectable_name_t<__type>::get()                                      \
-                ],                                                                                      \
-                property_get_handler<reflectable>(&reflectable::__VA_ARGS__),                           \
-                property_set_handler<reflectable>(&reflectable::__VA_ARGS__),                           \
-                property_ptr_handler<reflectable>(&reflectable::__VA_ARGS__)                            \
+                __name,                                                                                 \
+                __traits::registry()->all[__traits::name()],                                            \
+                property_get_handler<__reflectable_type>(&__reflectable_type::__VA_ARGS__),             \
+                property_set_handler<__reflectable_type>(&__reflectable_type::__VA_ARGS__),             \
+                property_ptr_handler<__reflectable_type>(&__reflectable_type::__VA_ARGS__)              \
             }                                                                                           \
         );                                                                                              \
-        visitor.template property<reflectable, __type>(*__meta);                                        \
+        visitor.template property<__reflectable_type, __type>(*__meta);                                 \
     }
 
 #define PROPERTY(...)                                                                                   \

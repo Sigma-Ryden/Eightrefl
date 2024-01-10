@@ -5,56 +5,63 @@
 #include <Rew/Detail/Meta.hpp>
 
 #define NAMEOF(...)                                                                                     \
-    ::rew::meta::reflectable_name_t<__VA_ARGS__>::get()
+    ::rew::meta::reflectable_traits_t<__VA_ARGS__>::name()
 
-#define CORE_REFLECTABLE_BODY()                                                                         \
-        struct eval_t {                                                                                 \
-            template <class VisitorType> eval_t(VisitorType&& visitor) {                                \
-                using reflectable = typename traits_t::type;                                            \
-                static auto name = traits_t::name();                                                    \
-                static auto registry = traits_t::registry();                                            \
-                auto type = registry->all[name];                                                        \
-                if (type == nullptr) type = registry->template add<reflectable>(name);                  \
-                auto reflection = type->reflection;                                                     \
-                visitor.template type<reflectable>(*type);
+#define CORE_REFLECTABLE_BODY(...)                                                                      \
+    struct eval_t {                                                                                     \
+        template <class VisitorType>                                                                    \
+        eval_t(VisitorType&& visitor) {                                                                 \
+            using __reflectable_traits = __VA_ARGS__;                                                   \
+            using __reflectable_type = typename __reflectable_traits::type;                             \
+            static auto __reflectable_name = __reflectable_traits::name();                              \
+            static auto __reflectable_registry = __reflectable_traits::registry();                      \
+            auto __type = __reflectable_registry->all[__reflectable_name];                              \
+            if (__type == nullptr) __type = __reflectable_registry->template add<__reflectable_type>(   \
+                __reflectable_name                                                                      \
+            );                                                                                          \
+            auto __reflection = __type->reflection;                                                     \
+            visitor.template type<__reflectable_type>(*__type);
 
 #define CORE_REFLECTABLE_DECLARATION(reflection_registry, ...)                                          \
     namespace rew { namespace meta {                                                                    \
-        template <> struct reflectable_name_t<__VA_ARGS__> {                                            \
-            static std::string get() { return #__VA_ARGS__; }                                           \
-        };                                                                                              \
-        template <> struct reflectable_traits_t<__VA_ARGS__> {                                          \
+        template <> struct reflectable_traits_t<__VA_ARGS__> : base_reflectable_traits_t {              \
             using type = __VA_ARGS__;                                                                   \
-            static constexpr auto conditional = false;                                                  \
-            static const auto name() { return reflectable_name_t<type>::get(); }                        \
             static const auto registry() { return &reflection_registry; }                               \
+            static const std::string name() { return #__VA_ARGS__; }                                    \
         };                                                                                              \
     }}
 
-#define CORE_CONDITIONAL_REFLECTABLE_DECLARATION(reflection_registry, condition, reflectable_name)      \
+#define CORE_CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                   \
     namespace rew { namespace meta {                                                                    \
-        template <typename T> struct reflectable_name_t<T, std::enable_if_t<condition>> {               \
-            static std::string get() { return reflectable_name; }                                       \
-        };                                                                                              \
-        template <typename T> struct reflectable_traits_t<T, std::enable_if_t<condition>> {             \
+        template <typename T>                                                                           \
+        struct reflectable_traits_t<T, std::enable_if_t<__VA_ARGS__>>                                   \
+            : conditional_reflectable_traits_t {                                                        \
             using type = T;                                                                             \
-            static constexpr auto conditional = true;                                                   \
-            static const auto name() { return reflectable_name_t<type>::get(); }                        \
-            static const auto registry() { return &reflection_registry; }                               \
+
+#define CORE_REFLECTABLE_DECLARATION(...)                                                               \
+    namespace rew { namespace meta {                                                                    \
+        template <> struct reflectable_traits_t<__VA_ARGS__> : base_reflectable_traits_t {              \
+            using type = __VA_ARGS__;                                                                   \
+
+#define REFLECTABLE_REGISTRY(...)                                                                       \
+    static const auto registry() { return __VA_ARGS__; }                                                \
+
+#define REFLECTABLE_NAME(...)                                                                           \
+    static const std::string name() { return __VA_ARGS__; }
+
+#define REFLECTABLE_DECLARATION_INIT(...)                                                               \
         };                                                                                              \
     }}
 
-#define CORE_REFLECTABLE(reflection_registry, ...)                                                      \
-    CORE_REFLECTABLE_DECLARATION(reflection_registry, __VA_ARGS__)                                      \
+#define CORE_REFLECTABLE(...)                                                                           \
     template <> struct rew_reflection_registry_t<__VA_ARGS__> {                                         \
-        using traits_t = ::rew::meta::reflectable_traits_t<__VA_ARGS__>;                                \
-        CORE_REFLECTABLE_BODY()
+        using T = __VA_ARGS__;                                                                          \
+        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits_t<__VA_ARGS__>)
 
-#define CORE_CONDITIONAL_REFLECTABLE(reflection_registry, condition, reflectable_name)                  \
-    CORE_CONDITIONAL_REFLECTABLE_DECLARATION(reflection_registry, condition, reflectable_name)          \
-    template <typename T> struct rew_reflection_registry_t<T, std::enable_if_t<condition>> {            \
-        using traits_t = ::rew::meta::reflectable_traits_t<T>;                                          \
-        CORE_REFLECTABLE_BODY()
+#define CORE_CONDITIONAL_REFLECTABLE(...)                                                               \
+    template <typename T>                                                                               \
+    struct rew_reflection_registry_t<T, std::enable_if_t<__VA_ARGS__>> {                                \
+        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits_t<T>)
 
 #define CORE_REFLECTABLE_INIT(...)                                                                      \
             }                                                                                           \
@@ -68,22 +75,27 @@
 
 #ifndef REFLECTABLE_DECLARATION
     #define REFLECTABLE_DECLARATION(...)                                                                \
-        CORE_REFLECTABLE_DECLARATION(::rew::global, __VA_ARGS__)
+        CORE_REFLECTABLE_DECLARATION(__VA_ARGS__)                                                       \
+        REFLECTABLE_REGISTRY(&::rew::global)                                                            \
+        REFLECTABLE_NAME(#__VA_ARGS__)
 #endif // REFLECTABLE_DECLARATION
 
+#ifndef CONDITIONAL_REFLECTABLE_DECLARATION
+    #define CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                    \
+        CORE_CONDITIONAL_REFLECTABLE_DECLARATION(__VA_ARGS__)                                           \
+        REFLECTABLE_REGISTRY(&::rew::global)
+#endif // CONDITIONAL_REFLECTABLE_DECLARATION
+
 #ifndef REFLECTABLE
-    #define REFLECTABLE(...)                                                                            \
-        CORE_REFLECTABLE(::rew::global, __VA_ARGS__)
+    #define REFLECTABLE(...) CORE_REFLECTABLE(__VA_ARGS__)
 #endif // REFLECTABLE
 
 #ifndef CONDITIONAL_REFLECTABLE
-    #define CONDITIONAL_REFLECTABLE(condition, reflectable_name)                                        \
-        CORE_CONDITIONAL_REFLECTABLE(::rew::global, condition, reflectable_name)
-#endif // REFLECTABLE
+    #define CONDITIONAL_REFLECTABLE(...) CORE_CONDITIONAL_REFLECTABLE(__VA_ARGS__)
+#endif // CONDITIONAL_REFLECTABLE
 
 #ifndef REFLECTABLE_INIT
-    #define REFLECTABLE_INIT(...)                                                                       \
-        CORE_REFLECTABLE_INIT(__VA_RGS__)
+    #define REFLECTABLE_INIT(...) CORE_REFLECTABLE_INIT(__VA_RGS__)
 #endif // REFLECTABLE_INIT
 
 namespace rew
@@ -92,7 +104,8 @@ namespace rew
 template <typename ReflectableType>
 void reflectable()
 {
-    if constexpr (meta::reflectable_traits_t<ReflectableType>::conditional)
+    if constexpr (std::is_base_of_v<meta::conditional_reflectable_traits_t,
+                                    meta::reflectable_traits_t<ReflectableType>>)
     {
         (void)::rew_reflection_registry_t<ReflectableType>{}; // explicit instancing
     }

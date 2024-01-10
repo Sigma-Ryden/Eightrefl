@@ -19,41 +19,33 @@ namespace rew
 namespace meta
 {
 
-template <typename T, typename enable = void>
-struct is_complete : std::false_type {};
-
-template <typename T>
-struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
-
 template <typename... Bn> using all = std::conjunction<Bn...>;
 template <typename... Bn> using one = std::disjunction<Bn...>;
 
-template <typename T, typename enable = void>
-struct reflectable_name_t
-{
-    static std::string get() { return "auto"; }
-};
-
-template <> struct reflectable_name_t<void>
-{
-    static std::string get() { return "void"; }
-};
-
-template <> struct reflectable_name_t<std::nullptr_t>
-{
-    static std::string get() { return "std::nullptr_t"; }
-};
+struct base_reflectable_traits_t {};
+struct conditional_reflectable_traits_t : base_reflectable_traits_t {};
 
 template <typename T, typename enable = void>
-struct reflectable_traits_t;
+struct reflectable_traits_t
+{
+    static std::string name() { return "auto"; }
+};
 
-template <typename T> struct is_reflectable : is_complete<reflectable_traits_t<T>> {};
+template <> struct reflectable_traits_t<void> : base_reflectable_traits_t
+{
+    static std::string name() { return "void"; }
+};
+
+template <> struct reflectable_traits_t<std::nullptr_t> : base_reflectable_traits_t
+{
+    static std::string name() { return "std::nullptr_t"; }
+};
+
+template <typename T> struct is_reflectable : std::is_base_of<base_reflectable_traits_t, T> {};
 
 template <typename T> struct is_builtin_reflectable
-    : one<std::is_arithmetic<T>,
-          std::is_pointer<T>,
-          std::is_enum<T>,
-          std::is_array<T>> {};
+    : all<is_reflectable<T>,
+          one<std::is_arithmetic<T>, std::is_pointer<T>, std::is_enum<T>, std::is_array<T>>> {};
 
 template <typename T>
 struct is_custom_reflectable : all<is_reflectable<T>, std::negation<is_builtin_reflectable<T>>> {};

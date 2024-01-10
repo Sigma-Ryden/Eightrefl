@@ -26,7 +26,7 @@ ValueType argument_cast(const std::any& object)
 template <typename ArgumentType>
 std::string argument_name()
 {
-    return meta::reflectable_name_t<ArgumentType>::get();
+    return meta::reflectable_traits_t<ArgumentType>::name();
 }
 
 template <>
@@ -51,20 +51,29 @@ struct readonly_overload
     static constexpr auto of(ReturnType (*function)(OtherArgumentTypes...)) { return function; }
 };
 
-template <typename... ArgumentTypes>
-struct overload
+template <typename ClassType, typename ReturnType, typename... ArgumentTypes>
+struct readonly_overload<ReturnType (ClassType::*)(ArgumentTypes...) const>
 {
-    template <typename ClassType, typename ReturnType>
+    static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) const) { return function; }
+};
+
+template <typename...>
+struct overload;
+
+template <>
+struct overload<>
+{
+    template <typename ClassType, typename ReturnType, typename... ArgumentTypes>
     static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
 
-    template <typename ReturnType>
+    template <typename ReturnType, typename... ArgumentTypes>
     static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
+};
 
-    template <typename ClassType, typename... OtherArgumentTypes, typename ReturnType>
-    static constexpr auto of(ReturnType (ClassType::* function)(OtherArgumentTypes...)) { return function; }
-
-    template <typename... OtherArgumentTypes, typename ReturnType>
-    static constexpr auto of(ReturnType (*function)(OtherArgumentTypes...)) { return function; }
+template <typename ClassType, typename ReturnType, typename... ArgumentTypes>
+struct overload<ReturnType (ClassType::*)(ArgumentTypes...)>
+{
+    static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
 };
 
 template <typename... ArgumentTypes, typename ReturnType, class ClassType>
@@ -96,6 +105,32 @@ PropertyType property_value(PropertyType (ReflectableType::*)(void));
 
 template <typename ReflectableType, typename PropertyType>
 PropertyType property_value();
+
+template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
+static auto member_function_ptr_cast(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
+{
+    struct __inner : protected ReflectableType
+    {
+        static auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
+        {
+            return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) const>(function);
+        }
+    };
+    return __inner::get(function);
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
+static auto member_function_ptr_cast(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
+{
+    struct __inner : protected ReflectableType
+    {
+        static auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
+        {
+            return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...)>(function);
+        }
+    };
+    return __inner::get(function);
+}
 
 template <typename ArgumentType = void, typename ... ArgumentTypes>
 std::string full_function_name(const std::string& name)
@@ -135,7 +170,7 @@ std::string full_factory_name(ReturnType (*)(ArgumentTypes...))
 {
     return full_function_name<ArgumentTypes...>
     (
-        meta::reflectable_name_t<ReturnType>::get()
+        meta::reflectable_traits_t<ReturnType>::name()
     );
 }
 

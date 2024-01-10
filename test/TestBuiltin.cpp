@@ -3,58 +3,98 @@
 #include <string>
 #include <memory>
 
+REFLECTABLE_DECLARATION(bool)
+REFLECTABLE_DECLARATION_INIT()
+
 REFLECTABLE(bool)
-    FACTORY(bool())
-    FACTORY(bool(bool))
-REFLECTABLE_INIT()
-
-REFLECTABLE(char)
-    FACTORY(char())
-    FACTORY(char(char))
-REFLECTABLE_INIT()
-
-REFLECTABLE(short)
-    FACTORY(short())
-    FACTORY(short(short))
-REFLECTABLE_INIT()
-
-REFLECTABLE(int)
-    FACTORY(int())
-    FACTORY(int(int))
-REFLECTABLE_INIT()
-
-REFLECTABLE(float)
-    FACTORY(float())
-    FACTORY(float(float))
-REFLECTABLE_INIT()
-
-REFLECTABLE(double)
-    FACTORY(double())
-    FACTORY(double(double))
-REFLECTABLE_INIT()
-
-REFLECTABLE(std::size_t)
-    FACTORY(std::size_t())
-    FACTORY(std::size_t(std::size_t))
-REFLECTABLE_INIT()
-
-REFLECTABLE(std::ptrdiff_t)
-    FACTORY(std::ptrdiff_t())
-    FACTORY(std::ptrdiff_t(std::ptrdiff_t))
-REFLECTABLE_INIT()
-
-CONDITIONAL_REFLECTABLE((std::is_pointer_v<T>), (NAMEOF(std::remove_pointer_t<T>)+"*"))
     FACTORY(T())
     FACTORY(T(T))
 REFLECTABLE_INIT()
 
-CONDITIONAL_REFLECTABLE((std::is_lvalue_reference_v<T>), (NAMEOF(std::remove_reference_t<T>)+"&"))
+REFLECTABLE_DECLARATION(char)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(char)
+    FACTORY(T())
+    FACTORY(T(T))
 REFLECTABLE_INIT()
 
-CONDITIONAL_REFLECTABLE((std::is_rvalue_reference_v<T>), (NAMEOF(std::remove_reference_t<T>)+"&&"))
+REFLECTABLE_DECLARATION(short)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(short)
+    FACTORY(T())
+    FACTORY(T(T))
 REFLECTABLE_INIT()
 
-CONDITIONAL_REFLECTABLE((std::is_const_v<T>), (NAMEOF(std::remove_const_t<T>)+" const"))
+REFLECTABLE_DECLARATION(int)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(int)
+    FACTORY(T())
+    FACTORY(T(T))
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(float)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(float)
+    FACTORY(T())
+    FACTORY(T(T))
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(double)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(double)
+    FACTORY(T())
+    FACTORY(T(T))
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(std::size_t)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(std::size_t)
+    FACTORY(T())
+    FACTORY(T(T))
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(std::ptrdiff_t)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(std::ptrdiff_t)
+    FACTORY(T())
+    FACTORY(T(T))
+REFLECTABLE_INIT()
+
+CONDITIONAL_REFLECTABLE_DECLARATION(std::is_pointer_v<T>)
+    REFLECTABLE_NAME(NAMEOF(std::remove_pointer_t<T>)+"*")
+REFLECTABLE_DECLARATION_INIT()
+
+CONDITIONAL_REFLECTABLE(std::is_pointer_v<T>)
+    FACTORY(T())
+    FACTORY(T(T))
+REFLECTABLE_INIT()
+
+CONDITIONAL_REFLECTABLE_DECLARATION(std::is_lvalue_reference_v<T>)
+    REFLECTABLE_NAME(NAMEOF(std::remove_reference_t<T>)+"&")
+REFLECTABLE_DECLARATION_INIT()
+
+CONDITIONAL_REFLECTABLE(std::is_lvalue_reference_v<T>)
+REFLECTABLE_INIT()
+
+CONDITIONAL_REFLECTABLE_DECLARATION(std::is_rvalue_reference_v<T>)
+    REFLECTABLE_NAME(NAMEOF(std::remove_reference_t<T>)+"&&")
+REFLECTABLE_DECLARATION_INIT()
+
+CONDITIONAL_REFLECTABLE(std::is_rvalue_reference_v<T>)
+REFLECTABLE_INIT()
+
+CONDITIONAL_REFLECTABLE_DECLARATION(std::is_const_v<T>)
+    REFLECTABLE_NAME(NAMEOF(std::remove_const_t<T>)+" const")
+REFLECTABLE_DECLARATION_INIT()
+
+CONDITIONAL_REFLECTABLE(std::is_const_v<T>)
     FACTORY(T())
     FACTORY(T(T))
 REFLECTABLE_INIT()
@@ -62,7 +102,11 @@ REFLECTABLE_INIT()
 template <typename T> struct is_std_initializer_list : std::false_type {};
 template <typename T> struct is_std_initializer_list<std::initializer_list<T>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE((is_std_initializer_list<T>::value), ("std::initializer_list<"+NAMEOF(typename T::value_type)+">"))
+CONDITIONAL_REFLECTABLE_DECLARATION(is_std_initializer_list<T>::value)
+    REFLECTABLE_NAME("std::initializer_list<"+NAMEOF(typename T::value_type)+">")
+REFLECTABLE_DECLARATION_INIT()
+
+CONDITIONAL_REFLECTABLE(is_std_initializer_list<T>::value)
     FACTORY(T())
     FUNCTION(begin)
     FUNCTION(end)
@@ -72,30 +116,36 @@ REFLECTABLE_INIT()
 template <typename T> struct is_std_allocator : std::false_type {};
 template <typename T> struct is_std_allocator<std::allocator<T>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE((is_std_allocator<T>::value), ("std::allocator<"+NAMEOF(typename T::value_type)+">"))
+CONDITIONAL_REFLECTABLE_DECLARATION(is_std_allocator<T>::value)
+    REFLECTABLE_NAME("std::allocator<"+NAMEOF(typename T::value_type)+">")
+REFLECTABLE_DECLARATION_INIT()
+
+CONDITIONAL_REFLECTABLE(is_std_allocator<T>::value)
     FACTORY(T())
     FACTORY(T(T const&))
-    FUNCTION(allocate, typename T::size_type)
-    FUNCTION(deallocate, typename T::value_type*, typename T::size_type)
+    //FUNCTION(allocate, typename T::value_type* (T::*)(std::size_t))
+    FUNCTION(deallocate, void (T::*)(typename T::value_type*, std::size_t))
 REFLECTABLE_INIT()
 
 template <typename T> struct is_std_vector : std::false_type {};
 template <typename T, typename Allocator> struct is_std_vector<std::vector<T, Allocator>> : std::true_type {};
 
-// write auto detect const function
-CONDITIONAL_REFLECTABLE((is_std_vector<T>::value),
-    ("std::vector<"+NAMEOF(typename T::value_type)+", "+NAMEOF(typename T::allocator_type)+">"))
+CONDITIONAL_REFLECTABLE_DECLARATION(is_std_vector<T>::value)
+    REFLECTABLE_NAME("std::vector<"+NAMEOF(typename T::value_type)+", "+NAMEOF(typename T::allocator_type)+">")
+REFLECTABLE_DECLARATION_INIT()
+
+CONDITIONAL_REFLECTABLE(is_std_vector<T>::value)
     FACTORY(T(T const&))
     FACTORY(T())
     FACTORY(T(typename T::size_type))
-    FACTORY(T(typename T::size_type, T const&))
+    FACTORY(T(typename T::size_type, typename T::value_type const&))
     FACTORY(T(T const&))
     FACTORY(T(std::initializer_list<typename T::value_type>))
-    FUNCTION(operator=, T const&)
-    FUNCTION(operator=, std::initializer_list<typename T::value_type>)
-    //FUNCTION(assign, typename T::size_type, T const&)
-    //FUNCTION(assign, std::initializer_list<typename T::value_type>)
-    //READONLY_FUNCTION(get_allocator) // TODO: need fix
+    FUNCTION(operator=, T& (T::*)(T const&))
+    FUNCTION(operator=, T& (T::*)(std::initializer_list<typename T::value_type>))
+    FUNCTION(assign, void (T::*)(typename T::size_type, typename T::value_type const&))
+    FUNCTION(assign, void (T::*)(std::initializer_list<typename T::value_type>))
+    READONLY_FUNCTION(get_allocator, typename T::allocator_type (T::*)() const)
     READONLY_FUNCTION(at)
     READONLY_FUNCTION(operator[])
     READONLY_FUNCTION(front)
@@ -125,12 +175,12 @@ CONDITIONAL_REFLECTABLE((is_std_vector<T>::value),
     FUNCTION(reserve)
     FUNCTION(shrink_to_fit)
     FUNCTION(clear)
-    FUNCTION(erase, typename T::const_iterator)
-    FUNCTION(erase, typename T::const_iterator, typename T::const_iterator)
-    FUNCTION(push_back, T const&)
+    FUNCTION(erase, typename T::iterator (T::*)(typename T::const_iterator))
+    FUNCTION(erase, typename T::iterator (T::*)(typename T::const_iterator, typename T::const_iterator))
+    FUNCTION(push_back, void (T::*)(typename T::value_type const&))
     FUNCTION(pop_back)
-    FUNCTION(resize, typename T::size_type)
-    FUNCTION(resize, typename T::size_type, T const&)
+    FUNCTION(resize, void (T::*)(typename T::size_type))
+    FUNCTION(resize, void (T::*)(typename T::size_type, typename T::value_type const&))
     FUNCTION(pop_back)
 REFLECTABLE_INIT()
 
@@ -156,7 +206,11 @@ struct FSomeData : FSomeDataBase<T>
 template <typename T> struct is_std_shared_ptr : std::false_type {};
 template <typename T> struct is_std_shared_ptr<std::shared_ptr<T>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE((is_std_shared_ptr<T>::value), ("std::shared_ptr<"+NAMEOF(typename T::element_type)+">"))
+CONDITIONAL_REFLECTABLE_DECLARATION(is_std_shared_ptr<T>::value)
+    REFLECTABLE_NAME("std::shared_ptr<"+NAMEOF(typename T::element_type)+">")
+REFLECTABLE_DECLARATION_INIT()
+
+CONDITIONAL_REFLECTABLE(is_std_shared_ptr<T>::value)
     FACTORY(T())
     FACTORY(T(std::nullptr_t))
     FACTORY(T(T const&))
@@ -164,7 +218,19 @@ CONDITIONAL_REFLECTABLE((is_std_shared_ptr<T>::value), ("std::shared_ptr<"+NAMEO
     READONLY_FUNCTION(get)
     READONLY_FUNCTION(operator*)
     READONLY_FUNCTION(operator->)
-    //FUNCTION(reset)
+    FUNCTION(reset, void (T::*)())
+    READONLY_FUNCTION(use_count)
+    READONLY_FUNCTION(operator bool)
+REFLECTABLE_INIT()
+
+REFLECTABLE(std::shared_ptr<void>)
+    FACTORY(T())
+    FACTORY(T(std::nullptr_t))
+    FACTORY(T(T const&))
+    FUNCTION(swap)
+    READONLY_FUNCTION(get)
+    READONLY_FUNCTION(operator->)
+    FUNCTION(reset, void (T::*)())
     READONLY_FUNCTION(use_count)
     READONLY_FUNCTION(operator bool)
 REFLECTABLE_INIT()
@@ -178,21 +244,20 @@ REFLECTABLE_INIT()
 //    FACTORY(std::shared_ptr<FSomeData<T>>(std::shared_ptr<FSomeData<T>>))
 //REFLECTABLE_INIT()
 
-struct X {
-    void f() {}
-    template <typename T> void f(T) {}
-};
-
 TEST(TestLibrary, Test)
 {
+    //std::vector<int>::allocator_type (std::vector<int>::*__f)() const = &std::vector<int>::get_allocator;
     //void(std::shared_ptr<int>::*__p)() = &std::shared_ptr<int>::reset;
     //::rew::utility::overload<>::of(&std::shared_ptr<int>::reset);
 
     // TODO: add static assert inside reflectable
     //rew::reflectable<FSomeData<void*>>();
-    //rew::reflectable<std::vector<int>>();
-
+    rew::reflectable<std::allocator<int>>();
+    rew::reflectable<std::vector<int>>();
+    rew::reflectable<std::shared_ptr<void>>();
     auto fsome_data_type = rew::global.find("FSomeData<void*>");
+
+    return;
     auto fsome_data_base_type = fsome_data_type->reflection->parent.find("FSomeDataBase<void*>");
 
     auto factory = fsome_data_type->reflection->factory.find("std::shared_ptr<FSomeData<void*>>(std::shared_ptr<FSomeData<void*>>)");
