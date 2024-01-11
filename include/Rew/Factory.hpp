@@ -16,7 +16,7 @@
 
 #define CORE_FACTORY(factory_call_handler, ...)                                                         \
     {                                                                                                   \
-        using __function_traits = ::rew::meta::function_type_traits<__VA_ARGS__>;                       \
+        using __function_traits = ::rew::meta::function_traits<__VA_ARGS__>;                            \
         using __function_type = typename __function_traits::function_type;                              \
         using __return_type = typename __function_traits::return_type;                                  \
         ::rew::reflectable<__return_type>();                                                            \

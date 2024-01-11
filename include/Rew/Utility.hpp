@@ -26,7 +26,7 @@ ValueType argument_cast(const std::any& object)
 template <typename ArgumentType>
 std::string argument_name()
 {
-    return meta::reflectable_traits_t<ArgumentType>::name();
+    return meta::reflectable_traits<ArgumentType>::name();
 }
 
 template <>
@@ -34,47 +34,6 @@ inline std::string argument_name<void>()
 {
     return "";
 }
-
-template <typename... ArgumentTypes>
-struct readonly_overload
-{
-    template <typename ClassType, typename ReturnType>
-    static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) const) { return function; }
-
-    template <typename ReturnType>
-    static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
-
-    template <typename ClassType, typename... OtherArgumentTypes, typename ReturnType>
-    static constexpr auto of(ReturnType (ClassType::* function)(OtherArgumentTypes...) const) { return function; }
-
-    template <typename... OtherArgumentTypes, typename ReturnType>
-    static constexpr auto of(ReturnType (*function)(OtherArgumentTypes...)) { return function; }
-};
-
-template <typename ClassType, typename ReturnType, typename... ArgumentTypes>
-struct readonly_overload<ReturnType (ClassType::*)(ArgumentTypes...) const>
-{
-    static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) const) { return function; }
-};
-
-template <typename...>
-struct overload;
-
-template <>
-struct overload<>
-{
-    template <typename ClassType, typename ReturnType, typename... ArgumentTypes>
-    static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
-
-    template <typename ReturnType, typename... ArgumentTypes>
-    static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
-};
-
-template <typename ClassType, typename ReturnType, typename... ArgumentTypes>
-struct overload<ReturnType (ClassType::*)(ArgumentTypes...)>
-{
-    static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
-};
 
 template <typename... ArgumentTypes, typename ReturnType, class ClassType>
 constexpr std::size_t function_arg_count(ReturnType (ClassType::* function)(ArgumentTypes...))
@@ -153,16 +112,10 @@ std::string full_function_name(const std::string& name, ReturnType (*)(ArgumentT
     return full_function_name<ArgumentTypes...>(name);
 }
 
-template <typename ArgumentType = void, typename ... ArgumentTypes>
-std::string readonly_full_function_name(const std::string& name)
-{
-    return full_function_name<ArgumentType, ArgumentTypes...>(name) + " const";
-}
-
 template <typename ReturnType, typename ClassType, typename ... ArgumentTypes>
-std::string readonly_full_function_name(const std::string& name, ReturnType (ClassType::*)(ArgumentTypes...) const)
+std::string full_function_name(const std::string& name, ReturnType (ClassType::*)(ArgumentTypes...) const)
 {
-    return readonly_full_function_name<ArgumentTypes...>(name);
+    return full_function_name<ArgumentTypes...>(name) + " const";
 }
 
 template <typename ReturnType, typename ... ArgumentTypes>
@@ -170,7 +123,7 @@ std::string full_factory_name(ReturnType (*)(ArgumentTypes...))
 {
     return full_function_name<ArgumentTypes...>
     (
-        meta::reflectable_traits_t<ReturnType>::name()
+        meta::reflectable_traits<ReturnType>::name()
     );
 }
 

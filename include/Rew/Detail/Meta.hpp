@@ -22,26 +22,26 @@ namespace meta
 template <typename... Bn> using all = std::conjunction<Bn...>;
 template <typename... Bn> using one = std::disjunction<Bn...>;
 
-struct base_reflectable_traits_t {};
-struct conditional_reflectable_traits_t : base_reflectable_traits_t {};
+struct base_reflectable_traits {};
+struct conditional_reflectable_traits : base_reflectable_traits {};
 
 template <typename T, typename enable = void>
-struct reflectable_traits_t
+struct reflectable_traits
 {
     static std::string name() { return "auto"; }
 };
 
-template <> struct reflectable_traits_t<void> : base_reflectable_traits_t
+template <> struct reflectable_traits<void> : base_reflectable_traits
 {
     static std::string name() { return "void"; }
 };
 
-template <> struct reflectable_traits_t<std::nullptr_t> : base_reflectable_traits_t
+template <> struct reflectable_traits<std::nullptr_t> : base_reflectable_traits
 {
     static std::string name() { return "std::nullptr_t"; }
 };
 
-template <typename T> struct is_reflectable : std::is_base_of<base_reflectable_traits_t, T> {};
+template <typename T> struct is_reflectable : std::is_base_of<base_reflectable_traits, T> {};
 
 template <typename T> struct is_builtin_reflectable
     : all<is_reflectable<T>,
@@ -69,34 +69,79 @@ template <typename ArgumentType>
 struct argument_type_traits<const ArgumentType&> : argument_type_traits<ArgumentType&> {};
 
 template <typename...>
-struct function_type_traits;
+struct function_traits;
 
 template <typename ReturnType, typename... ArgumentTypes>
-struct function_type_traits<ReturnType, ArgumentTypes...>
+struct function_traits<ReturnType, ArgumentTypes...>
 {
     using return_type = ReturnType;
     using function_type = ReturnType(*)(ArgumentTypes...);
 };
 
 template <typename ReturnType>
-struct function_type_traits<ReturnType, void>
+struct function_traits<ReturnType, void>
 {
     using return_type = ReturnType;
     using function_type = ReturnType(*)(void);
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
-struct function_type_traits<ReturnType(ArgumentTypes...)>
+struct function_traits<ReturnType(ArgumentTypes...)>
 {
     using return_type = ReturnType;
     using function_type = ReturnType(*)(ArgumentTypes...);
 };
 
 template <typename ReturnType>
-struct function_type_traits<ReturnType(void)>
+struct function_traits<ReturnType(void)>
 {
     using return_type = ReturnType;
     using function_type = ReturnType(*)(void);
+};
+
+template <class ClassType>
+struct member_function_traits
+{
+    template <typename...>
+    struct overload
+    {
+        template <typename ReturnType, typename... ArgumentTypes>
+        static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) const) { return function; }
+
+        template <typename ReturnType, typename... ArgumentTypes>
+        static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
+
+        template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) const) { return function; }
+
+        template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...)) { return function; }
+
+        template <typename ReturnType, typename... ArgumentTypes>
+        static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
+    };
+
+    template <typename ReturnType, typename... ArgumentTypes>
+    struct overload<ReturnType(ArgumentTypes...) const>
+    {
+        static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) const) { return function; }
+
+        template <class ParentClassType>
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) const) { return function; }
+
+        static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
+    };
+
+    template <typename ReturnType, typename... ArgumentTypes>
+    struct overload<ReturnType(ArgumentTypes...)>
+    {
+        static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
+
+        template <class ParentClassType>
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...)) { return function; }
+
+        static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
+    };
 };
 
 } // namespace meta

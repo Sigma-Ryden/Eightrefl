@@ -19,7 +19,7 @@
         using __type = std::decay_t<                                                                    \
             decltype(::rew::utility::property_value(&__reflectable_type::__VA_ARGS__))                  \
         >;                                                                                              \
-        using __traits = ::rew::meta::reflectable_traits_t<__type>;                                     \
+        using __traits = ::rew::meta::reflectable_traits<__type>;                                       \
         ::rew::reflectable<__type>();                                                                   \
         static auto __name = #__VA_ARGS__;                                                              \
         auto __meta = __reflection->property.find(__name);                                              \

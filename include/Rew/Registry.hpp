@@ -57,7 +57,7 @@ public:
     template <typename ReflectableType>
     type_t* find()
     {
-        return get(meta::reflectable_traits_t<ReflectableType>::name());
+        return get(meta::reflectable_traits<ReflectableType>::name());
     }
 
     template <typename ReflectableType>

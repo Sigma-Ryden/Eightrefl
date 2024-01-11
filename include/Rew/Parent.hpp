@@ -14,7 +14,7 @@
 #define CORE_PARENT(parent_cast_handler, ...)                                                           \
     {                                                                                                   \
         using __type = __VA_ARGS__;                                                                     \
-        using __traits = ::rew::meta::reflectable_traits_t<__type>;                                     \
+        using __traits = ::rew::meta::reflectable_traits<__type>;                                       \
         static_assert(std::is_base_of_v<__type, __reflectable_type>);                                   \
         ::rew::reflectable<__type>();                                                                   \
         static auto __name = __traits::name();                                                          \
