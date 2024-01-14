@@ -224,12 +224,12 @@ CONDITIONAL_REFLECTABLE_DECLARATION(is_fsome_data<T>::value)
 REFLECTABLE_DECLARATION_INIT()
 
 CONDITIONAL_REFLECTABLE(is_fsome_data<T>::value)
-    PARENT(FSomeDataBase<T>)
+    PARENT(FSomeDataBase<typename T::value_type>)
     PROPERTY(data)
     PROPERTY(i)
     FUNCTION(Foo)
     FUNCTION(Goo, void(int, float))
-    FACTORY(std::shared_ptr<FSomeData<T>>(std::shared_ptr<FSomeData<T>>))
+    FACTORY(std::shared_ptr<T>(std::shared_ptr<T>))
 REFLECTABLE_INIT()
 
 template <typename T> struct is_std_shared_ptr : std::false_type {};

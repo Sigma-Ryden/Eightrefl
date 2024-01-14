@@ -78,11 +78,11 @@ struct function_traits<ReturnType(ArgumentTypes...)>
     using function_type = ReturnType(*)(ArgumentTypes...);
 };
 
-template <typename ReturnType>
-struct function_traits<ReturnType(void)>
+template <typename ReturnType, typename... ArgumentTypes>
+struct function_traits<ReturnType(*)(ArgumentTypes...)>
 {
     using return_type = ReturnType;
-    using function_type = ReturnType(*)(void);
+    using function_type = ReturnType(*)(ArgumentTypes...);
 };
 
 template <class ClassType>

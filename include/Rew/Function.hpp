@@ -16,7 +16,8 @@
 #define CORE_FUNCTION(function_name_str, function_name, ...)                                            \
     {                                                                                                   \
         using __traits = ::rew::meta::member_function_traits<__reflectable_type>;                       \
-        auto __ptr = __traits::template overload<__VA_ARGS__>::of(&__reflectable_type::function_name);  \
+        auto __dptr = __traits::template overload<__VA_ARGS__>::of(&__reflectable_type::function_name); \
+        auto __ptr = ::rew::utility::member_function_ptr_cast<__reflectable_type>(__dptr);              \
         auto __meta = ::rew::find_or_add_function(__reflection, function_name_str, __ptr);              \
         visitor.template function<__reflectable_type, decltype(__ptr)>(*__meta);                        \
     }
@@ -80,43 +81,39 @@ auto function_call_return_impl(ReturnType (*function)(ArgumentTypes...), std::in
 namespace handler
 {
 
-template <typename ReflectableType, typename ParentReflectableType, typename... ArgumentTypes>
-auto function_call(void (ParentReflectableType::* function)(ArgumentTypes...) const)
+template <typename ReflectableType, typename... ArgumentTypes>
+auto function_call(void (ReflectableType::* function)(ArgumentTypes...) const)
 {
     return detail::function_call_void_impl<ReflectableType, ArgumentTypes...>
     (
-        utility::member_function_ptr_cast<ReflectableType>(function),
-        std::index_sequence_for<ArgumentTypes...>{}
+        function, std::index_sequence_for<ArgumentTypes...>{}
     );
 }
 
-template <typename ReflectableType, typename ParentReflectableType, typename... ArgumentTypes>
-auto function_call(void (ParentReflectableType::* function)(ArgumentTypes...))
+template <typename ReflectableType, typename... ArgumentTypes>
+auto function_call(void (ReflectableType::* function)(ArgumentTypes...))
 {
     return detail::function_call_void_impl<ReflectableType, ArgumentTypes...>
     (
-        utility::member_function_ptr_cast<ReflectableType>(function),
-        std::index_sequence_for<ArgumentTypes...>{}
+        function, std::index_sequence_for<ArgumentTypes...>{}
     );
 }
 
-template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto function_call(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto function_call(ReturnType (ReflectableType::* function)(ArgumentTypes...) const)
 {
     return detail::function_call_return_impl<ReflectableType, ArgumentTypes...>
     (
-        utility::member_function_ptr_cast<ReflectableType>(function),
-        std::index_sequence_for<ArgumentTypes...>{}
+        function, std::index_sequence_for<ArgumentTypes...>{}
     );
 }
 
-template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto function_call(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto function_call(ReturnType (ReflectableType::* function)(ArgumentTypes...))
 {
     return detail::function_call_return_impl<ReflectableType, ArgumentTypes...>
     (
-        utility::member_function_ptr_cast<ReflectableType>(function),
-        std::index_sequence_for<ArgumentTypes...>{}
+        function, std::index_sequence_for<ArgumentTypes...>{}
     );
 }
 template <typename... ArgumentTypes>

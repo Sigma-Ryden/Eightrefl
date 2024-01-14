@@ -116,7 +116,7 @@ parent_t* find_or_add_parent(reflection_t* reflection)
     static_assert(std::is_base_of_v<ParentReflectableType, ReflectableType>);
     reflectable<ParentReflectableType>();
 
-    static auto __name = traits::name();
+    auto __name = traits::name();
 
     auto __meta = reflection->parent.find(__name);
     if (__meta == nullptr) __meta = &reflection->parent.add
@@ -141,7 +141,7 @@ factory_t* find_or_add_factory(reflection_t* reflection)
 
     reflectable<return_type>();
 
-    static auto __name = utility::full_factory_name(function_type{});
+    auto __name = utility::full_factory_name(function_type{});
 
     auto __meta = reflection->factory.find(__name);
     if (__meta == nullptr) __meta = &reflection->factory.add
@@ -160,7 +160,7 @@ factory_t* find_or_add_factory(reflection_t* reflection)
 template <typename FunctionType>
 function_t* find_or_add_function(reflection_t* reflection, const std::string& name, FunctionType ptr)
 {
-    static auto __name = full_function_name(name, ptr);
+    auto __name = utility::full_function_name(name, ptr);
 
     auto __meta = reflection->function.find(__name);
     if (__meta == nullptr) __meta = &reflection->function.add
@@ -168,7 +168,7 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
         __name,
         {
             __name,
-            handler::function_call<FunctionType>(ptr),
+            handler::function_call(ptr),
             utility::function_arg_count(ptr)
         }
     );
