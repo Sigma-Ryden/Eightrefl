@@ -22,15 +22,6 @@
             auto __reflection = __type->reflection;                                                     \
             visitor.template type<__reflectable_type>(*__type);
 
-#define CORE_REFLECTABLE_DECLARATION(reflection_registry, ...)                                          \
-    namespace rew { namespace meta {                                                                    \
-        template <> struct reflectable_traits<__VA_ARGS__> : base_reflectable_traits {                  \
-            using type = __VA_ARGS__;                                                                   \
-            static const auto registry() { return &reflection_registry; }                               \
-            static const std::string name() { return #__VA_ARGS__; }                                    \
-        };                                                                                              \
-    }}
-
 #define CORE_CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                   \
     namespace rew { namespace meta {                                                                    \
         template <typename T>                                                                           \
@@ -115,6 +106,107 @@ ReflectableType&& reflectable(ReflectableType&& object)
 {
     reflectable<std::decay_t<ReflectableType>>();
     return std::forward<ReflectableType>(object);
+}
+
+template <typename ReflectableType, typename ParentReflectableType>
+parent_t* find_or_add_parent(reflection_t* reflection)
+{
+    using traits = meta::reflectable_traits<ParentReflectableType>;
+
+    static_assert(std::is_base_of_v<ParentReflectableType, ReflectableType>);
+    reflectable<ParentReflectableType>();
+
+    static auto __name = traits::name();
+
+    auto __meta = reflection->parent.find(__name);
+    if (__meta == nullptr) __meta = &reflection->parent.add
+    (
+        __name,
+        {
+            __name,
+            traits::registry()->all[__name],
+            handler::parent_cast<ReflectableType, ParentReflectableType>()
+        }
+    );
+
+    return __meta;
+}
+
+template <typename FactoryType>
+factory_t* find_or_add_factory(reflection_t* reflection)
+{
+    using traits = meta::function_traits<FactoryType>;
+    using function_type = typename traits::function_type;
+    using return_type = typename traits::return_type;
+
+    reflectable<return_type>();
+
+    static auto __name = utility::full_factory_name(function_type{});
+
+    auto __meta = reflection->factory.find(__name);
+    if (__meta == nullptr) __meta = &reflection->factory.add
+    (
+        __name,
+        {
+            __name,
+            handler::factory_call(function_type{}),
+            utility::function_arg_count(function_type{}),
+        }
+    );
+
+    return __meta;
+}
+
+template <typename FunctionType>
+function_t* find_or_add_function(reflection_t* reflection, const std::string& name, FunctionType ptr)
+{
+    static auto __name = full_function_name(name, ptr);
+
+    auto __meta = reflection->function.find(__name);
+    if (__meta == nullptr) __meta = &reflection->function.add
+    (
+        __name,
+        {
+            __name,
+            handler::function_call<FunctionType>(ptr),
+            utility::function_arg_count(ptr)
+        }
+    );
+
+    return __meta;
+}
+
+template <typename PropertyGetterType, typename PropertySetterType>
+property_t* find_or_add_property(reflection_t* reflection, const std::string& name, PropertyGetterType getter, PropertySetterType setter)
+{
+    using type = std::decay_t<decltype(utility::property_value(getter))>;
+    using traits = meta::reflectable_traits<type>;
+
+    reflectable<type>();
+
+    auto __meta = reflection->property.find(name);
+    if (__meta == nullptr) __meta = &reflection->property.add
+    (
+        name,
+        {
+            name,
+            traits::registry()->all[traits::name()],
+            getter,
+            setter,
+            handler::property_ptr(getter)
+        }
+    );
+
+    return __meta;
+}
+
+template <typename MetaType>
+std::any* find_or_add_meta(reflection_t* reflection, const std::string& name, MetaType& data)
+{
+    auto __meta = reflection->meta.find(name);
+    if (__meta == nullptr) __meta = &reflection->meta.add(name, data);
+
+    return __meta;
 }
 
 } // namespace rew

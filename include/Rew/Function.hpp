@@ -13,31 +13,15 @@
 #include <Rew/Meta.hpp>
 #include <Rew/Utility.hpp>
 
-#define CORE_FUNCTION(function_call_handler, function_overload, full_function_name, name, ...)          \
+#define CORE_FUNCTION(function_name_str, function_name, ...)                                            \
     {                                                                                                   \
-        auto __ptr = ::rew::meta::member_function_traits<__reflectable_type>::                          \
-            template overload<__VA_ARGS__>::of(&__reflectable_type::name);                              \
-        using __type = decltype(__ptr);                                                                 \
-        static auto __name = full_function_name(#name, __ptr);                                          \
-        auto __meta = __reflection->function.find(__name);                                              \
-        if (__meta == nullptr) __meta = &__reflection->function.add(                                    \
-            __name,                                                                                     \
-            {                                                                                           \
-                __name,                                                                                 \
-                function_call_handler<__reflectable_type>(__ptr),                                       \
-                ::rew::utility::function_arg_count(__ptr)                                               \
-            }                                                                                           \
-        );                                                                                              \
+        using __traits = ::rew::meta::member_function_traits<__reflectable_type>;                       \
+        auto __ptr = __traits::template overload<__VA_ARGS__>::of(&__reflectable_type::function_name);  \
+        auto __meta = ::rew::find_or_add_function(__reflection, function_name_str, __ptr);              \
         visitor.template function<__reflectable_type, decltype(__ptr)>(*__meta);                        \
     }
 
-#define FUNCTION(name, ...)                                                                             \
-    CORE_FUNCTION(                                                                                      \
-        ::rew::handler::function_call,                                                                  \
-        ::rew::utility::member_function_traits,                                                         \
-        ::rew::utility::full_function_name,                                                             \
-        name,                                                                                           \
-        __VA_ARGS__)
+#define FUNCTION(name, ...) CORE_FUNCTION(#name, name, __VA_ARGS__)
 
 namespace rew
 {

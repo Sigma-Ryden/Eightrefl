@@ -11,27 +11,14 @@
 #include <Rew/Meta.hpp>
 #include <Rew/Utility.hpp>
 
-#define CORE_PARENT(parent_cast_handler, ...)                                                           \
+#define CORE_PARENT(...)                                                                                \
     {                                                                                                   \
         using __type = __VA_ARGS__;                                                                     \
-        using __traits = ::rew::meta::reflectable_traits<__type>;                                       \
-        static_assert(std::is_base_of_v<__type, __reflectable_type>);                                   \
-        ::rew::reflectable<__type>();                                                                   \
-        static auto __name = __traits::name();                                                          \
-        auto __meta = __reflection->parent.find(__name);                                                \
-        if (__meta == nullptr) __meta = &__reflection->parent.add(                                      \
-            __name,                                                                                     \
-            {                                                                                           \
-                __name,                                                                                 \
-                __traits::registry()->all[__name],                                                      \
-                parent_cast_handler<__reflectable_type, __type>()                                       \
-            }                                                                                           \
-        );                                                                                              \
+        auto __meta = ::rew::find_or_add_parent<__reflectable_type, __type>(__reflection);              \
         visitor.template parent<__reflectable_type, __type>(*__meta);                                   \
     }
 
-#define PARENT(...)                                                                                     \
-    CORE_PARENT(::rew::handler::parent_cast, __VA_ARGS__)
+#define PARENT(...) CORE_PARENT(__VA_ARGS__)
 
 namespace rew
 {

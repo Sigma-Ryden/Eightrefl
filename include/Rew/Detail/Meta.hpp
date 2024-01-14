@@ -72,20 +72,6 @@ template <typename...>
 struct function_traits;
 
 template <typename ReturnType, typename... ArgumentTypes>
-struct function_traits<ReturnType, ArgumentTypes...>
-{
-    using return_type = ReturnType;
-    using function_type = ReturnType(*)(ArgumentTypes...);
-};
-
-template <typename ReturnType>
-struct function_traits<ReturnType, void>
-{
-    using return_type = ReturnType;
-    using function_type = ReturnType(*)(void);
-};
-
-template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(ArgumentTypes...)>
 {
     using return_type = ReturnType;

@@ -5,14 +5,12 @@
 
 #include <Rew/Attribute.hpp>
 
-#define CORE_META(name, ...)                                                                            \
+#define CORE_META(meta_name_str, ...)                                                                   \
     {                                                                                                   \
-        auto __meta = __reflection->meta.find(name);                                                    \
-        if (__meta == nullptr) __meta = &__reflection->meta.add(name, __VA_ARGS__);                     \
-        visitor.template meta<__reflectable_type, decltype(__VA_ARGS__)>(name, *__meta);                \
+        auto __meta = ::rew::find_or_add_meta(__reflection, meta_name_str, __VA_ARGS__);                \
+        visitor.template meta<__reflectable_type, decltype(__VA_ARGS__)>(meta_name_str, *__meta);       \
     }
 
-#define META(name, ...)                                                                                 \
-    CORE_META(name, __VA_ARGS__)
+#define META(name, ...) CORE_META(name, __VA_ARGS__)
 
 #endif // REW_META_HPP

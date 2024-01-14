@@ -14,34 +14,23 @@
 
 #include <Rew/Utility.hpp>
 
-#define CORE_PROPERTY(property_get_handler, property_set_handler, property_ptr_handler, ...)            \
+#define CORE_PROPERTY(property_name_str, ...)                                                           \
     {                                                                                                   \
-        using __type = std::decay_t<                                                                    \
+        using __type = std::decay_t                                                                     \
+        <                                                                                               \
             decltype(::rew::utility::property_value(&__reflectable_type::__VA_ARGS__))                  \
         >;                                                                                              \
-        using __traits = ::rew::meta::reflectable_traits<__type>;                                       \
-        ::rew::reflectable<__type>();                                                                   \
-        static auto __name = #__VA_ARGS__;                                                              \
-        auto __meta = __reflection->property.find(__name);                                              \
-        if (__meta == nullptr) __meta = &__reflection->property.add(                                    \
-            __name,                                                                                     \
-            {                                                                                           \
-                __name,                                                                                 \
-                __traits::registry()->all[__traits::name()],                                            \
-                property_get_handler<__reflectable_type>(&__reflectable_type::__VA_ARGS__),             \
-                property_set_handler<__reflectable_type>(&__reflectable_type::__VA_ARGS__),             \
-                property_ptr_handler<__reflectable_type>(&__reflectable_type::__VA_ARGS__)              \
-            }                                                                                           \
+        auto __meta = ::rew::find_or_add_property                                                       \
+        (                                                                                               \
+            __reflection,                                                                               \
+            property_name_str,                                                                          \
+            ::rew::handler::property_get<__reflectable_type>(&__reflectable_type::__VA_ARGS__),         \
+            ::rew::handler::property_set<__reflectable_type>(&__reflectable_type::__VA_ARGS__)          \
         );                                                                                              \
         visitor.template property<__reflectable_type, __type>(*__meta);                                 \
     }
 
-#define PROPERTY(...)                                                                                   \
-    CORE_PROPERTY(                                                                                      \
-        ::rew::handler::property_get,                                                                   \
-        ::rew::handler::property_set,                                                                   \
-        ::rew::handler::property_ptr,                                                                   \
-        __VA_ARGS__)
+#define PROPERTY(...) CORE_PROPERTY(#__VA_ARGS__, __VA_ARGS__)
 
 namespace rew
 {
@@ -146,8 +135,8 @@ auto property_ptr_impl(PropertyGetterType getter)
 namespace handler
 {
 
-template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-auto property_ptr(PropertyType ParentReflectableType::* property)
+template <typename ReflectableType, typename PropertyType>
+auto property_ptr(PropertyType ReflectableType::* property)
 {
     return [property](std::any& context) -> std::any
     {
@@ -155,14 +144,14 @@ auto property_ptr(PropertyType ParentReflectableType::* property)
     };
 }
 
-template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-auto property_ptr(PropertyType (ParentReflectableType::* getter)(void) const)
+template <typename ReflectableType, typename PropertyType>
+auto property_ptr(PropertyType (ReflectableType::* getter)(void) const)
 {
     return detail::property_ptr_impl<ReflectableType>(getter);
 }
 
-template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-auto property_ptr(PropertyType (ParentReflectableType::* getter)(void))
+template <typename ReflectableType, typename PropertyType>
+auto property_ptr(PropertyType (ReflectableType::* getter)(void))
 {
     return detail::property_ptr_impl<ReflectableType>(getter);
 }

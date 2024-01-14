@@ -14,27 +14,15 @@
 
 #include <Rew/Utility.hpp>
 
-#define CORE_FACTORY(factory_call_handler, ...)                                                         \
+#define CORE_FACTORY(...)                                                                               \
     {                                                                                                   \
-        using __function_traits = ::rew::meta::function_traits<__VA_ARGS__>;                            \
-        using __function_type = typename __function_traits::function_type;                              \
-        using __return_type = typename __function_traits::return_type;                                  \
-        ::rew::reflectable<__return_type>();                                                            \
-        static auto __name = ::rew::utility::full_factory_name(__function_type{});                      \
-        auto __meta = __reflection->factory.find(__name);                                               \
-        if (__meta == nullptr) __meta = &__reflection->factory.add(                                     \
-            __name,                                                                                     \
-            {                                                                                           \
-                __name,                                                                                 \
-                factory_call_handler(__function_type{}),                                                \
-                ::rew::utility::function_arg_count(__function_type{}),                                  \
-            }                                                                                           \
-        );                                                                                              \
+        using __traits = ::rew::meta::function_traits<__VA_ARGS__>;                                     \
+        using __function_type = typename __traits::function_type;                                       \
+        auto __meta = ::rew::find_or_add_factory<__function_type>(__reflection);                        \
         visitor.template factory<__reflectable_type, __function_type>(*__meta);                         \
     }
 
-#define FACTORY(...)                                                                                    \
-    CORE_FACTORY(::rew::handler::factory_call, __VA_ARGS__)
+#define FACTORY(...) CORE_FACTORY(__VA_ARGS__)
 
 namespace rew
 {
