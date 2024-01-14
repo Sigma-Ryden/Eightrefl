@@ -66,7 +66,7 @@ template <typename ReflectableType, typename PropertyType>
 PropertyType property_value();
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
-static auto member_function_ptr_cast(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
+static auto member_function_ptr(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
 {
     struct __inner : protected ReflectableType
     {
@@ -79,7 +79,7 @@ static auto member_function_ptr_cast(ReturnType (ParentReflectableType::* functi
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
-static auto member_function_ptr_cast(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
+static auto member_function_ptr(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
 {
     struct __inner : protected ReflectableType
     {
@@ -89,6 +89,49 @@ static auto member_function_ptr_cast(ReturnType (ParentReflectableType::* functi
         }
     };
     return __inner::get(function);
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename ValueType>
+static auto member_property_ptr(ValueType ParentReflectableType::* property)
+{
+    struct __inner : protected ReflectableType
+    {
+        static auto get(ValueType ParentReflectableType::* property)
+        {
+            return static_cast<ValueType ReflectableType::*>(property);
+        }
+    };
+    return __inner::get(property);
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+static auto member_property_get_ptr(PropertyType ParentReflectableType::* property)
+{
+    return member_property_ptr<ReflectableType>(property);
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+static auto member_property_get_ptr(PropertyType (ParentReflectableType::* function)(void) const)
+{
+    return member_function_ptr<ReflectableType>(function);
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+static auto member_property_get_ptr(PropertyType (ParentReflectableType::* function)(void))
+{
+    return member_function_ptr<ReflectableType>(function);
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+static auto member_property_set_ptr(PropertyType ParentReflectableType::* property)
+{
+    return member_property_ptr<ReflectableType>(property);
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+static auto member_property_set_ptr(void (ParentReflectableType::* function)(PropertyType))
+{
+    return member_function_ptr<ReflectableType>(function);
 }
 
 template <typename ArgumentType = void, typename ... ArgumentTypes>

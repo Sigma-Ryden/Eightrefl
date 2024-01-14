@@ -4,6 +4,8 @@
 #include <Rew/Registry.hpp>
 #include <Rew/Detail/Meta.hpp>
 
+#define __REW_EXPAND(...) __VA_ARGS__
+
 #define NAMEOF(...)                                                                                     \
     ::rew::meta::reflectable_traits<__VA_ARGS__>::name()
 
@@ -22,16 +24,22 @@
             auto __reflection = __type->reflection;                                                     \
             visitor.template type<__reflectable_type>(*__type);
 
+#define CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                        \
+    namespace rew { namespace meta {                                                                    \
+        __REW_EXPAND template_header                                                                    \
+        struct reflectable_traits<__REW_EXPAND reflectable_type> : conditional_reflectable_traits {     \
+            using type = __REW_EXPAND reflectable_type;
+
 #define CORE_CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                   \
     namespace rew { namespace meta {                                                                    \
         template <typename T>                                                                           \
         struct reflectable_traits<T, std::enable_if_t<__VA_ARGS__>> : conditional_reflectable_traits {  \
-            using type = T;                                                                             \
+            using type = T;
 
 #define CORE_REFLECTABLE_DECLARATION(...)                                                               \
     namespace rew { namespace meta {                                                                    \
         template <> struct reflectable_traits<__VA_ARGS__> : base_reflectable_traits {                  \
-            using type = __VA_ARGS__;                                                                   \
+            using type = __VA_ARGS__;
 
 #define REFLECTABLE_REGISTRY(...)                                                                       \
     static const auto registry() { return __VA_ARGS__; }                                                \
@@ -43,15 +51,20 @@
         };                                                                                              \
     }}
 
-#define CORE_REFLECTABLE(...)                                                                           \
-    template <> struct rew_reflection_registry_t<__VA_ARGS__> {                                         \
-        using T = __VA_ARGS__;                                                                          \
-        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<__VA_ARGS__>)
+#define CORE_TEMPLATE_REFLECTABLE(template_header, reflectable_type)                                    \
+    __REW_EXPAND template_header                                                                        \
+    struct rew_reflection_registry_t<__REW_EXPAND reflectable_type> {                                   \
+        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<__REW_EXPAND reflectable_type>)
 
 #define CORE_CONDITIONAL_REFLECTABLE(...)                                                               \
     template <typename T>                                                                               \
     struct rew_reflection_registry_t<T, std::enable_if_t<__VA_ARGS__>> {                                \
         CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<T>)
+
+#define CORE_REFLECTABLE(...)                                                                           \
+    template <> struct rew_reflection_registry_t<__VA_ARGS__> {                                         \
+        using T = __VA_ARGS__;                                                                          \
+        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<__VA_ARGS__>)
 
 #define CORE_REFLECTABLE_INIT(...)                                                                      \
             }                                                                                           \
@@ -63,12 +76,11 @@
 #define REFLECTABLE_ACCESS(...)                                                                         \
     template <typename, typename> friend struct rew_reflection_registry_t;
 
-#ifndef REFLECTABLE_DECLARATION
-    #define REFLECTABLE_DECLARATION(...)                                                                \
-        CORE_REFLECTABLE_DECLARATION(__VA_ARGS__)                                                       \
-        REFLECTABLE_REGISTRY(&::rew::global)                                                            \
-        REFLECTABLE_NAME(#__VA_ARGS__)
-#endif // REFLECTABLE_DECLARATION
+#ifndef TEMPLATE_REFLECTABLE_DECLARATION
+    #define TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                         \
+        CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                        \
+        REFLECTABLE_REGISTRY(&::rew::global)
+#endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
 #ifndef CONDITIONAL_REFLECTABLE_DECLARATION
     #define CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                    \
@@ -76,13 +88,25 @@
         REFLECTABLE_REGISTRY(&::rew::global)
 #endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
-#ifndef REFLECTABLE
-    #define REFLECTABLE(...) CORE_REFLECTABLE(__VA_ARGS__)
-#endif // REFLECTABLE
+#ifndef REFLECTABLE_DECLARATION
+    #define REFLECTABLE_DECLARATION(...)                                                                \
+        CORE_REFLECTABLE_DECLARATION(__VA_ARGS__)                                                       \
+        REFLECTABLE_REGISTRY(&::rew::global)                                                            \
+        REFLECTABLE_NAME(#__VA_ARGS__)
+#endif // REFLECTABLE_DECLARATION
+
+#ifndef TEMPLATE_REFLECTABLE
+    #define TEMPLATE_REFLECTABLE(template_header, reflectable_type)                                     \
+        CORE_TEMPLATE_REFLECTABLE(template_header, reflectable_type)
+#endif // CONDITIONAL_REFLECTABLE
 
 #ifndef CONDITIONAL_REFLECTABLE
     #define CONDITIONAL_REFLECTABLE(...) CORE_CONDITIONAL_REFLECTABLE(__VA_ARGS__)
 #endif // CONDITIONAL_REFLECTABLE
+
+#ifndef REFLECTABLE
+    #define REFLECTABLE(...) CORE_REFLECTABLE(__VA_ARGS__)
+#endif // REFLECTABLE
 
 #ifndef REFLECTABLE_INIT
     #define REFLECTABLE_INIT(...) CORE_REFLECTABLE_INIT(__VA_RGS__)
@@ -191,8 +215,8 @@ property_t* find_or_add_property(reflection_t* reflection, const std::string& na
         {
             name,
             traits::registry()->all[traits::name()],
-            getter,
-            setter,
+            handler::property_get(getter),
+            handler::property_set(setter),
             handler::property_ptr(getter)
         }
     );

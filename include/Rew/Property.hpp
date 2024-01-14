@@ -24,8 +24,14 @@
         (                                                                                               \
             __reflection,                                                                               \
             property_name_str,                                                                          \
-            ::rew::handler::property_get<__reflectable_type>(&__reflectable_type::__VA_ARGS__),         \
-            ::rew::handler::property_set<__reflectable_type>(&__reflectable_type::__VA_ARGS__)          \
+            ::rew::utility::member_property_get_ptr<__reflectable_type>                                 \
+            (                                                                                           \
+                &__reflectable_type::__VA_ARGS__                                                        \
+            ),                                                                                          \
+            ::rew::utility::member_property_set_ptr<__reflectable_type>                                 \
+            (                                                                                           \
+                &__reflectable_type::__VA_ARGS__                                                        \
+            )                                                                                           \
         );                                                                                              \
         visitor.template property<__reflectable_type, __type>(*__meta);                                 \
     }
@@ -64,8 +70,8 @@ auto property_get_impl(PropertyGetterType getter)
 namespace handler
 {
 
-template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-auto property_get(PropertyType ParentReflectableType::* property)
+template <typename ReflectableType, typename PropertyType>
+auto property_get(PropertyType ReflectableType::* property)
 {
     return [property](std::any& context, std::any& result)
     {
@@ -73,20 +79,20 @@ auto property_get(PropertyType ParentReflectableType::* property)
     };
 }
 
-template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-auto property_get(PropertyType (ParentReflectableType::* getter)(void) const)
+template <typename ReflectableType, typename PropertyType>
+auto property_get(PropertyType (ReflectableType::* getter)(void) const)
 {
     return detail::property_get_impl<ReflectableType>(getter);
 }
 
-template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-auto property_get(PropertyType (ParentReflectableType::* getter)(void))
+template <typename ReflectableType, typename PropertyType>
+auto property_get(PropertyType (ReflectableType::* getter)(void))
 {
     return detail::property_get_impl<ReflectableType>(getter);
 }
 
-template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-auto property_set(PropertyType ParentReflectableType::* property)
+template <typename ReflectableType, typename PropertyType>
+auto property_set(PropertyType ReflectableType::* property)
 {
     return [property](std::any& context, const std::any& value)
     {
@@ -94,8 +100,8 @@ auto property_set(PropertyType ParentReflectableType::* property)
     };
 }
 
-template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-auto property_set(void (ParentReflectableType::* setter)(PropertyType))
+template <typename ReflectableType, typename PropertyType>
+auto property_set(void (ReflectableType::* setter)(PropertyType))
 {
     return [setter](std::any& context, const std::any& value)
     {
