@@ -53,18 +53,6 @@ constexpr std::size_t function_arg_count(ReturnType (*function)(ArgumentTypes...
     return sizeof...(ArgumentTypes);
 }
 
-template <typename ReflectableType, typename PropertyType>
-PropertyType property_value(PropertyType ReflectableType::*);
-
-template <typename ReflectableType, typename PropertyType>
-PropertyType property_value(PropertyType (ReflectableType::*)(void) const);
-
-template <typename ReflectableType, typename PropertyType>
-PropertyType property_value(PropertyType (ReflectableType::*)(void));
-
-template <typename ReflectableType, typename PropertyType>
-PropertyType property_value();
-
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
 static auto member_function_ptr(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
 {

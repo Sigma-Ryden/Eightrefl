@@ -203,7 +203,7 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
 template <typename PropertyGetterType, typename PropertySetterType>
 property_t* find_or_add_property(reflection_t* reflection, const std::string& name, PropertyGetterType getter, PropertySetterType setter)
 {
-    using type = std::decay_t<decltype(utility::property_value(getter))>;
+    using type = typename meta::property_traits<decltype(getter)>::property_type;
     using traits = meta::reflectable_traits<type>;
 
     reflectable<type>();

@@ -16,24 +16,15 @@
 
 #define CORE_PROPERTY(property_name_str, ...)                                                           \
     {                                                                                                   \
-        using __type = std::decay_t                                                                     \
-        <                                                                                               \
-            decltype(::rew::utility::property_value(&__reflectable_type::__VA_ARGS__))                  \
-        >;                                                                                              \
-        auto __meta = ::rew::find_or_add_property                                                       \
-        (                                                                                               \
-            __reflection,                                                                               \
-            property_name_str,                                                                          \
-            ::rew::utility::member_property_get_ptr<__reflectable_type>                                 \
-            (                                                                                           \
-                &__reflectable_type::__VA_ARGS__                                                        \
-            ),                                                                                          \
-            ::rew::utility::member_property_set_ptr<__reflectable_type>                                 \
-            (                                                                                           \
-                &__reflectable_type::__VA_ARGS__                                                        \
-            )                                                                                           \
+        auto __get = ::rew::utility::member_property_get_ptr<__reflectable_type>(                       \
+            &__reflectable_type::__VA_ARGS__                                                            \
         );                                                                                              \
-        visitor.template property<__reflectable_type, __type>(*__meta);                                 \
+        auto __set = ::rew::utility::member_property_set_ptr<__reflectable_type>(                       \
+            &__reflectable_type::__VA_ARGS__                                                            \
+        );                                                                                              \
+        auto __meta = ::rew::find_or_add_property(__reflection, property_name_str, __get, __set);       \
+        using __traits = ::rew::meta::property_traits<decltype(__get)>;                                 \
+        visitor.template property<__reflectable_type, typename __traits::property_type>(*__meta);       \
     }
 
 #define PROPERTY(...) CORE_PROPERTY(#__VA_ARGS__, __VA_ARGS__)
@@ -119,10 +110,10 @@ auto property_ptr_impl(PropertyGetterType getter)
 {
     return [getter](std::any& context) -> std::any
     {
-        using result_t = decltype(utility::property_value(getter));
-        if constexpr (std::is_reference_v<result_t>)
+        using type = typename meta::property_traits<decltype(getter)>::property_type;
+        if constexpr (std::is_reference_v<type>)
         {
-            constexpr auto is_const_value = std::is_const_v<std::remove_reference_t<result_t>>;
+            constexpr auto is_const_value = std::is_const_v<std::remove_reference_t<type>>;
 
             auto address = std::addressof((std::any_cast<ReflectableType*>(context)->*getter)());
 

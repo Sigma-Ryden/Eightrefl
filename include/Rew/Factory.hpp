@@ -43,7 +43,14 @@ auto factory_call_impl(std::index_sequence<I...>)
 {
     return [](const std::vector<std::any>& arguments) -> std::any
     {
-        return ReflectableType{ utility::argument_cast<ArgumentTypes>(arguments[I])... };
+        if constexpr (std::is_aggregate_v<ReflectableType>)
+        {
+            return ReflectableType{ utility::argument_cast<ArgumentTypes>(arguments[I])... };
+        }
+        else
+        {
+            return ReflectableType( utility::argument_cast<ArgumentTypes>(arguments[I])... );
+        }
     };
 }
 

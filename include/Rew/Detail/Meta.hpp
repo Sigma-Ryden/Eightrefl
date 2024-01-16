@@ -85,6 +85,27 @@ struct function_traits<ReturnType(*)(ArgumentTypes...)>
     using function_type = ReturnType(*)(ArgumentTypes...);
 };
 
+template <typename>
+struct property_traits;
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<PropertyType ReflectableType::*>
+{
+    using property_type = PropertyType;
+};
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<PropertyType (ReflectableType::*)(void) const>
+{
+    using property_type = PropertyType;
+};
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<PropertyType (ReflectableType::*)(void)>
+{
+    using property_type = PropertyType;
+};
+
 template <class ClassType>
 struct member_function_traits
 {
