@@ -47,6 +47,9 @@
 #define REFLECTABLE_NAME(...)                                                                           \
     static const std::string name() { return __VA_ARGS__; }
 
+#define BUILTIN_REFLECTABLE(...)                                                                        \
+    static auto builtin() { __VA_ARGS__ }
+
 #define REFLECTABLE_DECLARATION_INIT(...)                                                               \
         };                                                                                              \
     }}

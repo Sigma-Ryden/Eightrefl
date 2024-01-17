@@ -41,14 +41,17 @@ template <> struct reflectable_traits<std::nullptr_t> : base_reflectable_traits
     static std::string name() { return "std::nullptr_t"; }
 };
 
+namespace detail
+{
+
+template <typename T, typename enable = void> struct has_builtin : std::false_type {};
+template <typename T> struct has_builtin<T, std::void_t<decltype(&T::builtin)>> : std::true_type {};
+
+} // namespace detail
+
 template <typename T> struct is_reflectable : std::is_base_of<base_reflectable_traits, T> {};
-
-template <typename T> struct is_builtin_reflectable
-    : all<is_reflectable<T>,
-          one<std::is_arithmetic<T>, std::is_pointer<T>, std::is_enum<T>, std::is_array<T>>> {};
-
-template <typename T>
-struct is_custom_reflectable : all<is_reflectable<T>, std::negation<is_builtin_reflectable<T>>> {};
+template <typename T> struct is_builtin_reflectable : all<is_reflectable<T>, detail::has_builtin<T>> {};
+template <typename T> struct is_custom_reflectable : all<is_reflectable<T>, std::negation<is_builtin_reflectable<T>>> {};
 
 template <typename ArgumentType>
 struct argument_type_traits
