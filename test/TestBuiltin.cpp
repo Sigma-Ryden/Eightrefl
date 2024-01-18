@@ -9,64 +9,64 @@ REFLECTABLE_DECLARATION(bool)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(bool)
-    FACTORY(T())
-    FACTORY(T(T))
+    FACTORY(R())
+    FACTORY(R(R))
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(char)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(char)
-    FACTORY(T())
-    FACTORY(T(T))
+    FACTORY(R())
+    FACTORY(R(R))
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(short)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(short)
-    FACTORY(T())
-    FACTORY(T(T))
+    FACTORY(R())
+    FACTORY(R(R))
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(int)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(int)
-    FACTORY(T())
-    FACTORY(T(T))
+    FACTORY(R())
+    FACTORY(R(R))
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(float)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(float)
-    FACTORY(T())
-    FACTORY(T(T))
+    FACTORY(R())
+    FACTORY(R(R))
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(double)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(double)
-    FACTORY(T())
-    FACTORY(T(T))
+    FACTORY(R())
+    FACTORY(R(R))
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(std::size_t)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(std::size_t)
-    FACTORY(T())
-    FACTORY(T(T))
+    FACTORY(R())
+    FACTORY(R(R))
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(std::ptrdiff_t)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(std::ptrdiff_t)
-    FACTORY(T())
-    FACTORY(T(T))
+    FACTORY(R())
+    FACTORY(R(R))
 REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), (T*))
@@ -74,8 +74,8 @@ TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), (T*))
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename T>), (T*))
-    FACTORY(T*())
-    FACTORY(T*(T*))
+    FACTORY(R())
+    FACTORY(R(R))
 REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), (T&))
@@ -91,8 +91,8 @@ TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), (T const))
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename T>), (T const))
-    FACTORY(T const())
-    FACTORY(T const(T const))
+    FACTORY(R())
+    FACTORY(R(R))
 REFLECTABLE_INIT()
 
 template <typename T>
@@ -105,41 +105,41 @@ struct FSomeDataBase
 template <typename T> struct is_fsome_data_base : std::false_type {};
 template <typename T> struct is_fsome_data_base<FSomeDataBase<T>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE_DECLARATION(is_fsome_data_base<T>::value)
-    REFLECTABLE_NAME("FSomeDataBase<"+NAMEOF(typename T::value_type)+">")
+CONDITIONAL_REFLECTABLE_DECLARATION(is_fsome_data_base<R>::value)
+    REFLECTABLE_NAME("FSomeDataBase<"+NAMEOF(typename R::value_type)+">")
 REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE(is_fsome_data_base<T>::value)
+CONDITIONAL_REFLECTABLE(is_fsome_data_base<R>::value)
 REFLECTABLE_INIT()
 
-template <typename T>
-struct FSomeData : FSomeDataBase<T>
+template <typename R>
+struct FSomeData : FSomeDataBase<R>
 {
-    using value_type = T;
+    using value_type = R;
 
-    std::vector<T*> data;
+    std::vector<R*> data;
 
-    void Foo(const T *const&) {}
+    void Foo(const R *const&) {}
     void Goo(int, float) {}
 };
 
-template <typename T> struct is_fsome_data : std::false_type {};
-template <typename T> struct is_fsome_data<FSomeData<T>> : std::true_type {};
+template <typename R> struct is_fsome_data : std::false_type {};
+template <typename R> struct is_fsome_data<FSomeData<R>> : std::true_type {};
 
-template <typename T> struct is_std_shared_ptr : std::false_type {};
-template <typename T> struct is_std_shared_ptr<std::shared_ptr<T>> : std::true_type {};
+template <typename R> struct is_std_shared_ptr : std::false_type {};
+template <typename R> struct is_std_shared_ptr<std::shared_ptr<R>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE_DECLARATION(is_std_shared_ptr<T>::value)
-    REFLECTABLE_NAME("std::shared_ptr<"+NAMEOF(typename T::element_type)+">")
+CONDITIONAL_REFLECTABLE_DECLARATION(is_std_shared_ptr<R>::value)
+    REFLECTABLE_NAME("std::shared_ptr<"+NAMEOF(typename R::element_type)+">")
 REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE(is_std_shared_ptr<T>::value)
-    FACTORY(T())
-    FACTORY(T(std::nullptr_t))
-    FACTORY(T(T const&))
-    FUNCTION(operator=, T&(T const&))
+CONDITIONAL_REFLECTABLE(is_std_shared_ptr<R>::value)
+    FACTORY(R())
+    FACTORY(R(std::nullptr_t))
+    FACTORY(R(R const&))
+    FUNCTION(operator=, R&(R const&))
     FUNCTION(reset, void())
-    FUNCTION(template reset<typename T::element_type>, void(typename T::element_type*))
+    FUNCTION(template reset<typename R::element_type>, void(typename R::element_type*))
     FUNCTION(swap)
     FUNCTION(get)
     FUNCTION(operator*)
@@ -149,10 +149,10 @@ CONDITIONAL_REFLECTABLE(is_std_shared_ptr<T>::value)
 REFLECTABLE_INIT()
 
 REFLECTABLE(std::shared_ptr<void>)
-    FACTORY(T())
-    FACTORY(T(std::nullptr_t))
-    FACTORY(T(T const&))
-    FUNCTION(operator=, T&(T const&))
+    FACTORY(R())
+    FACTORY(R(std::nullptr_t))
+    FACTORY(R(R const&))
+    FUNCTION(operator=, R&(R const&))
     FUNCTION(reset, void())
     FUNCTION(swap)
     FUNCTION(get)
@@ -161,17 +161,17 @@ REFLECTABLE(std::shared_ptr<void>)
     FUNCTION(operator bool)
 REFLECTABLE_INIT()
 
-CONDITIONAL_REFLECTABLE_DECLARATION(is_fsome_data<T>::value)
-    REFLECTABLE_NAME("FSomeData<"+NAMEOF(typename T::value_type)+">")
+CONDITIONAL_REFLECTABLE_DECLARATION(is_fsome_data<R>::value)
+    REFLECTABLE_NAME("FSomeData<"+NAMEOF(typename R::value_type)+">")
 REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE(is_fsome_data<T>::value)
-    PARENT(FSomeDataBase<typename T::value_type>)
+CONDITIONAL_REFLECTABLE(is_fsome_data<R>::value)
+    PARENT(FSomeDataBase<typename R::value_type>)
     PROPERTY(data)
     PROPERTY(i)
     FUNCTION(Foo)
     FUNCTION(Goo, void(int, float))
-    FACTORY(std::shared_ptr<T>(std::shared_ptr<T>))
+    FACTORY(std::shared_ptr<R>(std::shared_ptr<R>))
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, Test)

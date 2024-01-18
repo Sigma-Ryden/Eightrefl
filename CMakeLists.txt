@@ -26,10 +26,10 @@ set(REW
 #	include/Rew/BuiltIn/Core.hpp
 	include/Rew/BuiltIn/allocator.hpp
 	include/Rew/BuiltIn/vector.hpp
-#	include/Rew/BuiltIn/array.hpp
+	include/Rew/BuiltIn/array.hpp
 #	include/Rew/BuiltIn/string.hpp
 	include/Rew/BuiltIn/initializer_list.hpp
-#	include/Rew/BuiltIn/pair.hpp
+	include/Rew/BuiltIn/pair.hpp
 #	include/Rew/BuiltIn/tuple.hpp
 #	include/Rew/BuiltIn/list.hpp
 #	include/Rew/BuiltIn/forward_list.hpp

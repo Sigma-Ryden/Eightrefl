@@ -5,25 +5,13 @@
 
 #include <Rew/Reflectable.hpp>
 
-namespace rew
-{
-
-namespace meta
-{
-
-template <typename T> struct is_std_initializer_list : std::false_type {};
-template <typename T> struct is_std_initializer_list<std::initializer_list<T>> : std::true_type {};
-
-} // namespace meta
-
-} // namespace rew
-
-CONDITIONAL_REFLECTABLE_DECLARATION(rew::meta::is_std_initializer_list<T>::value)
-    REFLECTABLE_NAME("std::initializer_list<"+NAMEOF(typename T::value_type)+">")
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::initializer_list<ValueType>))
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::initializer_list<" + NAMEOF(ValueType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE(rew::meta::is_std_initializer_list<T>::value)
-    FACTORY(T())
+TEMPLATE_REFLECTABLE((template <typename ValueType>), (std::initializer_list<ValueType>))
+    FACTORY(R())
     FUNCTION(begin)
     FUNCTION(end)
     FUNCTION(size)

@@ -1,62 +1,85 @@
-#ifndef SF_BUILT_IN_STRING_HPP
-#define SF_BUILT_IN_STRING_HPP
+#ifndef REW_BUILT_IN_STRING_HPP
+#define REW_BUILT_IN_STRING_HPP
 
-#include <type_traits> // true_type, false_type
+#include <vector> // vector
 
-#include <string> // basic_string
+#include <Rew/Reflectable.hpp>
 
-#include <SF/Core/TypeRegistry.hpp>
-#include <SF/Core/TypeCore.hpp>
+// default allocator for vector
+#include <Rew/BuiltIn/allocator.hpp>
 
-#include <SF/ExternSerialization.hpp>
-#include <SF/Compress.hpp>
+// as argument type
+#include <Rew/BuiltIn/initializer_list.hpp>
 
-namespace sf
+namespace rew
 {
 
 namespace meta
 {
 
-template <typename>
-struct is_std_basic_string : std::false_type {};
-
-template <typename Char, typename Traits, typename Alloc>
-struct is_std_basic_string<std::basic_string<Char, Traits, Alloc>> : std::true_type {};
+template <typename T> struct is_std_vector : std::false_type {};
+template <typename T, typename Allocator> struct is_std_vector<std::vector<T, Allocator>> : std::true_type {};
 
 } // namespace meta
 
-inline namespace library
-{
+} // namespace rew
 
-EXTERN_CONDITIONAL_SERIALIZATION(Save, string, meta::is_std_basic_string<T>::value)
-{
-    using char_type = typename T::value_type;
+CONDITIONAL_REFLECTABLE_DECLARATION(rew::meta::is_std_vector<T>::value)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::vector<" + NAMEOF(typename T::value_type) + ", " + NAMEOF(typename T::allocator_type) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-    let::u64 size = string.size();
-    archive & size;
+CONDITIONAL_REFLECTABLE(rew::meta::is_std_vector<T>::value)
+    FACTORY(T(T const&))
+    FACTORY(T())
+    FACTORY(T(typename T::size_type))
+    FACTORY(T(typename T::size_type, typename T::const_reference))
+    FACTORY(T(T const&))
+    FACTORY(T(std::initializer_list<typename T::value_type>))
+    FUNCTION(operator=, T&(T const&))
+    FUNCTION(operator=, T&(std::initializer_list<typename T::value_type>))
+    FUNCTION(assign, void(typename T::size_type, typename T::const_reference))
+    FUNCTION(assign, void(std::initializer_list<typename T::value_type>))
+    FUNCTION(get_allocator)
+    FUNCTION(at, typename T::const_reference(typename T::size_type) const)
+    FUNCTION(at, typename T::reference(typename T::size_type))
+    FUNCTION(operator[], typename T::const_reference(typename T::size_type) const)
+    FUNCTION(operator[], typename T::reference(typename T::size_type))
+    FUNCTION(front, typename T::const_reference() const)
+    FUNCTION(front, typename T::reference())
+    FUNCTION(back, typename T::const_reference() const)
+    FUNCTION(back, typename T::reference())
+    FUNCTION(data, typename T::const_pointer() const)
+    FUNCTION(data, typename T::pointer())
+    FUNCTION(begin, typename T::const_iterator() const)
+    FUNCTION(begin, typename T::iterator())
+    FUNCTION(cbegin, typename T::const_iterator() const)
+    FUNCTION(end, typename T::const_iterator() const)
+    FUNCTION(end, typename T::iterator())
+    FUNCTION(cend, typename T::const_iterator() const)
+    FUNCTION(rbegin, typename T::const_reverse_iterator() const)
+    FUNCTION(rbegin, typename T::reverse_iterator())
+    FUNCTION(crbegin, typename T::const_reverse_iterator() const)
+    FUNCTION(rend, typename T::const_reverse_iterator() const)
+    FUNCTION(rend, typename T::reverse_iterator())
+    FUNCTION(crend, typename T::const_reverse_iterator() const)
+    FUNCTION(empty)
+    FUNCTION(size)
+    FUNCTION(max_size)
+    FUNCTION(capacity)
+    FUNCTION(reserve)
+    FUNCTION(shrink_to_fit)
+    FUNCTION(clear)
+    FUNCTION(insert, typename T::iterator(typename T::const_iterator, typename T::const_reference))
+    FUNCTION(insert, typename T::iterator(typename T::const_iterator, typename T::size_type, typename T::const_reference))
+    FUNCTION(insert, typename T::iterator(typename T::const_iterator, std::initializer_list<typename T::value_type>))
+    FUNCTION(erase, typename T::iterator(typename T::const_iterator))
+    FUNCTION(erase, typename T::iterator(typename T::const_iterator, typename T::const_iterator))
+    FUNCTION(push_back, void(typename T::const_reference))
+    FUNCTION(pop_back)
+    FUNCTION(resize, void(typename T::size_type))
+    FUNCTION(resize, void(typename T::size_type, typename T::const_reference))
+    FUNCTION(swap)
+REFLECTABLE_INIT()
 
-    compress::zip(archive, string);
-
-    return archive;
-}
-
-EXTERN_CONDITIONAL_SERIALIZATION(Load, string, meta::is_std_basic_string<T>::value)
-{
-    using char_type = typename T::value_type;
-
-    let::u64 size{};
-    archive & size;
-
-    string.resize(size);
-    compress::zip(archive, string);
-
-    return archive;
-}
-
-} // inline namespace library
-
-} // namespace sf
-
-CONDITIONAL_TYPE_REGISTRY(meta::is_std_basic_string<T>::value)
-
-#endif // SF_BUILT_IN_STRING_HPP
+#endif // REW_BUILT_IN_STRING_HPP

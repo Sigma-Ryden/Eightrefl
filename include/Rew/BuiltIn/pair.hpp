@@ -1,38 +1,23 @@
-#ifndef SF_BUILT_IN_PAIR_HPP
-#define SF_BUILT_IN_PAIR_HPP
-
-#include <type_traits> // true_type, false_type
+#ifndef REW_BUILT_IN_PAIR_HPP
+#define REW_BUILT_IN_PAIR_HPP
 
 #include <utility> // pair
 
-#include <SF/Core/TypeRegistry.hpp>
-#include <SF/ExternSerialization.hpp>
+#include <Rew/Reflectable.hpp>
 
-namespace sf
-{
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename FirstType, typename SecondType>), (std::pair<FirstType, SecondType>))
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::pair<" + NAMEOF(FirstType) + ", " + NAMEOF(SecondType) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-namespace meta
-{
+TEMPLATE_REFLECTABLE((template <typename FirstType, typename SecondType>), (std::pair<FirstType, SecondType>))
+    FACTORY(R())
+    FACTORY(R(typename R::first_type const&, typename R::second_type const&))
+    FACTORY(R(R const&))
+    FUNCTION(operator=, R&(R const&))
+    FUNCTION(swap, void(R&))
+    PROPERTY(first)
+    PROPERTY(second)
+REFLECTABLE_INIT()
 
-template <typename> struct is_std_pair : std::false_type {};
-template <typename T1, typename T2>
-struct is_std_pair<std::pair<T1, T2>> : std::true_type {};
-
-} // namespace meta
-
-inline namespace library
-{
-
-EXTERN_CONDITIONAL_SERIALIZATION(SaveLoad, pair, meta::is_std_pair<T>::value)
-{
-    archive & pair.first & pair.second;
-    return archive;
-}
-
-} // inline namespace library
-
-} // namespace sf
-
-CONDITIONAL_TYPE_REGISTRY(meta::is_std_pair<T>::value)
-
-#endif // SF_BUILT_IN_PAIR_HPP
+#endif // REW_BUILT_IN_PAIR_HPP

@@ -6,8 +6,7 @@
 
 #define __REW_EXPAND(...) __VA_ARGS__
 
-#define NAMEOF(...)                                                                                     \
-    ::rew::meta::reflectable_traits<__VA_ARGS__>::name()
+#define NAMEOF(...) (::rew::meta::reflectable_traits<__VA_ARGS__>::name())
 
 #define CORE_REFLECTABLE_BODY(...)                                                                      \
     struct eval_t {                                                                                     \
@@ -28,18 +27,20 @@
     namespace rew { namespace meta {                                                                    \
         __REW_EXPAND template_header                                                                    \
         struct reflectable_traits<__REW_EXPAND reflectable_type> : conditional_reflectable_traits {     \
-            using type = __REW_EXPAND reflectable_type;
+            using type = __REW_EXPAND reflectable_type;                                                 \
+            using R = type;
 
 #define CORE_CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                   \
     namespace rew { namespace meta {                                                                    \
-        template <typename T>                                                                           \
-        struct reflectable_traits<T, std::enable_if_t<__VA_ARGS__>> : conditional_reflectable_traits {  \
-            using type = T;
+        template <typename R>                                                                           \
+        struct reflectable_traits<R, std::enable_if_t<__VA_ARGS__>> : conditional_reflectable_traits {  \
+            using type = R;
 
 #define CORE_REFLECTABLE_DECLARATION(...)                                                               \
     namespace rew { namespace meta {                                                                    \
         template <> struct reflectable_traits<__VA_ARGS__> : base_reflectable_traits {                  \
-            using type = __VA_ARGS__;
+            using type = __VA_ARGS__;                                                                   \
+            using R = type;
 
 #define REFLECTABLE_REGISTRY(...)                                                                       \
     static const auto registry() { return __VA_ARGS__; }                                                \
@@ -57,17 +58,18 @@
 #define CORE_TEMPLATE_REFLECTABLE(template_header, reflectable_type)                                    \
     __REW_EXPAND template_header                                                                        \
     struct rew_reflection_registry_t<__REW_EXPAND reflectable_type> {                                   \
-        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<__REW_EXPAND reflectable_type>)
+        using R = __REW_EXPAND reflectable_type;                                                        \
+        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<R>)
 
 #define CORE_CONDITIONAL_REFLECTABLE(...)                                                               \
-    template <typename T>                                                                               \
-    struct rew_reflection_registry_t<T, std::enable_if_t<__VA_ARGS__>> {                                \
-        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<T>)
+    template <typename R>                                                                               \
+    struct rew_reflection_registry_t<R, std::enable_if_t<__VA_ARGS__>> {                                \
+        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<R>)
 
 #define CORE_REFLECTABLE(...)                                                                           \
     template <> struct rew_reflection_registry_t<__VA_ARGS__> {                                         \
-        using T = __VA_ARGS__;                                                                          \
-        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<__VA_ARGS__>)
+        using R = __VA_ARGS__;                                                                          \
+        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<R>)
 
 #define CORE_REFLECTABLE_INIT(...)                                                                      \
             }                                                                                           \
