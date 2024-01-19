@@ -1,7 +1,7 @@
 #ifndef REW_BUILT_IN_OPTIONAL_HPP
 #define REW_BUILT_IN_OPTIONAL_HPP
 
-#include <optional> // optional
+#include <optional> // optional, nullopt_t
 
 #include <Rew/Reflectable.hpp>
 

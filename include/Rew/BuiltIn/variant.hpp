@@ -1,9 +1,12 @@
 #ifndef REW_BUILT_IN_VARIANT_HPP
 #define REW_BUILT_IN_VARIANT_HPP
 
-#include <variant> // variant
+#include <variant> // variant, monostate
 
 #include <Rew/Reflectable.hpp>
+
+REFLECTABLE_DECLARATION(std::monostate)
+REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 ((template <typename ArgumentType, typename... ArgumentTypes>), (std::variant<ArgumentType, ArgumentTypes...>))
