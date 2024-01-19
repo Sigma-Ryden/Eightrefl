@@ -15,7 +15,7 @@ TEMPLATE_REFLECTABLE((template <typename FirstType, typename SecondType>), (std:
     FACTORY(R(typename R::first_type const&, typename R::second_type const&))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
-    FUNCTION(swap, void(R&))
+    FUNCTION(swap)
     PROPERTY(first)
     PROPERTY(second)
 REFLECTABLE_INIT()

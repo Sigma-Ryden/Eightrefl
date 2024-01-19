@@ -5,16 +5,15 @@
 
 #include <Rew/Reflectable.hpp>
 
-// as argument type
-#include <Rew/BuiltIn/initializer_list.hpp>
-
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, std::size_t ArraySize>), (std::array<ValueType, ArraySize>))
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::array<" + NAMEOF(ValueType) + ", " + std::to_string(ArraySize) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t ArraySize>), (std::array<ValueType, ArraySize>))
-    FACTORY(R(std::initializer_list<typename R::value_type>))
+    FACTORY(R())
+    FACTORY(R(R const&))
+    FUNCTION(operator=, R&(R const&))
     FUNCTION(at, typename R::const_reference(typename R::size_type) const)
     FUNCTION(at, typename R::reference(typename R::size_type))
     FUNCTION(operator[], typename R::const_reference(typename R::size_type) const)

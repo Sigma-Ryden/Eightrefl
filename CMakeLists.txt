@@ -30,24 +30,26 @@ set(REW
 #	include/Rew/BuiltIn/string.hpp
 	include/Rew/BuiltIn/initializer_list.hpp
 	include/Rew/BuiltIn/pair.hpp
-#	include/Rew/BuiltIn/tuple.hpp
+	include/Rew/BuiltIn/tuple.hpp
 #	include/Rew/BuiltIn/list.hpp
 #	include/Rew/BuiltIn/forward_list.hpp
 #	include/Rew/BuiltIn/set.hpp
-#	include/Rew/BuiltIn/unique_ptr.hpp
-#	include/Rew/BuiltIn/shared_ptr.hpp
-#	include/Rew/BuiltIn/weak_ptr.hpp
+	include/Rew/BuiltIn/shared_ptr.hpp
+	include/Rew/BuiltIn/weak_ptr.hpp
 #	include/Rew/BuiltIn/map.hpp
 #	include/Rew/BuiltIn/deque.hpp
 #	include/Rew/BuiltIn/stack.hpp
 #	include/Rew/BuiltIn/queue.hpp
 #	include/Rew/BuiltIn/valarray.hpp
-#	include/Rew/BuiltIn/bitset.hpp
-#	include/Rew/BuiltIn/atomic.hpp
-#	include/Rew/BuiltIn/complex.hpp
-#	include/Rew/BuiltIn/optional.hpp
-#	include/Rew/BuiltIn/variant.hpp
-#	include/Rew/BuiltIn/any.hpp include/Rew/BuiltIn/any.cpp
+	include/Rew/BuiltIn/bitset.hpp
+	include/Rew/BuiltIn/complex.hpp
+	include/Rew/BuiltIn/optional.hpp
+	include/Rew/BuiltIn/variant.hpp
+	include/Rew/BuiltIn/any.hpp
+
+	include/Rew/BuiltIn/typeinfo.hpp
+	include/Rew/BuiltIn/typeindex.hpp
+	include/Rew/BuiltIn/hash.hpp
 
 	include/Rew/Core.hpp
 )

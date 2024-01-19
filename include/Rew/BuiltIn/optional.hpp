@@ -1,59 +1,38 @@
-#ifndef SF_BUILT_IN_OPTIONAL_HPP
-#define SF_BUILT_IN_OPTIONAL_HPP
-
-#if __cplusplus >= 201703L
-
-#include <type_traits> // true_type, false_type
+#ifndef REW_BUILT_IN_OPTIONAL_HPP
+#define REW_BUILT_IN_OPTIONAL_HPP
 
 #include <optional> // optional
 
-#include <SF/Core/TypeRegistry.hpp>
-#include <SF/ExternSerialization.hpp>
+#include <Rew/Reflectable.hpp>
 
-namespace sf
-{
+REFLECTABLE_DECLARATION(std::nullopt_t)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
 
-namespace meta
-{
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::optional<ValueType>))
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::optional<" + NAMEOF(ValueType) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-template <typename> struct is_std_optional : std::false_type {};
-template <typename T> struct is_std_optional<std::optional<T>> : std::true_type {};
+TEMPLATE_REFLECTABLE((template <typename ValueType>), (std::optional<ValueType>))
+    FACTORY(R())
+    FACTORY(R(std::nullopt_t))
+    FACTORY(R(R const&))
+    FACTORY(R(typename R::value_type const&))
+    FUNCTION(operator=, R&(std::nullopt_t))
+    FUNCTION(operator=, R&(R const&))
+    FUNCTION(operator=, R&(typename R::value_type const&))
+    FUNCTION(operator->, typename R::value_type const*() const)
+    FUNCTION(operator->, typename R::value_type const*())
+    FUNCTION(operator*, typename R::value_type const&())
+    FUNCTION(operator*, typename R::value_type&())
+    FUNCTION(operator bool)
+    FUNCTION(has_value)
+    FUNCTION(value, typename R::value_type&())
+    FUNCTION(value, typename R::value_type const&() const)
+    FUNCTION(value_or, typename R::value_type(typename R::value_type const&) const)
+    FUNCTION(swap)
+    FUNCTION(reset)
+REFLECTABLE_INIT()
 
-} // namespace meta
-
-inline namespace library
-{
-
-EXTERN_CONDITIONAL_SERIALIZATION(Save, optional, meta::is_std_optional<T>::value)
-{
-    auto is_init = optional.has_value();
-    archive & is_init;
-
-    if (is_init) archive & optional.value();
-
-    return archive;
-}
-
-EXTERN_CONDITIONAL_SERIALIZATION(Load, optional, meta::is_std_optional<T>::value)
-{
-    auto is_init = false;
-    archive & is_init;
-
-    if (is_init)
-    {
-        optional.emplace();
-        archive & optional.value();
-    }
-
-    return archive;
-}
-
-} // inline namespace library
-
-} // namespace sf
-
-CONDITIONAL_TYPE_REGISTRY(meta::is_std_optional<T>::value)
-
-#endif // if
-
-#endif // SF_BUILT_IN_OPTIONAL_HPP
+#endif // REW_BUILT_IN_OPTIONAL_HPP

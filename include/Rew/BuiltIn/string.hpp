@@ -1,7 +1,7 @@
 #ifndef REW_BUILT_IN_STRING_HPP
 #define REW_BUILT_IN_STRING_HPP
 
-#include <vector> // vector
+#include <string> // basic_string
 
 #include <Rew/Reflectable.hpp>
 
@@ -11,58 +11,45 @@
 // as argument type
 #include <Rew/BuiltIn/initializer_list.hpp>
 
-namespace rew
-{
-
-namespace meta
-{
-
-template <typename T> struct is_std_vector : std::false_type {};
-template <typename T, typename Allocator> struct is_std_vector<std::vector<T, Allocator>> : std::true_type {};
-
-} // namespace meta
-
-} // namespace rew
-
-CONDITIONAL_REFLECTABLE_DECLARATION(rew::meta::is_std_vector<T>::value)
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, typename AllocatorType>), (std::vector<ValueType, AllocatorType>))
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::vector<" + NAMEOF(typename T::value_type) + ", " + NAMEOF(typename T::allocator_type) + ">")
+    REFLECTABLE_NAME("std::vector<" + NAMEOF(ValueType) + ", " + NAMEOF(AllocatorType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE(rew::meta::is_std_vector<T>::value)
-    FACTORY(T(T const&))
-    FACTORY(T())
-    FACTORY(T(typename T::size_type))
-    FACTORY(T(typename T::size_type, typename T::const_reference))
-    FACTORY(T(T const&))
-    FACTORY(T(std::initializer_list<typename T::value_type>))
-    FUNCTION(operator=, T&(T const&))
-    FUNCTION(operator=, T&(std::initializer_list<typename T::value_type>))
-    FUNCTION(assign, void(typename T::size_type, typename T::const_reference))
-    FUNCTION(assign, void(std::initializer_list<typename T::value_type>))
+TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (std::vector<ValueType, AllocatorType>))
+    FACTORY(R(R const&))
+    FACTORY(R())
+    FACTORY(R(typename R::size_type))
+    FACTORY(R(typename R::size_type, typename R::const_reference))
+    FACTORY(R(R const&))
+    FACTORY(R(std::initializer_list<typename R::value_type>))
+    FUNCTION(operator=, R&(R const&))
+    FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
+    FUNCTION(assign, void(typename R::size_type, typename R::const_reference))
+    FUNCTION(assign, void(std::initializer_list<typename R::value_type>))
     FUNCTION(get_allocator)
-    FUNCTION(at, typename T::const_reference(typename T::size_type) const)
-    FUNCTION(at, typename T::reference(typename T::size_type))
-    FUNCTION(operator[], typename T::const_reference(typename T::size_type) const)
-    FUNCTION(operator[], typename T::reference(typename T::size_type))
-    FUNCTION(front, typename T::const_reference() const)
-    FUNCTION(front, typename T::reference())
-    FUNCTION(back, typename T::const_reference() const)
-    FUNCTION(back, typename T::reference())
-    FUNCTION(data, typename T::const_pointer() const)
-    FUNCTION(data, typename T::pointer())
-    FUNCTION(begin, typename T::const_iterator() const)
-    FUNCTION(begin, typename T::iterator())
-    FUNCTION(cbegin, typename T::const_iterator() const)
-    FUNCTION(end, typename T::const_iterator() const)
-    FUNCTION(end, typename T::iterator())
-    FUNCTION(cend, typename T::const_iterator() const)
-    FUNCTION(rbegin, typename T::const_reverse_iterator() const)
-    FUNCTION(rbegin, typename T::reverse_iterator())
-    FUNCTION(crbegin, typename T::const_reverse_iterator() const)
-    FUNCTION(rend, typename T::const_reverse_iterator() const)
-    FUNCTION(rend, typename T::reverse_iterator())
-    FUNCTION(crend, typename T::const_reverse_iterator() const)
+    FUNCTION(at, typename R::const_reference(typename R::size_type) const)
+    FUNCTION(at, typename R::reference(typename R::size_type))
+    FUNCTION(operator[], typename R::const_reference(typename R::size_type) const)
+    FUNCTION(operator[], typename R::reference(typename R::size_type))
+    FUNCTION(front, typename R::const_reference() const)
+    FUNCTION(front, typename R::reference())
+    FUNCTION(back, typename R::const_reference() const)
+    FUNCTION(back, typename R::reference())
+    FUNCTION(data, typename R::const_pointer() const)
+    FUNCTION(data, typename R::pointer())
+    FUNCTION(begin, typename R::const_iterator() const)
+    FUNCTION(begin, typename R::iterator())
+    FUNCTION(cbegin, typename R::const_iterator() const)
+    FUNCTION(end, typename R::const_iterator() const)
+    FUNCTION(end, typename R::iterator())
+    FUNCTION(cend, typename R::const_iterator() const)
+    FUNCTION(rbegin, typename R::const_reverse_iterator() const)
+    FUNCTION(rbegin, typename R::reverse_iterator())
+    FUNCTION(crbegin, typename R::const_reverse_iterator() const)
+    FUNCTION(rend, typename R::const_reverse_iterator() const)
+    FUNCTION(rend, typename R::reverse_iterator())
+    FUNCTION(crend, typename R::const_reverse_iterator() const)
     FUNCTION(empty)
     FUNCTION(size)
     FUNCTION(max_size)
@@ -70,15 +57,15 @@ CONDITIONAL_REFLECTABLE(rew::meta::is_std_vector<T>::value)
     FUNCTION(reserve)
     FUNCTION(shrink_to_fit)
     FUNCTION(clear)
-    FUNCTION(insert, typename T::iterator(typename T::const_iterator, typename T::const_reference))
-    FUNCTION(insert, typename T::iterator(typename T::const_iterator, typename T::size_type, typename T::const_reference))
-    FUNCTION(insert, typename T::iterator(typename T::const_iterator, std::initializer_list<typename T::value_type>))
-    FUNCTION(erase, typename T::iterator(typename T::const_iterator))
-    FUNCTION(erase, typename T::iterator(typename T::const_iterator, typename T::const_iterator))
-    FUNCTION(push_back, void(typename T::const_reference))
+    FUNCTION(insert, typename R::iterator(typename R::const_iterator, typename R::const_reference))
+    FUNCTION(insert, typename R::iterator(typename R::const_iterator, typename R::size_type, typename R::const_reference))
+    FUNCTION(insert, typename R::iterator(typename R::const_iterator, std::initializer_list<typename R::value_type>))
+    FUNCTION(erase, typename R::iterator(typename R::const_iterator))
+    FUNCTION(erase, typename R::iterator(typename R::const_iterator, typename R::const_iterator))
+    FUNCTION(push_back, void(typename R::const_reference))
     FUNCTION(pop_back)
-    FUNCTION(resize, void(typename T::size_type))
-    FUNCTION(resize, void(typename T::size_type, typename T::const_reference))
+    FUNCTION(resize, void(typename R::size_type))
+    FUNCTION(resize, void(typename R::size_type, typename R::const_reference))
     FUNCTION(swap)
 REFLECTABLE_INIT()
 

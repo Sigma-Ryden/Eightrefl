@@ -1,11 +1,21 @@
 #include "RewTestingBase.hpp"
 
 #include <Rew/BuiltIn/vector.hpp>
+#include <Rew/BuiltIn/shared_ptr.hpp>
 
 #include <string>
 #include <memory>
 
+REFLECTABLE_DECLARATION(void)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE_DECLARATION(std::nullptr_t)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
 REFLECTABLE_DECLARATION(bool)
+    BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(bool)
@@ -14,6 +24,7 @@ REFLECTABLE(bool)
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(char)
+    BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(char)
@@ -22,6 +33,7 @@ REFLECTABLE(char)
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(short)
+    BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(short)
@@ -30,6 +42,7 @@ REFLECTABLE(short)
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(int)
+    BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(int)
@@ -38,6 +51,7 @@ REFLECTABLE(int)
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(float)
+    BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(float)
@@ -46,6 +60,7 @@ REFLECTABLE(float)
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(double)
+    BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(double)
@@ -54,6 +69,7 @@ REFLECTABLE(double)
 REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(std::size_t)
+    BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(std::size_t)
@@ -70,6 +86,7 @@ REFLECTABLE(std::ptrdiff_t)
 REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), (T*))
+    BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(T)+"*")
 REFLECTABLE_DECLARATION_INIT()
 
@@ -79,14 +96,17 @@ TEMPLATE_REFLECTABLE((template <typename T>), (T*))
 REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), (T&))
+    BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(T)+"&")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), (T&&))
+    BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(T)+"&&")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), (T const))
+    BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(T)+" const")
 REFLECTABLE_DECLARATION_INIT()
 
@@ -125,41 +145,6 @@ struct FSomeData : FSomeDataBase<R>
 
 template <typename R> struct is_fsome_data : std::false_type {};
 template <typename R> struct is_fsome_data<FSomeData<R>> : std::true_type {};
-
-template <typename R> struct is_std_shared_ptr : std::false_type {};
-template <typename R> struct is_std_shared_ptr<std::shared_ptr<R>> : std::true_type {};
-
-CONDITIONAL_REFLECTABLE_DECLARATION(is_std_shared_ptr<R>::value)
-    REFLECTABLE_NAME("std::shared_ptr<"+NAMEOF(typename R::element_type)+">")
-REFLECTABLE_DECLARATION_INIT()
-
-CONDITIONAL_REFLECTABLE(is_std_shared_ptr<R>::value)
-    FACTORY(R())
-    FACTORY(R(std::nullptr_t))
-    FACTORY(R(R const&))
-    FUNCTION(operator=, R&(R const&))
-    FUNCTION(reset, void())
-    FUNCTION(template reset<typename R::element_type>, void(typename R::element_type*))
-    FUNCTION(swap)
-    FUNCTION(get)
-    FUNCTION(operator*)
-    FUNCTION(operator->)
-    FUNCTION(use_count)
-    FUNCTION(operator bool)
-REFLECTABLE_INIT()
-
-REFLECTABLE(std::shared_ptr<void>)
-    FACTORY(R())
-    FACTORY(R(std::nullptr_t))
-    FACTORY(R(R const&))
-    FUNCTION(operator=, R&(R const&))
-    FUNCTION(reset, void())
-    FUNCTION(swap)
-    FUNCTION(get)
-    FUNCTION(operator->)
-    FUNCTION(use_count)
-    FUNCTION(operator bool)
-REFLECTABLE_INIT()
 
 CONDITIONAL_REFLECTABLE_DECLARATION(is_fsome_data<R>::value)
     REFLECTABLE_NAME("FSomeData<"+NAMEOF(typename R::value_type)+">")

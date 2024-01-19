@@ -1,53 +1,53 @@
-#ifndef SF_BUILT_IN_BITSET_HPP
-#define SF_BUILT_IN_BITSET_HPP
+#ifndef REW_BUILT_IN_BITSET_HPP
+#define REW_BUILT_IN_BITSET_HPP
 
-#include <type_traits> // true_type, false_type
+#include <string> // to_string
 
-#include <bitset> // bitset
+#include <bitset> // bitest
 
-#include <SF/Core/TypeRegistry.hpp>
-#include <SF/ExternSerialization.hpp>
+#include <Rew/Reflectable.hpp>
 
-// default array for bitset convertion
-#include <SF/BuiltIn/string.hpp>
+TEMPLATE_REFLECTABLE_DECLARATION((template <std::size_t BitsetSize>), (std::bitset<BitsetSize>))
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::bitset<" + std::to_string(BitsetSize) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-namespace sf
-{
+TEMPLATE_REFLECTABLE((template <std::size_t BitsetSize>), (std::bitset<BitsetSize>))
+    FACTORY(R())
+    FACTORY(R(R const&))
+    FACTORY(R(unsigned long))
+    FACTORY(R(unsigned long long))
+    FACTORY(R(std::string const&, std::size_t))
+    FACTORY(R(std::string const&))
+    FACTORY(R(char const*, std::size_t))
+    FACTORY(R(char const*))
+    FUNCTION(operator=, R&(R const&))
+    FUNCTION(operator==)
+    FUNCTION(operator[], bool(std::size_t) const)
+    FUNCTION(operator[], typename R::reference(std::size_t))
+    FUNCTION(test)
+    FUNCTION(all)
+    FUNCTION(any)
+    FUNCTION(none)
+    FUNCTION(count)
+    FUNCTION(size)
+    FUNCTION(operator&=)
+    FUNCTION(operator|=)
+    FUNCTION(operator^=)
+    FUNCTION(operator~)
+    FUNCTION(operator<<)
+    FUNCTION(operator<<=)
+    FUNCTION(operator>>)
+    FUNCTION(operator>>=)
+    FUNCTION(set, R&())
+    FUNCTION(set, R&(std::size_t, bool))
+    FUNCTION(reset, R&())
+    FUNCTION(reset, R&(std::size_t))
+    FUNCTION(flip, R&())
+    FUNCTION(flip, R&(std::size_t))
+    FUNCTION(to_string, std::string(char, char) const)
+    FUNCTION(to_ulong)
+    FUNCTION(to_ullong)
+REFLECTABLE_INIT()
 
-namespace meta
-{
-
-template <typename> struct is_std_bitset : std::false_type {};
-template <std::size_t N> struct is_std_bitset<std::bitset<N>> : std::true_type {};
-
-} // namespace meta
-
-inline namespace library
-{
-
-// slow implementation
-EXTERN_CONDITIONAL_SERIALIZATION(Save, bitset, meta::is_std_bitset<T>::value)
-{
-    auto data = bitset.to_string();
-    archive & data;
-
-    return archive;
-}
-
-EXTERN_CONDITIONAL_SERIALIZATION(Load, bitset, meta::is_std_bitset<T>::value)
-{
-    std::string data;
-    archive & data;
-
-    bitset = T(data);
-
-    return archive;
-}
-
-} // inline namespace library
-
-} // namespace sf
-
-CONDITIONAL_TYPE_REGISTRY(meta::is_std_bitset<T>::value)
-
-#endif // SF_BUILT_IN_BITSET_HPP
+#endif // REW_BUILT_IN_BITSET_HPP

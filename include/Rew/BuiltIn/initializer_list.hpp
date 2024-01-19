@@ -11,7 +11,6 @@ TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::initiali
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType>), (std::initializer_list<ValueType>))
-    FACTORY(R())
     FUNCTION(begin)
     FUNCTION(end)
     FUNCTION(size)
