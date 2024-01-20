@@ -29,7 +29,7 @@ set(REW
 
 	include/Rew/BuiltIn/vector.hpp
 	include/Rew/BuiltIn/array.hpp
-#	include/Rew/BuiltIn/string.hpp
+	include/Rew/BuiltIn/string.hpp
 	include/Rew/BuiltIn/pair.hpp
 	include/Rew/BuiltIn/tuple.hpp
 	include/Rew/BuiltIn/list.hpp

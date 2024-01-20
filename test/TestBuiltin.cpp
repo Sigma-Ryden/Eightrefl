@@ -2,6 +2,7 @@
 
 #include <Rew/BuiltIn/vector.hpp>
 #include <Rew/BuiltIn/shared_ptr.hpp>
+#include <Rew/BuiltIn/string.hpp>
 
 #include <string>
 #include <memory>
@@ -135,7 +136,7 @@ struct FSomeData : FSomeDataBase<R>
     std::vector<R*> data;
 
     void Foo(const R *const&) {}
-    void Goo(int, float) {}
+    void Goo(int, std::string) {}
 };
 
 template <typename R> struct is_fsome_data : std::false_type {};
@@ -150,7 +151,7 @@ CONDITIONAL_REFLECTABLE(is_fsome_data<R>::value)
     PROPERTY(data)
     PROPERTY(i)
     FUNCTION(Foo)
-    FUNCTION(Goo, void(int, float))
+    FUNCTION(Goo, void(int, std::string))
     FACTORY(std::shared_ptr<R>(std::shared_ptr<R>))
 REFLECTABLE_INIT()
 
@@ -164,6 +165,7 @@ TEST(TestLibrary, Test)
     rew::reflectable<std::allocator<int>>();
     rew::reflectable<std::vector<int>>();
     rew::reflectable<std::shared_ptr<int>>();
+    rew::reflectable<std::string>();
 
     auto vector_type = rew::global.find("std::vector<int, std::allocator<int>>");
     auto get_allocator_function = vector_type->reflection->function.find("get_allocator() const");

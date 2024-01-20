@@ -77,7 +77,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (s
     FUNCTION(remove_if, typename R::size_type(std::function<bool(typename R::const_reference)>))
     FUNCTION(unique, typename R::size_type())
     FUNCTION(unique, typename R::size_type(std::function<bool(typename R::const_reference, typename R::const_reference)>))
-#endif
+#endif // if
     FUNCTION(reverse)
     FUNCTION(sort, void())
     FUNCTION(sort, void(std::function<bool(typename R::const_reference, typename R::const_reference)>))
