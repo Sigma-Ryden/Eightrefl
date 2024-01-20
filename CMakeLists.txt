@@ -33,7 +33,7 @@ set(REW
 	include/Rew/BuiltIn/pair.hpp
 	include/Rew/BuiltIn/tuple.hpp
 	include/Rew/BuiltIn/list.hpp
-#	include/Rew/BuiltIn/forward_list.hpp
+	include/Rew/BuiltIn/forward_list.hpp
 #	include/Rew/BuiltIn/set.hpp
 	include/Rew/BuiltIn/shared_ptr.hpp
 	include/Rew/BuiltIn/weak_ptr.hpp

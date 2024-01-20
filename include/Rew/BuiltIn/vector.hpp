@@ -66,7 +66,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (s
     FUNCTION(clear)
     FUNCTION(insert, typename R::iterator(typename R::const_iterator, typename R::const_reference))
     FUNCTION(insert, typename R::iterator(typename R::const_iterator, typename R::size_type, typename R::const_reference))
-    FUNCTION(insert, typename R::iterator(typename R::const_iterator, typename R::const_reference, typename R::const_reference))
+    FUNCTION(insert, typename R::iterator(typename R::const_iterator, typename R::const_iterator, typename R::const_iterator))
     FUNCTION(insert, typename R::iterator(typename R::const_iterator, std::initializer_list<typename R::value_type>))
     FUNCTION(erase, typename R::iterator(typename R::const_iterator))
     FUNCTION(erase, typename R::iterator(typename R::const_iterator, typename R::const_iterator))

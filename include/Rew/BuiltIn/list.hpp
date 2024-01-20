@@ -10,6 +10,7 @@
 
 // as argument type
 #include <Rew/BuiltIn/initializer_list.hpp>
+#include <Rew/BuiltIn/function.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, typename AllocatorType>), (std::list<ValueType, AllocatorType>))
     BUILTIN_REFLECTABLE()
@@ -59,7 +60,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (s
     FUNCTION(clear)
     FUNCTION(insert, typename R::iterator(typename R::const_iterator, typename R::const_reference))
     FUNCTION(insert, typename R::iterator(typename R::const_iterator, typename R::size_type, typename R::const_reference))
-    FUNCTION(insert, typename R::iterator(typename R::const_iterator, typename R::const_reference, typename R::const_reference))
+    FUNCTION(insert, typename R::iterator(typename R::const_iterator, typename R::const_iterator, typename R::const_iterator))
     FUNCTION(insert, typename R::iterator(typename R::const_iterator, std::initializer_list<typename R::value_type>))
     FUNCTION(erase, typename R::iterator(typename R::const_iterator))
     FUNCTION(erase, typename R::iterator(typename R::const_iterator, typename R::const_iterator))
@@ -71,6 +72,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (s
     FUNCTION(resize, void(typename R::size_type, typename R::const_reference))
     FUNCTION(swap)
     FUNCTION(merge, void(R&))
+    FUNCTION(merge, void(R&, std::function<bool(typename R::const_reference, typename R::const_reference)>))
     FUNCTION(splice, void(typename R::const_iterator, R&))
     FUNCTION(splice, void(typename R::const_iterator, R&, typename R::const_iterator))
     FUNCTION(splice, void(typename R::const_iterator, R&, typename R::const_iterator, typename R::const_iterator))
