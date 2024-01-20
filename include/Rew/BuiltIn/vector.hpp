@@ -17,7 +17,6 @@ TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, typename Allocat
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (std::vector<ValueType, AllocatorType>))
-    FACTORY(R(R const&))
     FACTORY(R())
     FACTORY(R(typename R::size_type))
     FACTORY(R(typename R::size_type, typename R::const_reference))

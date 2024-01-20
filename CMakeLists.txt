@@ -23,12 +23,13 @@ set(REW
 
 	include/Rew/Detail/Meta.hpp
 
-#	include/Rew/BuiltIn/Core.hpp
+	include/Rew/BuiltIn/hash.hpp
+	include/Rew/BuiltIn/function.hpp
 	include/Rew/BuiltIn/allocator.hpp
+
 	include/Rew/BuiltIn/vector.hpp
 	include/Rew/BuiltIn/array.hpp
 #	include/Rew/BuiltIn/string.hpp
-	include/Rew/BuiltIn/initializer_list.hpp
 	include/Rew/BuiltIn/pair.hpp
 	include/Rew/BuiltIn/tuple.hpp
 #	include/Rew/BuiltIn/list.hpp
@@ -38,18 +39,20 @@ set(REW
 	include/Rew/BuiltIn/weak_ptr.hpp
 #	include/Rew/BuiltIn/map.hpp
 #	include/Rew/BuiltIn/deque.hpp
-#	include/Rew/BuiltIn/stack.hpp
+	include/Rew/BuiltIn/stack.hpp
 #	include/Rew/BuiltIn/queue.hpp
-#	include/Rew/BuiltIn/valarray.hpp
+	include/Rew/BuiltIn/valarray.hpp
 	include/Rew/BuiltIn/bitset.hpp
 	include/Rew/BuiltIn/complex.hpp
 	include/Rew/BuiltIn/optional.hpp
 	include/Rew/BuiltIn/variant.hpp
 	include/Rew/BuiltIn/any.hpp
 
+	include/Rew/BuiltIn/initializer_list.hpp
+	include/Rew/BuiltIn/reference_wrapper.hpp
+
 	include/Rew/BuiltIn/typeinfo.hpp
 	include/Rew/BuiltIn/typeindex.hpp
-	include/Rew/BuiltIn/hash.hpp
 
 	include/Rew/Core.hpp
 )

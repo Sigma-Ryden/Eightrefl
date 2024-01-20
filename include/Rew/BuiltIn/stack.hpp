@@ -1,43 +1,31 @@
-#ifndef SF_BUILT_IN_STACK_HPP
-#define SF_BUILT_IN_STACK_HPP
-
-#include <type_traits> // true_type, false_type
+#ifndef REW_BUILT_IN_STACK_HPP
+#define REW_BUILT_IN_STACK_HPP
 
 #include <stack> // stack
 
-#include <SF/Core/TypeRegistry.hpp>
-#include <SF/ExternSerialization.hpp>
-
-#include <SF/BuiltIn/Detail/Meta.hpp>
+#include <Rew/Reflectable.hpp>
 
 // default container for stack
-#include <SF/BuiltIn/deque.hpp>
+#include <Rew/BuiltIn/deque.hpp>
 
-namespace sf
-{
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, class ContainerType>), (std::vector<ValueType, ContainerType>))
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::stack<" + NAMEOF(ValueType) + ", " + NAMEOF(ContainerType) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-namespace meta
-{
+TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), (std::stack<ValueType, ContainerType>))
+    FACTORY(R())
+    FACTORY(R(typename R::container_type const&))
+    FACTORY(R(R const&))
+    FUNCTION(operator=, R&(R const&))
+    FUNCTION(top, typename R::reference())
+    FUNCTION(top, typename R::const_reference() const)
+    FUNCTION(empty)
+    FUNCTION(size)
+    FUNCTION(push, void(typename R::const_reference))
+    FUNCTION(pop)
+    FUNCTION(swap)
+    FUNCTION(emplace, void(typename R::const_reference))
+REFLECTABLE_INIT()
 
-template <typename> struct is_std_stack : std::false_type {};
-template <typename T, class Container>
-struct is_std_stack<std::stack<T, Container>> : std::true_type {};
-
-} // namespace meta
-
-inline namespace library
-{
-
-EXTERN_CONDITIONAL_SERIALIZATION(SaveLoad, stack, meta::is_std_stack<T>::value)
-{
-    archive & meta::underlying(stack);
-    return archive;
-}
-
-} // inline namespace library
-
-} // namespace sf
-
-CONDITIONAL_TYPE_REGISTRY(meta::is_std_stack<T>::value)
-
-#endif // SF_BUILT_IN_STACK_HPP
+#endif // REW_BUILT_IN_STACK_HPP

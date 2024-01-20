@@ -5,16 +5,22 @@
 
 #include <Rew/Reflectable.hpp>
 
+REFLECTABLE_DECLARATION(std::tuple<>)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
 TEMPLATE_REFLECTABLE_DECLARATION
-((template <typename ArgumentType, typename... ArgumentTypes>), (std::tuple<ArgumentType, ArgumentTypes...>))
+(
+    (template <typename ArgumentType, typename... ArgumentTypes>),
+    (std::tuple<ArgumentType, ArgumentTypes...>)
+)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::tuple<" + NAMEOF(ArgumentType) + (", " + ... + NAMEOF(ArgumentTypes)) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE
-((template <typename ArgumentType, typename... ArgumentTypes>), (std::tuple<ArgumentType, ArgumentTypes...>))
+TEMPLATE_REFLECTABLE((template <typename... ArgumentTypes>), (std::tuple<ArgumentTypes...>))
     FACTORY(R())
-    FACTORY(R(ArgumentType, ArgumentTypes...))
+    FACTORY(R(ArgumentTypes...))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(swap)

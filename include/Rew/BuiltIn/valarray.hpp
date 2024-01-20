@@ -1,56 +1,121 @@
-#ifndef SF_BUILT_IN_VALARRAY_HPP
-#define SF_BUILT_IN_VALARRAY_HPP
-
-#include <type_traits> // true_type, false_type
+// TODO: add support of functions, for reflect apply() function
+#ifndef REW_BUILT_IN_VALARRAY_HPP
+#define REW_BUILT_IN_VALARRAY_HPP
 
 #include <valarray> // valarray
 
-#include <SF/Core/TypeRegistry.hpp>
-#include <SF/Core/TypeCore.hpp>
+#include <Rew/Reflectable.hpp>
 
-#include <SF/ExternSerialization.hpp>
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::valarray<ValueType>))
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::valarray<" + NAMEOF(ValueType) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-#include <SF/Compress.hpp>
+TEMPLATE_REFLECTABLE((template <typename ValueType>), (std::valarray<ValueType>))
+    FACTORY(R())
+    FACTORY(R(std::size_t))
+    FACTORY(R(ValueType const&, std::size_t))
+    FACTORY(R(ValueType const*, std::size_t))
+    FACTORY(R(R const&))
+    FACTORY(R(std::slice_array<ValueType> const&))
+    FACTORY(R(std::gslice_array<ValueType> const&))
+    FACTORY(R(std::mask_array<ValueType> const&))
+    FACTORY(R(std::indirect_array<ValueType> const&))
+    FACTORY(R(std::initializer_list<ValueType>))
+    FUNCTION(operator=, R&(R const&))
+    FUNCTION(operator=, R&(std::slice_array<ValueType> const&))
+    FUNCTION(operator=, R&(std::gslice_array<ValueType> const&))
+    FUNCTION(operator=, R&(std::mask_array<ValueType> const&))
+    FUNCTION(operator=, R&(std::indirect_array<ValueType> const&))
+    FUNCTION(operator=, R&(std::initializer_list<ValueType>))
+    FUNCTION(operator[], ValueType const&(std::size_t) const)
+    FUNCTION(operator[], ValueType&(std::size_t))
+    FUNCTION(operator[], R(std::slice) const)
+    FUNCTION(operator[], std::slice_array<ValueType>(std::slice))
+    FUNCTION(operator[], R(std::gslice const&) const)
+    FUNCTION(operator[], std::gslice_array<ValueType>(std::gslice const&))
+    FUNCTION(operator[], R(std::valarray<bool> const&) const)
+    FUNCTION(operator[], std::mask_array<ValueType>(std::valarray<bool> const&))
+    FUNCTION(operator[], R(std::valarray<std::size_t> const&) const)
+    FUNCTION(operator[], std::indirect_array<ValueType>(std::valarray<std::size_t> const&))
+    FUNCTION(operator+)
+    FUNCTION(operator-)
+    FUNCTION(operator~)
+    FUNCTION(operator!)
+    FUNCTION(operator+=, R&(R const&))
+    FUNCTION(operator-=, R&(R const&))
+    FUNCTION(operator*=, R&(R const&))
+    FUNCTION(operator/=, R&(R const&))
+    FUNCTION(operator%=, R&(R const&))
+    FUNCTION(operator&=, R&(R const&))
+    FUNCTION(operator|=, R&(R const&))
+    FUNCTION(operator^=, R&(R const&))
+    FUNCTION(operator<<=, R&(R const&))
+    FUNCTION(operator>>=, R&(R const&))
+    FUNCTION(operator+=, R&(ValueType const&))
+    FUNCTION(operator-=, R&(ValueType const&))
+    FUNCTION(operator*=, R&(ValueType const&))
+    FUNCTION(operator/=, R&(ValueType const&))
+    FUNCTION(operator%=, R&(ValueType const&))
+    FUNCTION(operator&=, R&(ValueType const&))
+    FUNCTION(operator|=, R&(ValueType const&))
+    FUNCTION(operator^=, R&(ValueType const&))
+    FUNCTION(operator<<=, R&(ValueType const&))
+    FUNCTION(operator>>=, R&(ValueType const&))
+    FUNCTION(swap)
+    FUNCTION(size)
+    FUNCTION(resize)
+    FUNCTION(sum)
+    FUNCTION(min)
+    FUNCTION(max)
+    FUNCTION(shift)
+    FUNCTION(cshift)
+REFLECTABLE_INIT()
 
-namespace sf
-{
+REFLECTABLE_DECLARATION(std::slice)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
 
-namespace meta
-{
+REFLECTABLE(std::slice)
+    FACTORY(R())
+    FACTORY(R(std::size_t, std::size_t, std::size_t))
+    FACTORY(R(R const&))
+    FUNCTION(start)
+    FUNCTION(size)
+    FUNCTION(stride)
+REFLECTABLE_INIT()
 
-template <typename> struct is_std_valarray : std::false_type {};
-template <typename T> struct is_std_valarray<std::valarray<T>> : std::true_type {};
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::slice_array<ValueType>))
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::slice_array<" + NAMEOF(ValueType) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-} // namespace meta
+REFLECTABLE_DECLARATION(std::gslice)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
 
-inline namespace library
-{
+REFLECTABLE(std::gslice)
+    FACTORY(R())
+    FACTORY(R(std::size_t, std::valarray<std::size_t> const&, std::valarray<std::size_t> const&))
+    FACTORY(R(R const&))
+    FUNCTION(start)
+    FUNCTION(size)
+    FUNCTION(stride)
+REFLECTABLE_INIT()
 
-EXTERN_CONDITIONAL_SERIALIZATION(Save, valarray, meta::is_std_valarray<T>::value)
-{
-    let::u64 size = valarray.size();
-    archive & size;
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::gslice_array<ValueType>))
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::gslice_array<" + NAMEOF(ValueType) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-    compress::zip(archive, valarray);
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::mask_array<ValueType>))
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::mask_array<" + NAMEOF(ValueType) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-    return archive;
-}
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::indirect_array<ValueType>))
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::indirect_array<" + NAMEOF(ValueType) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-EXTERN_CONDITIONAL_SERIALIZATION(Load, valarray, meta::is_std_valarray<T>::value)
-{
-    let::u64 size{};
-    archive & size;
-
-    valarray.resize(size);
-    compress::zip(archive, valarray);
-
-    return archive;
-}
-
-} // inline namespace library
-
-} // namespace sf
-
-CONDITIONAL_TYPE_REGISTRY(meta::is_std_valarray<T>::value)
-
-#endif // SF_BUILT_IN_VALARRAY_HPP
+#endif // REW_BUILT_IN_VALARRAY_HPP

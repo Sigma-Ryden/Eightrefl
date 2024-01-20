@@ -33,6 +33,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), (std::optional<ValueType>)
     FUNCTION(value_or, typename R::value_type(typename R::value_type const&) const)
     FUNCTION(swap)
     FUNCTION(reset)
+    FUNCTION(emplace, void(typename R::value_type const&))
 REFLECTABLE_INIT()
 
 #endif // REW_BUILT_IN_OPTIONAL_HPP
