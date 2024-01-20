@@ -1,54 +1,32 @@
-#ifndef SF_BUILT_IN_QUEUE_HPP
-#define SF_BUILT_IN_QUEUE_HPP
-
-#include <type_traits> // true_type, false_type
+#ifndef REW_BUILT_IN_QUEUE_HPP
+#define REW_BUILT_IN_QUEUE_HPP
 
 #include <queue> // queue
 
-#include <SF/Core/TypeRegistry.hpp>
-#include <SF/ExternSerialization.hpp>
-
-#include <SF/BuiltIn/Detail/Meta.hpp>
+#include <Rew/Reflectable.hpp>
 
 // default container for queue
-#include <SF/BuiltIn/deque.hpp>
+#include <Rew/BuiltIn/deque.hpp>
 
-// default container for priority_queue
-#include <SF/BuiltIn/vector.hpp>
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, class ContainerType>), (std::queue<ValueType, ContainerType>))
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::queue<" + NAMEOF(ValueType) + ", " + NAMEOF(ContainerType) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-namespace sf
-{
+TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), (std::queue<ValueType, ContainerType>))
+    FACTORY(R())
+    FACTORY(R(typename R::container_type const&))
+    FACTORY(R(R const&))
+    FUNCTION(operator=, R&(R const&))
+    FUNCTION(front, typename R::reference())
+    FUNCTION(front, typename R::const_reference() const)
+    FUNCTION(back, typename R::reference())
+    FUNCTION(back, typename R::const_reference() const)
+    FUNCTION(empty)
+    FUNCTION(size)
+    FUNCTION(push, void(typename R::const_reference))
+    FUNCTION(pop)
+    FUNCTION(swap)
+REFLECTABLE_INIT()
 
-namespace meta
-{
-
-template <typename> struct is_std_queue : std::false_type {};
-template <typename T, class Container>
-struct is_std_queue<std::queue<T, Container>> : std::true_type {};
-
-template <typename> struct is_std_priority_queue : std::false_type {};
-template <typename T, class Container, class Compare>
-struct is_std_priority_queue<std::priority_queue<T, Container, Compare>> : std::true_type {};
-
-template <class T> struct is_std_any_queue
-    : one<is_std_queue<T>,
-          is_std_priority_queue<T>> {};
-
-} // namespace meta
-
-inline namespace library
-{
-
-EXTERN_CONDITIONAL_SERIALIZATION(SaveLoad, queue, meta::is_std_any_queue<T>::value)
-{
-    archive & meta::underlying(queue);
-    return archive;
-}
-
-} // inline namespace library
-
-} // namespace sf
-
-CONDITIONAL_TYPE_REGISTRY(meta::is_std_any_queue<T>::value)
-
-#endif // SF_BUILT_IN_QUEUE_HPP
+#endif // REW_BUILT_IN_QUEUE_HPP
