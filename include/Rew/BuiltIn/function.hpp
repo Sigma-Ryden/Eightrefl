@@ -16,7 +16,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     (std::function<ReturnType(ArgumentType, ArgumentTypes...)>)
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::function<" + NAMEOF(ReturnType) + "(" + NAMEOF(ArgumentType) + + (", " + ... + NAMEOF(ArgumentTypes)) + ")>")
+    REFLECTABLE_NAME("std::function<" + NAMEOF(ReturnType) + "(" + NAMEOF(ArgumentType) + (", " + ... + NAMEOF(ArgumentTypes)) + ")>")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE

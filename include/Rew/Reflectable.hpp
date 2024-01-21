@@ -27,19 +27,19 @@
 #define CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                        \
     namespace rew { namespace meta {                                                                    \
         __REW_EXPAND template_header                                                                    \
-        struct reflectable_traits<__REW_EXPAND reflectable_type> : conditional_reflectable_traits {     \
+        struct reflectable_traits<__REW_EXPAND reflectable_type> {                                      \
             using type = __REW_EXPAND reflectable_type;                                                 \
             using R = type;
 
 #define CORE_CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                   \
     namespace rew { namespace meta {                                                                    \
         template <typename R>                                                                           \
-        struct reflectable_traits<R, std::enable_if_t<__VA_ARGS__>> : conditional_reflectable_traits {  \
+        struct reflectable_traits<R, std::enable_if_t<__VA_ARGS__>> {                                   \
             using type = R;
 
 #define CORE_REFLECTABLE_DECLARATION(...)                                                               \
     namespace rew { namespace meta {                                                                    \
-        template <> struct reflectable_traits<__VA_ARGS__> : base_reflectable_traits {                  \
+        template <> struct reflectable_traits<__VA_ARGS__> {                                            \
             using type = __VA_ARGS__;                                                                   \
             using R = type;
 
@@ -48,6 +48,9 @@
 
 #define REFLECTABLE_NAME(...)                                                                           \
     static const std::string name() { return __VA_ARGS__; }
+
+#define LAZY_REFLECTABLE(...)                                                                           \
+    static auto lazy() { __VA_ARGS__ }
 
 #define BUILTIN_REFLECTABLE(...)                                                                        \
     static auto builtin() { __VA_ARGS__ }
@@ -85,13 +88,15 @@
 #ifndef TEMPLATE_REFLECTABLE_DECLARATION
     #define TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                         \
         CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                        \
-        REFLECTABLE_REGISTRY(&::rew::global)
+        REFLECTABLE_REGISTRY(&::rew::global)                                                            \
+        LAZY_REFLECTABLE()
 #endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
 #ifndef CONDITIONAL_REFLECTABLE_DECLARATION
     #define CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                    \
         CORE_CONDITIONAL_REFLECTABLE_DECLARATION(__VA_ARGS__)                                           \
-        REFLECTABLE_REGISTRY(&::rew::global)
+        REFLECTABLE_REGISTRY(&::rew::global)                                                            \
+        LAZY_REFLECTABLE()
 #endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
 #ifndef REFLECTABLE_DECLARATION
@@ -124,10 +129,15 @@ namespace rew
 template <typename ReflectableType>
 void reflectable()
 {
-    if constexpr (std::is_base_of_v<meta::conditional_reflectable_traits,
-                                    meta::reflectable_traits<ReflectableType>>)
+    (void)::rew_reflection_registry_t<ReflectableType>{}; // explicit instancing
+}
+
+template <typename ReflectableType>
+void lazy_reflectable()
+{
+    if constexpr (meta::is_lazy_reflectable<ReflectableType>::value)
     {
-        (void)::rew_reflection_registry_t<ReflectableType>{}; // explicit instancing
+        reflectable<ReflectableType>();
     }
 }
 
@@ -141,12 +151,12 @@ ReflectableType&& reflectable(ReflectableType&& object)
 template <typename ReflectableType, typename ParentReflectableType>
 parent_t* find_or_add_parent(reflection_t* reflection)
 {
-    using traits = meta::reflectable_traits<ParentReflectableType>;
+    using reflectable_traits = meta::reflectable_traits<ParentReflectableType>;
 
     static_assert(std::is_base_of_v<ParentReflectableType, ReflectableType>);
-    reflectable<ParentReflectableType>();
+    lazy_reflectable<ParentReflectableType>();
 
-    auto __name = traits::name();
+    auto __name = reflectable_traits::name();
 
     auto __meta = reflection->parent.find(__name);
     if (__meta == nullptr) __meta = &reflection->parent.add
@@ -154,7 +164,7 @@ parent_t* find_or_add_parent(reflection_t* reflection)
         __name,
         {
             __name,
-            traits::registry()->all[__name],
+            reflectable_traits::registry()->all[__name],
             handler::parent_cast<ReflectableType, ParentReflectableType>()
         }
     );
@@ -165,11 +175,11 @@ parent_t* find_or_add_parent(reflection_t* reflection)
 template <typename FactoryType>
 factory_t* find_or_add_factory(reflection_t* reflection)
 {
-    using traits = meta::function_traits<FactoryType>;
-    using function_type = typename traits::function_type;
-    using return_type = typename traits::return_type;
+    using function_traits = meta::function_traits<FactoryType>;
+    using function_type = typename function_traits::function_type;
+    using return_type = typename function_traits::return_type;
 
-    reflectable<return_type>();
+    lazy_reflectable<return_type>();
 
     auto __name = utility::full_factory_name(function_type{});
 
@@ -210,10 +220,11 @@ template <typename PropertyGetterType, typename PropertySetterType>
 property_t* find_or_add_property(reflection_t* reflection, const std::string& name,
                                  PropertyGetterType getter, PropertySetterType setter)
 {
-    using type = typename meta::property_traits<decltype(getter)>::property_type;
-    using traits = meta::reflectable_traits<type>;
+    using property_traits = meta::property_traits<decltype(getter)>;
+    using property_type = typename property_traits::property_type;
+    using reflectable_traits = meta::reflectable_traits<property_type>;
 
-    reflectable<type>();
+    lazy_reflectable<property_type>();
 
     auto __meta = reflection->property.find(name);
     if (__meta == nullptr) __meta = &reflection->property.add
@@ -221,7 +232,7 @@ property_t* find_or_add_property(reflection_t* reflection, const std::string& na
         name,
         {
             name,
-            traits::registry()->all[traits::name()],
+            reflectable_traits::registry()->all[reflectable_traits::name()],
             handler::property_get(getter),
             handler::property_set(setter),
             handler::property_ptr(getter)

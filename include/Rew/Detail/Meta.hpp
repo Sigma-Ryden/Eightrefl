@@ -24,23 +24,30 @@ template <typename T> struct is_reference : std::false_type {};
 template <typename T> struct is_reference<T&> : std::true_type {};
 template <typename T> struct is_reference<const T&> : std::true_type {};
 
-struct base_reflectable_traits {};
-struct conditional_reflectable_traits : base_reflectable_traits {};
-
 template <typename T, typename enable = void>
-struct reflectable_traits { static std::string name() { return "auto"; } };
+struct reflectable_traits
+{
+    static std::string name() { return "auto"; }
+};
 
 namespace detail
 {
 
-template <typename T, typename enable = void> struct has_builtin : std::false_type {};
-template <typename T> struct has_builtin<T, std::void_t<decltype(&T::builtin)>> : std::true_type {};
+template <typename T, typename enable = void> struct is_lazy : std::false_type {};
+template <typename T> struct is_lazy<T, std::void_t<decltype(&reflectable_traits<T>::lazy)>> : std::true_type {};
+
+template <typename T, typename enable = void> struct is_builtin : std::false_type {};
+template <typename T> struct is_builtin<T, std::void_t<decltype(&reflectable_traits<T>::biiltin)>> : std::true_type {};
 
 } // namespace detail
 
-template <typename T> struct is_reflectable : std::is_base_of<base_reflectable_traits, T> {};
-template <typename T> struct is_builtin_reflectable : all<is_reflectable<T>, detail::has_builtin<T>> {};
-template <typename T> struct is_custom_reflectable : all<is_reflectable<T>, std::negation<is_builtin_reflectable<T>>> {};
+template <typename T, typename enable = void> struct is_reflectable : std::false_type {};
+template <typename T> struct is_reflectable<T, std::void_t<decltype(&reflectable_traits<T>::registry)>> : std::true_type {};
+
+template <typename T> struct is_lazy_reflectable : all<is_reflectable<T>, detail::is_lazy<T>> {};
+
+template <typename T> struct is_builtin_reflectable : all<is_reflectable<T>, detail::is_builtin<T>> {};
+template <typename T> struct is_custom_reflectable : all<is_reflectable<T>, std::negation<detail::is_builtin<T>>> {};
 
 template <typename...>
 struct function_traits;

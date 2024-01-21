@@ -7,7 +7,7 @@
 #include <any> // any, any_cast
 #include <utility> // reference_wrapper
 
-#include <type_traits> // decay_t, enable_if_t, is_pointer_v, void_t, false_type, true_type
+#include <type_traits> // remove_reference_t, is_void_v
 
 #include <Rew/Detail/Meta.hpp>
 
