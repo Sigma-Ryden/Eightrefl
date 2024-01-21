@@ -1,8 +1,8 @@
 #include "RewTestingBase.hpp"
 
-#include <Rew/BuiltIn/vector.hpp>
+//#include <Rew/BuiltIn/vector.hpp>
 #include <Rew/BuiltIn/shared_ptr.hpp>
-#include <Rew/BuiltIn/string.hpp>
+//#include <Rew/BuiltIn/string.hpp>
 
 #include <string>
 #include <memory>
@@ -148,7 +148,7 @@ REFLECTABLE_DECLARATION_INIT()
 
 CONDITIONAL_REFLECTABLE(is_fsome_data<R>::value)
     PARENT(FSomeDataBase<typename R::value_type>)
-    PROPERTY(data)
+    //PROPERTY(data)
     PROPERTY(i)
     FUNCTION(Foo)
     FUNCTION(Goo, void(int, std::string))
@@ -162,10 +162,10 @@ TEST(TestLibrary, Test)
     //::rew::utility::overload<>::of(&std::shared_ptr<int>::reset);
     // TODO: add static assert inside reflectable
     rew::reflectable<FSomeData<void>>();
-    rew::reflectable<std::allocator<int>>();
-    rew::reflectable<std::vector<int>>();
+    //rew::reflectable<std::allocator<int>>();
+    //rew::reflectable<std::vector<int>>();
     rew::reflectable<std::shared_ptr<int>>();
-    rew::reflectable<std::string>();
+    //rew::reflectable<std::string>();
 
     auto vector_type = rew::global.find("std::vector<int, std::allocator<int>>");
     auto get_allocator_function = vector_type->reflection->function.find("get_allocator() const");

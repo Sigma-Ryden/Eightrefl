@@ -45,11 +45,11 @@ auto factory_call_impl(std::index_sequence<I...>)
     {
         if constexpr (std::is_aggregate_v<ReflectableType>)
         {
-            return ReflectableType{ utility::argument_cast<ArgumentTypes>(arguments[I])... };
+            return ReflectableType{ utility::forward<ArgumentTypes>(arguments[I])... };
         }
         else
         {
-            return ReflectableType( utility::argument_cast<ArgumentTypes>(arguments[I])... );
+            return ReflectableType( utility::forward<ArgumentTypes>(arguments[I])... );
         }
     };
 }
@@ -62,7 +62,10 @@ namespace handler
 template <typename ReflectableType, typename... ArgumentTypes>
 auto factory_call(ReflectableType (*)(ArgumentTypes...))
 {
-    return detail::factory_call_impl<ReflectableType, ArgumentTypes...>(std::index_sequence_for<ArgumentTypes...>{});
+    return detail::factory_call_impl<ReflectableType, ArgumentTypes...>
+    (
+        std::index_sequence_for<ArgumentTypes...>{}
+    );
 }
 
 } // namespace handler

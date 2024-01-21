@@ -6,7 +6,8 @@
 
 #define __REW_EXPAND(...) __VA_ARGS__
 
-#define NAMEOF(...) (::rew::meta::reflectable_traits<__VA_ARGS__>::name())
+#define NAMEOF(...)                                                                                     \
+    (::rew::meta::reflectable_traits<__VA_ARGS__>::name())
 
 #define CORE_REFLECTABLE_BODY(...)                                                                      \
     struct eval_t {                                                                                     \
@@ -206,7 +207,8 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
 }
 
 template <typename PropertyGetterType, typename PropertySetterType>
-property_t* find_or_add_property(reflection_t* reflection, const std::string& name, PropertyGetterType getter, PropertySetterType setter)
+property_t* find_or_add_property(reflection_t* reflection, const std::string& name,
+                                 PropertyGetterType getter, PropertySetterType setter)
 {
     using type = typename meta::property_traits<decltype(getter)>::property_type;
     using traits = meta::reflectable_traits<type>;

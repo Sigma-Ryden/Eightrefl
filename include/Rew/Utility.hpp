@@ -18,21 +18,29 @@ namespace utility
 {
 
 template <typename ValueType>
-ValueType argument_cast(const std::any& object)
+ValueType forward(const std::any& object)
 {
-    return std::any_cast<typename meta::argument_type_traits<ValueType>::type>(object);
+    if constexpr (meta::is_reference<ValueType>::value)
+    {
+        return std::any_cast<std::reference_wrapper<std::remove_reference_t<ValueType>>>(object);
+    }
+    else
+    {
+        return std::any_cast<ValueType>(object);
+    }
 }
 
-template <typename ArgumentType>
-std::string argument_name()
+template <typename ValueType>
+std::any backward(ValueType&& result)
 {
-    return meta::reflectable_traits<ArgumentType>::name();
-}
-
-template <>
-inline std::string argument_name<void>()
-{
-    return "";
+    if constexpr (meta::is_reference<ValueType>::value)
+    {
+        return std::reference_wrapper<std::remove_reference_t<ValueType>>(result);
+    }
+    else
+    {
+        return result;
+    }
 }
 
 template <typename... ArgumentTypes, typename ReturnType, class ClassType>
@@ -125,10 +133,18 @@ static auto member_property_set_ptr(void (ParentReflectableType::* function)(Pro
 template <typename ArgumentType = void, typename ... ArgumentTypes>
 std::string full_function_name(const std::string& name)
 {
-    return name +
+    if constexpr (std::is_void_v<ArgumentType>)
+    {
+        return name + "()";
+    }
+    else
+    {
+        return name +
         "(" + (
-            argument_name<ArgumentType>() + ... + (", " + argument_name<ArgumentTypes>())
+            meta::reflectable_traits<ArgumentType>::name() +
+            ... + (", " + meta::reflectable_traits<ArgumentTypes>::name())
         ) + ")";
+    }
 }
 
 template <typename ReturnType, typename ClassType, typename ... ArgumentTypes>
