@@ -9,20 +9,12 @@
 #define NAMEOF(...)                                                                                     \
     (::rew::meta::reflectable_traits<__VA_ARGS__>::name())
 
-#define CORE_REFLECTABLE_BODY(...)                                                                      \
-    struct eval_t {                                                                                     \
+#define CORE_REFLECTABLE_BODY()                                                                         \
         template <class VisitorType>                                                                    \
-        eval_t(VisitorType&& visitor) {                                                                 \
-            using __reflectable_traits = __VA_ARGS__;                                                   \
-            using __reflectable_type = typename __reflectable_traits::type;                             \
-            static auto __reflectable_name = __reflectable_traits::name();                              \
-            static auto __reflectable_registry = __reflectable_traits::registry();                      \
-            auto __type = __reflectable_registry->all[__reflectable_name];                              \
-            if (__type == nullptr) __type = __reflectable_registry->template add<__reflectable_type>(   \
-                __reflectable_name                                                                      \
-            );                                                                                          \
+        static int evaluate(VisitorType&& visitor) {                                                    \
+            auto __type = ::rew::find_or_add_type<R>();                                                 \
             auto __reflection = __type->reflection;                                                     \
-            visitor.template type<__reflectable_type>(*__type);
+            visitor.template type<R>(*__type);
 
 #define CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                        \
     namespace rew { namespace meta {                                                                    \
@@ -63,23 +55,23 @@
     __REW_EXPAND template_header                                                                        \
     struct rew_reflection_registry_t<__REW_EXPAND reflectable_type> {                                   \
         using R = __REW_EXPAND reflectable_type;                                                        \
-        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<R>)
+        CORE_REFLECTABLE_BODY()
 
 #define CORE_CONDITIONAL_REFLECTABLE(...)                                                               \
     template <typename R>                                                                               \
     struct rew_reflection_registry_t<R, std::enable_if_t<__VA_ARGS__>> {                                \
-        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<R>)
+        CORE_REFLECTABLE_BODY()
 
 #define CORE_REFLECTABLE(...)                                                                           \
     template <> struct rew_reflection_registry_t<__VA_ARGS__> {                                         \
         using R = __VA_ARGS__;                                                                          \
-        CORE_REFLECTABLE_BODY(::rew::meta::reflectable_traits<R>)
+        CORE_REFLECTABLE_BODY()
 
 #define CORE_REFLECTABLE_INIT(...)                                                                      \
-            }                                                                                           \
-        };                                                                                              \
+            return 0;                                                                                   \
+        }                                                                                               \
     private:                                                                                            \
-        inline static auto _ = eval_t(::rew::visitor_t{});                                              \
+        inline static auto _ = evaluate(::rew::visitor_t{});                                            \
     };                                                                                                  \
 
 #define REFLECTABLE_ACCESS(...)                                                                         \
@@ -129,7 +121,7 @@ namespace rew
 template <typename ReflectableType>
 void reflectable()
 {
-    (void)::rew_reflection_registry_t<ReflectableType>{}; // explicit instancing
+    static auto _  = ::rew_reflection_registry_t<ReflectableType>::evaluate(visitor_t{});
 }
 
 template <typename ReflectableType>
@@ -148,6 +140,20 @@ ReflectableType&& reflectable(ReflectableType&& object)
     return std::forward<ReflectableType>(object);
 }
 
+template <typename ReflectableType>
+type_t* find_or_add_type()
+{
+    using reflectable_traits = meta::reflectable_traits<ReflectableType>;
+
+    auto __name = reflectable_traits::name();
+    auto __registry = reflectable_traits::registry();
+
+    auto __type = __registry->all[__name];
+    if (__type == nullptr) __type = __registry->template add<ReflectableType>(__name);
+
+    return __type;
+}
+
 template <typename ReflectableType, typename ParentReflectableType>
 parent_t* find_or_add_parent(reflection_t* reflection)
 {
@@ -164,7 +170,7 @@ parent_t* find_or_add_parent(reflection_t* reflection)
         __name,
         {
             __name,
-            reflectable_traits::registry()->all[__name],
+            find_or_add_type<ParentReflectableType>(),
             handler::parent_cast<ReflectableType, ParentReflectableType>()
         }
     );
@@ -222,7 +228,6 @@ property_t* find_or_add_property(reflection_t* reflection, const std::string& na
 {
     using property_traits = meta::property_traits<decltype(getter)>;
     using property_type = typename property_traits::property_type;
-    using reflectable_traits = meta::reflectable_traits<property_type>;
 
     lazy_reflectable<property_type>();
 
@@ -232,7 +237,7 @@ property_t* find_or_add_property(reflection_t* reflection, const std::string& na
         name,
         {
             name,
-            reflectable_traits::registry()->all[reflectable_traits::name()],
+            find_or_add_type<property_type>(),
             handler::property_get(getter),
             handler::property_set(setter),
             handler::property_ptr(getter)

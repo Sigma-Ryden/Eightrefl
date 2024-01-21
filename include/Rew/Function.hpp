@@ -15,11 +15,11 @@
 
 #define CORE_FUNCTION(function_name_str, function_name, ...)                                            \
     {                                                                                                   \
-        using __traits = ::rew::meta::member_function_traits<__reflectable_type>;                       \
-        auto __dptr = __traits::template overload<__VA_ARGS__>::of(&__reflectable_type::function_name); \
-        auto __ptr = ::rew::utility::member_function_ptr<__reflectable_type>(__dptr);                   \
+        using __traits = ::rew::meta::member_function_traits<R>;                                        \
+        auto __dirty_ptr = __traits::template overload<__VA_ARGS__>::of(&R::function_name);             \
+        auto __ptr = ::rew::utility::member_function_ptr<R>(__dirty_ptr);                               \
         auto __meta = ::rew::find_or_add_function(__reflection, function_name_str, __ptr);              \
-        visitor.template function<__reflectable_type, decltype(__ptr)>(*__meta);                        \
+        visitor.template function<R, decltype(__ptr)>(*__meta);                                         \
     }
 
 #define FUNCTION(name, ...) CORE_FUNCTION(#name, name, __VA_ARGS__)

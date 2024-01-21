@@ -14,8 +14,8 @@
 #define CORE_PARENT(...)                                                                                \
     {                                                                                                   \
         using __type = __VA_ARGS__;                                                                     \
-        auto __meta = ::rew::find_or_add_parent<__reflectable_type, __type>(__reflection);              \
-        visitor.template parent<__reflectable_type, __type>(*__meta);                                   \
+        auto __meta = ::rew::find_or_add_parent<R, __type>(__reflection);                               \
+        visitor.template parent<R, __type>(*__meta);                                                    \
     }
 
 #define PARENT(...) CORE_PARENT(__VA_ARGS__)
@@ -28,7 +28,7 @@ class type_t;
 struct parent_t
 {
     const std::string name;
-    type_t *const& type = nullptr;
+    type_t *const type = nullptr;
     const std::function<std::any(std::any& child_context)> cast = nullptr;
     attribute_t<std::any> meta;
 };

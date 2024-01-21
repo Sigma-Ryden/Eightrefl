@@ -8,7 +8,7 @@
 #define CORE_META(meta_name_str, ...)                                                                   \
     {                                                                                                   \
         auto __meta = ::rew::find_or_add_meta(__reflection, meta_name_str, __VA_ARGS__);                \
-        visitor.template meta<__reflectable_type, decltype(__VA_ARGS__)>(meta_name_str, *__meta);       \
+        visitor.template meta<R, decltype(__VA_ARGS__)>(meta_name_str, *__meta);                        \
     }
 
 #define META(name, ...) CORE_META(name, __VA_ARGS__)

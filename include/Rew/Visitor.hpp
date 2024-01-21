@@ -75,14 +75,15 @@ public:
 
 private:
     template <typename ReflectableType, std::size_t VisitorKey = 0>
-    static void try_call(visitor_t& registry, std::size_t key)
+    static void try_call(visitor_t& visitor, std::size_t key)
     {
+        using visitor_type = typename meta::visitor_traits<VisitorKey>::type;
         if constexpr (VisitorKey < meta::visitor_rtti_all_max_size)
         {
-            using eval_t = typename ::rew_reflection_registry_t<ReflectableType>::eval_t;
+            using reflection_registry = ::rew_reflection_registry_t<ReflectableType>;
 
-            if (VisitorKey == key) eval_t(dynamic_cast<typename meta::visitor_traits<VisitorKey>::type&>(registry));
-            else try_call<ReflectableType, VisitorKey + 1>(registry, key);
+            if (VisitorKey == key) reflection_registry::evaluate(dynamic_cast<visitor_type&>(visitor));
+            else try_call<ReflectableType, VisitorKey + 1>(visitor, key);
         }
     }
 };

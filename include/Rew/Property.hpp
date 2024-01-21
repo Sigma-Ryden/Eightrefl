@@ -16,15 +16,11 @@
 
 #define CORE_PROPERTY(property_name_str, ...)                                                           \
     {                                                                                                   \
-        auto __get = ::rew::utility::member_property_get_ptr<__reflectable_type>(                       \
-            &__reflectable_type::__VA_ARGS__                                                            \
-        );                                                                                              \
-        auto __set = ::rew::utility::member_property_set_ptr<__reflectable_type>(                       \
-            &__reflectable_type::__VA_ARGS__                                                            \
-        );                                                                                              \
+        auto __get = ::rew::utility::member_property_get_ptr<R>(&R::__VA_ARGS__);                       \
+        auto __set = ::rew::utility::member_property_set_ptr<R>(&R::__VA_ARGS__);                       \
         auto __meta = ::rew::find_or_add_property(__reflection, property_name_str, __get, __set);       \
         using __traits = ::rew::meta::property_traits<decltype(__get)>;                                 \
-        visitor.template property<__reflectable_type, typename __traits::property_type>(*__meta);       \
+        visitor.template property<R, typename __traits::property_type>(*__meta);                        \
     }
 
 #define PROPERTY(...) CORE_PROPERTY(#__VA_ARGS__, __VA_ARGS__)
@@ -37,7 +33,7 @@ struct type_t;
 struct property_t
 {
     const std::string name;
-    type_t *const& type = nullptr;
+    type_t *const type = nullptr;
     const std::function<void(std::any& context, std::any& result)> get = nullptr;
     const std::function<void(std::any& context, const std::any& value)> set = nullptr;
     const std::function<std::any(std::any& context)> ptr = nullptr;

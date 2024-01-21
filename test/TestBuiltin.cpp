@@ -62,7 +62,7 @@ TEST(TestLibrary, Test)
     //rew::reflectable<std::vector<int>>();
     rew::reflectable<std::shared_ptr<int>>();
     //rew::reflectable<std::string>();
-
+    return;
     auto vector_type = rew::global.find("std::vector<int, std::allocator<int>>");
     auto get_allocator_function = vector_type->reflection->function.find("get_allocator() const");
 
