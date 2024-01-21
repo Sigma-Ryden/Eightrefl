@@ -4,6 +4,7 @@
 #include <optional> // optional, nullopt_t
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 REFLECTABLE_DECLARATION(std::nullopt_t)
     BUILTIN_REFLECTABLE()

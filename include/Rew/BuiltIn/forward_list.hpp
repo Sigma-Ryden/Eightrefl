@@ -4,11 +4,12 @@
 #include <forward_list> // forward_list
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 // default allocator for forward_list
 #include <Rew/BuiltIn/allocator.hpp>
 
-// as argument type
+// as function argument type
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/function.hpp>
 

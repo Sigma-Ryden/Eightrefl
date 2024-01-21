@@ -4,6 +4,10 @@
 #include <functional> // function
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
+
+// as function argument type
+#include <Rew/BuiltIn/nullptr_t.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ReturnType>), (std::function<ReturnType()>))
     BUILTIN_REFLECTABLE()

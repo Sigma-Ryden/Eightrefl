@@ -4,6 +4,7 @@
 #include <functional> // hash
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType>), (std::hash<KeyType>))
     BUILTIN_REFLECTABLE()

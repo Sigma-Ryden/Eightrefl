@@ -4,6 +4,7 @@
 #include <any> // any
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 // as return type of the type() function
 #include <Rew/BuiltIn/typeinfo.hpp>

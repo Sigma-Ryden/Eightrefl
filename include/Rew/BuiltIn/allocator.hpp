@@ -4,6 +4,7 @@
 #include <memory> // allocator
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::allocator<ValueType>))
     BUILTIN_REFLECTABLE()

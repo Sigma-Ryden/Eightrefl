@@ -4,11 +4,12 @@
 #include <vector> // vector
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 // default allocator for vector
 #include <Rew/BuiltIn/allocator.hpp>
 
-// as argument type
+// as function argument type
 #include <Rew/BuiltIn/initializer_list.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, typename AllocatorType>), (std::vector<ValueType, AllocatorType>))

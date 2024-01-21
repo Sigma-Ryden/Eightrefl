@@ -4,11 +4,12 @@
 #include <list> // list
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 // default allocator for list
 #include <Rew/BuiltIn/allocator.hpp>
 
-// as argument type
+// as function argument type
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/function.hpp>
 

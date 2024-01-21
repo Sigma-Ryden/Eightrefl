@@ -4,6 +4,7 @@
 #include <tuple> // tuple
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 REFLECTABLE_DECLARATION(std::tuple<>)
     BUILTIN_REFLECTABLE()

@@ -5,6 +5,7 @@
 #include <complex> // complex
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::complex<ValueType>))
     BUILTIN_REFLECTABLE()

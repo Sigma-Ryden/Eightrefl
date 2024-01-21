@@ -4,6 +4,7 @@
 #include <array> // array
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, std::size_t ArraySize>), (std::array<ValueType, ArraySize>))
     BUILTIN_REFLECTABLE()

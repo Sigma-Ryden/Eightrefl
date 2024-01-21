@@ -50,6 +50,7 @@ set(REW
 	include/Rew/BuiltIn/variant.hpp
 	include/Rew/BuiltIn/any.hpp
 
+	include/Rew/BuiltIn/nullptr_t.hpp
 	include/Rew/BuiltIn/initializer_list.hpp
 	include/Rew/BuiltIn/reference_wrapper.hpp
 

@@ -4,6 +4,10 @@
 #include <memory> // unique_ptr
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
+
+// as function argument type
+#include <Rew/BuiltIn/nullptr_t.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), (std::default_delete<ElementType>))
     BUILTIN_REFLECTABLE()

@@ -4,6 +4,7 @@
 #include <typeinfo> // type_info
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 REFLECTABLE_DECLARATION(std::type_info)
     BUILTIN_REFLECTABLE()

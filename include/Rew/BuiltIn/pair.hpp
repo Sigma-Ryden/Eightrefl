@@ -4,6 +4,7 @@
 #include <utility> // pair
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename FirstType, typename SecondType>), (std::pair<FirstType, SecondType>))
     BUILTIN_REFLECTABLE()

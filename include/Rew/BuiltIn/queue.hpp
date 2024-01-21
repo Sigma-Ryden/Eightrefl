@@ -4,6 +4,7 @@
 #include <queue> // queue
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 // default container for queue
 #include <Rew/BuiltIn/deque.hpp>

@@ -6,6 +6,7 @@
 #include <bitset> // bitest
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <std::size_t BitsetSize>), (std::bitset<BitsetSize>))
     BUILTIN_REFLECTABLE()

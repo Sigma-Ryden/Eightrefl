@@ -4,6 +4,7 @@
 #include <memory> // weak_ptr
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 // as return type of the lock() function
 #include <Rew/BuiltIn/shared_ptr.hpp>

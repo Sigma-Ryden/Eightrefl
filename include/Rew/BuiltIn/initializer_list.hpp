@@ -4,6 +4,7 @@
 #include <initializer_list> // initializer_list
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::initializer_list<ValueType>))
     BUILTIN_REFLECTABLE()

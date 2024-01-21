@@ -5,6 +5,10 @@
 #include <valarray> // valarray
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
+
+// as function argument type
+#include <Rew/BuiltIn/initializer_list.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::valarray<ValueType>))
     BUILTIN_REFLECTABLE()

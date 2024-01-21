@@ -4,6 +4,7 @@
 #include <variant> // variant, monostate
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 REFLECTABLE_DECLARATION(std::monostate)
 REFLECTABLE_DECLARATION_INIT()

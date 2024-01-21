@@ -4,11 +4,12 @@
 #include <deque> // deque
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 // default allocator for deque
 #include <Rew/BuiltIn/allocator.hpp>
 
-// as argument type
+// as function argument type
 #include <Rew/BuiltIn/initializer_list.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, typename AllocatorType>), (std::deque<ValueType, AllocatorType>))

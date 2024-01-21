@@ -4,6 +4,10 @@
 #include <memory> // shared_ptr
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
+
+// as function argument type
+#include <Rew/BuiltIn/nullptr_t.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), (std::shared_ptr<ElementType>))
     BUILTIN_REFLECTABLE()

@@ -4,6 +4,7 @@
 #include <stack> // stack
 
 #include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
 // default container for stack
 #include <Rew/BuiltIn/deque.hpp>
