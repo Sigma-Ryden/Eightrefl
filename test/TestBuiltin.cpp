@@ -7,25 +7,19 @@
 #include <string>
 #include <memory>
 
-template <typename T>
 struct FSomeDataBase
 {
-    using value_type = T;
-    T* i;
+    void* i;
 };
 
-template <typename T> struct is_fsome_data_base : std::false_type {};
-template <typename T> struct is_fsome_data_base<FSomeDataBase<T>> : std::true_type {};
-
-CONDITIONAL_REFLECTABLE_DECLARATION(is_fsome_data_base<R>::value)
-    REFLECTABLE_NAME("FSomeDataBase<"+NAMEOF(typename R::value_type)+">")
+REFLECTABLE_DECLARATION(FSomeDataBase)
 REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE(is_fsome_data_base<R>::value)
-REFLECTABLE_INIT()
+//REFLECTABLE(FSomeDataBase)
+//REFLECTABLE_INIT()
 
 template <typename R>
-struct FSomeData : FSomeDataBase<R>
+struct FSomeData : FSomeDataBase
 {
     using value_type = R;
 
@@ -43,7 +37,7 @@ CONDITIONAL_REFLECTABLE_DECLARATION(is_fsome_data<R>::value)
 REFLECTABLE_DECLARATION_INIT()
 
 CONDITIONAL_REFLECTABLE(is_fsome_data<R>::value)
-    PARENT(FSomeDataBase<typename R::value_type>)
+    PARENT(FSomeDataBase)
     //PROPERTY(data)
     PROPERTY(i)
     FUNCTION(Foo)
