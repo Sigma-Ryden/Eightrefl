@@ -70,7 +70,8 @@ public:
 
         auto evaluate = [](visitor_t& visitor)
         {
-            detail::polymorphic_visitor_t::call<ReflectableType>(visitor);
+            using __traits = meta::reflectable_traits<ReflectableType>;
+            __traits::evaluation().at(typeid(visitor))(visitor);
         };
 
         auto context = [](std::any& object) -> std::any

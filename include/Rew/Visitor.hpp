@@ -11,13 +11,11 @@
 #include <Rew/Reflection.hpp>
 #include <Rew/Type.hpp>
 
+#define REW_MAX_VISITOR_NUMBER std::size_t(4)
+
 #define REFLECTABLE_VISITOR_REGISTRY(visitor_key, ...)                                                  \
     namespace rew { namespace meta {                                                                    \
-        template <> struct visitor_traits<visitor_key> {                                                \
-            using type = __VA_ARGS__;                                                                   \
-        private:                                                                                        \
-            inline static auto _ = visitor_rtti_all.emplace(typeid(type), visitor_key);                 \
-        };                                                                                              \
+        template <> struct visitor_traits<visitor_key> { using type = __VA_ARGS__; };                   \
     }}
 
 namespace rew
@@ -49,44 +47,28 @@ struct visitor_t
 namespace meta
 {
 
-template <std::size_t VisitorKey>
-struct visitor_traits
-{
-    using type = visitor_t;
-};
-
-static constexpr auto visitor_rtti_all_max_size = 4;
-inline std::unordered_map<std::type_index, std::size_t> visitor_rtti_all;
+template <std::size_t VisitorKey> struct visitor_traits { using type = visitor_t; };
 
 } // namespace meta
 
 namespace detail
 {
 
-class polymorphic_visitor_t
+template <typename ReflectableType, std::size_t VisitorKey = 0>
+static void fill_evaluation()
 {
-public:
-    template <typename ReflectableType>
-    static void call(visitor_t& visitor)
-    {
-        auto key = meta::visitor_rtti_all.at(typeid(visitor));
-        try_call<ReflectableType>(visitor, key);
-    }
-
-private:
-    template <typename ReflectableType, std::size_t VisitorKey = 0>
-    static void try_call(visitor_t& visitor, std::size_t key)
+    if constexpr (VisitorKey < REW_MAX_VISITOR_NUMBER)
     {
         using visitor_type = typename meta::visitor_traits<VisitorKey>::type;
-        if constexpr (VisitorKey < meta::visitor_rtti_all_max_size)
-        {
-            using reflection_registry = ::rew_reflection_registry_t<ReflectableType>;
+        using reflection_registry = ::rew_reflection_registry_t<ReflectableType>;
+        using reflection_traits = meta::reflectable_traits<ReflectableType>;
 
-            if (VisitorKey == key) reflection_registry::evaluate(dynamic_cast<visitor_type&>(visitor));
-            else try_call<ReflectableType, VisitorKey + 1>(visitor, key);
-        }
+        auto __ptr = &reflection_registry::template evaluate<visitor_type&>;
+        reflection_traits::evaluation()[typeid(visitor_type)] = __ptr;
+
+        fill_evaluation<ReflectableType, VisitorKey + 1>();
     }
-};
+}
 
 } // namespace detail
 

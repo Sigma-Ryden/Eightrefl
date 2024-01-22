@@ -12,6 +12,7 @@
 #define CORE_REFLECTABLE_BODY()                                                                         \
         template <class VisitorType>                                                                    \
         static int evaluate(VisitorType&& visitor) {                                                    \
+            using __traits = ::rew::meta::reflectable_traits<R>;                                        \
             auto __type = ::rew::find_or_add_type<R>();                                                 \
             auto __reflection = __type->reflection;                                                     \
             visitor.template type<R>(*__type);
@@ -47,6 +48,13 @@
 #define BUILTIN_REFLECTABLE(...)                                                                        \
     static auto builtin() { __VA_ARGS__ }
 
+#define REFLECTABLE_EVALUATION(...)                                                                     \
+    static decltype(auto) evaluation() {                                                                \
+        using __call = std::function<void(::rew::visitor_t&)>;                                          \
+        static std::unordered_map<std::type_index, __call> data;                                        \
+        return (data);                                                                                  \
+    }
+
 #define REFLECTABLE_DECLARATION_INIT(...)                                                               \
         };                                                                                              \
     }}
@@ -68,6 +76,7 @@
         CORE_REFLECTABLE_BODY()
 
 #define CORE_REFLECTABLE_INIT(...)                                                                      \
+            ::rew::detail::fill_evaluation<R>();                                                        \
             return 0;                                                                                   \
         }                                                                                               \
     private:                                                                                            \
@@ -81,6 +90,7 @@
     #define TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                         \
         CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                        \
         REFLECTABLE_REGISTRY(&::rew::global)                                                            \
+        REFLECTABLE_EVALUATION()                                                                        \
         LAZY_REFLECTABLE()
 #endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
@@ -88,6 +98,7 @@
     #define CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                    \
         CORE_CONDITIONAL_REFLECTABLE_DECLARATION(__VA_ARGS__)                                           \
         REFLECTABLE_REGISTRY(&::rew::global)                                                            \
+        REFLECTABLE_EVALUATION()                                                                        \
         LAZY_REFLECTABLE()
 #endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
@@ -95,6 +106,7 @@
     #define REFLECTABLE_DECLARATION(...)                                                                \
         CORE_REFLECTABLE_DECLARATION(__VA_ARGS__)                                                       \
         REFLECTABLE_REGISTRY(&::rew::global)                                                            \
+        REFLECTABLE_EVALUATION()                                                                        \
         REFLECTABLE_NAME(#__VA_ARGS__)
 #endif // REFLECTABLE_DECLARATION
 
@@ -121,7 +133,12 @@ namespace rew
 template <typename ReflectableType>
 void reflectable()
 {
-    static auto _  = ::rew_reflection_registry_t<ReflectableType>::evaluate(visitor_t{});
+    static auto locked = false;
+
+    if (locked) return;
+    locked = true;
+
+    ::rew_reflection_registry_t<ReflectableType>::evaluate(visitor_t{});
 }
 
 template <typename ReflectableType>

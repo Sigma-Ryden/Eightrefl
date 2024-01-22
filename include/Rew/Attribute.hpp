@@ -7,26 +7,26 @@
 namespace rew
 {
 
-template <class MetaType>
+template <class MetaType, typename KeyType = std::string>
 struct attribute_t
 {
-    auto find(const std::string& name)
+    auto find(const KeyType& key)
     {
-        auto it = all.find(name);
+        auto it = all.find(key);
         return it != all.end() ? &it->second : nullptr;
     }
 
-    decltype(auto) add(const std::string& name, const MetaType& meta)
+    decltype(auto) add(const KeyType& key, const MetaType& meta)
     {
-        return (all.emplace(name, meta).first->second);
+        return (all.emplace(key, meta).first->second);
     }
 
-    bool remove(const std::string& name)
+    bool remove(const KeyType& key)
     {
-        return all.erase(name)>0;
+        return all.erase(key)>0;
     }
 
-    std::unordered_map<std::string, MetaType> all;
+    std::unordered_map<KeyType, MetaType> all;
 };
 
 } // namespace rew

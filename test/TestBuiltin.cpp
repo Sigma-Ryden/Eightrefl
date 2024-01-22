@@ -15,9 +15,6 @@ struct FSomeDataBase
 REFLECTABLE_DECLARATION(FSomeDataBase)
 REFLECTABLE_DECLARATION_INIT()
 
-//REFLECTABLE(FSomeDataBase)
-//REFLECTABLE_INIT()
-
 template <typename R>
 struct FSomeData : FSomeDataBase
 {
@@ -47,6 +44,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, Test)
 {
+
     //std::vector<int>::allocator_type (std::vector<int>::*__f)() const = &std::vector<int>::get_allocator;
     //void(std::shared_ptr<int>::*__p)() = &std::shared_ptr<int>::reset;
     //::rew::utility::overload<>::of(&std::shared_ptr<int>::reset);
@@ -54,8 +52,13 @@ TEST(TestLibrary, Test)
     rew::reflectable<FSomeData<void>>();
     //rew::reflectable<std::allocator<int>>();
     //rew::reflectable<std::vector<int>>();
+    auto b = rew::global.find("FSomeDataBase");
+    rew::visitor_t visitor;
+    b->evaluate(visitor);
+
     rew::reflectable<std::shared_ptr<int>>();
     //rew::reflectable<std::string>();
+
     return;
     auto vector_type = rew::global.find("std::vector<int, std::allocator<int>>");
     auto get_allocator_function = vector_type->reflection->function.find("get_allocator() const");
