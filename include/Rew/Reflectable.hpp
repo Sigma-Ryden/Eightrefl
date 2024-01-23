@@ -2,6 +2,8 @@
 #define REW_REFLECTABLE_HPP
 
 #include <Rew/Registry.hpp>
+#include <Rew/Evaluate.hpp>
+
 #include <Rew/Detail/Meta.hpp>
 
 #define __REW_EXPAND(...) __VA_ARGS__
@@ -36,6 +38,13 @@
             using type = __VA_ARGS__;                                                                   \
             using R = type;
 
+#define REFLECTABLE_VISITOR_DECLARATION(visitor_index, ...)                                             \
+    namespace rew { namespace meta {                                                                    \
+        template <> struct visitor_traits<visitor_index> { using type = __VA_ARGS__; };                 \
+    }}                                                                                                  \
+    CORE_REFLECTABLE_DECLARATION(__VA_ARGS__)                                                           \
+    REFLECTABLE_NAME(#__VA_ARGS__)
+
 #define REFLECTABLE_REGISTRY(...)                                                                       \
     static const auto registry() { return __VA_ARGS__; }                                                \
 
@@ -47,13 +56,6 @@
 
 #define BUILTIN_REFLECTABLE(...)                                                                        \
     static auto builtin() { __VA_ARGS__ }
-
-#define REFLECTABLE_EVALUATION(...)                                                                     \
-    static decltype(auto) evaluation() {                                                                \
-        using __call = std::function<void(::rew::visitor_t&)>;                                          \
-        static std::unordered_map<std::type_index, __call> data;                                        \
-        return (data);                                                                                  \
-    }
 
 #define REFLECTABLE_DECLARATION_INIT(...)                                                               \
         };                                                                                              \
@@ -76,7 +78,7 @@
         CORE_REFLECTABLE_BODY()
 
 #define CORE_REFLECTABLE_INIT(...)                                                                      \
-            ::rew::detail::fill_evaluation<R>();                                                        \
+            ::rew::add_default_evaluation<R>(__type);                                                   \
             return 0;                                                                                   \
         }                                                                                               \
     private:                                                                                            \
@@ -90,7 +92,6 @@
     #define TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                         \
         CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                        \
         REFLECTABLE_REGISTRY(&::rew::global)                                                            \
-        REFLECTABLE_EVALUATION()                                                                        \
         LAZY_REFLECTABLE()
 #endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
@@ -98,7 +99,6 @@
     #define CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                    \
         CORE_CONDITIONAL_REFLECTABLE_DECLARATION(__VA_ARGS__)                                           \
         REFLECTABLE_REGISTRY(&::rew::global)                                                            \
-        REFLECTABLE_EVALUATION()                                                                        \
         LAZY_REFLECTABLE()
 #endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
@@ -106,7 +106,6 @@
     #define REFLECTABLE_DECLARATION(...)                                                                \
         CORE_REFLECTABLE_DECLARATION(__VA_ARGS__)                                                       \
         REFLECTABLE_REGISTRY(&::rew::global)                                                            \
-        REFLECTABLE_EVALUATION()                                                                        \
         REFLECTABLE_NAME(#__VA_ARGS__)
 #endif // REFLECTABLE_DECLARATION
 
@@ -134,11 +133,11 @@ template <typename ReflectableType>
 void reflectable()
 {
     static auto locked = false;
-
-    if (locked) return;
-    locked = true;
-
-    ::rew_reflection_registry_t<ReflectableType>::evaluate(visitor_t{});
+    if (!locked)
+    {
+        locked = true;
+        ::rew_reflection_registry_t<ReflectableType>::evaluate(visitor_t{});
+    }
 }
 
 template <typename ReflectableType>
@@ -271,6 +270,40 @@ std::any* find_or_add_meta(reflection_t* reflection, const std::string& name, Me
     if (__meta == nullptr) __meta = &reflection->meta.add(name, data);
 
     return __meta;
+}
+
+template <typename ReflectableType, typename VisitorType>
+evaluate_t* find_or_add_evaluate(type_t* type)
+{
+    using reflectable_visitor_traits = meta::reflectable_traits<VisitorType>;
+
+    auto __name = reflectable_visitor_traits::name();
+
+    auto __meta = type->evaluate.find(__name);
+    if (__meta == nullptr) __meta = &type->evaluate.add
+    (
+        __name,
+        {
+            __name,
+            handler::visitor_call<ReflectableType, VisitorType>()
+        }
+    );
+
+    return __meta;
+}
+
+template <typename ReflectableType, std::size_t CurrentKey = 0, std::size_t MaxKey = 4>
+void add_default_evaluation(type_t* type)
+{
+    if constexpr (CurrentKey < MaxKey && meta::is_complete<meta::visitor_traits<CurrentKey>>::value)
+    {
+        using visitor_traits = meta::visitor_traits<CurrentKey>;
+        using visitor_type = typename visitor_traits::type;
+
+        find_or_add_evaluate<ReflectableType, visitor_type>(type);
+
+        add_default_evaluation<ReflectableType, CurrentKey + 1>(type);
+    }
 }
 
 } // namespace rew

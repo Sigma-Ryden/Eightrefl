@@ -8,20 +8,24 @@
 
 #include <functional> // function
 
+#include <Rew/Attribute.hpp>
+#include <Rew/Evaluate.hpp>
+
 namespace rew
 {
 
 struct reflection_t;
-struct visitor_t;
 
 struct type_t
 {
     const std::string name;
     reflection_t *const reflection = nullptr;
-    const std::function<void(visitor_t& visitor)> evaluate = nullptr;
+    const std::size_t size = 0;
+
     const std::function<std::any(std::any& object)> context = nullptr;
     const std::function<std::any(std::any& context)> alias = nullptr;
-    const std::size_t size = 0;
+
+    attribute_t<evaluate_t> evaluate;
 };
 
 } // namespace rew

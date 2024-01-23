@@ -24,6 +24,9 @@ template <typename T> struct is_reference : std::false_type {};
 template <typename T> struct is_reference<T&> : std::true_type {};
 template <typename T> struct is_reference<const T&> : std::true_type {};
 
+template <typename T, typename enable = void> struct is_complete : std::false_type {};
+template <typename T> struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
+
 template <typename T, typename enable = void>
 struct reflectable_traits
 {

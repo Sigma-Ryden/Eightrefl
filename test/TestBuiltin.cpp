@@ -44,7 +44,6 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, Test)
 {
-
     //std::vector<int>::allocator_type (std::vector<int>::*__f)() const = &std::vector<int>::get_allocator;
     //void(std::shared_ptr<int>::*__p)() = &std::shared_ptr<int>::reset;
     //::rew::utility::overload<>::of(&std::shared_ptr<int>::reset);
@@ -53,8 +52,10 @@ TEST(TestLibrary, Test)
     //rew::reflectable<std::allocator<int>>();
     //rew::reflectable<std::vector<int>>();
     auto b = rew::global.find("FSomeDataBase");
-    rew::visitor_t visitor;
-    b->evaluate(visitor);
+    //my_visitor_t visitor;
+
+    auto evaluate = b->evaluate.find("my_visitor_t");
+    //evaluate->call(visitor);
 
     rew::reflectable<std::shared_ptr<int>>();
     //rew::reflectable<std::string>();
@@ -98,7 +99,7 @@ TEST(TestLibrary, TestBuiltin)
     ASSERT("type-null", type != nullptr);
     EXPECT("type-name", type->name == s_name);
 
-    ASSERT("type-evaluate-null", type->evaluate != nullptr);
+    //ASSERT("type-evaluate-null", type->__evaluate != nullptr);
 
     ASSERT("type-reflection-null", type->reflection != nullptr);
 

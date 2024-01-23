@@ -9,7 +9,6 @@
 
 #include <Rew/Type.hpp>
 #include <Rew/Reflection.hpp>
-#include <Rew/Visitor.hpp>
 
 #define REW_REGISTRY_RESERVE_SIZE std::size_t(4096)
 
@@ -68,12 +67,6 @@ public:
 
         auto reflection = new reflection_t{ name };
 
-        auto evaluate = [](visitor_t& visitor)
-        {
-            using __traits = meta::reflectable_traits<ReflectableType>;
-            __traits::evaluation().at(typeid(visitor))(visitor);
-        };
-
         auto context = [](std::any& object) -> std::any
         {
             return std::addressof(std::any_cast<ReflectableType&>(object));
@@ -84,7 +77,7 @@ public:
             return std::ref(*std::any_cast<ReflectableType*>(context));
         };
 
-        type = new type_t { name, reflection, evaluate, context, alias, sizeof(ReflectableType) };
+        type = new type_t { name, reflection, sizeof(ReflectableType), context, alias };
 
         all.emplace(name, type);
         rtti_all.emplace(typeid(ReflectableType), type);
