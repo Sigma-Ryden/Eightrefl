@@ -42,6 +42,10 @@ CONDITIONAL_REFLECTABLE(is_fsome_data<R>::value)
     FACTORY(std::shared_ptr<R>(std::shared_ptr<R>))
 REFLECTABLE_INIT()
 
+struct virus_t : rew::injectable_t
+{
+};
+
 TEST(TestLibrary, Test)
 {
     //std::vector<int>::allocator_type (std::vector<int>::*__f)() const = &std::vector<int>::get_allocator;
@@ -52,10 +56,10 @@ TEST(TestLibrary, Test)
     //rew::reflectable<std::allocator<int>>();
     //rew::reflectable<std::vector<int>>();
     auto b = rew::global.find("FSomeDataBase");
-    //my_visitor_t visitor;
 
-    auto evaluate = b->evaluate.find("my_visitor_t");
-    //evaluate->call(visitor);
+    virus_t virus;
+    auto injection = b->injection.find("virus_t");
+    injection->call(virus);
 
     rew::reflectable<std::shared_ptr<int>>();
     //rew::reflectable<std::string>();

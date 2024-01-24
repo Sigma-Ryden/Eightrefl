@@ -2,7 +2,7 @@
 #define REW_REFLECTABLE_HPP
 
 #include <Rew/Registry.hpp>
-#include <Rew/Evaluate.hpp>
+#include <Rew/Injection.hpp>
 
 #include <Rew/Detail/Meta.hpp>
 
@@ -12,12 +12,12 @@
     (::rew::meta::reflectable_traits<__VA_ARGS__>::name())
 
 #define CORE_REFLECTABLE_BODY()                                                                         \
-        template <class VisitorType>                                                                    \
-        static int evaluate(VisitorType&& visitor) {                                                    \
+        template <class InjectionType>                                                                  \
+        static void evaluate(InjectionType&& injection) {                                               \
             using __traits = ::rew::meta::reflectable_traits<R>;                                        \
             auto __type = ::rew::find_or_add_type<R>();                                                 \
             auto __reflection = __type->reflection;                                                     \
-            visitor.template type<R>(*__type);
+            injection.template type<R>(*__type);
 
 #define CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                        \
     namespace rew { namespace meta {                                                                    \
@@ -38,9 +38,9 @@
             using type = __VA_ARGS__;                                                                   \
             using R = type;
 
-#define REFLECTABLE_VISITOR_DECLARATION(visitor_index, ...)                                             \
+#define REFLECTABLE_INJECTION_DECLARATION(injection_index, ...)                                         \
     namespace rew { namespace meta {                                                                    \
-        template <> struct visitor_traits<visitor_index> { using type = __VA_ARGS__; };                 \
+        template <> struct injection_traits<injection_index> { using type = __VA_ARGS__; };             \
     }}                                                                                                  \
     CORE_REFLECTABLE_DECLARATION(__VA_ARGS__)                                                           \
     REFLECTABLE_NAME(#__VA_ARGS__)
@@ -78,11 +78,10 @@
         CORE_REFLECTABLE_BODY()
 
 #define CORE_REFLECTABLE_INIT(...)                                                                      \
-            ::rew::add_default_evaluation<R>(__type);                                                   \
-            return 0;                                                                                   \
+            ::rew::add_default_injections<R>(__type);                                                   \
         }                                                                                               \
     private:                                                                                            \
-        inline static auto _ = evaluate(::rew::visitor_t{});                                            \
+        inline static auto _ = (evaluate(::rew::injectable_t{}), true);                                 \
     };                                                                                                  \
 
 #define REFLECTABLE_ACCESS(...)                                                                         \
@@ -136,7 +135,7 @@ void reflectable()
     if (!locked)
     {
         locked = true;
-        ::rew_reflection_registry_t<ReflectableType>::evaluate(visitor_t{});
+        ::rew_reflection_registry_t<ReflectableType>::evaluate(injectable_t{});
     }
 }
 
@@ -272,20 +271,20 @@ std::any* find_or_add_meta(reflection_t* reflection, const std::string& name, Me
     return __meta;
 }
 
-template <typename ReflectableType, typename VisitorType>
-evaluate_t* find_or_add_evaluate(type_t* type)
+template <typename ReflectableType, class InjectionType>
+injection_t* find_or_add_injection(type_t* type)
 {
-    using reflectable_visitor_traits = meta::reflectable_traits<VisitorType>;
+    using reflectable_injection_traits = meta::reflectable_traits<InjectionType>;
 
-    auto __name = reflectable_visitor_traits::name();
+    auto __name = reflectable_injection_traits::name();
 
-    auto __meta = type->evaluate.find(__name);
-    if (__meta == nullptr) __meta = &type->evaluate.add
+    auto __meta = type->injection.find(__name);
+    if (__meta == nullptr) __meta = &type->injection.add
     (
         __name,
         {
             __name,
-            handler::visitor_call<ReflectableType, VisitorType>()
+            handler::injection_call<ReflectableType, InjectionType>()
         }
     );
 
@@ -293,16 +292,17 @@ evaluate_t* find_or_add_evaluate(type_t* type)
 }
 
 template <typename ReflectableType, std::size_t CurrentKey = 0, std::size_t MaxKey = 4>
-void add_default_evaluation(type_t* type)
+void add_default_injections(type_t* type)
 {
-    if constexpr (CurrentKey < MaxKey && meta::is_complete<meta::visitor_traits<CurrentKey>>::value)
+    if constexpr (meta::is_complete<meta::injection_traits<CurrentKey>>::value)
     {
-        using visitor_traits = meta::visitor_traits<CurrentKey>;
-        using visitor_type = typename visitor_traits::type;
+        using injection_traits = meta::injection_traits<CurrentKey>;
 
-        find_or_add_evaluate<ReflectableType, visitor_type>(type);
-
-        add_default_evaluation<ReflectableType, CurrentKey + 1>(type);
+        find_or_add_injection<ReflectableType, typename injection_traits::type>(type);
+        if constexpr (CurrentKey < MaxKey)
+        {
+            add_default_injections<ReflectableType, CurrentKey + 1>(type);
+        }
     }
 }
 

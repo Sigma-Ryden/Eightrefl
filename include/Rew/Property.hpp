@@ -20,7 +20,7 @@
         auto __set = ::rew::utility::member_property_set_ptr<R>(&R::__VA_ARGS__);                       \
         auto __meta = ::rew::find_or_add_property(__reflection, property_name_str, __get, __set);       \
         using __traits = ::rew::meta::property_traits<decltype(__get)>;                                 \
-        visitor.template property<R, typename __traits::property_type>(*__meta);                        \
+        injection.template property<R, typename __traits::property_type>(*__meta);                      \
     }
 
 #define PROPERTY(...) CORE_PROPERTY(#__VA_ARGS__, __VA_ARGS__)

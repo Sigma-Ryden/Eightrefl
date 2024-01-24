@@ -11,11 +11,11 @@ REFLECTABLE_DECLARATION_INIT()
 REFLECTABLE(FSomeDataBase)
 REFLECTABLE_INIT()
 
-struct my_visitor_t : rew::visitor_t
+struct virus_t : rew::injectable_t
 {
 };
 
-REFLECTABLE_VISITOR_DECLARATION(0, my_visitor_t)
+REFLECTABLE_INJECTION_DECLARATION(0, virus_t)
 REFLECTABLE_DECLARATION_INIT()
 
 int main()

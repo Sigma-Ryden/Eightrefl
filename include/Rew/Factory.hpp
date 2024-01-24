@@ -19,7 +19,7 @@
         using __traits = ::rew::meta::function_traits<__VA_ARGS__>;                                     \
         using __function_type = typename __traits::function_type;                                       \
         auto __meta = ::rew::find_or_add_factory<__function_type>(__reflection);                        \
-        visitor.template factory<R, __function_type>(*__meta);                                          \
+        injection.template factory<R, __function_type>(*__meta);                                        \
     }
 
 #define FACTORY(...) CORE_FACTORY(__VA_ARGS__)

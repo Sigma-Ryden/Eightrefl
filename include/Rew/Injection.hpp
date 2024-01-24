@@ -1,5 +1,5 @@
-#ifndef REW_EVALUATE_HPP
-#define REW_EVALUATE_HPP
+#ifndef REW_INJECTION_HPP
+#define REW_INJECTION_HPP
 
 #include <cstddef> // size_t
 
@@ -14,9 +14,9 @@
 namespace rew
 {
 
-struct visitor_t
+struct injectable_t
 {
-    virtual ~visitor_t() = default;
+    virtual ~injectable_t() = default;
 
     template <typename ReflectableType>
     void type(rew::type_t& type) {}
@@ -40,26 +40,26 @@ struct visitor_t
 namespace meta
 {
 
-template <std::size_t VisitorKey> struct visitor_traits;
+template <std::size_t InjectionIndex> struct injection_traits;
 
 } // namespace meta
 
-struct evaluate_t
+struct injection_t
 {
     const std::string name;
-    const std::function<void(visitor_t& visitor)> call = nullptr;
+    const std::function<void(injectable_t& injection)> call = nullptr;
 };
 
 namespace handler
 {
 
-template <typename ReflectionType, typename VisitorType>
-auto visitor_call()
+template <typename ReflectionType, class InjectionType>
+auto injection_call()
 {
-    return [](rew::visitor_t& visitor)
+    return [](injectable_t& injection)
     {
         using reflection_registry = ::rew_reflection_registry_t<ReflectionType>;
-        reflection_registry::evaluate(dynamic_cast<VisitorType&>(visitor));
+        reflection_registry::evaluate(dynamic_cast<InjectionType&>(injection));
     };
 }
 
@@ -67,4 +67,4 @@ auto visitor_call()
 
 } // namespace rew
 
-#endif // REW_EVALUATE_HPP
+#endif // REW_INJECTION_HPP

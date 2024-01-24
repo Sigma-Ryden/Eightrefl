@@ -15,7 +15,7 @@
     {                                                                                                   \
         using __type = __VA_ARGS__;                                                                     \
         auto __meta = ::rew::find_or_add_parent<R, __type>(__reflection);                               \
-        visitor.template parent<R, __type>(*__meta);                                                    \
+        injection.template parent<R, __type>(*__meta);                                                  \
     }
 
 #define PARENT(...) CORE_PARENT(__VA_ARGS__)

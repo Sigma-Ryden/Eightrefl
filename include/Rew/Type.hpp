@@ -9,7 +9,7 @@
 #include <functional> // function
 
 #include <Rew/Attribute.hpp>
-#include <Rew/Evaluate.hpp>
+#include <Rew/Injection.hpp>
 
 namespace rew
 {
@@ -25,7 +25,7 @@ struct type_t
     const std::function<std::any(std::any& object)> context = nullptr;
     const std::function<std::any(std::any& context)> alias = nullptr;
 
-    attribute_t<evaluate_t> evaluate;
+    attribute_t<injection_t> injection;
 };
 
 } // namespace rew
