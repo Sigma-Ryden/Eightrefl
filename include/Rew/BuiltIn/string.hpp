@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_STRING_HPP
-#define REW_BUILT_IN_STRING_HPP
+#ifndef REW_BUILTIN_STRING_HPP
+#define REW_BUILTIN_STRING_HPP
 
 #include <string> // basic_string
 
@@ -175,4 +175,4 @@ TEMPLATE_REFLECTABLE
     FUNCTION(substr, R(typename R::size_type, typename R::size_type) const)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_STRING_HPP
+#endif // REW_BUILTIN_STRING_HPP

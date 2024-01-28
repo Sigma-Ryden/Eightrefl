@@ -1,6 +1,6 @@
 // TODO: add support for operator ValueType&() with dependent type
-#ifndef REW_BUILT_IN_REFERENCE_WRAPPER_HPP
-#define REW_BUILT_IN_REFERENCE_WRAPPER_HPP
+#ifndef REW_BUILTIN_REFERENCE_WRAPPER_HPP
+#define REW_BUILTIN_REFERENCE_WRAPPER_HPP
 
 #include <functional> // reference_wrapper
 
@@ -20,4 +20,4 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), (std::reference_wrapper<Va
     FUNCTION(get)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_REFERENCE_WRAPPER_HPP
+#endif // REW_BUILTIN_REFERENCE_WRAPPER_HPP

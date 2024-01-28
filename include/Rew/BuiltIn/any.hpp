@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_ANY_HPP
-#define REW_BUILT_IN_ANY_HPP
+#ifndef REW_BUILTIN_ANY_HPP
+#define REW_BUILTIN_ANY_HPP
 
 #include <any> // any
 
@@ -23,4 +23,4 @@ REFLECTABLE(std::any)
     FUNCTION(type)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_ANY_HPP
+#endif // REW_BUILTIN_ANY_HPP

@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_ARRAY_HPP
-#define REW_BUILT_IN_ARRAY_HPP
+#ifndef REW_BUILTIN_ARRAY_HPP
+#define REW_BUILTIN_ARRAY_HPP
 
 #include <array> // array
 
@@ -44,4 +44,4 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t ArraySize>), (st
     FUNCTION(swap)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_ARRAY_HPP
+#endif // REW_BUILTIN_ARRAY_HPP

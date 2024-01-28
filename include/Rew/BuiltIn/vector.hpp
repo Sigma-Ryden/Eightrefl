@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_VECTOR_HPP
-#define REW_BUILT_IN_VECTOR_HPP
+#ifndef REW_BUILTIN_VECTOR_HPP
+#define REW_BUILTIN_VECTOR_HPP
 
 #include <vector> // vector
 
@@ -78,4 +78,4 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (s
     FUNCTION(swap)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_VECTOR_HPP
+#endif // REW_BUILTIN_VECTOR_HPP

@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_WEAK_PTR_HPP
-#define REW_BUILT_IN_WEAK_PTR_HPP
+#ifndef REW_BUILTIN_WEAK_PTR_HPP
+#define REW_BUILTIN_WEAK_PTR_HPP
 
 #include <memory> // weak_ptr
 
@@ -29,4 +29,4 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), (std::weak_ptr<ElementTy
     FUNCTION(owner_before, bool(std::shared_ptr<typename R::value_type> const&))
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_WEAK_PTR_HPP
+#endif // REW_BUILTIN_WEAK_PTR_HPP

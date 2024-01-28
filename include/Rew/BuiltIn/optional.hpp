@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_OPTIONAL_HPP
-#define REW_BUILT_IN_OPTIONAL_HPP
+#ifndef REW_BUILTIN_OPTIONAL_HPP
+#define REW_BUILTIN_OPTIONAL_HPP
 
 #include <optional> // optional, nullopt_t
 
@@ -37,4 +37,4 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), (std::optional<ValueType>)
     FUNCTION(emplace, void(typename R::value_type const&))
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_OPTIONAL_HPP
+#endif // REW_BUILTIN_OPTIONAL_HPP

@@ -4,7 +4,6 @@
 #include <Rew/BuiltIn/shared_ptr.hpp>
 #include <Rew/BuiltIn/string.hpp>
 
-#include <string>
 #include <memory>
 
 struct FSomeDataBase
@@ -23,7 +22,7 @@ struct FSomeData : FSomeDataBase
     std::vector<R*> data;
 
     void Foo(const R *const&) {}
-    void Goo(int, std::string&) {}
+    void Goo(int, std::string*) {}
 };
 
 template <typename R> struct is_fsome_data : std::false_type {};
@@ -38,16 +37,31 @@ CONDITIONAL_REFLECTABLE(is_fsome_data<R>::value)
     //PROPERTY(data)
     PROPERTY(i)
     FUNCTION(Foo)
-    FUNCTION(Goo, void(int, std::string&))
+    FUNCTION(Goo, void(int, std::string*))
     FACTORY(std::shared_ptr<R>(std::shared_ptr<R>))
 REFLECTABLE_INIT()
 
 struct virus_t : rew::injectable_t
 {
 };
+
+//template <typename T>
+//struct Template {
+//    struct SubType {};
+//};
+
+//template <typename T>
+//struct traits;
+
+//template <typename T>
+//struct traits<typename Template<T>::SubType> {
+
+//};
+
 #include <iostream>
 TEST(TestLibrary, Test)
 {
+    //void (std::shared_ptr<int>::*__swap)(std::shared_ptr<int>&) = &std::shared_ptr<int>::swap;
     //std::vector<int>::allocator_type (std::vector<int>::*__f)() const = &std::vector<int>::get_allocator;
     //void(std::shared_ptr<int>::*__p)() = &std::shared_ptr<int>::reset;
     //::rew::utility::overload<>::of(&std::shared_ptr<int>::reset);
@@ -74,6 +88,7 @@ TEST(TestLibrary, Test)
     auto get_allocator_function = vector_type->reflection->function.find("get_allocator() const");
 
     std::vector<int> v;
+
     std::any vector_context = &v;
     get_allocator_function->call(vector_context, {});
 
@@ -114,7 +129,7 @@ TEST(TestLibrary, TestBuiltin)
 
     auto default_factory = type->reflection->factory.find("int()");
     ASSERT("type-reflection-factory-default-null", default_factory != nullptr);
-    ASSERT("type-reflection-factory-default-args_count", default_factory->argument_types.size() == 0);
+    ASSERT("type-reflection-factory-default-args_count", default_factory->arguments.size() == 0);
 
     auto default_instance = default_factory->call({});
     ASSERT("type-reflection-factory-default-instance-null", default_instance.has_value());
@@ -124,7 +139,7 @@ TEST(TestLibrary, TestBuiltin)
 
     auto factory = type->reflection->factory.find("int(int)");
     ASSERT("type-reflection-factory-null", factory != nullptr);
-    ASSERT("type-reflection-factory-args_count", factory->argument_types.size() == 1);
+    ASSERT("type-reflection-factory-args_count", factory->arguments.size() == 1);
 
     auto initialized_instance = factory->call({ s_instance_value });
     ASSERT("type-reflection-factory-instance-null", initialized_instance.has_value());

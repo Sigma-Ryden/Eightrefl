@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_INITIALIZER_LIST_HPP
-#define REW_BUILT_IN_INITIALIZER_LIST_HPP
+#ifndef REW_BUILTIN_INITIALIZER_LIST_HPP
+#define REW_BUILTIN_INITIALIZER_LIST_HPP
 
 #include <initializer_list> // initializer_list
 
@@ -20,4 +20,4 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), (std::initializer_list<Val
     FUNCTION(size)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_INITIALIZER_LIST_HPP
+#endif // REW_BUILTIN_INITIALIZER_LIST_HPP

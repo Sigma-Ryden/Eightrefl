@@ -139,15 +139,6 @@ void reflectable()
 }
 
 template <typename ReflectableType>
-void lazy_reflectable()
-{
-    if constexpr (meta::is_lazy_reflectable<ReflectableType>::value)
-    {
-        reflectable<ReflectableType>();
-    }
-}
-
-template <typename ReflectableType>
 ReflectableType&& reflectable(ReflectableType&& object)
 {
     reflectable<std::decay_t<ReflectableType>>();
@@ -158,12 +149,18 @@ template <typename ReflectableType>
 type_t* find_or_add_type()
 {
     using reflectable_traits = meta::reflectable_traits<std::remove_reference_t<ReflectableType>>;
+    using reflectable_type = typename reflectable_traits::type;
+
+    if constexpr (meta::is_lazy_reflectable<reflectable_type>::value)
+    {
+        reflectable<reflectable_type>();
+    }
 
     auto __name = reflectable_traits::name();
     auto __registry = reflectable_traits::registry();
 
     auto __type = __registry->all[__name];
-    if (__type == nullptr) __type = __registry->template add<typename reflectable_traits::type>(__name);
+    if (__type == nullptr) __type = __registry->template add<reflectable_type>(__name);
 
     return __type;
 }
@@ -172,9 +169,7 @@ template <typename ReflectableType, typename ParentReflectableType>
 parent_t* find_or_add_parent(reflection_t* reflection)
 {
     using reflectable_traits = meta::reflectable_traits<ParentReflectableType>;
-
     static_assert(std::is_base_of_v<ParentReflectableType, ReflectableType>);
-    lazy_reflectable<ParentReflectableType>();
 
     auto __name = reflectable_traits::name();
 
@@ -198,7 +193,7 @@ namespace detail
 template <typename... ArgumentTypes, typename ReturnType>
 auto function_argument_types(ReturnType (*unused)(ArgumentTypes...))
 {
-	return std::vector<type_t*>({ find_or_add_type<ArgumentTypes>()... });
+    return std::vector<type_t*>({ find_or_add_type<ArgumentTypes>()... });
 }
 
 } // namespace detail
@@ -209,8 +204,6 @@ factory_t* find_or_add_factory(reflection_t* reflection)
     using function_traits = meta::function_traits<FactoryType>;
     using function_pointer = typename function_traits::function_pointer;
     using return_type = typename function_traits::return_type;
-
-    lazy_reflectable<return_type>();
 
     auto __name = utility::full_factory_name(function_pointer{});
 
@@ -258,8 +251,6 @@ property_t* find_or_add_property(reflection_t* reflection, const std::string& na
 {
     using property_traits = meta::property_traits<PropertyGetterType>;
     using property_type = typename property_traits::property_type;
-
-    lazy_reflectable<property_type>();
 
     auto __meta = reflection->property.find(name);
     if (__meta == nullptr) __meta = &reflection->property.add

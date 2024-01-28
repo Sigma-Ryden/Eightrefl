@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_TUPLE_HPP
-#define REW_BUILT_IN_TUPLE_HPP
+#ifndef REW_BUILTIN_TUPLE_HPP
+#define REW_BUILTIN_TUPLE_HPP
 
 #include <tuple> // tuple
 
@@ -27,4 +27,4 @@ TEMPLATE_REFLECTABLE((template <typename... ArgumentTypes>), (std::tuple<Argumen
     FUNCTION(swap)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_TUPLE_HPP
+#endif // REW_BUILTIN_TUPLE_HPP

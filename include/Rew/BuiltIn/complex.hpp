@@ -1,6 +1,6 @@
 // TODO: add specializations for: complex<float>, complex<double>, complex<long double>
-#ifndef REW_BUILT_IN_COMPLEX_HPP
-#define REW_BUILT_IN_COMPLEX_HPP
+#ifndef REW_BUILTIN_COMPLEX_HPP
+#define REW_BUILTIN_COMPLEX_HPP
 
 #include <complex> // complex
 
@@ -29,4 +29,4 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), (std::complex<ValueType>))
     PROPERTY(imag)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_COMPLEX_HPP
+#endif // REW_BUILTIN_COMPLEX_HPP

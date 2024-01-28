@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_STACK_HPP
-#define REW_BUILT_IN_STACK_HPP
+#ifndef REW_BUILTIN_STACK_HPP
+#define REW_BUILTIN_STACK_HPP
 
 #include <stack> // stack
 
@@ -28,4 +28,4 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), (std:
     FUNCTION(swap)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_STACK_HPP
+#endif // REW_BUILTIN_STACK_HPP

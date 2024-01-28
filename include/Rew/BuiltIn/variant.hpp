@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_VARIANT_HPP
-#define REW_BUILT_IN_VARIANT_HPP
+#ifndef REW_BUILTIN_VARIANT_HPP
+#define REW_BUILTIN_VARIANT_HPP
 
 #include <variant> // variant, monostate
 
@@ -31,4 +31,4 @@ TEMPLATE_REFLECTABLE
     FUNCTION(swap)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_VARIANT_HPP
+#endif // REW_BUILTIN_VARIANT_HPP

@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_SHARED_PTR_HPP
-#define REW_BUILT_IN_SHARED_PTR_HPP
+#ifndef REW_BUILTIN_SHARED_PTR_HPP
+#define REW_BUILTIN_SHARED_PTR_HPP
 
 #include <memory> // shared_ptr
 
@@ -30,4 +30,4 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), (std::shared_ptr<Element
     FUNCTION(operator bool)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_SHARED_PTR_HPP
+#endif // REW_BUILTIN_SHARED_PTR_HPP

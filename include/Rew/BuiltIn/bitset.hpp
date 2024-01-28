@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_BITSET_HPP
-#define REW_BUILT_IN_BITSET_HPP
+#ifndef REW_BUILTIN_BITSET_HPP
+#define REW_BUILTIN_BITSET_HPP
 
 #include <string> // to_string
 
@@ -51,4 +51,4 @@ TEMPLATE_REFLECTABLE((template <std::size_t BitsetSize>), (std::bitset<BitsetSiz
     FUNCTION(to_ullong)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_BITSET_HPP
+#endif // REW_BUILTIN_BITSET_HPP

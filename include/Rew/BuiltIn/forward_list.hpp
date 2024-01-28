@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_FORWARD_LIST_HPP
-#define REW_BUILT_IN_FORWARD_LIST_HPP
+#ifndef REW_BUILTIN_FORWARD_LIST_HPP
+#define REW_BUILTIN_FORWARD_LIST_HPP
 
 #include <forward_list> // forward_list
 
@@ -13,7 +13,10 @@
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/function.hpp>
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, typename AllocatorType>), (std::forward_list<ValueType, AllocatorType>))
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename ValueType, typename AllocatorType>), (std::forward_list<ValueType, AllocatorType>)
+)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::forward_list<" + NAMEOF(ValueType) + ", " + NAMEOF(AllocatorType) + ">")
 REFLECTABLE_DECLARATION_INIT()
@@ -84,4 +87,4 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (s
     FUNCTION(sort, void(std::function<bool(typename R::const_reference, typename R::const_reference)>))
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_FORWARD_LIST_HPP
+#endif // REW_BUILTIN_FORWARD_LIST_HPP

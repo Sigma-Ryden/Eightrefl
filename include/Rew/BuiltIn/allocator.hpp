@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_ALLOCATOR_HPP
-#define REW_BUILT_IN_ALLOCATOR_HPP
+#ifndef REW_BUILTIN_ALLOCATOR_HPP
+#define REW_BUILTIN_ALLOCATOR_HPP
 
 #include <memory> // allocator
 
@@ -18,4 +18,4 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), (std::allocator<ValueType>
     FUNCTION(deallocate, void(typename R::value_type*, std::size_t))
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_ALLOCATOR_HPP
+#endif // REW_BUILTIN_ALLOCATOR_HPP

@@ -1,110 +1,114 @@
-#ifndef SF_BUILT_IN_MAP_HPP
-#define SF_BUILT_IN_MAP_HPP
-
-#include <type_traits> // true_type, false_type
+#ifndef REW_BUILTIN_MAP_HPP
+#define REW_BUILTIN_MAP_HPP
 
 #include <map> // map, multimap
-#include <unordered_map> // unordered_map, unordered_multimap
 
-#include <utility> // move
+#include <Rew/Reflectable.hpp>
+#include <Rew/Common.hpp>
 
-#include <SF/Core/TypeRegistry.hpp>
-#include <SF/Core/TypeCore.hpp>
+// default allocator for map, multimap
+#include <Rew/BuiltIn/allocator.hpp>
 
-#include <SF/Compress.hpp>
-#include <SF/ExternSerialization.hpp>
+// as function argument type
+#include <Rew/BuiltIn/initializer_list.hpp>
 
-// serialization of core map value_type
-#include <SF/BuiltIn/pair.hpp>
+// as mapped type
+#include <Rew/BuiltIn/pair.hpp>
 
-#define _SF_IS_STD_MAP_TYPE_META_GENERIC(map_type)                                                      \
-    template <typename> struct is_std_##map_type : std::false_type {};                                  \
-    template <typename Key, typename Type, typename Compare, typename Alloc>                            \
-    struct is_std_##map_type<std::map_type<Key, Type, Compare, Alloc>> : std::true_type {};
-
-namespace sf
+namespace rew
 {
-
-namespace meta
-{
-
-_SF_IS_STD_MAP_TYPE_META_GENERIC(map)
-_SF_IS_STD_MAP_TYPE_META_GENERIC(unordered_map)
-_SF_IS_STD_MAP_TYPE_META_GENERIC(multimap)
-_SF_IS_STD_MAP_TYPE_META_GENERIC(unordered_multimap)
-
-template <class T> struct is_std_any_unordered_map
-    : one<is_std_unordered_map<T>,
-          is_std_unordered_multimap<T>> {};
-
-template <class T> struct is_std_any_map
-    : one<is_std_map<T>,
-          is_std_multimap<T>,
-          is_std_any_unordered_map<T>> {};
-
-} // namespace meta
 
 namespace detail
 {
 
-template <class T,
-          SFREQUIRE(not meta::is_std_any_unordered_map<T>::value)>
-void reserve_unordered(T& ordered, std::size_t size) noexcept { /*pass*/ }
+template <typename> struct is_std_map : std::false_type {};
+template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
+struct is_std_map<std::map<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
 
-template <class T,
-          SFREQUIRE(meta::is_std_any_unordered_map<T>::value)>
-void reserve_unordered(T& unordered, std::size_t size)
-{
-    unordered.reserve(size);
-}
+template <typename> struct is_std_multimap : std::false_type {};
+template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
+struct is_std_map<std::multimap<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
 
 } // namespace detail
 
-inline namespace library
-{
+} // namespace rew
 
-EXTERN_CONDITIONAL_SERIALIZATION(Save, map, meta::is_std_any_map<T>::value)
-{
-    let::u64 size = map.size();
-    archive & size;
+CONDITIONAL_REFLECTABLE_DECLARATION(rew::detail::is_std_map<R>::value)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME
+    (
+        "std::map<" + NAMEOF(typename R::key_type) + ", " + NAMEOF(typename R::mapped_type) + ", "
+                    + NAMEOF(typename R::key_compare) + ", " + NAMEOF(typename R::allocator_type) + ">"
+    )
+REFLECTABLE_DECLARATION_INIT()
 
-    compress::slow(archive, map);
+CONDITIONAL_REFLECTABLE_DECLARATION(rew::detail::is_std_multimap<R>::value)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME
+    (
+        "std::multimap<" + NAMEOF(typename R::key_type) + ", " + NAMEOF(typename R::mapped_type) + ", "
+                         + NAMEOF(typename R::key_compare) + ", " + NAMEOF(typename R::allocator_type) + ">"
+    )
+REFLECTABLE_DECLARATION_INIT()
 
-    return archive;
-}
+CONDITIONAL_REFLECTABLE(rew::meta::one<rew::detail::is_std_map<R>, rew::detail::is_std_multimap<R>>::value)
+    FACTORY(R())
+    FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
+    FACTORY(R(typename R::key_compare const&))
+    FACTORY(R(typename R::allocator_type const&))
+    FACTORY(R(typename R::const_iterator, typename R::const_iterator, typename R::key_compare const&, typename R::allocator_type const&))
+    FACTORY(R(typename R::const_iterator, typename R::const_iterator, typename R::allocator_type const&))
+    FACTORY(R(R const&))
+    FACTORY(R(R const&, typename R::allocator_type const&))
+    FACTORY(R(std::initializer_list<typename R::value_type>, typename R::key_compare const&, typename R::allocator_type const&))
+    FACTORY(R(std::initializer_list<typename R::value_type>))
+    FUNCTION(operator=, R&(R const&))
+    FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
+    FUNCTION(get_allocator)
+    FUNCTION(at, typename R::mapped_type&(typename R::key_type const&))
+    FUNCTION(at, typename R::mapped_type const&(typename R::key_type const&) const)
+    FUNCTION(operator[], typename R::mapped_type&(typename R::key_type const&))
+    FUNCTION(begin, typename R::const_iterator() const)
+    FUNCTION(begin, typename R::iterator())
+    FUNCTION(cbegin)
+    FUNCTION(end, typename R::const_iterator() const)
+    FUNCTION(end, typename R::iterator())
+    FUNCTION(cend)
+    FUNCTION(rbegin, typename R::const_reverse_iterator() const)
+    FUNCTION(rbegin, typename R::reverse_iterator())
+    FUNCTION(crbegin)
+    FUNCTION(rend, typename R::const_reverse_iterator() const)
+    FUNCTION(rend, typename R::reverse_iterator())
+    FUNCTION(crend)
+    FUNCTION(empty)
+    FUNCTION(size)
+    FUNCTION(max_size)
+    FUNCTION(clear)
+    FUNCTION(insert, std::pair<typename R::iterator, bool>(typename R::const_reference))
+    FUNCTION(insert, typename R::iterator(typename R::iterator, typename R::const_reference))
+    FUNCTION(insert, typename R::iterator(typename R::const_iterator, typename R::const_iterator))
+    FUNCTION(insert, void(std::initializer_list<typename R::value_type>))
+    FUNCTION(erase, typename R::iterator(typename R::iterator))
+    FUNCTION(erase, typename R::iterator(typename R::const_iterator))
+    FUNCTION(erase, typename R::iterator(typename R::const_iterator, typename R::const_iterator))
+    FUNCTION(swap)
+    FUNCTION(extract, typename R::node_type(typename R::const_iterator))
+    FUNCTION(extract, typename R::node_type(typename R::key_type const&))
+    FUNCTION(merge, void(R&))
+    FUNCTION(count, typename R::size_type(typename R::key_type const&))
+    FUNCTION(find, typename R::iterator(typename R::key_type const&))
+    FUNCTION(find, typename R::const_iterator(typename R::key_type const&) const)
+#if __cplusplus >= 202002L
+    FUNCTION(contains, bool(typename R::key_type const&) const)
+#endif // if
+    FUNCTION(equal_range, std::pair<typename R::iterator, typename R::iterator>(typename R::key_type const&))
+    FUNCTION(equal_range, std::pair<typename R::const_iterator, typename R::const_iterator>(typename R::key_type const&) const)
+    FUNCTION(lower_bound, typename R::iterator(typename R::key_type const&))
+    FUNCTION(lower_bound, typename R::const_iterator(typename R::key_type const&) const)
+    FUNCTION(upper_bound, typename R::iterator(typename R::key_type const&))
+    FUNCTION(upper_bound, typename R::const_iterator(typename R::key_type const&) const)
+    FUNCTION(key_comp)
+//  FUNCTION(value_comp)
+REFLECTABLE_INIT()
 
-EXTERN_CONDITIONAL_SERIALIZATION(Load, map, meta::is_std_any_map<T>::value)
-{
-    using key_type   = typename T::key_type;
-    using value_type = typename T::mapped_type;
-
-    let::u64 size{};
-    archive & size;
-
-    map.clear();
-    detail::reserve_unordered(map, size);
-
-    auto hint = map.begin();
-    for (let::u64 i = 0; i < size; ++i)
-    {
-        key_type key{};
-        value_type value{};
-
-        archive & key & value;
-
-        hint = map.emplace_hint(hint, std::move(key), std::move(value));
-    }
-
-    return archive;
-}
-
-} // inline namespace library
-
-} // namespace sf
-
-CONDITIONAL_TYPE_REGISTRY(meta::is_std_any_map<T>::value)
-
-//clear
-#undef _SF_IS_STD_MAP_TYPE_META_GENERIC
-
-#endif // SF_BUILT_IN_MAP_HPP
+#endif // REW_BUILTIN_MAP_HPP

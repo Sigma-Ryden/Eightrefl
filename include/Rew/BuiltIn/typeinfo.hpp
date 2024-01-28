@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_TYPE_INFO_HPP
-#define REW_BUILT_IN_TYPE_INFO_HPP
+#ifndef REW_BUILTIN_TYPE_INFO_HPP
+#define REW_BUILTIN_TYPE_INFO_HPP
 
 #include <typeinfo> // type_info
 
@@ -17,4 +17,4 @@ REFLECTABLE(std::type_info)
     FUNCTION(name)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_TYPE_INFO_HPP
+#endif // REW_BUILTIN_TYPE_INFO_HPP

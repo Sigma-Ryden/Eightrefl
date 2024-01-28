@@ -1,6 +1,6 @@
 // TODO: add support of functions, for reflect apply() function
-#ifndef REW_BUILT_IN_VALARRAY_HPP
-#define REW_BUILT_IN_VALARRAY_HPP
+#ifndef REW_BUILTIN_VALARRAY_HPP
+#define REW_BUILTIN_VALARRAY_HPP
 
 #include <valarray> // valarray
 
@@ -122,4 +122,4 @@ TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::indirect
     REFLECTABLE_NAME("std::indirect_array<" + NAMEOF(ValueType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-#endif // REW_BUILT_IN_VALARRAY_HPP
+#endif // REW_BUILTIN_VALARRAY_HPP

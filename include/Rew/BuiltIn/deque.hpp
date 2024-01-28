@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_DEQUE_HPP
-#define REW_BUILT_IN_DEQUE_HPP
+#ifndef REW_BUILTIN_DEQUE_HPP
+#define REW_BUILTIN_DEQUE_HPP
 
 #include <deque> // deque
 
@@ -76,4 +76,4 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (s
     FUNCTION(swap)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_DEQUE_HPP
+#endif // REW_BUILTIN_DEQUE_HPP

@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_HASH_HPP
-#define REW_BUILT_IN_HASH_HPP
+#ifndef REW_BUILTIN_HASH_HPP
+#define REW_BUILTIN_HASH_HPP
 
 #include <functional> // hash
 
@@ -17,4 +17,4 @@ TEMPLATE_REFLECTABLE((template <typename KeyType>), (std::hash<KeyType>))
     FUNCTION(operator())
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_HASH_HPP
+#endif // REW_BUILTIN_HASH_HPP

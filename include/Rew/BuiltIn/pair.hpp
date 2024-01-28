@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_PAIR_HPP
-#define REW_BUILT_IN_PAIR_HPP
+#ifndef REW_BUILTIN_PAIR_HPP
+#define REW_BUILTIN_PAIR_HPP
 
 #include <utility> // pair
 
@@ -21,4 +21,4 @@ TEMPLATE_REFLECTABLE((template <typename FirstType, typename SecondType>), (std:
     PROPERTY(second)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_PAIR_HPP
+#endif // REW_BUILTIN_PAIR_HPP

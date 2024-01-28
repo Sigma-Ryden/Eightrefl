@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_QUEUE_HPP
-#define REW_BUILT_IN_QUEUE_HPP
+#ifndef REW_BUILTIN_QUEUE_HPP
+#define REW_BUILTIN_QUEUE_HPP
 
 #include <queue> // queue
 
@@ -30,4 +30,4 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), (std:
     FUNCTION(swap)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_QUEUE_HPP
+#endif // REW_BUILTIN_QUEUE_HPP

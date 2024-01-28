@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_TYPE_INDEX_HPP
-#define REW_BUILT_IN_TYPE_INDEX_HPP
+#ifndef REW_BUILTIN_TYPE_INDEX_HPP
+#define REW_BUILTIN_TYPE_INDEX_HPP
 
 #include <typeindex> // type_index
 
@@ -26,4 +26,4 @@ REFLECTABLE(std::type_index)
     FUNCTION(name)
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_TYPE_INDEX_HPP
+#endif // REW_BUILTIN_TYPE_INDEX_HPP

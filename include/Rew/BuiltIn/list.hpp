@@ -1,5 +1,5 @@
-#ifndef REW_BUILT_IN_LIST_HPP
-#define REW_BUILT_IN_LIST_HPP
+#ifndef REW_BUILTIN_LIST_HPP
+#define REW_BUILTIN_LIST_HPP
 
 #include <list> // list
 
@@ -93,4 +93,4 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (s
     FUNCTION(sort, void(std::function<bool(typename R::const_reference, typename R::const_reference)>))
 REFLECTABLE_INIT()
 
-#endif // REW_BUILT_IN_LIST_HPP
+#endif // REW_BUILTIN_LIST_HPP
