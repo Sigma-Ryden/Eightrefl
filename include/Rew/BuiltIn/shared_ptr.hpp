@@ -22,7 +22,7 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), (std::shared_ptr<Element
     FUNCTION(operator=, R&(R const&))
     FUNCTION(reset, void())
     FUNCTION(reset, void(typename R::element_type*))
-    FUNCTION(swap)
+    //FUNCTION(swap, void(R&))
     FUNCTION(get)
     FUNCTION(operator*)
     FUNCTION(operator->)

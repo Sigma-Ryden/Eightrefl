@@ -4,7 +4,6 @@
 
 #include <cstddef> // size_t
 
-#include <string> // string
 #include <any> // any, any_cast
 
 #include <type_traits> // decay_t, enable_if_t, is_pointer_v, void_t, false_type, true_type
@@ -29,10 +28,7 @@ template <typename T, typename enable = void> struct is_complete : std::false_ty
 template <typename T> struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
 
 template <typename T, typename enable = void>
-struct reflectable_traits
-{
-    static std::string name() { return "auto"; }
-};
+struct reflectable_traits;
 
 namespace detail
 {

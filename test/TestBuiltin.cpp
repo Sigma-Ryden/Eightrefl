@@ -2,7 +2,7 @@
 
 //#include <Rew/BuiltIn/vector.hpp>
 #include <Rew/BuiltIn/shared_ptr.hpp>
-//#include <Rew/BuiltIn/string.hpp>
+#include <Rew/BuiltIn/string.hpp>
 
 #include <string>
 #include <memory>
@@ -55,20 +55,20 @@ TEST(TestLibrary, Test)
     rew::reflectable<FSomeData<void>>();
     //rew::reflectable<std::allocator<int>>();
     //rew::reflectable<std::vector<int>>();
-    for (auto& [name_, type] : rew::global.all)
-    {
-    for (auto& [name, meta] : type->reflection->function.all)
-    {
-    	std::cout << name_ << ":: " << name << '\n';
-    }
-    }
+
     virus_t virus;
   //  auto injection = b->injection.find("virus_t");
    // injection->call(virus);
 
     rew::reflectable<std::shared_ptr<int>>();
     //rew::reflectable<std::string>();
-
+    for (auto& [name_, type] : rew::global.all)
+    {
+        for (auto& [name, meta] : type->reflection->function.all)
+        {
+            std::cout << name_ << ":: " << name << '\n';
+        }
+    }
     return;
     auto vector_type = rew::global.find("std::vector<int, std::allocator<int>>");
     auto get_allocator_function = vector_type->reflection->function.find("get_allocator() const");

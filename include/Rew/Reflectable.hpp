@@ -77,7 +77,7 @@
         CORE_REFLECTABLE_BODY()
 
 #define CORE_REFLECTABLE_INIT(...)                                                                      \
-            ::rew::add_default_injection_set<R>(__type);                                                   \
+            ::rew::add_default_injection_set<R>(__type);                                                \
         }                                                                                               \
     private:                                                                                            \
         inline static auto _ = (evaluate(::rew::injectable_t{}), true);                                 \
@@ -157,13 +157,13 @@ ReflectableType&& reflectable(ReflectableType&& object)
 template <typename ReflectableType>
 type_t* find_or_add_type()
 {
-    using reflectable_traits = meta::reflectable_traits<ReflectableType>;
+    using reflectable_traits = meta::reflectable_traits<std::remove_reference_t<ReflectableType>>;
 
     auto __name = reflectable_traits::name();
     auto __registry = reflectable_traits::registry();
 
     auto __type = __registry->all[__name];
-    if (__type == nullptr) __type = __registry->template add<ReflectableType>(__name);
+    if (__type == nullptr) __type = __registry->template add<typename reflectable_traits::type>(__name);
 
     return __type;
 }

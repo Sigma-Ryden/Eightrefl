@@ -74,10 +74,7 @@ public:
 
         auto alias = [](std::any& context) -> std::any
         {
-            return std::ref
-            (
-                *std::any_cast<std::remove_reference_t<ReflectableType>*>(context)
-            );
+            return std::ref(*std::any_cast<ReflectableType*>(context));
         };
 
         type = new type_t { name, reflection, sizeof(ReflectableType), context, alias };
