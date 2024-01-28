@@ -17,9 +17,9 @@
 #define CORE_FACTORY(...)                                                                               \
     {                                                                                                   \
         using __traits = ::rew::meta::function_traits<__VA_ARGS__>;                                     \
-        using __function_type = typename __traits::function_type;                                       \
-        auto __meta = ::rew::find_or_add_factory<__function_type>(__reflection);                        \
-        injection.template factory<R, __function_type>(*__meta);                                        \
+        using __function_pointer = typename __traits::function_pointer;                                 \
+        auto __meta = ::rew::find_or_add_factory<__function_pointer>(__reflection);                     \
+        injection.template factory<R, __function_pointer>(*__meta);                                     \
     }
 
 #define FACTORY(...) CORE_FACTORY(__VA_ARGS__)
@@ -27,11 +27,13 @@
 namespace rew
 {
 
+struct type_t;
+
 struct factory_t
 {
     const std::string name;
     const std::function<std::any(const std::vector<std::any>& args)> call = nullptr;
-    const std::size_t arg_count = 0;
+    const std::vector<type_t*> argument_types;
     attribute_t<std::any> meta;
 };
 

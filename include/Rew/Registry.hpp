@@ -74,7 +74,10 @@ public:
 
         auto alias = [](std::any& context) -> std::any
         {
-            return std::ref(*std::any_cast<ReflectableType*>(context));
+            return std::ref
+            (
+                *std::any_cast<std::remove_reference_t<ReflectableType>*>(context)
+            );
         };
 
         type = new type_t { name, reflection, sizeof(ReflectableType), context, alias };
@@ -85,6 +88,21 @@ public:
         return type;
     }
 };
+
+template <>
+inline type_t* registry_t::add<void>(const std::string& name)
+{
+    auto& type = all[name];
+    if (type != nullptr) return type;
+
+    auto reflection = new reflection_t{ name };
+    type = new type_t { name, reflection };
+
+    all.emplace(name, type);
+    rtti_all.emplace(typeid(void), type);
+
+    return type;
+}
 
 inline registry_t global;
 

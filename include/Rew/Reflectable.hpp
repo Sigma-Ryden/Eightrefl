@@ -14,7 +14,6 @@
 #define CORE_REFLECTABLE_BODY()                                                                         \
         template <class InjectionType>                                                                  \
         static void evaluate(InjectionType&& injection) {                                               \
-            using __traits = ::rew::meta::reflectable_traits<R>;                                        \
             auto __type = ::rew::find_or_add_type<R>();                                                 \
             auto __reflection = __type->reflection;                                                     \
             injection.template type<R>(*__type);
@@ -78,7 +77,7 @@
         CORE_REFLECTABLE_BODY()
 
 #define CORE_REFLECTABLE_INIT(...)                                                                      \
-            ::rew::add_default_injections<R>(__type);                                                   \
+            ::rew::add_default_injection_set<R>(__type);                                                   \
         }                                                                                               \
     private:                                                                                            \
         inline static auto _ = (evaluate(::rew::injectable_t{}), true);                                 \
@@ -193,16 +192,27 @@ parent_t* find_or_add_parent(reflection_t* reflection)
     return __meta;
 }
 
+namespace detail
+{
+
+template <typename... ArgumentTypes, typename ReturnType>
+auto function_argument_types(ReturnType (*unused)(ArgumentTypes...))
+{
+	return std::vector<type_t*>({ find_or_add_type<ArgumentTypes>()... });
+}
+
+} // namespace detail
+
 template <typename FactoryType>
 factory_t* find_or_add_factory(reflection_t* reflection)
 {
     using function_traits = meta::function_traits<FactoryType>;
-    using function_type = typename function_traits::function_type;
+    using function_pointer = typename function_traits::function_pointer;
     using return_type = typename function_traits::return_type;
 
     lazy_reflectable<return_type>();
 
-    auto __name = utility::full_factory_name(function_type{});
+    auto __name = utility::full_factory_name(function_pointer{});
 
     auto __meta = reflection->factory.find(__name);
     if (__meta == nullptr) __meta = &reflection->factory.add
@@ -210,8 +220,8 @@ factory_t* find_or_add_factory(reflection_t* reflection)
         __name,
         {
             __name,
-            handler::factory_call(function_type{}),
-            utility::function_arg_count(function_type{}),
+            handler::factory_call(function_pointer{}),
+            detail::function_argument_types(function_pointer{})
         }
     );
 
@@ -221,6 +231,10 @@ factory_t* find_or_add_factory(reflection_t* reflection)
 template <typename FunctionType>
 function_t* find_or_add_function(reflection_t* reflection, const std::string& name, FunctionType ptr)
 {
+    using function_traits = meta::function_traits<FunctionType>;
+    using function_pointer = typename function_traits::function_pointer;
+    using return_type = typename function_traits::return_type;
+
     auto __name = utility::full_function_name(name, ptr);
 
     auto __meta = reflection->function.find(__name);
@@ -230,7 +244,8 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
         {
             __name,
             handler::function_call(ptr),
-            utility::function_arg_count(ptr)
+            detail::function_argument_types(function_pointer{}),
+            find_or_add_type<return_type>()
         }
     );
 
@@ -241,7 +256,7 @@ template <typename PropertyGetterType, typename PropertySetterType>
 property_t* find_or_add_property(reflection_t* reflection, const std::string& name,
                                  PropertyGetterType getter, PropertySetterType setter)
 {
-    using property_traits = meta::property_traits<decltype(getter)>;
+    using property_traits = meta::property_traits<PropertyGetterType>;
     using property_type = typename property_traits::property_type;
 
     lazy_reflectable<property_type>();
@@ -292,7 +307,7 @@ injection_t* find_or_add_injection(type_t* type)
 }
 
 template <typename ReflectableType, std::size_t CurrentKey = 0, std::size_t MaxKey = 4>
-void add_default_injections(type_t* type)
+void add_default_injection_set(type_t* type)
 {
     if constexpr (meta::is_complete<meta::injection_traits<CurrentKey>>::value)
     {
@@ -301,7 +316,7 @@ void add_default_injections(type_t* type)
         find_or_add_injection<ReflectableType, typename injection_traits::type>(type);
         if constexpr (CurrentKey < MaxKey)
         {
-            add_default_injections<ReflectableType, CurrentKey + 1>(type);
+            add_default_injection_set<ReflectableType, CurrentKey + 1>(type);
         }
     }
 }

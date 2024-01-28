@@ -43,26 +43,8 @@ std::any backward(ValueType&& result)
     }
 }
 
-template <typename... ArgumentTypes, typename ReturnType, class ClassType>
-constexpr std::size_t function_arg_count(ReturnType (ClassType::* function)(ArgumentTypes...))
-{
-    return sizeof...(ArgumentTypes);
-}
-
-template <typename... ArgumentTypes, typename ReturnType, class ClassType>
-constexpr std::size_t function_arg_count(ReturnType (ClassType::* function)(ArgumentTypes...) const)
-{
-    return sizeof...(ArgumentTypes);
-}
-
-template <typename... ArgumentTypes, typename ReturnType>
-constexpr std::size_t function_arg_count(ReturnType (*function)(ArgumentTypes...))
-{
-    return sizeof...(ArgumentTypes);
-}
-
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
-static auto member_function_ptr(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
+auto member_function_ptr(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
 {
     struct __inner : protected ReflectableType
     {
@@ -75,7 +57,7 @@ static auto member_function_ptr(ReturnType (ParentReflectableType::* function)(A
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
-static auto member_function_ptr(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
+auto member_function_ptr(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
 {
     struct __inner : protected ReflectableType
     {
@@ -88,7 +70,7 @@ static auto member_function_ptr(ReturnType (ParentReflectableType::* function)(A
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ValueType>
-static auto member_property_ptr(ValueType ParentReflectableType::* property)
+auto member_property_ptr(ValueType ParentReflectableType::* property)
 {
     struct __inner : protected ReflectableType
     {
@@ -101,36 +83,36 @@ static auto member_property_ptr(ValueType ParentReflectableType::* property)
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-static auto member_property_get_ptr(PropertyType ParentReflectableType::* property)
+auto member_property_get_ptr(PropertyType ParentReflectableType::* property)
 {
     return member_property_ptr<ReflectableType>(property);
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-static auto member_property_get_ptr(PropertyType (ParentReflectableType::* function)(void) const)
+auto member_property_get_ptr(PropertyType (ParentReflectableType::* function)(void) const)
 {
     return member_function_ptr<ReflectableType>(function);
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-static auto member_property_get_ptr(PropertyType (ParentReflectableType::* function)(void))
+auto member_property_get_ptr(PropertyType (ParentReflectableType::* function)(void))
 {
     return member_function_ptr<ReflectableType>(function);
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-static auto member_property_set_ptr(PropertyType ParentReflectableType::* property)
+auto member_property_set_ptr(PropertyType ParentReflectableType::* property)
 {
     return member_property_ptr<ReflectableType>(property);
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
-static auto member_property_set_ptr(void (ParentReflectableType::* function)(PropertyType))
+auto member_property_set_ptr(void (ParentReflectableType::* function)(PropertyType))
 {
     return member_function_ptr<ReflectableType>(function);
 }
 
-template <typename ArgumentType = void, typename ... ArgumentTypes>
+template <typename ArgumentType = void, typename... ArgumentTypes>
 std::string full_function_name(const std::string& name)
 {
     if constexpr (std::is_void_v<ArgumentType>)
@@ -147,25 +129,25 @@ std::string full_function_name(const std::string& name)
     }
 }
 
-template <typename ReturnType, typename ClassType, typename ... ArgumentTypes>
+template <typename ReturnType, typename ClassType, typename... ArgumentTypes>
 std::string full_function_name(const std::string& name, ReturnType (ClassType::*)(ArgumentTypes...))
 {
     return full_function_name<ArgumentTypes...>(name);
 }
 
-template <typename ReturnType, typename ClassType, typename ... ArgumentTypes>
+template <typename ReturnType, typename ClassType, typename... ArgumentTypes>
 std::string full_function_name(const std::string& name, ReturnType (*)(ArgumentTypes...))
 {
     return full_function_name<ArgumentTypes...>(name);
 }
 
-template <typename ReturnType, typename ClassType, typename ... ArgumentTypes>
+template <typename ReturnType, typename ClassType, typename... ArgumentTypes>
 std::string full_function_name(const std::string& name, ReturnType (ClassType::*)(ArgumentTypes...) const)
 {
     return full_function_name<ArgumentTypes...>(name) + " const";
 }
 
-template <typename ReturnType, typename ... ArgumentTypes>
+template <typename ReturnType, typename... ArgumentTypes>
 std::string full_factory_name(ReturnType (*)(ArgumentTypes...))
 {
     return full_function_name<ArgumentTypes...>

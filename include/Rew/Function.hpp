@@ -27,11 +27,14 @@
 namespace rew
 {
 
+struct type_t;
+
 struct function_t
 {
     const std::string name;
     const std::function<std::any(std::any& context, const std::vector<std::any>& args)> call = nullptr;
-    const std::size_t arg_count = 0;
+    const std::vector<type_t*> argument_types;
+    type_t *const return_type = nullptr;
     attribute_t<std::any> meta;
 };
 

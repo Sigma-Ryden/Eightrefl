@@ -23,7 +23,7 @@
 namespace rew
 {
 
-class type_t;
+struct type_t;
 
 struct parent_t
 {

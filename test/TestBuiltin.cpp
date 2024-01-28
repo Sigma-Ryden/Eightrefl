@@ -23,7 +23,7 @@ struct FSomeData : FSomeDataBase
     std::vector<R*> data;
 
     void Foo(const R *const&) {}
-    void Goo(int, std::string) {}
+    void Goo(int, std::string&) {}
 };
 
 template <typename R> struct is_fsome_data : std::false_type {};
@@ -38,14 +38,14 @@ CONDITIONAL_REFLECTABLE(is_fsome_data<R>::value)
     //PROPERTY(data)
     PROPERTY(i)
     FUNCTION(Foo)
-    FUNCTION(Goo, void(int, std::string))
+    FUNCTION(Goo, void(int, std::string&))
     FACTORY(std::shared_ptr<R>(std::shared_ptr<R>))
 REFLECTABLE_INIT()
 
 struct virus_t : rew::injectable_t
 {
 };
-
+#include <iostream>
 TEST(TestLibrary, Test)
 {
     //std::vector<int>::allocator_type (std::vector<int>::*__f)() const = &std::vector<int>::get_allocator;
@@ -55,11 +55,16 @@ TEST(TestLibrary, Test)
     rew::reflectable<FSomeData<void>>();
     //rew::reflectable<std::allocator<int>>();
     //rew::reflectable<std::vector<int>>();
-    auto b = rew::global.find("FSomeDataBase");
-
+    for (auto& [name_, type] : rew::global.all)
+    {
+    for (auto& [name, meta] : type->reflection->function.all)
+    {
+    	std::cout << name_ << ":: " << name << '\n';
+    }
+    }
     virus_t virus;
-    auto injection = b->injection.find("virus_t");
-    injection->call(virus);
+  //  auto injection = b->injection.find("virus_t");
+   // injection->call(virus);
 
     rew::reflectable<std::shared_ptr<int>>();
     //rew::reflectable<std::string>();
@@ -109,7 +114,7 @@ TEST(TestLibrary, TestBuiltin)
 
     auto default_factory = type->reflection->factory.find("int()");
     ASSERT("type-reflection-factory-default-null", default_factory != nullptr);
-    ASSERT("type-reflection-factory-default-args_count", default_factory->arg_count == 0);
+    ASSERT("type-reflection-factory-default-args_count", default_factory->argument_types.size() == 0);
 
     auto default_instance = default_factory->call({});
     ASSERT("type-reflection-factory-default-instance-null", default_instance.has_value());
@@ -119,7 +124,7 @@ TEST(TestLibrary, TestBuiltin)
 
     auto factory = type->reflection->factory.find("int(int)");
     ASSERT("type-reflection-factory-null", factory != nullptr);
-    ASSERT("type-reflection-factory-args_count", factory->arg_count == 1);
+    ASSERT("type-reflection-factory-args_count", factory->argument_types.size() == 1);
 
     auto initialized_instance = factory->call({ s_instance_value });
     ASSERT("type-reflection-factory-instance-null", initialized_instance.has_value());

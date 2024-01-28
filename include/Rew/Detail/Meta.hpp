@@ -1,3 +1,4 @@
+// TODO: changr function name building and other possible to struct traits
 #ifndef REW_DETAIL_META_HPP
 #define REW_DETAIL_META_HPP
 
@@ -52,22 +53,36 @@ template <typename T> struct is_lazy_reflectable : all<is_reflectable<T>, detail
 template <typename T> struct is_builtin_reflectable : all<is_reflectable<T>, detail::is_builtin<T>> {};
 template <typename T> struct is_custom_reflectable : all<is_reflectable<T>, std::negation<detail::is_builtin<T>>> {};
 
-template <typename...>
+template <typename>
 struct function_traits;
 
 template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(ArgumentTypes...)>
 {
+    using function_type = ReturnType(ArgumentTypes...);
     using return_type = ReturnType;
-    using function_type = ReturnType(*)(ArgumentTypes...);
+    using function_pointer = ReturnType (*)(ArgumentTypes...);
+};
+
+template <typename ReturnType, typename... ArgumentTypes>
+struct function_traits<ReturnType(ArgumentTypes...) const>
+{
+    using function_type = ReturnType(ArgumentTypes...) const;
+    using return_type = ReturnType;
+    using function_pointer = ReturnType (*)(ArgumentTypes...);
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(*)(ArgumentTypes...)>
-{
-    using return_type = ReturnType;
-    using function_type = ReturnType(*)(ArgumentTypes...);
-};
+    : function_traits<ReturnType(ArgumentTypes...)> {};
+
+template <class ClassType, typename ReturnType, typename... ArgumentTypes>
+struct function_traits<ReturnType (ClassType::*)(ArgumentTypes...) const>
+    : function_traits<ReturnType(ArgumentTypes...) const> {};
+
+template <class ClassType, typename ReturnType, typename... ArgumentTypes>
+struct function_traits<ReturnType (ClassType::*)(ArgumentTypes...)>
+    : function_traits<ReturnType(ArgumentTypes...)> {};
 
 template <typename>
 struct property_traits;
@@ -80,15 +95,11 @@ struct property_traits<PropertyType ReflectableType::*>
 
 template <typename ReflectableType, typename PropertyType>
 struct property_traits<PropertyType (ReflectableType::*)(void) const>
-{
-    using property_type = PropertyType;
-};
+    : property_traits<PropertyType ReflectableType::*> {};
 
 template <typename ReflectableType, typename PropertyType>
 struct property_traits<PropertyType (ReflectableType::*)(void)>
-{
-    using property_type = PropertyType;
-};
+    : property_traits<PropertyType ReflectableType::*> {};
 
 template <class ClassType>
 struct member_function_traits
