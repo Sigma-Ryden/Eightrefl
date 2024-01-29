@@ -29,12 +29,6 @@ TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), (ElementType
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(ElementType) + " const")
 REFLECTABLE_DECLARATION_INIT()
-
-TEMPLATE_REFLECTABLE((template <typename ElementType>), (ElementType const))
-    FACTORY(R())
-    FACTORY(R(R))
-    FACTORY(R(ElementType))
-REFLECTABLE_INIT()
 // ~ qualified types
 
 // boolean type

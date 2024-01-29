@@ -148,8 +148,8 @@ ReflectableType&& reflectable(ReflectableType&& object)
 template <typename ReflectableType>
 type_t* find_or_add_type()
 {
-    using reflectable_traits = meta::reflectable_traits<std::remove_reference_t<ReflectableType>>;
-    using reflectable_type = typename reflectable_traits::type;
+    using reflectable_type = std::decay_t<ReflectableType>;
+    using reflectable_traits = meta::reflectable_traits<reflectable_type>;
 
     if constexpr (meta::is_lazy_reflectable<reflectable_type>::value)
     {

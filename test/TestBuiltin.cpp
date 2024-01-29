@@ -45,19 +45,6 @@ struct virus_t : rew::injectable_t
 {
 };
 
-//template <typename T>
-//struct Template {
-//    struct SubType {};
-//};
-
-//template <typename T>
-//struct traits;
-
-//template <typename T>
-//struct traits<typename Template<T>::SubType> {
-
-//};
-
 #include <iostream>
 TEST(TestLibrary, Test)
 {
@@ -67,6 +54,7 @@ TEST(TestLibrary, Test)
     //::rew::utility::overload<>::of(&std::shared_ptr<int>::reset);
     // TODO: add static assert inside reflectable
     rew::reflectable<FSomeData<void>>();
+
     //rew::reflectable<std::allocator<int>>();
     //rew::reflectable<std::vector<int>>();
 
