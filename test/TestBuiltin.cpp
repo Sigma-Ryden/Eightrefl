@@ -1,6 +1,6 @@
 #include "RewTestingBase.hpp"
 
-//#include <Rew/BuiltIn/vector.hpp>
+#include <Rew/BuiltIn/vector.hpp>
 #include <Rew/BuiltIn/shared_ptr.hpp>
 #include <Rew/BuiltIn/string.hpp>
 
@@ -45,6 +45,19 @@ struct virus_t : rew::injectable_t
 {
 };
 
+template <typename I, typename C = std::vector<typename I::value_type>>
+struct is_std_vector_iterator : std::false_type {};
+
+template <typename T>
+struct is_std_vector_iterator<typename std::vector<T>::iterator, std::vector<T>> : std::true_type {};
+
+CONDITIONAL_REFLECTABLE_DECLARATION(is_std_vector_iterator<R>::value)
+    REFLECTABLE_NAME("std::vector<"+NAMEOF(typename std::iterator_traits<R>::value_type)+">::iterator")
+REFLECTABLE_DECLARATION_INIT()
+
+CONDITIONAL_REFLECTABLE(is_std_vector_iterator<R>::value)
+REFLECTABLE_INIT()
+
 #include <iostream>
 TEST(TestLibrary, Test)
 {
@@ -53,10 +66,9 @@ TEST(TestLibrary, Test)
     //void(std::shared_ptr<int>::*__p)() = &std::shared_ptr<int>::reset;
     //::rew::utility::overload<>::of(&std::shared_ptr<int>::reset);
     // TODO: add static assert inside reflectable
-    rew::reflectable<FSomeData<void>>();
-
+    rew::reflectable<FSomeData<void*>>();
     //rew::reflectable<std::allocator<int>>();
-    //rew::reflectable<std::vector<int>>();
+    rew::reflectable<std::vector<int>>();
 
     virus_t virus;
   //  auto injection = b->injection.find("virus_t");

@@ -24,8 +24,10 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (s
     FACTORY(R(typename R::size_type, typename R::const_reference))
     FACTORY(R(typename R::size_type, typename R::allocator_type const&))
     FACTORY(R(typename R::size_type))
+    /*
     FACTORY(R(typename R::const_iterator, typename R::const_iterator, typename R::allocator_type const&))
     FACTORY(R(typename R::const_iterator, typename R::const_iterator))
+    */
     FACTORY(R(R const&, typename R::allocator_type const&))
     FACTORY(R(R const&))
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::allocator_type const&))
@@ -33,7 +35,9 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (s
     FUNCTION(operator=, R&(R const&))
     FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
     FUNCTION(assign, void(typename R::size_type, typename R::const_reference))
+    /*
     FUNCTION(assign, void(typename R::const_iterator, typename R::const_iterator))
+    */
     FUNCTION(assign, void(std::initializer_list<typename R::value_type>))
     FUNCTION(get_allocator)
     FUNCTION(at, typename R::const_reference(typename R::size_type) const)
@@ -46,8 +50,11 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (s
     FUNCTION(back, typename R::reference())
     FUNCTION(data, typename R::const_pointer() const)
     FUNCTION(data, typename R::pointer())
+    /*
     FUNCTION(begin, typename R::const_iterator() const)
+    */
     FUNCTION(begin, typename R::iterator())
+    /*
     FUNCTION(cbegin)
     FUNCTION(end, typename R::const_iterator() const)
     FUNCTION(end, typename R::iterator())
@@ -76,6 +83,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (s
     FUNCTION(resize, void(typename R::size_type))
     FUNCTION(resize, void(typename R::size_type, typename R::const_reference))
     FUNCTION(swap)
+    */
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_VECTOR_HPP
