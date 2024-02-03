@@ -17,8 +17,9 @@
 #define CORE_FACTORY(...)                                                                               \
     {                                                                                                   \
         using __traits = ::rew::meta::function_traits<__VA_ARGS__>;                                     \
-        using __function_pointer = typename __traits::function_pointer;                                 \
-        auto __meta = ::rew::find_or_add_factory<__function_pointer>(__reflection);                     \
+        using __dirty_function_pointer = typename __traits::dirty_function_type*;                       \
+        using __function_pointer = typename __traits::function_type*;                                   \
+        auto __meta = ::rew::find_or_add_factory<__dirty_function_pointer>(__reflection);               \
         injection.template factory<R, __function_pointer>(*__meta);                                     \
     }
 

@@ -129,22 +129,13 @@ std::string full_function_name(const std::string& name)
     }
 }
 
-template <typename ReturnType, typename ClassType, typename... ArgumentTypes>
-std::string full_function_name(const std::string& name, ReturnType (ClassType::*)(ArgumentTypes...))
-{
-    return full_function_name<ArgumentTypes...>(name);
-}
-
-template <typename ReturnType, typename ClassType, typename... ArgumentTypes>
+template <bool IsConstFunction = false, typename ReturnType, typename... ArgumentTypes>
 std::string full_function_name(const std::string& name, ReturnType (*)(ArgumentTypes...))
 {
-    return full_function_name<ArgumentTypes...>(name);
-}
+    auto result = full_function_name<ArgumentTypes...>(name);
+    if constexpr (IsConstFunction) result += " const";
 
-template <typename ReturnType, typename ClassType, typename... ArgumentTypes>
-std::string full_function_name(const std::string& name, ReturnType (ClassType::*)(ArgumentTypes...) const)
-{
-    return full_function_name<ArgumentTypes...>(name) + " const";
+    return result;
 }
 
 template <typename ReturnType, typename... ArgumentTypes>

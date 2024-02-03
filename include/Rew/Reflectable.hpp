@@ -14,7 +14,7 @@
 #define CORE_REFLECTABLE_BODY()                                                                         \
         template <class InjectionType>                                                                  \
         static void evaluate(InjectionType&& injection) {                                               \
-            auto __type = ::rew::find_or_add_type<R>();                                                 \
+            auto __type = ::rew::find_or_add_type<DirtyR>();                                            \
             auto __reflection = __type->reflection;                                                     \
             injection.template type<R>(*__type);
 
@@ -22,20 +22,20 @@
     namespace rew { namespace meta {                                                                    \
         __REW_EXPAND template_header                                                                    \
         struct reflectable_traits<__REW_EXPAND reflectable_type> {                                      \
-            using type = __REW_EXPAND reflectable_type;                                                 \
-            using R = type;
+            using R = __REW_EXPAND reflectable_type;                                                    \
+            LAZY_REFLECTABLE()
 
 #define CORE_CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                   \
     namespace rew { namespace meta {                                                                    \
-        template <typename R>                                                                           \
-        struct reflectable_traits<R, std::enable_if_t<__VA_ARGS__>> {                                   \
-            using type = R;
+        template <typename DirtyR>                                                                      \
+        struct reflectable_traits<DirtyR, std::enable_if_t<__VA_ARGS__>> {                              \
+            using R = DirtyR;                                                                           \
+            LAZY_REFLECTABLE()
 
-#define CORE_REFLECTABLE_DECLARATION(...)                                                               \
+#define CORE_REFLECTABLE_DECLARATION(reflectable_type)                                                  \
     namespace rew { namespace meta {                                                                    \
-        template <> struct reflectable_traits<__VA_ARGS__> {                                            \
-            using type = __VA_ARGS__;                                                                   \
-            using R = type;
+        template <> struct reflectable_traits<reflectable_type> {                                       \
+            using R = reflectable_type;
 
 #define REFLECTABLE_INJECTION_DECLARATION(injection_index, ...)                                         \
     namespace rew { namespace meta {                                                                    \
@@ -45,10 +45,10 @@
     REFLECTABLE_NAME(#__VA_ARGS__)
 
 #define REFLECTABLE_REGISTRY(...)                                                                       \
-    static const auto registry() { return __VA_ARGS__; }                                                \
+    static auto registry() { return __VA_ARGS__; }
 
 #define REFLECTABLE_NAME(...)                                                                           \
-    static const std::string name() { return __VA_ARGS__; }
+    static std::string name() { return __VA_ARGS__; }
 
 #define LAZY_REFLECTABLE(...)                                                                           \
     static auto lazy() { __VA_ARGS__ }
@@ -63,17 +63,20 @@
 #define CORE_TEMPLATE_REFLECTABLE(template_header, reflectable_type)                                    \
     __REW_EXPAND template_header                                                                        \
     struct rew_reflection_registry_t<__REW_EXPAND reflectable_type> {                                   \
-        using R = __REW_EXPAND reflectable_type;                                                        \
+        using DirtyR = __REW_EXPAND reflectable_type;                                                   \
+        using R = typename ::rew::meta::reflectable_traits<DirtyR>::R;                                  \
         CORE_REFLECTABLE_BODY()
 
 #define CORE_CONDITIONAL_REFLECTABLE(...)                                                               \
-    template <typename R>                                                                               \
-    struct rew_reflection_registry_t<R, std::enable_if_t<__VA_ARGS__>> {                                \
+    template <typename DirtyR>                                                                          \
+    struct rew_reflection_registry_t<DirtyR, std::enable_if_t<__VA_ARGS__>> {                           \
+        using R = typename ::rew::meta::reflectable_traits<DirtyR>::R;                                  \
         CORE_REFLECTABLE_BODY()
 
 #define CORE_REFLECTABLE(...)                                                                           \
     template <> struct rew_reflection_registry_t<__VA_ARGS__> {                                         \
-        using R = __VA_ARGS__;                                                                          \
+        using DirtyR = __VA_ARGS__;                                                                     \
+        using R = typename ::rew::meta::reflectable_traits<DirtyR>::R;                                  \
         CORE_REFLECTABLE_BODY()
 
 #define CORE_REFLECTABLE_INIT(...)                                                                      \
@@ -89,15 +92,13 @@
 #ifndef TEMPLATE_REFLECTABLE_DECLARATION
     #define TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                         \
         CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                        \
-        REFLECTABLE_REGISTRY(&::rew::global)                                                            \
-        LAZY_REFLECTABLE()
+        REFLECTABLE_REGISTRY(&::rew::global)
 #endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
 #ifndef CONDITIONAL_REFLECTABLE_DECLARATION
     #define CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                    \
         CORE_CONDITIONAL_REFLECTABLE_DECLARATION(__VA_ARGS__)                                           \
-        REFLECTABLE_REGISTRY(&::rew::global)                                                            \
-        LAZY_REFLECTABLE()
+        REFLECTABLE_REGISTRY(&::rew::global)
 #endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
 #ifndef REFLECTABLE_DECLARATION
@@ -148,10 +149,10 @@ ReflectableType&& reflectable(ReflectableType&& object)
 template <typename ReflectableType>
 type_t* find_or_add_type()
 {
-    using reflectable_traits = meta::reflectable_traits<std::decay_t<ReflectableType>>;
-    using reflectable_type = typename reflectable_traits::type;
+    using reflectable_type = std::decay_t<ReflectableType>;
+    using reflectable_traits = meta::reflectable_traits<reflectable_type>;
 
-    if constexpr (meta::is_lazy_reflectable<std::decay_t<ReflectableType>>::value)
+    if constexpr (meta::is_lazy_reflectable<reflectable_type>::value)
     {
         reflectable<reflectable_type>();
     }
@@ -198,14 +199,14 @@ auto function_argument_types(ReturnType (*unused)(ArgumentTypes...))
 
 } // namespace detail
 
-template <typename FactoryType>
+template <typename DirtyFactoryType>
 factory_t* find_or_add_factory(reflection_t* reflection)
 {
-    using function_traits = meta::function_traits<FactoryType>;
-    using function_pointer = typename function_traits::function_pointer;
-    using return_type = typename function_traits::return_type;
+    using function_traits = meta::function_traits<DirtyFactoryType>;
+    using dirty_function_pointer = typename function_traits::dirty_function_type*;
+    using function_pointer = typename function_traits::function_type*;
 
-    auto __name = utility::full_factory_name(function_pointer{});
+    auto __name = utility::full_factory_name(dirty_function_pointer{});
 
     auto __meta = reflection->factory.find(__name);
     if (__meta == nullptr) __meta = &reflection->factory.add
@@ -214,21 +215,21 @@ factory_t* find_or_add_factory(reflection_t* reflection)
         {
             __name,
             handler::factory_call(function_pointer{}),
-            detail::function_argument_types(function_pointer{})
+            detail::function_argument_types(dirty_function_pointer{})
         }
     );
 
     return __meta;
 }
 
-template <typename DirtyFunctionType, typename FunctionType>
+template <typename DirtyFunctionType = void, typename FunctionType>
 function_t* find_or_add_function(reflection_t* reflection, const std::string& name, FunctionType ptr)
 {
-    using function_traits = meta::function_traits<DirtyFunctionType>;
-    using function_pointer = typename function_traits::function_pointer;
-    using return_type = typename function_traits::return_type;
+    using function_traits = meta::function_traits<std::conditional_t<std::is_void_v<DirtyFunctionType>, FunctionType, DirtyFunctionType>>;
+    using dirty_function_pointer = typename function_traits::dirty_function_type*;
+    using dirty_return_type = typename function_traits::dirty_return_type;
 
-    auto __name = utility::full_function_name(name, DirtyFunctionType{});
+    auto __name = utility::full_function_name(name, dirty_function_pointer{});
 
     auto __meta = reflection->function.find(__name);
     if (__meta == nullptr) __meta = &reflection->function.add
@@ -237,20 +238,20 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
         {
             __name,
             handler::function_call(ptr),
-            detail::function_argument_types(function_pointer{}),
-            find_or_add_type<return_type>()
+            detail::function_argument_types(dirty_function_pointer{}),
+            find_or_add_type<dirty_return_type>()
         }
     );
 
     return __meta;
 }
 
-template <typename PropertyGetterType, typename PropertySetterType>
+template <typename DirtyPropertyGetterType, typename DirtyPropertySetterType>
 property_t* find_or_add_property(reflection_t* reflection, const std::string& name,
-                                 PropertyGetterType getter, PropertySetterType setter)
+                                 DirtyPropertyGetterType getter, DirtyPropertySetterType setter)
 {
-    using property_traits = meta::property_traits<PropertyGetterType>;
-    using property_type = typename property_traits::property_type;
+    using property_traits = meta::property_traits<DirtyPropertyGetterType>;
+    using dirty_property_type = typename property_traits::dirty_property_type;
 
     auto __meta = reflection->property.find(name);
     if (__meta == nullptr) __meta = &reflection->property.add
@@ -258,7 +259,7 @@ property_t* find_or_add_property(reflection_t* reflection, const std::string& na
         name,
         {
             name,
-            find_or_add_type<property_type>(),
+            find_or_add_type<dirty_property_type>(),
             handler::property_get(getter),
             handler::property_set(setter),
             handler::property_ptr(getter)

@@ -1,4 +1,5 @@
 #include "RewTestingBase.hpp"
+#include <type_traits>
 
 template <typename T>
 struct Vector
@@ -9,48 +10,52 @@ struct Vector
         struct Proxy {};
     };
 
-    void Foo(Iterator<int> i) {}
-};
-
-namespace rew { namespace meta {
-    template <typename T>
-    struct reflectable_traits<Vector<T>> {
-        using type = Vector<T>;
-        using R = type;
-        static const auto registry() { return &rew::global; }
-        static const std::string name() { return "Vector<" + NAMEOF(T) + ">"; }
-    };
-}}
-
-template <typename T, typename U> struct Vector_Iterator {};
-
-namespace rew { namespace meta {
-    template <typename T, typename U>
-    struct reflectable_traits<Vector_Iterator<T, U>> {
-        using type = typename Vector<T>::template Iterator<U>;
-        using R = type;
-        static const auto registry() { return &rew::global; }
-        static const std::string name() { return "Vector<" + NAMEOF(T) + ">::Iterator<" + NAMEOF(U) + ">"; }
-    };
-}}
-
-TEMPLATE_REFLECTABLE((template <typename T>), (Vector<T>))
-    {
-        using __traits = ::rew::meta::member_function_traits<R>;
-        using __type = void(typename R::Iterator<int>);
-        using __dirty_type = void(R::*)(Vector_Iterator<T, int>);
-        auto __dirty_ptr = __traits::template overload<__type>::of(&R::Foo);
-        auto __ptr = ::rew::utility::member_function_ptr<R>(__dirty_ptr);
-        auto __meta = ::rew::find_or_add_function<__dirty_type>(__reflection, "Foo", __ptr);
-        injection.template function<R, decltype(__ptr)>(*__meta);
+    void Foo(Iterator<int> i) {
+        this->j = 1;
     }
 
+    int j = 0;
+};
+
+template <typename, typename enable = void> struct has_reflectable_using : std::false_type {};
+template <typename T> struct has_reflectable_using<T, std::void_t<typename T::__rew_reflectable_using>> : std::true_type {};
+
+#define __REW_EXPAND(...) __VA_ARGS__
+
+#define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, reflectable_type) \
+        __REW_EXPAND template_header \
+        struct reflectable_using {\
+            using __rew_reflectable_using = __REW_EXPAND reflectable_type;\
+        };
+
+TEMPLATE_REFLECTABLE_USING((template <typename T, typename U>), Vector_Iterator, (typename Vector<T>::template Iterator<U>))
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename T, typename U>), (Vector_Iterator<T, U>))
+    REFLECTABLE_NAME("Vector<" + NAMEOF(T) + ">::Iterator<" + NAMEOF(U) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename T, typename U>), (Vector_Iterator<T, U>))
+REFLECTABLE_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), (Vector<T>))
+    REFLECTABLE_NAME("Vector<" + NAMEOF(T) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename T>), (Vector<T>))
+    FUNCTION(Foo, void(Vector_Iterator<T, int>))
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, Test)
 {
+    constexpr bool xxx = has_reflectable_using<Vector_Iterator<int, float>>::value;
+
     rew::reflectable<Vector<float>>();
-    rew::global.find("");
+    rew::function_t* function = rew::global.find("Vector<float>")->reflection->function.find("Foo(Vector<float>::Iterator<int>)");
+    Vector<float> v;
+    Vector<float>::Iterator<int> i;
+    std::any context = &v;
+
+    function->call(context, {i});
 }
 
 // #include <Rew/BuiltIn/vector.hpp>
