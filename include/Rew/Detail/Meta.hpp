@@ -39,6 +39,18 @@ template <typename T> struct has_reflectable_using<T, std::void_t<typename T::__
 
 } // namespace detail
 
+template <typename T, typename enable = void>
+struct reflectable_using
+{
+    using R = T;
+};
+
+template <typename T>
+struct reflectable_using<T, std::void_t<typename T::__rew_reflectable_using_R>>
+{
+    using R = typename T::__rew_reflectable_using_R;
+};
+
 namespace detail
 {
 
@@ -66,11 +78,13 @@ struct function_traits<ReturnType(ArgumentTypes...)>
 {
     using dirty_return_type = ReturnType;
     using dirty_function_type = dirty_return_type(ArgumentTypes...);
+    using dirty_function_pointer = dirty_return_type(*)(ArgumentTypes...);
 
     using return_type = typename reflectable_traits<ReturnType>::R;
     using function_type = return_type(typename reflectable_traits<ArgumentTypes>::R...);
+    using function_pointer = return_type(*)(typename reflectable_traits<ArgumentTypes>::R...);
 
-    static constexpr auto is_const_function = false;
+    static constexpr auto is_const = false;
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
@@ -78,11 +92,13 @@ struct function_traits<ReturnType(ArgumentTypes...) const>
 {
     using dirty_return_type = ReturnType;
     using dirty_function_type = dirty_return_type(ArgumentTypes...) const;
+    using dirty_function_pointer = dirty_return_type(*)(ArgumentTypes...);
 
     using return_type = typename reflectable_traits<ReturnType>::R;
     using function_type = return_type(typename reflectable_traits<ArgumentTypes>::R...) const;
+    using function_pointer = return_type(*)(typename reflectable_traits<ArgumentTypes>::R...);
 
-    static constexpr auto is_const_function = true;
+    static constexpr auto is_const = true;
 };
 
 template <typename ReturnType, typename... ArgumentTypes>

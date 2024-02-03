@@ -1,64 +1,74 @@
-#include "RewTestingBase.hpp"
-#include <type_traits>
+// #include "RewTestingBase.hpp"
 
-template <typename T>
-struct Vector
-{
-    template <typename U>
-    struct Iterator
-    {
-        struct Proxy {};
-    };
+// template <typename T>
+// struct Vector
+// {
+//     template <typename U>
+//     struct Iterator
+//     {
+//         struct Proxy {};
+//     };
 
-    void Foo(Iterator<int> i) {
-        this->j = 1;
-    }
+//     void Foo(Iterator<int> i) {
+//         this->j = 1;
+//     }
 
-    int j = 0;
-};
+//     int j = 0;
+// };
 
-template <typename, typename enable = void> struct has_reflectable_using : std::false_type {};
-template <typename T> struct has_reflectable_using<T, std::void_t<typename T::__rew_reflectable_using>> : std::true_type {};
+// REFLECTABLE_USING((template <typename T, typename U> struct Vector_Iterator), (typename Vector<T>::template Iterator<U>))
 
-#define __REW_EXPAND(...) __VA_ARGS__
+// TEMPLATE_REFLECTABLE_DECLARATION((template <typename T, typename U>), (Vector_Iterator<T, U>))
+//     REFLECTABLE_NAME("Vector<" + NAMEOF(T) + ">::Iterator<" + NAMEOF(U) + ">")
+// REFLECTABLE_DECLARATION_INIT()
 
-#define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, reflectable_type) \
-        __REW_EXPAND template_header \
-        struct reflectable_using {\
-            using __rew_reflectable_using = __REW_EXPAND reflectable_type;\
-        };
+// TEMPLATE_REFLECTABLE((template <typename T, typename U>), (Vector_Iterator<T, U>))
+// REFLECTABLE_INIT()
 
-TEMPLATE_REFLECTABLE_USING((template <typename T, typename U>), Vector_Iterator, (typename Vector<T>::template Iterator<U>))
+// TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), (Vector<T>))
+//     REFLECTABLE_NAME("Vector<" + NAMEOF(T) + ">")
+// REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename T, typename U>), (Vector_Iterator<T, U>))
-    REFLECTABLE_NAME("Vector<" + NAMEOF(T) + ">::Iterator<" + NAMEOF(U) + ">")
+// TEMPLATE_REFLECTABLE((template <typename T>), (Vector<T>))
+//     FUNCTION(Foo, void(Vector_Iterator<T, int>))
+// REFLECTABLE_INIT()
+#include <RewTestingBase.hpp>
+#include <Rew/BuiltIn/vector.hpp>
+#include <iostream>
+
+REFLECTABLE_USING(std_size_t, std::size_t)
+
+CORE_REFLECTABLE_DECLARATION(std_size_t)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_REGISTRY(&rew::global)
+    REFLECTABLE_NAME("std::size_t")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename T, typename U>), (Vector_Iterator<T, U>))
-REFLECTABLE_INIT()
-
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), (Vector<T>))
-    REFLECTABLE_NAME("Vector<" + NAMEOF(T) + ">")
-REFLECTABLE_DECLARATION_INIT()
-
-TEMPLATE_REFLECTABLE((template <typename T>), (Vector<T>))
-    FUNCTION(Foo, void(Vector_Iterator<T, int>))
+REFLECTABLE(std_size_t)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, Test)
 {
-    constexpr bool xxx = has_reflectable_using<Vector_Iterator<int, float>>::value;
+    rew::reflectable<std::vector<int>>();
+    for (auto& [tname, tmeta] : rew::global.all)
+    {
+        std::cout << tname << '\n';
+        for (auto& [fname, fmeta] : tmeta->reflection->function.all)
+        {
+            std::cout << '\t' << fname << '\n';
+        }
+        std::cout << '\n';
+    }
+    std::cout << '\n';
+    // rew::reflectable<Vector<float>>();
+    // rew::function_t* function = rew::global.find("Vector<float>")->reflection->function.find("Foo(Vector<float>::Iterator<int>)");
+    // Vector<float> v;
+    // Vector<float>::Iterator<int> i;
+    // std::any context = &v;
 
-    rew::reflectable<Vector<float>>();
-    rew::function_t* function = rew::global.find("Vector<float>")->reflection->function.find("Foo(Vector<float>::Iterator<int>)");
-    Vector<float> v;
-    Vector<float>::Iterator<int> i;
-    std::any context = &v;
-
-    function->call(context, {i});
+    // function->call(context, {i});
 }
 
-// #include <Rew/BuiltIn/vector.hpp>
 // #include <Rew/BuiltIn/shared_ptr.hpp>
 // #include <Rew/BuiltIn/string.hpp>
 

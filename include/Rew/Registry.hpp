@@ -72,12 +72,12 @@ public:
             return std::addressof(std::any_cast<ReflectableType&>(object));
         };
 
-        auto alias = [](std::any& context) -> std::any
+        auto reference = [](std::any& context) -> std::any
         {
             return std::ref(*std::any_cast<ReflectableType*>(context));
         };
 
-        type = new type_t { name, reflection, sizeof(ReflectableType), context, alias };
+        type = new type_t { name, reflection, sizeof(ReflectableType), context, reference };
 
         all.emplace(name, type);
         rtti_all.emplace(typeid(ReflectableType), type);
