@@ -148,10 +148,10 @@ ReflectableType&& reflectable(ReflectableType&& object)
 template <typename ReflectableType>
 type_t* find_or_add_type()
 {
-    using reflectable_type = std::decay_t<ReflectableType>;
-    using reflectable_traits = meta::reflectable_traits<reflectable_type>;
+    using reflectable_traits = meta::reflectable_traits<std::decay_t<ReflectableType>>;
+    using reflectable_type = typename reflectable_traits::type;
 
-    if constexpr (meta::is_lazy_reflectable<reflectable_type>::value)
+    if constexpr (meta::is_lazy_reflectable<std::decay_t<ReflectableType>>::value)
     {
         reflectable<reflectable_type>();
     }
@@ -221,14 +221,14 @@ factory_t* find_or_add_factory(reflection_t* reflection)
     return __meta;
 }
 
-template <typename FunctionType>
+template <typename DirtyFunctionType, typename FunctionType>
 function_t* find_or_add_function(reflection_t* reflection, const std::string& name, FunctionType ptr)
 {
-    using function_traits = meta::function_traits<FunctionType>;
+    using function_traits = meta::function_traits<DirtyFunctionType>;
     using function_pointer = typename function_traits::function_pointer;
     using return_type = typename function_traits::return_type;
 
-    auto __name = utility::full_function_name(name, ptr);
+    auto __name = utility::full_function_name(name, DirtyFunctionType{});
 
     auto __meta = reflection->function.find(__name);
     if (__meta == nullptr) __meta = &reflection->function.add
