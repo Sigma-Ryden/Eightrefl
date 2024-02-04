@@ -9,6 +9,11 @@
 // default container for stack
 #include <Rew/BuiltIn/deque.hpp>
 
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::stack<ValueType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::stack<" + NAMEOF(ValueType) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, class ContainerType>), std::stack<ValueType, ContainerType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::stack<" + NAMEOF(ValueType) + ", " + NAMEOF(ContainerType) + ">")

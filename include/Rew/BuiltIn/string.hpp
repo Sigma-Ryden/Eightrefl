@@ -1,3 +1,4 @@
+// TODO: add std::char_traits
 #ifndef REW_BUILTIN_STRING_HPP
 #define REW_BUILTIN_STRING_HPP
 
@@ -13,15 +14,6 @@
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/iterator.hpp>
 
-TEMPLATE_REFLECTABLE_DECLARATION
-(
-    (template <typename CharType, typename Traits, typename AllocatorType>),
-    std::basic_string<CharType, Traits, AllocatorType>
-)
-    BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::basic_string<" + NAMEOF(CharType) + ", " + NAMEOF(Traits) + ", " + NAMEOF(AllocatorType) + ">")
-REFLECTABLE_DECLARATION_INIT()
-
 TEMPLATE_REFLECTABLE_DECLARATION((template <>), std::string)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::string")
@@ -30,6 +22,42 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE_DECLARATION((template <>), std::wstring)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::wstring")
+REFLECTABLE_DECLARATION_INIT()
+
+#if __cplusplus >= 202002L
+TEMPLATE_REFLECTABLE_DECLARATION((template <>), std::u8string)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::u8string")
+REFLECTABLE_DECLARATION_INIT()
+#endif // if
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <>), std::u16string)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::u16string")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <>), std::u32string)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::u32string")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename CharType>), std::basic_string<CharType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::basic_string<" + NAMEOF(CharType) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename CharType, typename Traits>), std::basic_string<CharType, Traits>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::basic_string<" + NAMEOF(CharType) + ", " + NAMEOF(Traits) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename CharType, typename Traits, typename AllocatorType>),
+    std::basic_string<CharType, Traits, AllocatorType>
+)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::basic_string<" + NAMEOF(CharType) + ", " + NAMEOF(Traits) + ", " + NAMEOF(AllocatorType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE

@@ -6,8 +6,9 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
-REFLECTABLE_DECLARATION(std::tuple<>)
+TEMPLATE_REFLECTABLE_DECLARATION((template <>), std::tuple<>)
     BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::tuple<>")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION

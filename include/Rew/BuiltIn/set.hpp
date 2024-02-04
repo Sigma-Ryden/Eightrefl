@@ -13,35 +13,69 @@
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/iterator.hpp>
 
-template <typename> struct __rew_is_std_set : std::false_type {};
-template <typename KeyType, typename Comparator, typename AllocatorType>
-struct __rew_is_std_set<std::set<KeyType, Comparator, AllocatorType>> : std::true_type {};
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType>), std::set<KeyType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::set<" + NAMEOF(KeyType) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-template <typename> struct __rew_is_std_multiset : std::false_type {};
-template <typename KeyType, typename Comparator, typename AllocatorType>
-struct __rew_is_std_multiset<std::multiset<KeyType, Comparator, AllocatorType>> : std::true_type {};
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename KeyType, typename Comparator>),
+    std::set<KeyType, Comparator>
+)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::set<" + NAMEOF(KeyType) + ", " + NAMEOF(Comparator) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE_DECLARATION(__rew_is_std_set<R>::value)
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename KeyType, typename Comparator, typename AllocatorType>),
+    std::set<KeyType, Comparator, AllocatorType>
+)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::set<" + NAMEOF(typename R::key_type) + ", "
-                    + NAMEOF(typename R::key_compare) + ", "
-                    + NAMEOF(typename R::allocator_type) + ">"
+        "std::set<" + NAMEOF(KeyType) + ", " + NAMEOF(Comparator) + ", " + NAMEOF(AllocatorType) + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE_DECLARATION(__rew_is_std_multiset<R>::value)
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType>), std::multiset<KeyType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::multiset<" + NAMEOF(KeyType) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename KeyType, typename Comparator>),
+    std::multiset<KeyType, Comparator>
+)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::multiset<" + NAMEOF(KeyType) + ", " + NAMEOF(Comparator) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename KeyType, typename Comparator, typename AllocatorType>),
+    std::multiset<KeyType, Comparator, AllocatorType>
+)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::multiset<" + NAMEOF(typename R::key_type) + ", "
-                         + NAMEOF(typename R::key_compare) + ", "
-                         + NAMEOF(typename R::allocator_type) + ">"
+        "std::multiset<" + NAMEOF(KeyType) + ", " + NAMEOF(Comparator) + ", " + NAMEOF(AllocatorType) + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE(rew::meta::one<__rew_is_std_set<R>, __rew_is_std_multiset<R>>::value)
+
+template <typename> struct __rew_is_std_set_or_multiset : std::false_type {};
+
+template <typename KeyType, typename Comparator, typename AllocatorType>
+struct __rew_is_std_set_or_multiset<std::set<KeyType, Comparator, AllocatorType>> : std::true_type {};
+
+template <typename KeyType, typename Comparator, typename AllocatorType>
+struct __rew_is_std_set_or_multiset<std::multiset<KeyType, Comparator, AllocatorType>> : std::true_type {};
+
+CONDITIONAL_REFLECTABLE(__rew_is_std_set_or_multiset<R>::value)
     FACTORY(R())
     FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(typename R::key_compare const&))

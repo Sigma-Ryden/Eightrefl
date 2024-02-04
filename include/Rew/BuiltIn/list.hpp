@@ -14,6 +14,11 @@
 #include <Rew/BuiltIn/function.hpp>
 #include <Rew/BuiltIn/iterator.hpp>
 
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::list<ValueType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::list<" + NAMEOF(ValueType) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, typename AllocatorType>), std::list<ValueType, AllocatorType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::list<" + NAMEOF(ValueType) + ", " + NAMEOF(AllocatorType) + ">")

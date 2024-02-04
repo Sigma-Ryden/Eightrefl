@@ -1,3 +1,4 @@
+// TODO: std::default_deleter comleting
 #ifndef REW_BUILTIN_UNIQUE_PTR_HPP
 #define REW_BUILTIN_UNIQUE_PTR_HPP
 
@@ -12,6 +13,14 @@
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), std::default_delete<ElementType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::default_delete<" + NAMEOF(ElementType) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename ElementType>), std::default_delete<ElementType>)
+REFLECTABLE_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), std::unique_ptr<ElementType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::unique_ptr<" + NAMEOF(ElementType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION

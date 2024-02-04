@@ -17,33 +17,75 @@
 // as mapped type
 #include <Rew/BuiltIn/pair.hpp>
 
-template <typename> struct __rew_is_std_map : std::false_type {};
-template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
-struct __rew_is_std_map<std::map<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::map<KeyType, ValueType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME( "std::map<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ">")
+REFLECTABLE_DECLARATION_INIT()
 
-template <typename> struct __rew_is_std_multimap : std::false_type {};
-template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
-struct __rew_is_std_multimap<std::multimap<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
-
-CONDITIONAL_REFLECTABLE_DECLARATION(__rew_is_std_map<R>::value)
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename KeyType, typename ValueType, typename Comparator>),
+    std::map<KeyType, ValueType, Comparator>
+)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::map<" + NAMEOF(typename R::key_type) + ", " + NAMEOF(typename R::mapped_type) + ", "
-                    + NAMEOF(typename R::key_compare) + ", " + NAMEOF(typename R::allocator_type) + ">"
+        "std::map<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", " + NAMEOF(Comparator) + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE_DECLARATION(__rew_is_std_multimap<R>::value)
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>),
+    std::map<KeyType, ValueType, Comparator, AllocatorType>
+)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::multimap<" + NAMEOF(typename R::key_type) + ", " + NAMEOF(typename R::mapped_type) + ", "
-                         + NAMEOF(typename R::key_compare) + ", " + NAMEOF(typename R::allocator_type) + ">"
+        "std::map<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", " + NAMEOF(Comparator) + ", " + NAMEOF(AllocatorType) + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE(rew::meta::one<__rew_is_std_map<R>, __rew_is_std_multimap<R>>::value)
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::multimap<KeyType, ValueType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME( "std::multimap<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename KeyType, typename ValueType, typename Comparator>),
+    std::multimap<KeyType, ValueType, Comparator>
+)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME
+    (
+        "std::multimap<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", " + NAMEOF(Comparator) + ">"
+    )
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>),
+    std::multimap<KeyType, ValueType, Comparator, AllocatorType>
+)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME
+    (
+        "std::multimap<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", " + NAMEOF(Comparator) + ", " + NAMEOF(AllocatorType) + ">"
+    )
+REFLECTABLE_DECLARATION_INIT()
+
+
+template <typename> struct __rew_is_std_map_or_multimap : std::false_type {};
+
+template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
+struct __rew_is_std_map_or_multimap<std::map<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
+
+template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
+struct __rew_is_std_map_or_multimap<std::multimap<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
+
+CONDITIONAL_REFLECTABLE(__rew_is_std_map_or_multimap<R>::value)
     FACTORY(R())
     FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(typename R::key_compare const&))

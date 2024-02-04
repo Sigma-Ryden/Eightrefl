@@ -9,6 +9,11 @@
 // default container for queue
 #include <Rew/BuiltIn/deque.hpp>
 
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::queue<ValueType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::queue<" + NAMEOF(ValueType) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, class ContainerType>), std::queue<ValueType, ContainerType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::queue<" + NAMEOF(ValueType) + ", " + NAMEOF(ContainerType) + ">")
