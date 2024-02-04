@@ -31,14 +31,6 @@ template <typename T> struct is_complete<T, std::void_t<decltype(sizeof(T))>> : 
 template <typename T, typename enable = void>
 struct reflectable_traits;
 
-namespace detail
-{
-
-template <typename, typename enable = void> struct has_reflectable_using : std::false_type {};
-template <typename T> struct has_reflectable_using<T, std::void_t<typename T::__rew_reflectable_using>> : std::true_type {};
-
-} // namespace detail
-
 template <typename T, typename enable = void>
 struct reflectable_using
 {
@@ -46,10 +38,13 @@ struct reflectable_using
 };
 
 template <typename T>
-struct reflectable_using<T, std::void_t<typename T::__rew_reflectable_using_R>>
+struct reflectable_using<T, std::void_t<typename T::__rew_reflectable_using>>
 {
-    using R = typename T::__rew_reflectable_using_R;
+    using R = typename T::__rew_reflectable_using;
 };
+
+template <typename T>
+using clean = typename reflectable_using<T>::R;
 
 namespace detail
 {
@@ -80,9 +75,9 @@ struct function_traits<ReturnType(ArgumentTypes...)>
     using dirty_function_type = dirty_return_type(ArgumentTypes...);
     using dirty_function_pointer = dirty_return_type(*)(ArgumentTypes...);
 
-    using return_type = typename reflectable_traits<ReturnType>::R;
-    using function_type = return_type(typename reflectable_traits<ArgumentTypes>::R...);
-    using function_pointer = return_type(*)(typename reflectable_traits<ArgumentTypes>::R...);
+    using return_type = clean<ReturnType>;
+    using function_type = return_type(clean<ArgumentTypes>...);
+    using function_pointer = return_type(*)(clean<ArgumentTypes>...);
 
     static constexpr auto is_const = false;
 };
@@ -94,9 +89,9 @@ struct function_traits<ReturnType(ArgumentTypes...) const>
     using dirty_function_type = dirty_return_type(ArgumentTypes...) const;
     using dirty_function_pointer = dirty_return_type(*)(ArgumentTypes...);
 
-    using return_type = typename reflectable_traits<ReturnType>::R;
-    using function_type = return_type(typename reflectable_traits<ArgumentTypes>::R...) const;
-    using function_pointer = return_type(*)(typename reflectable_traits<ArgumentTypes>::R...);
+    using return_type = clean<ReturnType>;
+    using function_type = return_type(clean<ArgumentTypes>...) const;
+    using function_pointer = return_type(*)(clean<ArgumentTypes>...);
 
     static constexpr auto is_const = true;
 };
@@ -120,7 +115,7 @@ template <typename ReflectableType, typename PropertyType>
 struct property_traits<PropertyType ReflectableType::*>
 {
     using dirty_property_type = PropertyType;
-    using property_type = typename reflectable_traits<PropertyType>::R;
+    using property_type = clean<PropertyType>;
 };
 
 template <typename ReflectableType, typename PropertyType>
@@ -164,29 +159,29 @@ struct member_function_traits
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
     struct overload<DirtyReturnType(DirtyArgumentTypes...) const>
     {
-        static constexpr auto of(typename reflectable_traits<DirtyReturnType>::R (ClassType::* function)(typename reflectable_traits<DirtyArgumentTypes>::R...) const) { return function; }
-        static constexpr auto of(typename reflectable_traits<DirtyReturnType>::R (ClassType::* function)(typename reflectable_traits<DirtyArgumentTypes>::R...) const&) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...) const) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...) const&) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(typename reflectable_traits<DirtyReturnType>::R (ParentClassType::* function)(typename reflectable_traits<DirtyArgumentTypes>::R...) const) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) const) { return function; }
         template <class ParentClassType>
-        static constexpr auto of(typename reflectable_traits<DirtyReturnType>::R (ParentClassType::* function)(typename reflectable_traits<DirtyArgumentTypes>::R...) const&) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) const&) { return function; }
 
-        static constexpr auto of(typename reflectable_traits<DirtyReturnType>::R (*function)(typename reflectable_traits<DirtyArgumentTypes>::R...)) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (*function)(clean<DirtyArgumentTypes>...)) { return function; }
     };
 
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
     struct overload<DirtyReturnType(DirtyArgumentTypes...)>
     {
-        static constexpr auto of(typename reflectable_traits<DirtyReturnType>::R (ClassType::* function)(typename reflectable_traits<DirtyArgumentTypes>::R...)) { return function; }
-        static constexpr auto of(typename reflectable_traits<DirtyReturnType>::R (ClassType::* function)(typename reflectable_traits<DirtyArgumentTypes>::R...) &) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...)) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...) &) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(typename reflectable_traits<DirtyReturnType>::R (ParentClassType::* function)(typename reflectable_traits<DirtyArgumentTypes>::R...)) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...)) { return function; }
         template <class ParentClassType>
-        static constexpr auto of(typename reflectable_traits<DirtyReturnType>::R (ParentClassType::* function)(typename reflectable_traits<DirtyArgumentTypes>::R...) &) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) &) { return function; }
 
-        static constexpr auto of(typename reflectable_traits<DirtyReturnType>::R (*function)(typename reflectable_traits<DirtyArgumentTypes>::R...)) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (*function)(clean<DirtyArgumentTypes>...)) { return function; }
     };
 };
 

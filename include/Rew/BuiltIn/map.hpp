@@ -1,3 +1,4 @@
+// TODO: add std::less, std::greater
 #ifndef REW_BUILTIN_MAP_HPP
 #define REW_BUILTIN_MAP_HPP
 
@@ -11,29 +12,20 @@
 
 // as function argument type
 #include <Rew/BuiltIn/initializer_list.hpp>
+#include <Rew/BuiltIn/iterator.hpp>
 
 // as mapped type
 #include <Rew/BuiltIn/pair.hpp>
 
-namespace rew
-{
-
-namespace detail
-{
-
-template <typename> struct is_std_map : std::false_type {};
+template <typename> struct __rew_is_std_map : std::false_type {};
 template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
-struct is_std_map<std::map<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
+struct __rew_is_std_map<std::map<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
 
-template <typename> struct is_std_multimap : std::false_type {};
+template <typename> struct __rew_is_std_multimap : std::false_type {};
 template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
-struct is_std_map<std::multimap<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
+struct __rew_is_std_multimap<std::multimap<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
 
-} // namespace detail
-
-} // namespace rew
-
-CONDITIONAL_REFLECTABLE_DECLARATION(rew::detail::is_std_map<R>::value)
+CONDITIONAL_REFLECTABLE_DECLARATION(__rew_is_std_map<R>::value)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
@@ -42,7 +34,7 @@ CONDITIONAL_REFLECTABLE_DECLARATION(rew::detail::is_std_map<R>::value)
     )
 REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE_DECLARATION(rew::detail::is_std_multimap<R>::value)
+CONDITIONAL_REFLECTABLE_DECLARATION(__rew_is_std_multimap<R>::value)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
@@ -51,13 +43,13 @@ CONDITIONAL_REFLECTABLE_DECLARATION(rew::detail::is_std_multimap<R>::value)
     )
 REFLECTABLE_DECLARATION_INIT()
 
-CONDITIONAL_REFLECTABLE(rew::meta::one<rew::detail::is_std_map<R>, rew::detail::is_std_multimap<R>>::value)
+CONDITIONAL_REFLECTABLE(rew::meta::one<__rew_is_std_map<R>, __rew_is_std_multimap<R>>::value)
     FACTORY(R())
     FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(typename R::key_compare const&))
     FACTORY(R(typename R::allocator_type const&))
-    FACTORY(R(typename R::const_iterator, typename R::const_iterator, typename R::key_compare const&, typename R::allocator_type const&))
-    FACTORY(R(typename R::const_iterator, typename R::const_iterator, typename R::allocator_type const&))
+    FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::key_compare const&, typename R::allocator_type const&))
+    FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::allocator_type const&))
     FACTORY(R(R const&))
     FACTORY(R(R const&, typename R::allocator_type const&))
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::key_compare const&, typename R::allocator_type const&))
@@ -68,45 +60,45 @@ CONDITIONAL_REFLECTABLE(rew::meta::one<rew::detail::is_std_map<R>, rew::detail::
     FUNCTION(at, typename R::mapped_type&(typename R::key_type const&))
     FUNCTION(at, typename R::mapped_type const&(typename R::key_type const&) const)
     FUNCTION(operator[], typename R::mapped_type&(typename R::key_type const&))
-    FUNCTION(begin, typename R::const_iterator() const)
-    FUNCTION(begin, typename R::iterator())
-    FUNCTION(cbegin)
-    FUNCTION(end, typename R::const_iterator() const)
-    FUNCTION(end, typename R::iterator())
-    FUNCTION(cend)
-    FUNCTION(rbegin, typename R::const_reverse_iterator() const)
-    FUNCTION(rbegin, typename R::reverse_iterator())
-    FUNCTION(crbegin)
-    FUNCTION(rend, typename R::const_reverse_iterator() const)
-    FUNCTION(rend, typename R::reverse_iterator())
-    FUNCTION(crend)
+    FUNCTION(begin, std_const_iterator<R>() const)
+    FUNCTION(begin, std_iterator<R>())
+    FUNCTION(cbegin, std_const_iterator<R>() const)
+    FUNCTION(end, std_const_iterator<R>() const)
+    FUNCTION(end, std_iterator<R>())
+    FUNCTION(cend, std_const_iterator<R>() const)
+    FUNCTION(rbegin, std_const_reverse_iterator<R>() const)
+    FUNCTION(rbegin, std_reverse_iterator<R>())
+    FUNCTION(crbegin, std_const_reverse_iterator<R>() const)
+    FUNCTION(rend, std_const_reverse_iterator<R>() const)
+    FUNCTION(rend, std_reverse_iterator<R>())
+    FUNCTION(crend, std_const_reverse_iterator<R>() const)
     FUNCTION(empty)
     FUNCTION(size)
     FUNCTION(max_size)
     FUNCTION(clear)
-    FUNCTION(insert, std::pair<typename R::iterator, bool>(typename R::const_reference))
-    FUNCTION(insert, typename R::iterator(typename R::iterator, typename R::const_reference))
-    FUNCTION(insert, typename R::iterator(typename R::const_iterator, typename R::const_iterator))
+    FUNCTION(insert, std::pair<std_iterator<R>, bool>(typename R::const_reference))
+    FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::const_reference))
+    FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
     FUNCTION(insert, void(std::initializer_list<typename R::value_type>))
-    FUNCTION(erase, typename R::iterator(typename R::iterator))
-    FUNCTION(erase, typename R::iterator(typename R::const_iterator))
-    FUNCTION(erase, typename R::iterator(typename R::const_iterator, typename R::const_iterator))
+    FUNCTION(erase, std_iterator<R>(std_iterator<R>))
+    FUNCTION(erase, std_iterator<R>(std_const_iterator<R>))
+    FUNCTION(erase, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
     FUNCTION(swap)
-    FUNCTION(extract, typename R::node_type(typename R::const_iterator))
+    FUNCTION(extract, typename R::node_type(std_const_iterator<R>))
     FUNCTION(extract, typename R::node_type(typename R::key_type const&))
     FUNCTION(merge, void(R&))
     FUNCTION(count, typename R::size_type(typename R::key_type const&))
-    FUNCTION(find, typename R::iterator(typename R::key_type const&))
-    FUNCTION(find, typename R::const_iterator(typename R::key_type const&) const)
+    FUNCTION(find, std_iterator<R>(typename R::key_type const&))
+    FUNCTION(find, std_const_iterator<R>(typename R::key_type const&) const)
 #if __cplusplus >= 202002L
     FUNCTION(contains, bool(typename R::key_type const&) const)
 #endif // if
-    FUNCTION(equal_range, std::pair<typename R::iterator, typename R::iterator>(typename R::key_type const&))
-    FUNCTION(equal_range, std::pair<typename R::const_iterator, typename R::const_iterator>(typename R::key_type const&) const)
-    FUNCTION(lower_bound, typename R::iterator(typename R::key_type const&))
-    FUNCTION(lower_bound, typename R::const_iterator(typename R::key_type const&) const)
-    FUNCTION(upper_bound, typename R::iterator(typename R::key_type const&))
-    FUNCTION(upper_bound, typename R::const_iterator(typename R::key_type const&) const)
+    FUNCTION(equal_range, std::pair<std_iterator<R>, std_iterator<R>>(typename R::key_type const&))
+    FUNCTION(equal_range, std::pair<std_const_iterator<R>, std_const_iterator<R>>(typename R::key_type const&) const)
+    FUNCTION(lower_bound, std_iterator<R>(typename R::key_type const&))
+    FUNCTION(lower_bound, std_const_iterator<R>(typename R::key_type const&) const)
+    FUNCTION(upper_bound, std_iterator<R>(typename R::key_type const&))
+    FUNCTION(upper_bound, std_const_iterator<R>(typename R::key_type const&) const)
     FUNCTION(key_comp)
 //  FUNCTION(value_comp)
 REFLECTABLE_INIT()

@@ -17,7 +17,7 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE_DECLARATION
 (
     (template <typename ElementType, typename DeleterType>),
-    (std::unique_ptr<ElementType, DeleterType>)
+    std::unique_ptr<ElementType, DeleterType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::unique_ptr<" + NAMEOF(ElementType) + ", " + NAMEOF(DeleterType) + ">")

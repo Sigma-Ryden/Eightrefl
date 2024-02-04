@@ -20,12 +20,12 @@
 
 #define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, ...)                             \
    __REW_EXPAND template_header struct reflectable_using {                                              \
-        using __rew_reflectable_using_R = __VA_ARGS__;                                                  \
+        using __rew_reflectable_using = __VA_ARGS__;                                                    \
     };
 
 #define REFLECTABLE_USING(reflectable_using, ...)                                                       \
    struct reflectable_using {                                                                           \
-        using __rew_reflectable_using_R = __VA_ARGS__;                                                  \
+        using __rew_reflectable_using = __VA_ARGS__;                                                    \
     };
 
 #define CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                     \

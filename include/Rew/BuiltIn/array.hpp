@@ -6,6 +6,9 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
+// as function argument type
+#include <Rew/BuiltIn/iterator.hpp>
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, std::size_t ArraySize>), std::array<ValueType, ArraySize>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::array<" + NAMEOF(ValueType) + ", " + std::to_string(ArraySize) + ">")
@@ -25,18 +28,18 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t ArraySize>), std
     FUNCTION(back, typename R::reference())
     FUNCTION(data, typename R::const_pointer() const)
     FUNCTION(data, typename R::pointer())
-    FUNCTION(begin, typename R::const_iterator() const)
-    FUNCTION(begin, typename R::iterator())
-    FUNCTION(cbegin)
-    FUNCTION(end, typename R::const_iterator() const)
-    FUNCTION(end, typename R::iterator())
-    FUNCTION(cend)
-    FUNCTION(rbegin, typename R::const_reverse_iterator() const)
-    FUNCTION(rbegin, typename R::reverse_iterator())
-    FUNCTION(crbegin)
-    FUNCTION(rend, typename R::const_reverse_iterator() const)
-    FUNCTION(rend, typename R::reverse_iterator())
-    FUNCTION(crend)
+    FUNCTION(begin, std_const_iterator<R>() const)
+    FUNCTION(begin, std_iterator<R>())
+    FUNCTION(cbegin, std_const_iterator<R>() const)
+    FUNCTION(end, std_const_iterator<R>() const)
+    FUNCTION(end, std_iterator<R>())
+    FUNCTION(cend, std_const_iterator<R>() const)
+    FUNCTION(rbegin, std_const_reverse_iterator<R>() const)
+    FUNCTION(rbegin, std_reverse_iterator<R>())
+    FUNCTION(crbegin, std_const_reverse_iterator<R>() const)
+    FUNCTION(rend, std_const_reverse_iterator<R>() const)
+    FUNCTION(rend, std_reverse_iterator<R>())
+    FUNCTION(crend, std_const_reverse_iterator<R>() const)
     FUNCTION(empty)
     FUNCTION(size)
     FUNCTION(max_size)

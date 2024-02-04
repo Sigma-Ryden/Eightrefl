@@ -76,6 +76,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::valarray<ValueType>)
     FUNCTION(cshift)
 REFLECTABLE_INIT()
 
+
 REFLECTABLE_DECLARATION(std::slice)
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
@@ -89,10 +90,15 @@ REFLECTABLE(std::slice)
     FUNCTION(stride)
 REFLECTABLE_INIT()
 
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::slice_array<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::slice_array<" + NAMEOF(ValueType) + ">")
 REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename ValueType>), std::slice_array<ValueType>)
+REFLECTABLE_INIT()
+
 
 REFLECTABLE_DECLARATION(std::gslice)
     BUILTIN_REFLECTABLE()
@@ -107,19 +113,31 @@ REFLECTABLE(std::gslice)
     FUNCTION(stride)
 REFLECTABLE_INIT()
 
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::gslice_array<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::gslice_array<" + NAMEOF(ValueType) + ">")
 REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename ValueType>), std::gslice_array<ValueType>)
+REFLECTABLE_INIT()
+
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::mask_array<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::mask_array<" + NAMEOF(ValueType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
+TEMPLATE_REFLECTABLE((template <typename ValueType>), std::mask_array<ValueType>)
+REFLECTABLE_INIT()
+
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::indirect_array<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::indirect_array<" + NAMEOF(ValueType) + ">")
 REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename ValueType>), std::mask_array<ValueType>)
+REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_VALARRAY_HPP

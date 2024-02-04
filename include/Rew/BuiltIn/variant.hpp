@@ -9,6 +9,10 @@
 REFLECTABLE_DECLARATION(std::monostate)
 REFLECTABLE_DECLARATION_INIT()
 
+REFLECTABLE(std::monostate)
+REFLECTABLE_INIT()
+
+
 TEMPLATE_REFLECTABLE_DECLARATION
 (
     (template <typename ArgumentType, typename... ArgumentTypes>),

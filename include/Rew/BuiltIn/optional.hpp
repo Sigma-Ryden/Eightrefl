@@ -10,6 +10,10 @@ REFLECTABLE_DECLARATION(std::nullopt_t)
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
+REFLECTABLE(std::nullopt_t)
+REFLECTABLE_INIT()
+
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::optional<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::optional<" + NAMEOF(ValueType) + ">")
