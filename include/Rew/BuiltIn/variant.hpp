@@ -12,7 +12,7 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE_DECLARATION
 (
     (template <typename ArgumentType, typename... ArgumentTypes>),
-    (std::variant<ArgumentType, ArgumentTypes...>)
+    std::variant<ArgumentType, ArgumentTypes...>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::variant<" + NAMEOF(ArgumentType) + (", " + ... + NAMEOF(ArgumentTypes)) + ">")
@@ -21,7 +21,7 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE
 (
     (template <typename ArgumentType, typename... ArgumentTypes>),
-    (std::variant<ArgumentType, ArgumentTypes...>)
+    std::variant<ArgumentType, ArgumentTypes...>
 )
     FACTORY(R())
     FACTORY(R(R const&))

@@ -9,7 +9,7 @@
 // as function argument type
 #include <Rew/BuiltIn/nullptr_t.hpp>
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), (std::default_delete<ElementType>))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), std::default_delete<ElementType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::default_delete<" + NAMEOF(ElementType) + ">")
 REFLECTABLE_DECLARATION_INIT()
@@ -26,7 +26,7 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE
 (
     (template <typename ElementType, typename DeleterType>),
-    (std::unique_ptr<ElementType, DeleterType>)
+    std::unique_ptr<ElementType, DeleterType>
 )
     FUNCTION(operator=, R&(std::nullptr_t))
     FUNCTION(release)

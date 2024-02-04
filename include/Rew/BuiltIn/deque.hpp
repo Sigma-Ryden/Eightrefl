@@ -12,12 +12,12 @@
 // as function argument type
 #include <Rew/BuiltIn/initializer_list.hpp>
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, typename AllocatorType>), (std::deque<ValueType, AllocatorType>))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, typename AllocatorType>), std::deque<ValueType, AllocatorType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::deque<" + NAMEOF(ValueType) + ", " + NAMEOF(AllocatorType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (std::deque<ValueType, AllocatorType>))
+TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), std::deque<ValueType, AllocatorType>)
     FACTORY(R())
     FACTORY(R(typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::const_reference, typename R::allocator_type const&))

@@ -6,12 +6,12 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename FirstType, typename SecondType>), (std::pair<FirstType, SecondType>))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename FirstType, typename SecondType>), std::pair<FirstType, SecondType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::pair<" + NAMEOF(FirstType) + ", " + NAMEOF(SecondType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename FirstType, typename SecondType>), (std::pair<FirstType, SecondType>))
+TEMPLATE_REFLECTABLE((template <typename FirstType, typename SecondType>), std::pair<FirstType, SecondType>)
     FACTORY(R())
     FACTORY(R(typename R::first_type const&, typename R::second_type const&))
     FACTORY(R(R const&))

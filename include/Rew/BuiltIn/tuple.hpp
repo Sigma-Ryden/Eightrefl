@@ -13,13 +13,13 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE_DECLARATION
 (
     (template <typename ArgumentType, typename... ArgumentTypes>),
-    (std::tuple<ArgumentType, ArgumentTypes...>)
+    std::tuple<ArgumentType, ArgumentTypes...>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::tuple<" + NAMEOF(ArgumentType) + (", " + ... + NAMEOF(ArgumentTypes)) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename... ArgumentTypes>), (std::tuple<ArgumentTypes...>))
+TEMPLATE_REFLECTABLE((template <typename... ArgumentTypes>), std::tuple<ArgumentTypes...>)
     FACTORY(R())
     FACTORY(R(ArgumentTypes...))
     FACTORY(R(R const&))

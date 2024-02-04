@@ -15,7 +15,7 @@
 TEMPLATE_REFLECTABLE_DECLARATION
 (
     (template <typename CharType, typename Traits, typename AllocatorType>),
-    (std::basic_string<CharType, Traits, AllocatorType>)
+    std::basic_string<CharType, Traits, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::basic_string<" + NAMEOF(CharType) + ", " + NAMEOF(Traits) + ", " + NAMEOF(AllocatorType) + ">")
@@ -34,7 +34,7 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE
 (
     (template <typename CharType, typename Traits, typename AllocatorType>),
-    (std::basic_string<CharType, Traits, AllocatorType>)
+    std::basic_string<CharType, Traits, AllocatorType>
 )
     FACTORY(R())
     FACTORY(R(typename R::allocator_type const&))

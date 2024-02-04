@@ -9,23 +9,23 @@ REFLECTABLE_DECLARATION(void)
 REFLECTABLE_DECLARATION_INIT()
 
 // pointer type
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), (ElementType*))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), ElementType*)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(ElementType) + "*")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename ElementType>), (ElementType*))
+TEMPLATE_REFLECTABLE((template <typename ElementType>), ElementType*)
     FACTORY(R())
     FACTORY(R(R))
 REFLECTABLE_INIT()
 
 // ~ qualified types
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), (ElementType&))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), ElementType&)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(ElementType) + "&")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), (ElementType const))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), ElementType const)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(ElementType) + " const")
 REFLECTABLE_DECLARATION_INIT()

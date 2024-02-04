@@ -9,12 +9,12 @@
 // as function argument type
 #include <Rew/BuiltIn/nullptr_t.hpp>
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), (std::shared_ptr<ElementType>))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), std::shared_ptr<ElementType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::shared_ptr<" + NAMEOF(ElementType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename ElementType>), (std::shared_ptr<ElementType>))
+TEMPLATE_REFLECTABLE((template <typename ElementType>), std::shared_ptr<ElementType>)
     FACTORY(R())
     FACTORY(R(std::nullptr_t))
     FACTORY(R(typename R::element_type*))

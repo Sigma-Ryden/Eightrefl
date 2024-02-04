@@ -8,12 +8,12 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <std::size_t BitsetSize>), (std::bitset<BitsetSize>))
+TEMPLATE_REFLECTABLE_DECLARATION((template <std::size_t BitsetSize>), std::bitset<BitsetSize>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::bitset<" + std::to_string(BitsetSize) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <std::size_t BitsetSize>), (std::bitset<BitsetSize>))
+TEMPLATE_REFLECTABLE((template <std::size_t BitsetSize>), std::bitset<BitsetSize>)
     FACTORY(R())
     FACTORY(R(R const&))
     FACTORY(R(unsigned long))

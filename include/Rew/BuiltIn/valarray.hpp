@@ -10,12 +10,12 @@
 // as function argument type
 #include <Rew/BuiltIn/initializer_list.hpp>
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::valarray<ValueType>))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::valarray<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::valarray<" + NAMEOF(ValueType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename ValueType>), (std::valarray<ValueType>))
+TEMPLATE_REFLECTABLE((template <typename ValueType>), std::valarray<ValueType>)
     FACTORY(R())
     FACTORY(R(std::size_t))
     FACTORY(R(ValueType const&, std::size_t))
@@ -89,7 +89,7 @@ REFLECTABLE(std::slice)
     FUNCTION(stride)
 REFLECTABLE_INIT()
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::slice_array<ValueType>))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::slice_array<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::slice_array<" + NAMEOF(ValueType) + ">")
 REFLECTABLE_DECLARATION_INIT()
@@ -107,17 +107,17 @@ REFLECTABLE(std::gslice)
     FUNCTION(stride)
 REFLECTABLE_INIT()
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::gslice_array<ValueType>))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::gslice_array<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::gslice_array<" + NAMEOF(ValueType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::mask_array<ValueType>))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::mask_array<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::mask_array<" + NAMEOF(ValueType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), (std::indirect_array<ValueType>))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::indirect_array<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::indirect_array<" + NAMEOF(ValueType) + ">")
 REFLECTABLE_DECLARATION_INIT()

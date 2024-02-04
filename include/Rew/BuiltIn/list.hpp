@@ -13,12 +13,12 @@
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/function.hpp>
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, typename AllocatorType>), (std::list<ValueType, AllocatorType>))
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, typename AllocatorType>), std::list<ValueType, AllocatorType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::list<" + NAMEOF(ValueType) + ", " + NAMEOF(AllocatorType) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), (std::list<ValueType, AllocatorType>))
+TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), std::list<ValueType, AllocatorType>)
     FACTORY(R())
     FACTORY(R(typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::const_reference, typename R::allocator_type const&))

@@ -8,79 +8,81 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(include)
 
 set(REW
-	include/Rew/Attribute.hpp
-	include/Rew/Type.hpp
-	include/Rew/Parent.hpp
-	include/Rew/Function.hpp
-	include/Rew/Factory.hpp
-	include/Rew/Property.hpp
-	include/Rew/Meta.hpp
-	include/Rew/Reflection.hpp
-	include/Rew/Registry.hpp
-	include/Rew/Injection.hpp
-	include/Rew/Reflectable.hpp
-	include/Rew/Utility.hpp
-	include/Rew/Common.hpp
+    include/Rew/Attribute.hpp
+    include/Rew/Type.hpp
+    include/Rew/Parent.hpp
+    include/Rew/Function.hpp
+    include/Rew/Factory.hpp
+    include/Rew/Property.hpp
+    include/Rew/Meta.hpp
+    include/Rew/Reflection.hpp
+    include/Rew/Registry.hpp
+    include/Rew/Injection.hpp
+    include/Rew/Reflectable.hpp
+    include/Rew/Utility.hpp
+    include/Rew/Common.hpp
 
-	include/Rew/Detail/Meta.hpp
+    include/Rew/Detail/Meta.hpp
 
-	include/Rew/BuiltIn/hash.hpp
-	include/Rew/BuiltIn/function.hpp
-	include/Rew/BuiltIn/allocator.hpp
+    include/Rew/BuiltIn/hash.hpp
+    include/Rew/BuiltIn/function.hpp
+    include/Rew/BuiltIn/allocator.hpp
 
-	include/Rew/BuiltIn/vector.hpp
-	include/Rew/BuiltIn/array.hpp
-	include/Rew/BuiltIn/string.hpp
-	include/Rew/BuiltIn/pair.hpp
-	include/Rew/BuiltIn/tuple.hpp
-	include/Rew/BuiltIn/list.hpp
-	include/Rew/BuiltIn/forward_list.hpp
-	include/Rew/BuiltIn/set.hpp
-	include/Rew/BuiltIn/unique_ptr.hpp
-	include/Rew/BuiltIn/shared_ptr.hpp
-	include/Rew/BuiltIn/weak_ptr.hpp
-	include/Rew/BuiltIn/map.hpp
-	include/Rew/BuiltIn/deque.hpp
-	include/Rew/BuiltIn/stack.hpp
-	include/Rew/BuiltIn/queue.hpp
-	include/Rew/BuiltIn/valarray.hpp
-	include/Rew/BuiltIn/bitset.hpp
-	include/Rew/BuiltIn/complex.hpp
-	include/Rew/BuiltIn/optional.hpp
-	include/Rew/BuiltIn/variant.hpp
-	include/Rew/BuiltIn/any.hpp
+    include/Rew/BuiltIn/vector.hpp
+    include/Rew/BuiltIn/array.hpp
+    include/Rew/BuiltIn/string.hpp
+    include/Rew/BuiltIn/pair.hpp
+    include/Rew/BuiltIn/tuple.hpp
+    include/Rew/BuiltIn/list.hpp
+    include/Rew/BuiltIn/forward_list.hpp
+    include/Rew/BuiltIn/set.hpp
+    include/Rew/BuiltIn/unique_ptr.hpp
+    include/Rew/BuiltIn/shared_ptr.hpp
+    include/Rew/BuiltIn/weak_ptr.hpp
+    include/Rew/BuiltIn/map.hpp
+    include/Rew/BuiltIn/deque.hpp
+    include/Rew/BuiltIn/stack.hpp
+    include/Rew/BuiltIn/queue.hpp
+    include/Rew/BuiltIn/valarray.hpp
+    include/Rew/BuiltIn/bitset.hpp
+    include/Rew/BuiltIn/complex.hpp
+    include/Rew/BuiltIn/optional.hpp
+    include/Rew/BuiltIn/variant.hpp
+    include/Rew/BuiltIn/any.hpp
 
-	include/Rew/BuiltIn/nullptr_t.hpp
-	include/Rew/BuiltIn/initializer_list.hpp
-	include/Rew/BuiltIn/reference_wrapper.hpp
+    include/Rew/BuiltIn/nullptr_t.hpp
+    include/Rew/BuiltIn/initializer_list.hpp
+    include/Rew/BuiltIn/reference_wrapper.hpp
+    include/Rew/BuiltIn/iterator.hpp
 
-	include/Rew/BuiltIn/typeinfo.hpp
-	include/Rew/BuiltIn/typeindex.hpp
+    include/Rew/BuiltIn/typeinfo.hpp
+    include/Rew/BuiltIn/typeindex.hpp
 
-	include/Rew/Core.hpp
+    include/Rew/Core.hpp
 )
 
 set(AUTO
-	include/AutoTesting/Core.hpp
-	include/AutoTesting/Core.cpp
+    include/AutoTesting/Core.hpp
+    include/AutoTesting/Core.cpp
 )
 
 include_directories(test)
 
 add_executable(${PROJECT_NAME}
-	${REW}
-	${AUTO}
+    ${REW}
+    ${AUTO}
 
-	test/TestBuiltin.cpp
-	#test/TestFactory.cpp
-	#test/TestExample.cpp
+    test/TestBuiltin.cpp
+    #test/TestFactory.cpp
+    #test/TestExample.cpp
 
-	#test/examples/serialization/SerializationFixture.hpp
-	#test/examples/serialization/SerializableVisitor.hpp
-	#test/examples/serialization/SerializableVisitor.cpp
-	#test/examples/serialization/TestSerialization.cpp
+    #test/examples/serialization/SerializationFixture.hpp
+    #test/examples/serialization/SerializableVisitor.hpp
+    #test/examples/serialization/SerializableVisitor.cpp
+    #test/examples/serialization/TestSerialization.cpp
 
-	test/RewTestingBase.hpp
+    test/RewTestingBase.hpp
 
-	test/main.cpp
+    test/main.cpp
+    include/Rew/BuiltIn/iterator.hpp
 )

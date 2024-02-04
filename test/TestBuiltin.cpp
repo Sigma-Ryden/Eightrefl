@@ -50,6 +50,7 @@ REFLECTABLE_INIT()
 TEST(TestLibrary, Test)
 {
     rew::reflectable<std::vector<int>>();
+    rew::global.find("");
     for (auto& [tname, tmeta] : rew::global.all)
     {
         std::cout << tname << '\n';

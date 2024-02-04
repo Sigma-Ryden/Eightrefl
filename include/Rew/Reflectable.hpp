@@ -18,19 +18,21 @@
             auto __reflection = __type->reflection;                                                     \
             injection.template type<R>(*__type);
 
-#define USING(using_type, ...)                                                                          \
-    using using_type = __VA_ARGS__;
+#define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, ...)                             \
+   __REW_EXPAND template_header struct reflectable_using {                                              \
+        using __rew_reflectable_using_R = __VA_ARGS__;                                                  \
+    };
 
 #define REFLECTABLE_USING(reflectable_using, ...)                                                       \
    struct reflectable_using {                                                                           \
         using __rew_reflectable_using_R = __VA_ARGS__;                                                  \
     };
 
-#define CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                        \
+#define CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                     \
     namespace rew { namespace meta {                                                                    \
         __REW_EXPAND template_header                                                                    \
-        struct reflectable_traits<__REW_EXPAND reflectable_type> {                                      \
-            using R = typename ::rew::meta::reflectable_using<__REW_EXPAND reflectable_type>::R;        \
+        struct reflectable_traits<__VA_ARGS__> {                                                        \
+            using R = typename ::rew::meta::reflectable_using<__VA_ARGS__>::R;                          \
             LAZY_REFLECTABLE()
 
 #define CORE_CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                   \
@@ -68,10 +70,10 @@
         };                                                                                              \
     }}
 
-#define CORE_TEMPLATE_REFLECTABLE(template_header, reflectable_type)                                    \
+#define CORE_TEMPLATE_REFLECTABLE(template_header, ...)                                                 \
     __REW_EXPAND template_header                                                                        \
-    struct rew_reflection_registry_t<__REW_EXPAND reflectable_type> {                                   \
-        using DirtyR = __REW_EXPAND reflectable_type;                                                   \
+    struct rew_reflection_registry_t<__VA_ARGS__> {                                                     \
+        using DirtyR = __VA_ARGS__;                                                                     \
         using R = typename ::rew::meta::reflectable_traits<DirtyR>::R;                                  \
         CORE_REFLECTABLE_BODY()
 
@@ -98,8 +100,8 @@
     template <typename, typename> friend struct rew_reflection_registry_t;
 
 #ifndef TEMPLATE_REFLECTABLE_DECLARATION
-    #define TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                         \
-        CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, reflectable_type)                        \
+    #define TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                      \
+        CORE_TEMPLATE_REFLECTABLE_DECLARATION(template_header, __VA_ARGS__)                             \
         REFLECTABLE_REGISTRY(&::rew::global)
 #endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
@@ -117,8 +119,8 @@
 #endif // REFLECTABLE_DECLARATION
 
 #ifndef TEMPLATE_REFLECTABLE
-    #define TEMPLATE_REFLECTABLE(template_header, reflectable_type)                                     \
-        CORE_TEMPLATE_REFLECTABLE(template_header, reflectable_type)
+    #define TEMPLATE_REFLECTABLE(template_header, ...)                                                  \
+        CORE_TEMPLATE_REFLECTABLE(template_header, __VA_ARGS__)
 #endif // CONDITIONAL_REFLECTABLE
 
 #ifndef CONDITIONAL_REFLECTABLE
@@ -154,15 +156,16 @@ ReflectableType&& reflectable(ReflectableType&& object)
     return std::forward<ReflectableType>(object);
 }
 
-template <typename ReflectableType>
+template <typename DirtyReflectableType>
 type_t* find_or_add_type()
 {
-    using reflectable_type = std::decay_t<ReflectableType>;
-    using reflectable_traits = meta::reflectable_traits<reflectable_type>;
+    using dirty_reflectable_type = std::decay_t<DirtyReflectableType>;
+    using reflectable_type = typename meta::reflectable_using<dirty_reflectable_type>::R;
+    using reflectable_traits = meta::reflectable_traits<dirty_reflectable_type>;
 
-    if constexpr (meta::is_lazy_reflectable<reflectable_type>::value)
+    if constexpr (meta::is_lazy_reflectable<dirty_reflectable_type>::value)
     {
-        reflectable<reflectable_type>();
+        reflectable<dirty_reflectable_type>();
     }
 
     auto __name = reflectable_traits::name();
