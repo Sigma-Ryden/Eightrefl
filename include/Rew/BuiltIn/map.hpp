@@ -80,12 +80,12 @@ REFLECTABLE_DECLARATION_INIT()
 template <typename> struct __rew_is_std_map_or_multimap : std::false_type {};
 
 template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
-struct __rew_is_std_map_or_multimap<std::map<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
+struct __rew_is_any_std_ordered_map<std::map<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
 
 template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
-struct __rew_is_std_map_or_multimap<std::multimap<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
+struct __rew_is_any_std_ordered_map<std::multimap<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_std_map_or_multimap<R>::value)
+CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<R>::value)
     FACTORY(R())
     FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(typename R::key_compare const&))
@@ -141,7 +141,7 @@ CONDITIONAL_REFLECTABLE(__rew_is_std_map_or_multimap<R>::value)
     FUNCTION(lower_bound, std_const_iterator<R>(typename R::key_type const&) const)
     FUNCTION(upper_bound, std_iterator<R>(typename R::key_type const&))
     FUNCTION(upper_bound, std_const_iterator<R>(typename R::key_type const&) const)
-    FUNCTION(key_comp)
+//  FUNCTION(key_comp)
 //  FUNCTION(value_comp)
 REFLECTABLE_INIT()
 

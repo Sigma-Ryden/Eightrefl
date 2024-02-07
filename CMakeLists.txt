@@ -36,10 +36,12 @@ set(REW
     include/Rew/BuiltIn/list.hpp
     include/Rew/BuiltIn/forward_list.hpp
     include/Rew/BuiltIn/set.hpp
+    include/Rew/BuiltIn/unordered_set.hpp
     include/Rew/BuiltIn/unique_ptr.hpp
     include/Rew/BuiltIn/shared_ptr.hpp
     include/Rew/BuiltIn/weak_ptr.hpp
     include/Rew/BuiltIn/map.hpp
+    include/Rew/BuiltIn/unordered_map.hpp
     include/Rew/BuiltIn/deque.hpp
     include/Rew/BuiltIn/stack.hpp
     include/Rew/BuiltIn/queue.hpp
@@ -84,5 +86,4 @@ add_executable(${PROJECT_NAME}
     test/RewTestingBase.hpp
 
     test/main.cpp
-    include/Rew/BuiltIn/iterator.hpp
 )

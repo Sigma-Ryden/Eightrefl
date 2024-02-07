@@ -70,12 +70,12 @@ REFLECTABLE_DECLARATION_INIT()
 template <typename> struct __rew_is_std_set_or_multiset : std::false_type {};
 
 template <typename KeyType, typename Comparator, typename AllocatorType>
-struct __rew_is_std_set_or_multiset<std::set<KeyType, Comparator, AllocatorType>> : std::true_type {};
+struct __rew_is_any_std_ordered_set<std::set<KeyType, Comparator, AllocatorType>> : std::true_type {};
 
 template <typename KeyType, typename Comparator, typename AllocatorType>
-struct __rew_is_std_set_or_multiset<std::multiset<KeyType, Comparator, AllocatorType>> : std::true_type {};
+struct __rew_is_any_std_ordered_set<std::multiset<KeyType, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_std_set_or_multiset<R>::value)
+CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<R>::value)
     FACTORY(R())
     FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(typename R::key_compare const&))
@@ -128,7 +128,7 @@ CONDITIONAL_REFLECTABLE(__rew_is_std_set_or_multiset<R>::value)
     FUNCTION(lower_bound, std_const_iterator<R>(typename R::key_type const&) const)
     FUNCTION(upper_bound, std_iterator<R>(typename R::key_type const&))
     FUNCTION(upper_bound, std_const_iterator<R>(typename R::key_type const&) const)
-    FUNCTION(key_comp)
+//  FUNCTION(key_comp)
 //  FUNCTION(value_comp)
 REFLECTABLE_INIT()
 

@@ -46,4 +46,26 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE((template <class StdContainerType>), std_reverse_iterator<StdContainerType>)
 REFLECTABLE_INIT()
 
+
+TEMPLATE_REFLECTABLE_USING((template <class StdContainerType>), std_local_iterator, typename StdContainerType::local_iterator)
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <class StdContainerType>), std_local_iterator<StdContainerType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME(NAMEOF(StdContainerType) + "::local_iterator")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <class StdContainerType>), std_local_iterator<StdContainerType>)
+REFLECTABLE_INIT()
+
+
+TEMPLATE_REFLECTABLE_USING((template <class StdContainerType>), std_const_local_iterator, typename StdContainerType::const_local_iterator)
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <class StdContainerType>), std_const_local_iterator<StdContainerType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME(NAMEOF(StdContainerType) + "::const_local_iterator")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <class StdContainerType>), std_const_local_iterator<StdContainerType>)
+REFLECTABLE_INIT()
+
 #endif // REW_BUILTIN_ITERATOR_HPP

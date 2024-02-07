@@ -47,6 +47,17 @@ REFLECTABLE_DECLARATION_INIT()
 REFLECTABLE(std_size_t)
 REFLECTABLE_INIT()
 
+struct X {
+    void f(int i) {}
+};
+
+REFLECTABLE_DECLARATION(X)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(X)
+    FUNCTION(f, void(int i))
+REFLECTABLE_INIT()
+
 TEST(TestLibrary, Test)
 {
     rew::reflectable<std::vector<int>>();
