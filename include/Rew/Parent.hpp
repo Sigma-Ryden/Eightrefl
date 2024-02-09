@@ -5,8 +5,6 @@
 
 #include <functional> // function
 
-#include <type_traits> // is_base_of_v
-
 #include <Rew/Attribute.hpp>
 #include <Rew/Meta.hpp>
 #include <Rew/Utility.hpp>

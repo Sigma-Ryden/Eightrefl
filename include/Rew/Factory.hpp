@@ -1,8 +1,6 @@
 #ifndef REW_FACTORY_HPP
 #define REW_FACTORY_HPP
 
-#include <cstddef> // size_t
-
 #include <string> // string
 #include <vector> // vector
 #include <any> // any

@@ -17,7 +17,7 @@ struct reflection_t
     const std::string name;
 
     attribute_t<parent_t> parent;
-    attribute_t<function_t> function;
+    attribute_t<attribute_t<function_t>> function;
     attribute_t<factory_t> factory;
     attribute_t<property_t> property;
     attribute_t<std::any> meta;

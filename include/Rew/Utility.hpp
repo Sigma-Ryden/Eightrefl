@@ -1,8 +1,6 @@
 #ifndef REW_UTILITY_HPP
 #define REW_UTILITY_HPP
 
-#include <cstddef> // size_t
-
 #include <string> // string
 #include <any> // any, any_cast
 #include <utility> // reference_wrapper
@@ -112,16 +110,17 @@ auto member_property_set_ptr(void (ParentReflectableType::* function)(PropertyTy
     return member_function_ptr<ReflectableType>(function);
 }
 
-template <typename ArgumentType = void, typename... ArgumentTypes>
-std::string full_function_name(const std::string& name)
+template <typename ReturnType, typename ArgumentType = void, typename... ArgumentTypes>
+std::string overload_name()
 {
+    auto result = meta::reflectable_traits<ReturnType>::name();
     if constexpr (std::is_void_v<ArgumentType>)
     {
-        return name + "()";
+        return result + "()";
     }
     else
     {
-        return name +
+        return result +
         "(" + (
             meta::reflectable_traits<ArgumentType>::name() +
             ... + (", " + meta::reflectable_traits<ArgumentTypes>::name())
@@ -130,21 +129,12 @@ std::string full_function_name(const std::string& name)
 }
 
 template <bool IsConstFunction = false, typename ReturnType, typename... ArgumentTypes>
-std::string full_function_name(const std::string& name, ReturnType (*)(ArgumentTypes...))
+std::string full_function_name(ReturnType (*)(ArgumentTypes...))
 {
-    auto result = full_function_name<ArgumentTypes...>(name);
+    auto result = overload_name<ReturnType, ArgumentTypes...>();
     if constexpr (IsConstFunction) result += " const";
 
     return result;
-}
-
-template <typename ReturnType, typename... ArgumentTypes>
-std::string full_factory_name(ReturnType (*)(ArgumentTypes...))
-{
-    return full_function_name<ArgumentTypes...>
-    (
-        meta::reflectable_traits<ReturnType>::name()
-    );
 }
 
 } // namespace utility

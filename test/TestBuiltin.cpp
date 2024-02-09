@@ -61,13 +61,18 @@ REFLECTABLE_INIT()
 TEST(TestLibrary, Test)
 {
     rew::reflectable<std::vector<int>>();
-    rew::global.find("");
+    rew::function_t* function = rew::global.find("X")->reflection->function.find("f")->find("void(int)");
     for (auto& [tname, tmeta] : rew::global.all)
     {
         std::cout << tname << '\n';
         for (auto& [fname, fmeta] : tmeta->reflection->function.all)
         {
-            std::cout << '\t' << fname << '\n';
+            std::cout << "    " << fname << '\n';
+            for (auto& [oname, ometa] : fmeta.all)
+            {
+                std::cout << "        " << oname << '\n';
+            }
+            std::cout << '\n';
         }
         std::cout << '\n';
     }

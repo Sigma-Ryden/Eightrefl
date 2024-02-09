@@ -6,8 +6,6 @@
 
 #include <Rew/Detail/Meta.hpp>
 
-#define __REW_EXPAND(...) __VA_ARGS__
-
 #define NAMEOF(...)                                                                                     \
     (::rew::meta::reflectable_traits<__VA_ARGS__>::name())
 
@@ -17,6 +15,8 @@
             auto __type = ::rew::find_or_add_type<DirtyR>();                                            \
             auto __reflection = __type->reflection;                                                     \
             injection.template type<R>(*__type);
+
+#define __REW_EXPAND(...) __VA_ARGS__
 
 #define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, ...)                             \
    __REW_EXPAND template_header struct reflectable_using {                                              \
@@ -217,7 +217,7 @@ factory_t* find_or_add_factory(reflection_t* reflection)
     using dirty_function_pointer = typename function_traits::dirty_function_pointer;
     using function_pointer = typename function_traits::function_pointer;
 
-    auto __name = utility::full_factory_name(dirty_function_pointer{});
+    auto __name = utility::full_function_name(dirty_function_pointer{});
 
     auto __meta = reflection->factory.find(__name);
     if (__meta == nullptr) __meta = &reflection->factory.add
@@ -244,14 +244,17 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
     using dirty_function_pointer = typename function_traits::dirty_function_pointer;
     using dirty_return_type = typename function_traits::dirty_return_type;
 
-    auto __name = utility::full_function_name<function_traits::is_const>(name, dirty_function_pointer{});
+    auto __function = reflection->function.find(name);
+    if (__function == nullptr) __function = &reflection->function.add(name, {});
 
-    auto __meta = reflection->function.find(__name);
-    if (__meta == nullptr) __meta = &reflection->function.add
+    auto __overload = utility::full_function_name<function_traits::is_const>(dirty_function_pointer{});
+
+    auto __meta = __function->find(__overload);
+    if (__meta == nullptr) __meta = &__function->add
     (
-        __name,
+        __overload,
         {
-            __name,
+            __overload,
             handler::function_call(ptr),
             detail::function_argument_types(dirty_function_pointer{}),
             find_or_add_type<dirty_return_type>()

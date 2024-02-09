@@ -1,18 +1,21 @@
 #ifndef REW_INJECTION_HPP
 #define REW_INJECTION_HPP
 
-#include <cstddef> // size_t
-
 #include <string> // string
 #include <any> // any
 
 #include <functional> // function
 
 #include <Rew/Reflection.hpp>
-#include <Rew/Type.hpp>
 
 namespace rew
 {
+
+struct type_t;
+struct parent_t;
+struct factory_t;
+struct function_t;
+struct property_t;
 
 struct injectable_t
 {

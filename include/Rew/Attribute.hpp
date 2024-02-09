@@ -16,9 +16,9 @@ struct attribute_t
         return it != all.end() ? &it->second : nullptr;
     }
 
-    decltype(auto) add(const std::string& name, const MetaType& meta)
+    MetaType& add(const std::string& name, const MetaType& meta)
     {
-        return (all.emplace(name, meta).first->second);
+        return all.emplace(name, meta).first->second;
     }
 
     bool remove(const std::string& name)
