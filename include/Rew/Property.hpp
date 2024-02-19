@@ -14,7 +14,7 @@
 
 #include <Rew/Utility.hpp>
 
-#define CORE_PROPERTY(property_name_str, ...)                                                           \
+#define RAW_PROPERTY(property_name_str, ...)                                                            \
     {                                                                                                   \
         auto __get = ::rew::utility::member_property_get_ptr<R>(&R::__VA_ARGS__);                       \
         auto __set = ::rew::utility::member_property_set_ptr<R>(&R::__VA_ARGS__);                       \
@@ -23,7 +23,7 @@
         injection.template property<R, typename __traits::property_type>(*__meta);                      \
     }
 
-#define PROPERTY(...) CORE_PROPERTY(#__VA_ARGS__, __VA_ARGS__)
+#define PROPERTY(...) RAW_PROPERTY(#__VA_ARGS__, __VA_ARGS__)
 
 namespace rew
 {

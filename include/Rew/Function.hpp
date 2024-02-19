@@ -13,7 +13,7 @@
 #include <Rew/Meta.hpp>
 #include <Rew/Utility.hpp>
 
-#define CORE_FUNCTION(function_name_str, function_name, ...)                                            \
+#define RAW_FUNCTION(function_name_str, function_name, ...)                                             \
     {                                                                                                   \
         using __traits = ::rew::meta::member_function_traits<R>;                                        \
         auto __overload = __traits::template overload<__VA_ARGS__>::of(&R::function_name);              \
@@ -21,7 +21,7 @@
         auto __meta = ::rew::find_or_add_function<__VA_ARGS__>(__reflection, function_name_str, __ptr); \
         injection.template function<R, decltype(__ptr)>(*__meta);                                       \
     }
-#define FUNCTION(name, ...) CORE_FUNCTION(#name, name, __VA_ARGS__)
+#define FUNCTION(name, ...) RAW_FUNCTION(#name, name, __VA_ARGS__)
 
 namespace rew
 {

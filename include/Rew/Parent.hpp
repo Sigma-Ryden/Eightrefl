@@ -9,14 +9,14 @@
 #include <Rew/Meta.hpp>
 #include <Rew/Utility.hpp>
 
-#define CORE_PARENT(...)                                                                                \
+#define RAW_PARENT(...)                                                                                 \
     {                                                                                                   \
         using __type = __VA_ARGS__;                                                                     \
         auto __meta = ::rew::find_or_add_parent<R, __type>(__reflection);                               \
         injection.template parent<R, __type>(*__meta);                                                  \
     }
 
-#define PARENT(...) CORE_PARENT(__VA_ARGS__)
+#define PARENT(...) RAW_PARENT(__VA_ARGS__)
 
 namespace rew
 {

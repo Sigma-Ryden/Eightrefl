@@ -19,7 +19,7 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), ElementType*)
     FACTORY(R(R))
 REFLECTABLE_INIT()
 
-// ~ qualified types
+// qualified types
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), ElementType&)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(ElementType) + "&")

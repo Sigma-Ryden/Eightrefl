@@ -1,4 +1,3 @@
-// TODO: add support for operator ValueType&() with dependent type
 #ifndef REW_BUILTIN_REFERENCE_WRAPPER_HPP
 #define REW_BUILTIN_REFERENCE_WRAPPER_HPP
 
@@ -16,7 +15,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::reference_wrapper<Val
     FACTORY(R(ValueType const&))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
-//  FUNCTION(operator ValueType&)
+    RAW_FUNCTION("operator=" + NAMEOF(ValueType&), operator ValueType&)
     FUNCTION(get)
 REFLECTABLE_INIT()
 

@@ -12,7 +12,7 @@
 
 #include <Rew/Utility.hpp>
 
-#define CORE_FACTORY(...)                                                                               \
+#define RAW_FACTORY(...)                                                                                \
     {                                                                                                   \
         using __traits = ::rew::meta::function_traits<__VA_ARGS__>;                                     \
         using __dirty_function_pointer = typename __traits::dirty_function_type*;                       \
@@ -21,7 +21,7 @@
         injection.template factory<R, __function_pointer>(*__meta);                                     \
     }
 
-#define FACTORY(...) CORE_FACTORY(__VA_ARGS__)
+#define FACTORY(...) RAW_FACTORY(__VA_ARGS__)
 
 namespace rew
 {
