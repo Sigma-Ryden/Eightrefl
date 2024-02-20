@@ -12,7 +12,7 @@ TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::reference
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType>), std::reference_wrapper<ValueType>)
-    FACTORY(R(ValueType const&))
+    FACTORY(R(ValueType&))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     RAW_FUNCTION("operator " + NAMEOF(ValueType&), operator ValueType&)

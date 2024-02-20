@@ -38,7 +38,7 @@
 
 REFLECTABLE_USING(std_size_t, std::size_t)
 
-CORE_REFLECTABLE_DECLARATION(std_size_t)
+RAW_REFLECTABLE_DECLARATION(std_size_t)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_REGISTRY(&rew::global)
     REFLECTABLE_NAME("std::size_t")
@@ -58,8 +58,20 @@ REFLECTABLE(X)
     FUNCTION(f, void(int i))
 REFLECTABLE_INIT()
 
+#include <Rew/BuiltIn/reference_wrapper.hpp>
+#include <Rew/BuiltIn/iterator.hpp>
+#include <Rew/BuiltIn/vector.hpp>
+
 TEST(TestLibrary, Test)
 {
+    rew::reflectable<std::reference_wrapper<std_size_t>>();
+
+    auto type = rew::global.find("std::reference_wrapper<std::size_t>");
+    auto factory = type->reflection->factory.find("std::reference_wrapper<std::size_t>(std::size_t&)");
+    std::size_t i;
+    auto object = factory->call({i});
+    auto context = type->context(object);
+
     rew::reflectable<std::vector<int>>();
     rew::function_t* function = rew::global.find("X")->reflection->function.find("f")->find("void(int)");
     for (auto& [tname, tmeta] : rew::global.all)

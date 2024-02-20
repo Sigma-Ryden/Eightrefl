@@ -33,6 +33,24 @@ struct reflectable_using
 };
 
 template <typename T>
+struct reflectable_using<T*>
+{
+    using R = typename reflectable_using<T>::R*;
+};
+
+template <typename T>
+struct reflectable_using<T&>
+{
+    using R = typename reflectable_using<T>::R&;
+};
+
+template <typename T>
+struct reflectable_using<const T>
+{
+    using R = const typename reflectable_using<T>::R;
+};
+
+template <typename T>
 struct reflectable_using<T, std::void_t<typename T::__rew_reflectable_using>>
 {
     using R = typename T::__rew_reflectable_using;
