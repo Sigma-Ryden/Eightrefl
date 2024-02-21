@@ -33,62 +33,100 @@
 //     FUNCTION(Foo, void(Vector_Iterator<T, int>))
 // REFLECTABLE_INIT()
 #include <RewTestingBase.hpp>
-#include <Rew/BuiltIn/vector.hpp>
-#include <iostream>
 
-REFLECTABLE_USING(std_size_t, std::size_t)
+// TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::reference_wrapper<ValueType>)
+//     BUILTIN_REFLECTABLE()
+//     REFLECTABLE_NAME("std::reference_wrapper<" + NAMEOF(ValueType) + ">")
+// REFLECTABLE_DECLARATION_INIT()
 
-RAW_REFLECTABLE_DECLARATION(std_size_t)
-    BUILTIN_REFLECTABLE()
-    REFLECTABLE_REGISTRY(&rew::global)
-    REFLECTABLE_NAME("std::size_t")
+// // namespace rew::meta {
+// // template <typename ValueType>
+// // struct reflectable_using<std::reference_wrapper<ValueType>>
+// // {
+// //     using R = std::reference_wrapper<CLEANOF(ValueType)>;
+// // };}
+
+// // in inside R should be still Dirty, but replace to Clear with accessing
+// // auto __f = &std::ref<std_size_t>::get should be std_size_t&(std::ref<std_size_t>::*)() const
+// TEMPLATE_REFLECTABLE((template <typename ValueType>), std::reference_wrapper<ValueType>)
+//     FACTORY(R(ValueType&))
+//     FACTORY(R(R const&))
+//     FUNCTION(operator=, R&(R const&))
+//     RAW_FUNCTION("operator " + NAMEOF(ValueType&), operator ValueType&)
+//     FUNCTION(get, ValueType&() const)
+// REFLECTABLE_INIT()
+
+REFLECTABLE_USING(int32, int)
+
+REFLECTABLE_DECLARATION(int32)
 REFLECTABLE_DECLARATION_INIT()
 
-REFLECTABLE(std_size_t)
+REFLECTABLE(int32)
 REFLECTABLE_INIT()
 
-struct X {
-    void f(int i) {}
+template <typename T>
+struct Vector
+{
+    using Iterator = int;
+    Vector(Iterator, Iterator) {}
 };
 
-REFLECTABLE_DECLARATION(X)
+TEMPLATE_REFLECTABLE_USING((template <typename V>), Iterator, (Iterator<V>), typename V::Iterator)
+
+TEMPLATE_REFLECTABLE_CLEAN((template <typename T>), (Vector<T>), Vector<CLEANOF(T)>)
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename V>), Iterator<V>)
+    REFLECTABLE_NAME(NAMEOF(V) + "::Iterator")
 REFLECTABLE_DECLARATION_INIT()
 
-REFLECTABLE(X)
-    FUNCTION(f, void(int i))
+TEMPLATE_REFLECTABLE((template <typename V>), Iterator<V>)
 REFLECTABLE_INIT()
 
-#include <Rew/BuiltIn/reference_wrapper.hpp>
-#include <Rew/BuiltIn/iterator.hpp>
-#include <Rew/BuiltIn/vector.hpp>
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename T>), Vector<T>
+)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("Vector<" + NAMEOF(T) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE
+(
+    (template <typename T>), Vector<T>
+)
+    FACTORY(R(Iterator<R>, Iterator<R>))
+REFLECTABLE_INIT()
+
+REFLECTABLE_USING(decimal, double)
 
 TEST(TestLibrary, Test)
 {
-    rew::reflectable<std::reference_wrapper<std_size_t>>();
+    rew::reflectable<Vector<int32>>();
+    static_assert(std::is_same_v<rew::meta::clean<decimal>, double>);
 
     auto type = rew::global.find("std::reference_wrapper<std::size_t>");
-    auto factory = type->reflection->factory.find("std::reference_wrapper<std::size_t>(std::size_t&)");
-    std::size_t i;
-    auto object = factory->call({i});
-    auto context = type->context(object);
+    // auto factory = type->reflection->factory.find("std::reference_wrapper<std::size_t>(std::size_t&)");
+    // std::size_t i;
+    // auto object = factory->call({i});
+    // auto context = type->context(object);
 
-    rew::reflectable<std::vector<int>>();
-    rew::function_t* function = rew::global.find("X")->reflection->function.find("f")->find("void(int)");
-    for (auto& [tname, tmeta] : rew::global.all)
-    {
-        std::cout << tname << '\n';
-        for (auto& [fname, fmeta] : tmeta->reflection->function.all)
-        {
-            std::cout << "    " << fname << '\n';
-            for (auto& [oname, ometa] : fmeta.all)
-            {
-                std::cout << "        " << oname << '\n';
-            }
-            std::cout << '\n';
-        }
-        std::cout << '\n';
-    }
-    std::cout << '\n';
+    //rew::reflectable<std::vector<int>>();
+    // rew::function_t* function = rew::global.find("X")->reflection->function.find("f")->find("void(int)");
+    // for (auto& [tname, tmeta] : rew::global.all)
+    // {
+    //     std::cout << tname << '\n';
+    //     for (auto& [fname, fmeta] : tmeta->reflection->function.all)
+    //     {
+    //         std::cout << "    " << fname << '\n';
+    //         for (auto& [oname, ometa] : fmeta.all)
+    //         {
+    //             std::cout << "        " << oname << '\n';
+    //         }
+    //         std::cout << '\n';
+    //     }
+    //     std::cout << '\n';
+    // }
+    // std::cout << '\n';
     // rew::reflectable<Vector<float>>();
     // rew::function_t* function = rew::global.find("Vector<float>")->reflection->function.find("Foo(Vector<float>::Iterator<int>)");
     // Vector<float> v;
