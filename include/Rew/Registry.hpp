@@ -59,7 +59,7 @@ public:
         return get(meta::reflectable_traits<ReflectableType>::name());
     }
 
-    template <typename ReflectableType>
+    template <typename ReflectableType, typename DirtyReflectableType = ReflectableType>
     type_t* add(const std::string& name)
     {
         auto& type = all[name];
@@ -78,9 +78,7 @@ public:
         };
 
         type = new type_t { name, reflection, sizeof(ReflectableType), context, reference };
-
-        all.emplace(name, type);
-        rtti_all.emplace(typeid(ReflectableType), type);
+        rtti_all.emplace(typeid(DirtyReflectableType), type);
 
         return type;
     }

@@ -6,6 +6,12 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ValueType>), (std::reference_wrapper<ValueType>),
+    std::reference_wrapper<CLEANOF(ValueType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::reference_wrapper<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::reference_wrapper<" + NAMEOF(ValueType) + ">")
@@ -15,7 +21,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::reference_wrapper<Val
     FACTORY(R(ValueType&))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
-    RAW_FUNCTION("operator " + NAMEOF(ValueType&), operator ValueType&)
+    RAW_FUNCTION("operator " + NAMEOF(ValueType&), operator CLEANOF(ValueType)&)
     FUNCTION(get)
 REFLECTABLE_INIT()
 
