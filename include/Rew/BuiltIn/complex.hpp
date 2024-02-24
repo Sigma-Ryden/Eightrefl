@@ -7,6 +7,12 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ValueType>), (std::complex<ValueType>),
+    std::complex<CLEANOF(ValueType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::complex<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::complex<" + NAMEOF(ValueType) + ">")

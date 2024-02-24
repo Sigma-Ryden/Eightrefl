@@ -15,6 +15,12 @@
 // as function argument type
 #include <Rew/BuiltIn/iterator.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ValueType, typename AllocatorType>), (std::vector<ValueType, AllocatorType>),
+    std::vector<CLEANOF(ValueType), CLEANOF(AllocatorType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::vector<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::vector<" + NAMEOF(ValueType) + ">")

@@ -14,6 +14,12 @@
 #include <Rew/BuiltIn/function.hpp>
 #include <Rew/BuiltIn/iterator.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ValueType, typename AllocatorType>), (std::list<ValueType, AllocatorType>),
+    std::list<CLEANOF(ValueType), CLEANOF(AllocatorType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::list<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::list<" + NAMEOF(ValueType) + ">")

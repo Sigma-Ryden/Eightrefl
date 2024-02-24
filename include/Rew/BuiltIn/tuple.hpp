@@ -6,6 +6,12 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename... ArgumentTypes>), (std::tuple<ArgumentTypes...>),
+    std::tuple<CLEANOF(ArgumentTypes)...>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <>), std::tuple<>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::tuple<>")

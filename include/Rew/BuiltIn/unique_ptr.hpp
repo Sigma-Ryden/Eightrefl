@@ -10,6 +10,12 @@
 // as function argument type
 #include <Rew/BuiltIn/nullptr_t.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ElementType, typename DeleterType>), (std::unique_ptr<ElementType, DeleterType>),
+    std::unique_ptr<CLEANOF(ElementType), CLEANOF(DeleterType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), std::default_delete<ElementType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::default_delete<" + NAMEOF(ElementType) + ">")

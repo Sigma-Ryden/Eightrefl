@@ -9,6 +9,12 @@
 // default container for stack
 #include <Rew/BuiltIn/deque.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ValueType, class ContainerType>), (std::stack<ValueType, ContainerType>),
+    std::stack<CLEANOF(ValueType), CLEANOF(ContainerType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::stack<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::stack<" + NAMEOF(ValueType) + ">")

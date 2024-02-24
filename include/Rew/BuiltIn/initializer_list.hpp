@@ -6,6 +6,12 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ValueType>), (std::initializer_list<ValueType>),
+    std::initializer_list<CLEANOF(ValueType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::initializer_list<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::initializer_list<" + NAMEOF(ValueType) + ">")

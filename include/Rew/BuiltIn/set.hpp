@@ -13,6 +13,13 @@
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/iterator.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename KeyType, typename Comparator, typename AllocatorType>),
+    (std::set<KeyType, Comparator, AllocatorType>),
+    std::set<CLEANOF(KeyType), CLEANOF(Comparator), CLEANOF(AllocatorType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType>), std::set<KeyType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::set<" + NAMEOF(KeyType) + ">")
@@ -39,6 +46,13 @@ TEMPLATE_REFLECTABLE_DECLARATION
     )
 REFLECTABLE_DECLARATION_INIT()
 
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename KeyType, typename Comparator, typename AllocatorType>),
+    (std::multiset<KeyType, Comparator, AllocatorType>),
+    std::multiset<CLEANOF(KeyType), CLEANOF(Comparator), CLEANOF(AllocatorType)>
+)
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType>), std::multiset<KeyType>)
     BUILTIN_REFLECTABLE()
@@ -67,7 +81,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 REFLECTABLE_DECLARATION_INIT()
 
 
-template <typename> struct __rew_is_std_set_or_multiset : std::false_type {};
+template <typename> struct __rew_is_any_std_ordered_set : std::false_type {};
 
 template <typename KeyType, typename Comparator, typename AllocatorType>
 struct __rew_is_any_std_ordered_set<std::set<KeyType, Comparator, AllocatorType>> : std::true_type {};
@@ -75,7 +89,7 @@ struct __rew_is_any_std_ordered_set<std::set<KeyType, Comparator, AllocatorType>
 template <typename KeyType, typename Comparator, typename AllocatorType>
 struct __rew_is_any_std_ordered_set<std::multiset<KeyType, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<R>::value)
+CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<CLEANOF(DirtyR)>::value)
     FACTORY(R())
     FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(typename R::key_compare const&))

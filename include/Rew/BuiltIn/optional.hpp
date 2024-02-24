@@ -14,6 +14,12 @@ REFLECTABLE(std::nullopt_t)
 REFLECTABLE_INIT()
 
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ValueType>), (std::optional<ValueType>),
+    std::optional<CLEANOF(ValueType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::optional<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::optional<" + NAMEOF(ValueType) + ">")

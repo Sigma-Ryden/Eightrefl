@@ -13,6 +13,13 @@
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/iterator.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>),
+    (std::unordered_set<KeyType, Hasher, Comparator, AllocatorType>),
+    std::unordered_set<CLEANOF(KeyType), CLEANOF(Hasher), CLEANOF(Comparator), CLEANOF(AllocatorType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType>), std::unordered_set<KeyType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::unordered_set<" + NAMEOF(KeyType) + ">")
@@ -52,6 +59,13 @@ TEMPLATE_REFLECTABLE_DECLARATION
     )
 REFLECTABLE_DECLARATION_INIT()
 
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>),
+    (std::unordered_multiset<KeyType, Hasher, Comparator, AllocatorType>),
+    std::unordered_multiset<CLEANOF(KeyType), CLEANOF(Hasher), CLEANOF(Comparator), CLEANOF(AllocatorType)>
+)
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType>), std::unordered_multiset<KeyType>)
     BUILTIN_REFLECTABLE()
@@ -93,7 +107,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 REFLECTABLE_DECLARATION_INIT()
 
 
-template <typename> struct __rew_is_std_any_unordered_set : std::false_type {};
+template <typename> struct __rew_is_any_std_unordered_set : std::false_type {};
 
 template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
 struct __rew_is_any_std_unordered_set<std::unordered_set<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
@@ -101,7 +115,7 @@ struct __rew_is_any_std_unordered_set<std::unordered_set<KeyType, Hasher, Compar
 template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
 struct __rew_is_any_std_unordered_set<std::unordered_multiset<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
+CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<CLEANOF(DirtyR)>::value)
     FACTORY(R())
     FACTORY(R(typename R::size_type, typename R::hasher const&, typename R::key_equal const&, typename R::allocator const&))
     FACTORY(R(typename R::size_type, typename R::hasher const&, typename R::key_equal const&))

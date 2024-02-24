@@ -6,6 +6,12 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ValueType>), (std::allocator<ValueType>),
+    std::allocator<CLEANOF(ValueType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::allocator<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::allocator<" + NAMEOF(ValueType) + ">")

@@ -14,6 +14,13 @@
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/iterator.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename CharType, typename Traits, typename AllocatorType>),
+    (std::basic_string<CharType, Traits, AllocatorType>),
+    std::basic_string<CLEANOF(CharType), CLEANOF(Traits), CLEANOF(AllocatorType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <>), std::string)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::string")

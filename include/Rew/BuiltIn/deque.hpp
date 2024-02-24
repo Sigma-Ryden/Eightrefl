@@ -13,6 +13,12 @@
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/iterator.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ValueType, typename AllocatorType>), (std::deque<ValueType, AllocatorType>),
+    std::deque<CLEANOF(ValueType), CLEANOF(AllocatorType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::deque<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::deque<" + NAMEOF(ValueType) + ">")

@@ -9,6 +9,13 @@
 // as function argument type
 #include <Rew/BuiltIn/nullptr_t.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    (std::function<ReturnType(ArgumentTypes...)>),
+    std::function<CLEANOF(ReturnType)(CLEANOF(ArgumentTypes)...)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ReturnType>), std::function<ReturnType()>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::function<" + NAMEOF(ReturnType) + "()>")

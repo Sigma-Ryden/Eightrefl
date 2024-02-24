@@ -26,7 +26,7 @@ template <typename T> struct is_complete<T, std::void_t<decltype(sizeof(T))>> : 
 template <typename T, typename enable = void>
 struct reflectable_traits;
 
-template <typename T>
+template <typename T, typename enable = void>
 struct reflectable_using
 {
     using R = T;

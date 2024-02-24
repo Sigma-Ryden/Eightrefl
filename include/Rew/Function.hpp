@@ -21,6 +21,7 @@
         auto __meta = ::rew::find_or_add_function<__VA_ARGS__>(__reflection, function_name_str, __ptr); \
         injection.template function<R, decltype(__ptr)>(*__meta);                                       \
     }
+
 #define FUNCTION(name, ...) RAW_FUNCTION(#name, name, __VA_ARGS__)
 
 namespace rew

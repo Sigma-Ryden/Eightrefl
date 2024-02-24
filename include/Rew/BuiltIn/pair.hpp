@@ -6,6 +6,12 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename FirstType, typename SecondType>), (std::pair<FirstType, SecondType>),
+    std::pair<CLEANOF(FirstType), CLEANOF(SecondType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename FirstType, typename SecondType>), std::pair<FirstType, SecondType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::pair<" + NAMEOF(FirstType) + ", " + NAMEOF(SecondType) + ">")

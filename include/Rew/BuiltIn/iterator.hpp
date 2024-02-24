@@ -3,7 +3,11 @@
 
 #include <Rew/Reflectable.hpp>
 
-TEMPLATE_REFLECTABLE_USING((template <class StdContainerType>), std_const_iterator, typename StdContainerType::const_iterator)
+TEMPLATE_REFLECTABLE_USING
+(
+    (template <class StdContainerType>), std_const_iterator,
+    (std_const_iterator<StdContainerType>), typename CLEANOF(StdContainerType)::const_iterator
+)
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <class StdContainerType>), std_const_iterator<StdContainerType>)
     BUILTIN_REFLECTABLE()
@@ -14,7 +18,11 @@ TEMPLATE_REFLECTABLE((template <class StdContainerType>), std_const_iterator<Std
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_USING((template <class StdContainerType>), std_iterator, typename StdContainerType::iterator)
+TEMPLATE_REFLECTABLE_USING
+(
+    (template <class StdContainerType>), std_iterator,
+    (std_iterator<StdContainerType>), typename CLEANOF(StdContainerType)::iterator
+)
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <class StdContainerType>), std_iterator<StdContainerType>)
     BUILTIN_REFLECTABLE()
@@ -25,7 +33,11 @@ TEMPLATE_REFLECTABLE((template <class StdContainerType>), std_iterator<StdContai
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_USING((template <class StdContainerType>), std_const_reverse_iterator, typename StdContainerType::const_reverse_iterator)
+TEMPLATE_REFLECTABLE_USING
+(
+    (template <class StdContainerType>), std_const_reverse_iterator,
+    (std_const_reverse_iterator<StdContainerType>), typename CLEANOF(StdContainerType)::const_reverse_iterator
+)
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <class StdContainerType>), std_const_reverse_iterator<StdContainerType>)
     BUILTIN_REFLECTABLE()
@@ -36,7 +48,11 @@ TEMPLATE_REFLECTABLE((template <class StdContainerType>), std_const_reverse_iter
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_USING((template <class StdContainerType>), std_reverse_iterator, typename StdContainerType::reverse_iterator)
+TEMPLATE_REFLECTABLE_USING
+(
+    (template <class StdContainerType>), std_reverse_iterator,
+    (std_reverse_iterator<StdContainerType>), typename CLEANOF(StdContainerType)::reverse_iterator
+)
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <class StdContainerType>), std_reverse_iterator<StdContainerType>)
     BUILTIN_REFLECTABLE()
@@ -47,7 +63,11 @@ TEMPLATE_REFLECTABLE((template <class StdContainerType>), std_reverse_iterator<S
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_USING((template <class StdContainerType>), std_local_iterator, typename StdContainerType::local_iterator)
+TEMPLATE_REFLECTABLE_USING
+(
+    (template <class StdContainerType>), std_local_iterator,
+    (std_local_iterator<StdContainerType>), typename CLEANOF(StdContainerType)::local_iterator
+)
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <class StdContainerType>), std_local_iterator<StdContainerType>)
     BUILTIN_REFLECTABLE()
@@ -58,7 +78,11 @@ TEMPLATE_REFLECTABLE((template <class StdContainerType>), std_local_iterator<Std
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_USING((template <class StdContainerType>), std_const_local_iterator, typename StdContainerType::const_local_iterator)
+TEMPLATE_REFLECTABLE_USING
+(
+    (template <class StdContainerType>), std_const_local_iterator,
+    (std_const_local_iterator<StdContainerType>), typename CLEANOF(StdContainerType)::const_local_iterator
+)
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <class StdContainerType>), std_const_local_iterator<StdContainerType>)
     BUILTIN_REFLECTABLE()

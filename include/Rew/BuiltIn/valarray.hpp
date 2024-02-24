@@ -10,6 +10,12 @@
 // as function argument type
 #include <Rew/BuiltIn/initializer_list.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ValueType>), (std::valarray<ValueType>),
+    std::valarray<CLEANOF(ValueType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::valarray<ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::valarray<" + NAMEOF(ValueType) + ">")

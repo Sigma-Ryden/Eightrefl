@@ -17,6 +17,13 @@
 // as mapped type
 #include <Rew/BuiltIn/pair.hpp>
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>),
+    (std::map<KeyType, ValueType, Comparator, AllocatorType>),
+    std::map<CLEANOF(KeyType), CLEANOF(ValueType), CLEANOF(Comparator), CLEANOF(AllocatorType)>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::map<KeyType, ValueType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME( "std::map<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ">")
@@ -46,6 +53,13 @@ TEMPLATE_REFLECTABLE_DECLARATION
     )
 REFLECTABLE_DECLARATION_INIT()
 
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>),
+    (std::multimap<KeyType, ValueType, Comparator, AllocatorType>),
+    std::multimap<CLEANOF(KeyType), CLEANOF(ValueType), CLEANOF(Comparator), CLEANOF(AllocatorType)>
+)
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::multimap<KeyType, ValueType>)
     BUILTIN_REFLECTABLE()
@@ -77,7 +91,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 REFLECTABLE_DECLARATION_INIT()
 
 
-template <typename> struct __rew_is_std_map_or_multimap : std::false_type {};
+template <typename> struct __rew_is_any_std_ordered_map : std::false_type {};
 
 template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
 struct __rew_is_any_std_ordered_map<std::map<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
@@ -85,7 +99,7 @@ struct __rew_is_any_std_ordered_map<std::map<KeyType, ValueType, Comparator, All
 template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
 struct __rew_is_any_std_ordered_map<std::multimap<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<R>::value)
+CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<CLEANOF(DirtyR)>::value)
     FACTORY(R())
     FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(typename R::key_compare const&))

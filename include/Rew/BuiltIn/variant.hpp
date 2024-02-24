@@ -13,6 +13,12 @@ REFLECTABLE(std::monostate)
 REFLECTABLE_INIT()
 
 
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ArgumentType, typename... ArgumentTypes>), (std::variant<ArgumentType, ArgumentTypes...>),
+    std::variant<CLEANOF(ArgumentType), CLEANOF(ArgumentTypes)...>
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION
 (
     (template <typename ArgumentType, typename... ArgumentTypes>),

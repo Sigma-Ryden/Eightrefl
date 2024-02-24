@@ -9,6 +9,8 @@ REFLECTABLE_DECLARATION(void)
 REFLECTABLE_DECLARATION_INIT()
 
 // pointer type
+TEMPLATE_REFLECTABLE_CLEAN((template <typename ElementType>), (ElementType*), CLEANOF(ElementType)*)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), ElementType*)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(ElementType) + "*")
@@ -20,10 +22,14 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), ElementType*)
 REFLECTABLE_INIT()
 
 // qualified types
+TEMPLATE_REFLECTABLE_CLEAN((template <typename ElementType>), (ElementType&), CLEANOF(ElementType)&)
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), ElementType&)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(ElementType) + "&")
 REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_CLEAN((template <typename ElementType>), (ElementType const), CLEANOF(ElementType) const)
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), ElementType const)
     BUILTIN_REFLECTABLE()
