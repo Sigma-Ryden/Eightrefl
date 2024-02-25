@@ -15,16 +15,16 @@
 
 #include <Rew/Utility.hpp>
 
-#define RAW_PROPERTY(property_name_str, ...)                                                            \
+#define RAW_PROPERTY(name_str, name_get, name_set)                                                      \
     {                                                                                                   \
-        auto __get = ::rew::utility::member_property_get_ptr<R>(&R::__VA_ARGS__);                       \
-        auto __set = ::rew::utility::member_property_set_ptr<R>(&R::__VA_ARGS__);                       \
-        auto __meta = ::rew::find_or_add_property(__reflection, property_name_str, __get, __set);       \
+        auto __get = ::rew::utility::member_property_get_ptr<R>(&R::name_get);                          \
+        auto __set = ::rew::utility::member_property_set_ptr<R>(&R::name_set);                          \
+        auto __meta = ::rew::find_or_add_property(__reflection, name_str, __get, __set);                \
         using __traits = ::rew::meta::property_traits<decltype(__get)>;                                 \
         injection.template property<R, typename __traits::property_type>(*__meta);                      \
     }
 
-#define PROPERTY(...) RAW_PROPERTY(#__VA_ARGS__, __VA_ARGS__)
+#define PROPERTY(...) RAW_PROPERTY(#__VA_ARGS__, __VA_ARGS__, __VA_ARGS__)
 
 namespace rew
 {

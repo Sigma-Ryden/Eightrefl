@@ -32,24 +32,6 @@ struct reflectable_using
     using R = T;
 };
 
-template <typename T>
-struct reflectable_using<T*>
-{
-    using R = typename reflectable_using<T>::R*;
-};
-
-template <typename T>
-struct reflectable_using<T&>
-{
-    using R = typename reflectable_using<T>::R&;
-};
-
-template <typename T>
-struct reflectable_using<const T>
-{
-    using R = const typename reflectable_using<T>::R;
-};
-
 template <typename T> using clean = typename reflectable_using<T>::R;
 
 namespace detail
@@ -131,6 +113,22 @@ struct property_traits<PropertyType (ReflectableType::*)(void) const>
 template <typename ReflectableType, typename PropertyType>
 struct property_traits<PropertyType (ReflectableType::*)(void)>
     : property_traits<PropertyType ReflectableType::*> {};
+
+template <typename...>
+struct overload
+{
+    template <typename ReturnType, typename... ArgumentTypes>
+    static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
+};
+
+template <typename ReturnType, typename... ArgumentTypes>
+struct overload<ReturnType(ArgumentTypes...)>
+{
+    static constexpr auto of(clean<ReturnType> (*function)(clean<ArgumentTypes>...)) { return function; }
+
+    template <typename OtherReturnType, typename... OtherArgumentTypes>
+    static constexpr auto of(OtherReturnType (*function)(OtherArgumentTypes...)) { return function; }
+};
 
 template <class ClassType>
 struct member_function_traits
