@@ -31,7 +31,7 @@ struct type_t;
 struct factory_t
 {
     const std::string name;
-    const std::function<std::any(const std::vector<std::any>& args)> call = nullptr;
+    const std::function<std::any(std::vector<std::any> args)> call = nullptr;
     const std::vector<type_t*> arguments;
     attribute_t<std::any> meta;
 };
@@ -42,7 +42,7 @@ namespace detail
 template <typename ReflectableType, typename... ArgumentTypes, std::size_t... I>
 auto factory_call_impl(std::index_sequence<I...>)
 {
-    return [](const std::vector<std::any>& arguments) -> std::any
+    return [](std::vector<std::any> arguments) -> std::any
     {
         if constexpr (std::is_aggregate_v<ReflectableType>)
         {

@@ -19,12 +19,23 @@
     {                                                                                                   \
         auto __get = ::rew::utility::member_property_get_ptr<R>(&R::name_get);                          \
         auto __set = ::rew::utility::member_property_set_ptr<R>(&R::name_set);                          \
-        auto __meta = ::rew::find_or_add_property(__reflection, name_str, __get, __set);                \
         using __traits = ::rew::meta::property_traits<decltype(__get)>;                                 \
+        auto __meta = ::rew::find_or_add_property(__reflection, name_str, __get, __set);                \
         injection.template property<R, typename __traits::property_type>(*__meta);                      \
     }
 
 #define PROPERTY(...) RAW_PROPERTY(#__VA_ARGS__, __VA_ARGS__, __VA_ARGS__)
+
+#define RAW_FREE_PROPERTY(name_str, name_get, name_set)                                                 \
+    {                                                                                                   \
+        auto __get = ::rew::utility::property_get_ptr<R>(&name_get);                                    \
+        auto __set = ::rew::utility::property_set_ptr<R>(&name_set);                                    \
+        using __traits = ::rew::meta::property_traits<decltype(__get)>;                                 \
+        auto __meta = ::rew::find_or_add_property(__reflection, name_str, __get, __set);                \
+        injection.template property<R, typename __traits::property_type>(*__meta);                      \
+    }
+
+#define FREE_PROPERTY(...) RAW_FREE_PROPERTY(#__VA_ARGS__, __VA_ARGS__, __VA_ARGS__)
 
 namespace rew
 {
@@ -110,12 +121,15 @@ auto property_ptr_impl(PropertyGetterType getter)
         using type = typename meta::property_traits<decltype(getter)>::property_type;
         if constexpr (std::is_reference_v<type>)
         {
-            constexpr auto is_const_value = std::is_const_v<std::remove_reference_t<type>>;
-
             auto address = std::addressof((std::any_cast<ReflectableType*>(context)->*getter)());
-
-            if constexpr (is_const_value) return const_cast<void*>(static_cast<const void*>(address));
-            else return address;
+            if constexpr (std::is_const_v<std::remove_reference_t<type>>)
+            {
+                return const_cast<void*>(static_cast<const void*>(address));
+            }
+            else
+            {
+                return address;
+            }
         }
         else
         {
@@ -148,6 +162,21 @@ template <typename ReflectableType, typename PropertyType>
 auto property_ptr(PropertyType (ReflectableType::* getter)(void))
 {
     return detail::property_ptr_impl<ReflectableType>(getter);
+}
+
+template <typename ReflectableType, typename PropertyType>
+auto property_ptr(PropertyType* property)
+{
+    return [property](std::any& context) -> std::any
+    {
+        return std::addressof(property);
+    };
+}
+
+template <typename ReflectableType, typename PropertyType>
+auto property_ptr(PropertyType (*getter)(void))
+{
+    return nullptr;
 }
 
 } // namespace handler

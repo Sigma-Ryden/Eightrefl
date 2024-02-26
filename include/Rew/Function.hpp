@@ -24,14 +24,14 @@
 
 #define FUNCTION(name, ...) RAW_FUNCTION(#name, name, __VA_ARGS__)
 
-#define RAW_GLOBAL_FUNCTION(name_str, name, ...)                                                        \
+#define RAW_FREE_FUNCTION(name_str, name, ...)                                                          \
     {                                                                                                   \
         auto __ptr = ::rew::meta::overload<__VA_ARGS__>::of(&name);                                     \
         auto __meta = ::rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);          \
         injection.template function<R, decltype(__ptr)>(*__meta);                                       \
     }
 
-#define GLOBAL_FUNCTION(name, ...) RAW_GLOBAL_FUNCTION(#name, name, __VA_ARGS__)
+#define FREE_FUNCTION(name, ...) RAW_FREE_FUNCTION(#name, name, __VA_ARGS__)
 
 namespace rew
 {
@@ -41,7 +41,7 @@ struct type_t;
 struct function_t
 {
     const std::string name;
-    const std::function<std::any(std::any& context, const std::vector<std::any>& args)> call = nullptr;
+    const std::function<std::any(std::any& context, std::vector<std::any> args)> call = nullptr;
     const std::vector<type_t*> arguments;
     type_t *const result = nullptr;
     attribute_t<std::any> meta;
@@ -54,7 +54,7 @@ template <typename ReflectableType, typename ReturnType, typename... ArgumentTyp
           typename FunctionType, std::size_t... I>
 auto member_function_call_impl(FunctionType function, std::index_sequence<I...>)
 {
-    return [function](std::any& context, const std::vector<std::any>& arguments) -> std::any
+    return [function](std::any& context, std::vector<std::any> arguments) -> std::any
     {
         auto reflectable = std::any_cast<ReflectableType*>(context);
         if constexpr (std::is_void_v<ReturnType>)
@@ -75,7 +75,7 @@ auto member_function_call_impl(FunctionType function, std::index_sequence<I...>)
 template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
 auto static_function_call_impl(ReturnType (*function)(ArgumentTypes...), std::index_sequence<I...>)
 {
-    return [function](std::any& context, const std::vector<std::any>& arguments) -> std::any
+    return [function](std::any& context, std::vector<std::any> arguments) -> std::any
     {
         if constexpr (std::is_void_v<ReturnType>)
         {
