@@ -99,8 +99,8 @@ struct function_traits<ReturnType (ClassType::*)(ArgumentTypes...)>
 template <typename>
 struct property_traits;
 
-template <typename ReflectableType, typename PropertyType>
-struct property_traits<PropertyType ReflectableType::*>
+template <typename PropertyType>
+struct property_traits<PropertyType*>
 {
     using dirty_property_type = PropertyType;
     using property_type = clean<PropertyType>;
@@ -108,11 +108,23 @@ struct property_traits<PropertyType ReflectableType::*>
 
 template <typename ReflectableType, typename PropertyType>
 struct property_traits<PropertyType (ReflectableType::*)(void) const>
-    : property_traits<PropertyType ReflectableType::*> {};
+    : property_traits<PropertyType*> {};
 
 template <typename ReflectableType, typename PropertyType>
 struct property_traits<PropertyType (ReflectableType::*)(void)>
-    : property_traits<PropertyType ReflectableType::*> {};
+    : property_traits<PropertyType*> {};
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<void (ReflectableType::*)(PropertyType)>
+    : property_traits<PropertyType*> {};
+
+template <typename PropertyType>
+struct property_traits<PropertyType (*)(void)>
+    : property_traits<PropertyType*> {};
+
+template <typename PropertyType>
+struct property_traits<void (*)(PropertyType)>
+    : property_traits<PropertyType*> {};
 
 template <typename...>
 struct overload

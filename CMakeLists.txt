@@ -23,6 +23,7 @@ set(REW
     include/Rew/Common.hpp
 
     include/Rew/Detail/Meta.hpp
+    include/Rew/Detail/Macro.hpp
 
     include/Rew/BuiltIn/hash.hpp
     include/Rew/BuiltIn/function.hpp

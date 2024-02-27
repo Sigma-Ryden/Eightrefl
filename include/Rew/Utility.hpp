@@ -110,29 +110,17 @@ auto member_property_set_ptr(void (ParentReflectableType::* function)(PropertyTy
     return member_function_ptr<ReflectableType>(function);
 }
 
-template <typename ReflectableType, typename PropertyType>
-auto property_get_ptr(PropertyType* property)
-{
-    return nullptr;
-}
+template <typename PropertyType>
+auto property_get_ptr(PropertyType* property) { return property; }
 
-template <typename ReflectableType, typename PropertyType>
-auto property_get_ptr(PropertyType (*function)(void))
-{
-    return nullptr;
-}
+template <typename PropertyType>
+auto property_get_ptr(PropertyType (*function)(void)) { return function; }
 
-template <typename ReflectableType, typename PropertyType>
-auto property_set_ptr(PropertyType* property)
-{
-    return nullptr;
-}
+template <typename PropertyType>
+auto property_set_ptr(PropertyType* property) { return property; }
 
-template <typename ReflectableType, typename PropertyType>
-auto property_set_ptr(void (*function)(PropertyType))
-{
-    return nullptr;
-}
+template <typename PropertyType>
+auto property_set_ptr(void (*function)(PropertyType)) { return function; }
 
 template <typename ReturnType, typename ArgumentType = void, typename... ArgumentTypes>
 std::string overload_name()
