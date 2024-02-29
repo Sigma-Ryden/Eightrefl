@@ -8,7 +8,7 @@
 #include <functional> // function
 #include <utility> // addressof
 
-#include <type_traits> // is_reference_v, is_const_v, remove_reference_t
+#include <type_traits> // is_reference_v
 
 #include <Rew/Attribute.hpp>
 #include <Rew/Meta.hpp>

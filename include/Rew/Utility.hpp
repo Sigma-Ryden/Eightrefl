@@ -3,9 +3,8 @@
 
 #include <string> // string
 #include <any> // any, any_cast
-#include <utility> // reference_wrapper
 
-#include <type_traits> // remove_reference_t, is_void_v
+#include <type_traits> // is_reference_v, is_void_v, decay_t
 
 #include <Rew/Detail/Meta.hpp>
 
@@ -18,9 +17,9 @@ namespace utility
 template <typename ValueType>
 ValueType forward(const std::any& object)
 {
-    if constexpr (meta::is_reference<ValueType>::value)
+    if constexpr (std::is_reference_v<ValueType>)
     {
-        return std::any_cast<std::reference_wrapper<std::remove_reference_t<ValueType>>>(object);
+        return *std::any_cast<std::decay_t<ValueType>*>(object);
     }
     else
     {
@@ -31,9 +30,9 @@ ValueType forward(const std::any& object)
 template <typename ValueType>
 std::any backward(ValueType&& result)
 {
-    if constexpr (meta::is_reference<ValueType>::value)
+    if constexpr (std::is_reference_v<ValueType>)
     {
-        return std::reference_wrapper<std::remove_reference_t<ValueType>>(result);
+        return const_cast<std::decay_t<ValueType>*>(std::addressof(result));
     }
     else
     {

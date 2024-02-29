@@ -1,31 +1,22 @@
 #include <RewTestingBase.hpp>
 
-void f() {}
-
-int i = 8;
-
-struct X{};
-
-REFLECTABLE_DECLARATION(X)
-REFLECTABLE_DECLARATION_INIT()
-
-REFLECTABLE(X)
-    FREE_FUNCTION(f)
-    FREE_PROPERTY(i)
-REFLECTABLE_INIT()
+#include <Rew/BuiltIn/array.hpp>
 
 TEST(TestLibrary, Test)
 {
-    static int s_i = 123;
+    rew::reflectable<std::array<int, 8>>();
 
-    auto type = rew::global.find("X");
-    auto property = type->reflection->property.find("i");
+    auto type = rew::global.find("std::array<int, 8>");
+
+    auto factory = type->reflection->factory.find("std::array<int, 8>()");
+
+    auto lhs = factory->call({});
+    auto rhs = factory->call({});
+
+    auto comparator = type->reflection->function.find("std::operator==")->all.begin()->second;
 
     std::any context;
-    property->set(context, s_i);
+    auto result = comparator.call(context, { type->context(lhs), type->context(rhs) });
 
-    std::any value;
-    property->get(context, value);
-
-    EXPECT("property-value", std::any_cast<int>(value) == s_i);
+    EXPECT("comparation", std::any_cast<bool>(result) == true);
 }

@@ -21,9 +21,7 @@ struct type_t
     const std::string name;
     reflection_t *const reflection = nullptr;
     const std::size_t size = 0;
-
     const std::function<std::any(std::any& object)> context = nullptr;
-    const std::function<std::any(std::any& context)> reference = nullptr;
 
     attribute_t<injection_t> injection;
 };

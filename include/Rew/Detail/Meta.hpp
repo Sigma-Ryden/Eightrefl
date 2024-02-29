@@ -2,7 +2,7 @@
 #ifndef REW_DETAIL_META_HPP
 #define REW_DETAIL_META_HPP
 
-#include <type_traits> // decay_t, enable_if_t, is_pointer_v, void_t, false_type, true_type
+#include <type_traits> // conjunction, disjunction, false_type, true_type, void_t
 
 template <typename ReflectableType, typename enable = void>
 struct rew_reflection_registry_t;
@@ -15,10 +15,6 @@ namespace meta
 
 template <typename... Bn> using all = std::conjunction<Bn...>;
 template <typename... Bn> using one = std::disjunction<Bn...>;
-
-template <typename T> struct is_reference : std::false_type {};
-template <typename T> struct is_reference<T&> : std::true_type {};
-template <typename T> struct is_reference<const T&> : std::true_type {};
 
 template <typename T, typename enable = void> struct is_complete : std::false_type {};
 template <typename T> struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};

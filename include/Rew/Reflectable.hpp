@@ -1,4 +1,5 @@
 // TODO: add raw macro to all, add CONDITIONAL REFLECTABLE USING & CLEAN
+// TODO: for reference make type as pointer
 #ifndef REW_REFLECTABLE_HPP
 #define REW_REFLECTABLE_HPP
 
@@ -153,11 +154,11 @@
 
 // reflectable using
 #define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, ...)                             \
-   __REW_EXPAND template_header struct reflectable_using;                                               \
+   __REW_EXPAND template_header struct reflectable_using {};                                            \
     TEMPLATE_REFLECTABLE_CLEAN(template_header, __VA_ARGS__)
 
 #define REFLECTABLE_USING(reflectable_using, ...)                                                       \
-   struct reflectable_using;                                                                            \
+   struct reflectable_using {};                                                                         \
    REFLECTABLE_CLEAN(reflectable_using, __VA_ARGS__)
 // ~ reflectable using
 
