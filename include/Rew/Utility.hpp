@@ -19,7 +19,11 @@ ValueType forward(const std::any& object)
 {
     if constexpr (std::is_reference_v<ValueType>)
     {
-        return *std::any_cast<std::decay_t<ValueType>*>(object);
+        return *std::any_cast<std::remove_const_t<std::remove_reference_t<ValueType>>*>(object);
+    }
+    else if constexpr (std::is_pointer_v<ValueType>)
+    {
+        return std::any_cast<std::remove_const_t<std::remove_pointer_t<ValueType>>*>(object);
     }
     else
     {
@@ -32,7 +36,11 @@ std::any backward(ValueType&& result)
 {
     if constexpr (std::is_reference_v<ValueType>)
     {
-        return const_cast<std::decay_t<ValueType>*>(std::addressof(result));
+        return const_cast<std::remove_const_t<std::remove_reference_t<ValueType>>*>(std::addressof(result));
+    }
+    else if constexpr (std::is_pointer_v<ValueType>)
+    {
+        return const_cast<std::remove_const_t<std::remove_pointer_t<ValueType>>*>(result);
     }
     else
     {

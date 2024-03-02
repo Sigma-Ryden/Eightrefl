@@ -30,6 +30,15 @@ struct reflectable_using
 
 template <typename T> using clean = typename reflectable_using<T>::R;
 
+// namespace detail
+// {
+
+// struct pure
+// {
+// };
+
+// } // namespace detail
+
 namespace detail
 {
 

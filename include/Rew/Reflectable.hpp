@@ -198,7 +198,18 @@ ReflectableType&& reflectable(ReflectableType&& object)
 template <typename DirtyReflectableType>
 type_t* find_or_add_type()
 {
-    using dirty_reflectable_type = std::decay_t<DirtyReflectableType>;
+    using dirty_reflectable_type = std::conditional_t
+    <
+        std::is_reference_v<DirtyReflectableType>,
+        std::remove_const_t<std::remove_reference_t<DirtyReflectableType>>*,
+        std::conditional_t
+        <
+            std::is_pointer_v<DirtyReflectableType>,
+            std::remove_const_t<std::remove_pointer_t<DirtyReflectableType>>*,
+            std::remove_const_t<DirtyReflectableType>
+        >
+    >;
+
     using reflectable_type = typename meta::reflectable_using<dirty_reflectable_type>::R;
     using reflectable_traits = meta::reflectable_traits<dirty_reflectable_type>;
 
