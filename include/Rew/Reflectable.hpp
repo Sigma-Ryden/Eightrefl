@@ -201,12 +201,12 @@ type_t* find_or_add_type()
     using dirty_reflectable_type = std::conditional_t
     <
         std::is_reference_v<DirtyReflectableType>,
-        std::remove_const_t<std::remove_reference_t<DirtyReflectableType>>*,
+        meta::to_reflectable_reference<DirtyReflectableType>,
         std::conditional_t
         <
             std::is_pointer_v<DirtyReflectableType>,
-            std::remove_const_t<std::remove_pointer_t<DirtyReflectableType>>*,
-            std::remove_const_t<DirtyReflectableType>
+            meta::to_reflectable_pointer<DirtyReflectableType>,
+            meta::to_reflectable_object<DirtyReflectableType>
         >
     >;
 
