@@ -1,4 +1,3 @@
-// TODO: add ability split get set names
 #ifndef REW_PROPERTY_HPP
 #define REW_PROPERTY_HPP
 

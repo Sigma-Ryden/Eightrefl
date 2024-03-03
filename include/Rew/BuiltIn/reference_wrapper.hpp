@@ -21,7 +21,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::reference_wrapper<Val
     FACTORY(R(ValueType&))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
-    RAW_FUNCTION("operator " + NAMEOF(ValueType&), operator CLEANOF(ValueType)&)
+    RAW_FUNCTION("operator " + NAMEOF(ValueType&), (operator CLEANOF(ValueType)&))
     FUNCTION(get)
 REFLECTABLE_INIT()
 

@@ -13,25 +13,27 @@
 #include <Rew/Meta.hpp>
 #include <Rew/Utility.hpp>
 
+#include <Rew/Detail/Macro.hpp> // __REW_EXPAND
+
 #define RAW_FUNCTION(name_str, name, ...)                                                               \
     {                                                                                                   \
         using __traits = ::rew::meta::member_function_traits<R>;                                        \
-        auto __dirty_ptr = __traits::template overload<__VA_ARGS__>::of(&R::name);                      \
+        auto __dirty_ptr = __traits::template overload<__VA_ARGS__>::of(&R::__REW_EXPAND name);         \
         auto __ptr = ::rew::utility::member_function_ptr<R>(__dirty_ptr);                               \
         auto __meta = ::rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);          \
         injection.template function<R, decltype(__ptr)>(*__meta);                                       \
     }
 
-#define FUNCTION(name, ...) RAW_FUNCTION(#name, name, __VA_ARGS__)
+#define FUNCTION(name, ...) RAW_FUNCTION(#name, (name), __VA_ARGS__)
 
 #define RAW_FREE_FUNCTION(name_str, name, ...)                                                          \
     {                                                                                                   \
-        auto __ptr = ::rew::meta::overload<__VA_ARGS__>::of(&name);                                     \
+        auto __ptr = ::rew::meta::overload<__VA_ARGS__>::of(&__REW_EXPAND name);                        \
         auto __meta = ::rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);          \
         injection.template function<R, decltype(__ptr)>(*__meta);                                       \
     }
 
-#define FREE_FUNCTION(name, ...) RAW_FREE_FUNCTION(#name, name, __VA_ARGS__)
+#define FREE_FUNCTION(name, ...) RAW_FREE_FUNCTION(#name, (name), __VA_ARGS__)
 
 namespace rew
 {

@@ -1,5 +1,3 @@
-// TODO: add raw macro to all, add CONDITIONAL REFLECTABLE USING & CLEAN
-// TODO: for reference make type as pointer
 #ifndef REW_REFLECTABLE_HPP
 #define REW_REFLECTABLE_HPP
 
