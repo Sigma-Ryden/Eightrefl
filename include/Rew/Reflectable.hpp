@@ -198,7 +198,7 @@ ReflectableType&& reflectable(ReflectableType&& object)
 template <typename DirtyReflectableType>
 type_t* find_or_add_type()
 {
-    using dirty_reflectable_type = std::conditional_t
+    using dirty_reflectable_type = typename std::conditional_t
     <
         std::is_reference_v<DirtyReflectableType>,
         meta::to_reflectable_reference<DirtyReflectableType>,
@@ -208,7 +208,7 @@ type_t* find_or_add_type()
             meta::to_reflectable_pointer<DirtyReflectableType>,
             meta::to_reflectable_object<DirtyReflectableType>
         >
-    >;
+    >::type;
 
     using reflectable_type = typename meta::reflectable_using<dirty_reflectable_type>::R;
     using reflectable_traits = meta::reflectable_traits<dirty_reflectable_type>;

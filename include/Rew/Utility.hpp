@@ -19,15 +19,15 @@ ValueType forward(const std::any& object)
 {
     if constexpr (std::is_reference_v<ValueType>)
     {
-        return *std::any_cast<meta::to_reflectable_reference<ValueType>>(object);
+        return *std::any_cast<meta::to_reflectable_reference_t<ValueType>>(object);
     }
     else if constexpr (std::is_pointer_v<ValueType>)
     {
-        return std::any_cast<meta::to_reflectable_pointer<ValueType>>(object);
+        return std::any_cast<meta::to_reflectable_pointer_t<ValueType>>(object);
     }
     else
     {
-        return std::any_cast<meta::to_reflectable_object<ValueType>>(object);
+        return std::any_cast<meta::to_reflectable_object_t<ValueType>>(object);
     }
 }
 
@@ -36,15 +36,15 @@ std::any backward(ValueType&& result)
 {
     if constexpr (std::is_reference_v<ValueType>)
     {
-        return const_cast<meta::to_reflectable_reference<ValueType>>(std::addressof(result));
+        return const_cast<meta::to_reflectable_reference_t<ValueType>>(std::addressof(result));
     }
     else if constexpr (std::is_pointer_v<ValueType>)
     {
-        return const_cast<meta::to_reflectable_pointer<ValueType>>(result);
+        return const_cast<meta::to_reflectable_pointer_t<ValueType>>(result);
     }
     else
     {
-        return const_cast<meta::to_reflectable_object<ValueType>>(result);
+        return result;
     }
 }
 

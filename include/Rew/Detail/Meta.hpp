@@ -31,13 +31,31 @@ struct reflectable_using
 template <typename T> using clean = typename reflectable_using<T>::R;
 
 template <typename T>
-using to_reflectable_reference = std::remove_const_t<std::remove_reference_t<T>>*;
+struct to_reflectable_reference
+{
+    using type = std::remove_const_t<std::remove_reference_t<T>>*;
+};
 
 template <typename T>
-using to_reflectable_pointer = std::remove_const_t<std::remove_pointer_t<T>>*;
+using to_reflectable_reference_t = typename to_reflectable_reference<T>::type;
 
 template <typename T>
-using to_reflectable_object = std::remove_const_t<T>;
+struct to_reflectable_pointer
+{
+    using type = std::remove_const_t<std::remove_pointer_t<T>>*;
+};
+
+template <typename T>
+using to_reflectable_pointer_t = typename to_reflectable_pointer<T>::type;
+
+template <typename T>
+struct to_reflectable_object
+{
+    using type = std::remove_const_t<T>;
+};
+
+template <typename T>
+using to_reflectable_object_t = typename to_reflectable_object<T>::type;
 
 namespace detail
 {
