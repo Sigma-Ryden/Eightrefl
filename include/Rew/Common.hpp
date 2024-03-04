@@ -8,6 +8,9 @@ REFLECTABLE_DECLARATION(void)
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
+REFLECTABLE(void)
+REFLECTABLE_INIT()
+
 // pointer type
 TEMPLATE_REFLECTABLE_CLEAN((template <typename ElementType>), (ElementType*), CLEANOF(ElementType)*)
 

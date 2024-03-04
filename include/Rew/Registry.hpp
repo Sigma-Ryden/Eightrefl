@@ -56,7 +56,7 @@ public:
     template <typename ReflectableType>
     type_t* find()
     {
-        return get(meta::reflectable_traits<ReflectableType>::name());
+        return find(meta::reflectable_traits<ReflectableType>::name());
     }
 
     template <typename ReflectableType, typename DirtyReflectableType = ReflectableType>
@@ -86,7 +86,7 @@ inline type_t* registry_t::add<void>(const std::string& name)
     if (type != nullptr) return type;
 
     auto reflection = new reflection_t{ name };
-    type = new type_t { name, reflection };
+    type = new type_t { name, reflection, 0, nullptr };
 
     all.emplace(name, type);
     rtti_all.emplace(typeid(void), type);
