@@ -76,15 +76,7 @@ add_executable(${PROJECT_NAME}
     ${AUTO}
 
     test/TestBuiltin.cpp
-    #test/TestFactory.cpp
-    #test/TestExample.cpp
-
-    #test/examples/serialization/SerializationFixture.hpp
-    #test/examples/serialization/SerializableVisitor.hpp
-    #test/examples/serialization/SerializableVisitor.cpp
-    #test/examples/serialization/TestSerialization.cpp
 
     test/RewTestingBase.hpp
-
     test/main.cpp
 )
