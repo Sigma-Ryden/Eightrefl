@@ -1,6 +1,6 @@
 #include <RewTestingBase.hpp>
 
-TEST(TesBuiltinIncomplete, TestVoid)
+TEST(TesBuiltInIncomplete, TestVoid)
 {
 	auto type = rew::global.find("void");
 	
@@ -16,7 +16,7 @@ TEST(TesBuiltinIncomplete, TestVoid)
 	EXPECT("reflection-name", reflection->name == "void");
 }
 
-TEST(TestBuiltinBoolean, TestBool)
+TEST(TestBuiltInBoolean, TestBool)
 {
 	auto type = rew::global.find("bool");
 	
@@ -38,7 +38,7 @@ TEST(TestBuiltinBoolean, TestBool)
 	EXPECT("factory-bool(bool)", factory_bool_bool != nullptr);
 }
 
-TEST(TestBuiltinChar, TestChar)
+TEST(TestBuiltInChar, TestChar)
 {
     auto type = rew::global.find("char");
 
@@ -60,7 +60,7 @@ TEST(TestBuiltinChar, TestChar)
     EXPECT("factory-char(char)", factory_char_char != nullptr);
 }
 
-TEST(TestBuiltinChar, TestWChar)
+TEST(TestBuiltInChar, TestWChar)
 {
     auto type = rew::global.find("wchar_t");
 
@@ -83,7 +83,7 @@ TEST(TestBuiltinChar, TestWChar)
 }
 
 #if __cplusplus >= 202002L
-TEST(TestBuiltinChar, TestChar8)
+TEST(TestBuiltInChar, TestChar8)
 {
     auto type = rew::global.find("char8_t");
 
@@ -106,7 +106,7 @@ TEST(TestBuiltinChar, TestChar8)
 }
 #endif // if
 
-TEST(TestBuiltinChar, TestChar16)
+TEST(TestBuiltInChar, TestChar16)
 {
     auto type = rew::global.find("char16_t");
 
@@ -128,7 +128,7 @@ TEST(TestBuiltinChar, TestChar16)
     EXPECT("factory-char16_t(char16_t)", factory_char16_char16 != nullptr);
 }
 
-TEST(TestBuiltinChar, TestChar32)
+TEST(TestBuiltInChar, TestChar32)
 {
     auto type = rew::global.find("char32_t");
 
@@ -150,7 +150,7 @@ TEST(TestBuiltinChar, TestChar32)
     EXPECT("factory-char32_t(char32_t)", factory_char32_char32 != nullptr);
 }
 
-TEST(TestBuiltinIntegral, TestSignedChar)
+TEST(TestBuiltInIntegral, TestSignedChar)
 {
     auto type = rew::global.find("signed char");
 
@@ -172,7 +172,7 @@ TEST(TestBuiltinIntegral, TestSignedChar)
     EXPECT("factory-signed char(signed char)", factory_signed_char_signed_char != nullptr);
 }
 
-TEST(TestBuiltinIntegral, TestUnsignedChar)
+TEST(TestBuiltInIntegral, TestUnsignedChar)
 {
     auto type = rew::global.find("unsigned char");
 
@@ -194,7 +194,7 @@ TEST(TestBuiltinIntegral, TestUnsignedChar)
     EXPECT("factory-unsigned char(unsigned char)", factory_unsigned_char_unsigned_char != nullptr);
 }
 
-TEST(TestBuiltinIntegral, TestInt)
+TEST(TestBuiltInIntegral, TestInt)
 {
     auto type = rew::global.find("int");
 
@@ -216,7 +216,7 @@ TEST(TestBuiltinIntegral, TestInt)
     EXPECT("factory-int(int)", factory_int_int != nullptr);
 }
 
-TEST(TestBuiltinIntegral, TestUnsignedInt)
+TEST(TestBuiltInIntegral, TestUnsignedInt)
 {
     auto type = rew::global.find("unsigned int");
 
@@ -238,7 +238,7 @@ TEST(TestBuiltinIntegral, TestUnsignedInt)
     EXPECT("factory-unsigned int(unsigned int)", factory_unsigned_int_unsigned_int != nullptr);
 }
 
-TEST(TestBuiltinIntegral, TestLong)
+TEST(TestBuiltInIntegral, TestLong)
 {
     auto type = rew::global.find("long");
 
@@ -260,7 +260,7 @@ TEST(TestBuiltinIntegral, TestLong)
     EXPECT("factory-long(long)", factory_long_long != nullptr);
 }
 
-TEST(TestBuiltinIntegral, TestUnsignedLong)
+TEST(TestBuiltInIntegral, TestUnsignedLong)
 {
     auto type = rew::global.find("unsigned long");
 
@@ -282,7 +282,7 @@ TEST(TestBuiltinIntegral, TestUnsignedLong)
     EXPECT("factory-unsigned long(unsigned long)", factory_unsigned_long_unsigned_long != nullptr);
 }
 
-TEST(TestBuiltinIntegral, TestLongLong)
+TEST(TestBuiltInIntegral, TestLongLong)
 {
     auto type = rew::global.find("long long");
 
@@ -304,7 +304,7 @@ TEST(TestBuiltinIntegral, TestLongLong)
     EXPECT("factory-long long(long long)", factory_long_long_long_long != nullptr);
 }
 
-TEST(TestBuiltinIntegral, TestUnsignedLongLong)
+TEST(TestBuiltInIntegral, TestUnsignedLongLong)
 {
     auto type = rew::global.find("unsigned long long");
 
@@ -326,7 +326,7 @@ TEST(TestBuiltinIntegral, TestUnsignedLongLong)
     EXPECT("factory-unsigned long long(unsigned long long)", factory_unsigned_long_long_unsigned_long_long != nullptr);
 }
 
-TEST(TestBuiltinFloatingPoint, TestFloat)
+TEST(TestBuiltInFloatingPoint, TestFloat)
 {
     auto type = rew::global.find("float");
 
@@ -348,7 +348,7 @@ TEST(TestBuiltinFloatingPoint, TestFloat)
     EXPECT("factory-float(float)", factory_float_float != nullptr);
 }
 
-TEST(TestBuiltinFloatingPoint, TestDouble)
+TEST(TestBuiltInFloatingPoint, TestDouble)
 {
     auto type = rew::global.find("double");
 
@@ -370,7 +370,7 @@ TEST(TestBuiltinFloatingPoint, TestDouble)
     EXPECT("factory-double(double)", factory_double_double != nullptr);
 }
 
-TEST(TestBuiltinFloatingPoint, TestLongDouble)
+TEST(TestBuiltInFloatingPoint, TestLongDouble)
 {
     auto type = rew::global.find("long double");
 

@@ -75,7 +75,7 @@ add_executable(${PROJECT_NAME}
     ${REW}
     ${AUTO}
 
-    test/TestBuiltin.cpp
+    test/TestBuiltIn.cpp
 
     test/RewTestingBase.hpp
     test/main.cpp
