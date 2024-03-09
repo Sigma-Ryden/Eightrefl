@@ -22,7 +22,7 @@
         auto __set = ::rew::utility::member_property_set_ptr<R>(&R::__REW_EXPAND name_set);             \
         using __traits = ::rew::meta::property_traits<decltype(__get)>;                                 \
         auto __meta = ::rew::find_or_add_property(__reflection, name_str, __get, __set);                \
-        injection.template property<R, typename __traits::property_type>(*__meta);                      \
+        injection.template property<R, typename __traits::type>(*__meta);                               \
     }
 
 #define PROPERTY(...) RAW_PROPERTY(#__VA_ARGS__, (__VA_ARGS__), (__VA_ARGS__))
@@ -33,7 +33,7 @@
         auto __set = ::rew::utility::property_set_ptr(&__REW_EXPAND name_set);                          \
         using __traits = ::rew::meta::property_traits<decltype(__get)>;                                 \
         auto __meta = ::rew::find_or_add_property(__reflection, name_str, __get, __set);                \
-        injection.template property<R, typename __traits::property_type>(*__meta);                      \
+        injection.template property<R, typename __traits::type>(*__meta);                               \
     }
 
 #define FREE_PROPERTY(...) RAW_FREE_PROPERTY(#__VA_ARGS__, (__VA_ARGS__), (__VA_ARGS__))
@@ -155,9 +155,9 @@ auto property_ptr_impl(PropertyGetterType getter)
 {
     return [getter](std::any& context) -> std::any
     {
-        using property_type = typename meta::property_traits<decltype(getter)>::property_type;
+        using type = typename meta::property_traits<PropertyGetterType>::type;
 
-        if constexpr (std::is_reference_v<property_type>)
+        if constexpr (std::is_reference_v<type>)
         {
             auto address = std::addressof((std::any_cast<ReflectableType*>(context)->*getter)());
             return const_cast<void*>(static_cast<const void*>(address));

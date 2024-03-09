@@ -259,16 +259,22 @@ auto function_argument_types(ReturnType (*unused)(ArgumentTypes...))
     return std::vector<type_t*>({ find_or_add_type<ArgumentTypes>()... });
 }
 
+template <typename... ArgumentTypes, typename ReturnType>
+auto function_return_type(ReturnType (*unused)(ArgumentTypes...))
+{
+    return find_or_add_type<ReturnType>();
+}
+
 } // namespace detail
 
 template <typename DirtyFactoryType>
 factory_t* find_or_add_factory(reflection_t* reflection)
 {
     using function_traits = meta::function_traits<DirtyFactoryType>;
-    using dirty_function_pointer = typename function_traits::dirty_function_pointer;
-    using function_pointer = typename function_traits::function_pointer;
+    using dirty_pointer = typename function_traits::dirty_pointer;
+    using pointer = typename function_traits::pointer;
 
-    auto __name = utility::full_function_name(dirty_function_pointer{});
+    auto __name = utility::full_function_name(dirty_pointer{});
 
     auto __meta = reflection->factory.find(__name);
     if (__meta == nullptr) __meta = &reflection->factory.add
@@ -276,8 +282,8 @@ factory_t* find_or_add_factory(reflection_t* reflection)
         __name,
         {
             __name,
-            handler::factory_call(function_pointer{}),
-            detail::function_argument_types(dirty_function_pointer{})
+            handler::factory_call(pointer{}),
+            detail::function_argument_types(dirty_pointer{})
         }
     );
 
@@ -292,13 +298,12 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
         std::conditional_t<std::is_void_v<DirtyFunctionType>, FunctionType, DirtyFunctionType>
     >;
 
-    using dirty_function_pointer = typename function_traits::dirty_function_pointer;
-    using dirty_return_type = typename function_traits::dirty_return_type;
+    using dirty_pointer = typename function_traits::dirty_pointer;
 
     auto __function = reflection->function.find(name);
     if (__function == nullptr) __function = &reflection->function.add(name, {});
 
-    auto __overload = utility::full_function_name<function_traits::is_const>(dirty_function_pointer{});
+    auto __overload = utility::full_function_name<function_traits::is_const>(dirty_pointer{});
 
     auto __meta = __function->find(__overload);
     if (__meta == nullptr) __meta = &__function->add
@@ -307,8 +312,8 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
         {
             __overload,
             handler::function_call(ptr),
-            detail::function_argument_types(dirty_function_pointer{}),
-            find_or_add_type<dirty_return_type>()
+            detail::function_argument_types(dirty_pointer{}),
+            detail::function_return_type(dirty_pointer{})
         }
     );
 
@@ -320,7 +325,7 @@ property_t* find_or_add_property(reflection_t* reflection, const std::string& na
                                  DirtyPropertyGetterType getter, DirtyPropertySetterType setter)
 {
     using property_traits = meta::property_traits<DirtyPropertyGetterType>;
-    using dirty_property_type = typename property_traits::dirty_property_type;
+    using dirty_type = typename property_traits::dirty_type;
 
     auto __meta = reflection->property.find(name);
     if (__meta == nullptr) __meta = &reflection->property.add
@@ -328,7 +333,7 @@ property_t* find_or_add_property(reflection_t* reflection, const std::string& na
         name,
         {
             name,
-            find_or_add_type<dirty_property_type>(),
+            find_or_add_type<dirty_type>(),
             handler::property_get(getter),
             handler::property_set(setter),
             handler::property_ptr(getter)

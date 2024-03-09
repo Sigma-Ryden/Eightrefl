@@ -82,13 +82,11 @@ struct function_traits;
 template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(ArgumentTypes...)>
 {
-    using dirty_return_type = ReturnType;
-    using dirty_function_type = dirty_return_type(ArgumentTypes...);
-    using dirty_function_pointer = dirty_return_type(*)(ArgumentTypes...);
+    using dirty_type = ReturnType(ArgumentTypes...);
+    using dirty_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using return_type = clean<ReturnType>;
-    using function_type = return_type(clean<ArgumentTypes>...);
-    using function_pointer = return_type(*)(clean<ArgumentTypes>...);
+    using type = clean<ReturnType>(clean<ArgumentTypes>...);
+    using pointer = clean<ReturnType>(*)(clean<ArgumentTypes>...);
 
     static constexpr auto is_const = false;
 };
@@ -96,13 +94,11 @@ struct function_traits<ReturnType(ArgumentTypes...)>
 template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(ArgumentTypes...) const>
 {
-    using dirty_return_type = ReturnType;
-    using dirty_function_type = dirty_return_type(ArgumentTypes...) const;
-    using dirty_function_pointer = dirty_return_type(*)(ArgumentTypes...);
+    using dirty_type = ReturnType(ArgumentTypes...) const;
+    using dirty_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using return_type = clean<ReturnType>;
-    using function_type = return_type(clean<ArgumentTypes>...) const;
-    using function_pointer = return_type(*)(clean<ArgumentTypes>...);
+    using type = clean<ReturnType>(clean<ArgumentTypes>...) const;
+    using pointer = clean<ReturnType>(*)(clean<ArgumentTypes>...);
 
     static constexpr auto is_const = true;
 };
@@ -125,8 +121,8 @@ struct property_traits;
 template <typename PropertyType>
 struct property_traits<PropertyType*>
 {
-    using dirty_property_type = PropertyType;
-    using property_type = clean<PropertyType>;
+    using dirty_type = PropertyType;
+    using type = clean<PropertyType>;
 };
 
 template <typename ReflectableType, typename PropertyType>
