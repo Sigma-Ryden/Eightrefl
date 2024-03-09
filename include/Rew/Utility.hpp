@@ -62,6 +62,19 @@ auto member_function_ptr(ReturnType (ParentReflectableType::* function)(Argument
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto member_function_ptr(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const&)
+{
+    struct __inner : protected ReflectableType
+    {
+        static auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const&)
+        {
+            return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) const&>(function);
+        }
+    };
+    return __inner::get(function);
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
 auto member_function_ptr(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
 {
     struct __inner : protected ReflectableType
@@ -72,6 +85,25 @@ auto member_function_ptr(ReturnType (ParentReflectableType::* function)(Argument
         }
     };
     return __inner::get(function);
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto member_function_ptr(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) &)
+{
+    struct __inner : protected ReflectableType
+    {
+        static auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) &)
+        {
+            return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) &>(function);
+        }
+    };
+    return __inner::get(function);
+}
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto member_function_ptr(ReturnType (*function)(ArgumentTypes...))
+{
+    return function;
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ValueType>
@@ -100,9 +132,27 @@ auto member_property_get_ptr(PropertyType (ParentReflectableType::* function)(vo
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+auto member_property_get_ptr(PropertyType (ParentReflectableType::* function)(void) const&)
+{
+    return member_function_ptr<ReflectableType>(function);
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
 auto member_property_get_ptr(PropertyType (ParentReflectableType::* function)(void))
 {
     return member_function_ptr<ReflectableType>(function);
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+auto member_property_get_ptr(PropertyType (ParentReflectableType::* function)(void) &)
+{
+    return member_function_ptr<ReflectableType>(function);
+}
+
+template <typename ReflectableType, typename PropertyType>
+auto member_property_get_ptr(PropertyType (*function)(void))
+{
+    return function;
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
@@ -115,6 +165,18 @@ template <typename ReflectableType, typename ParentReflectableType, typename Pro
 auto member_property_set_ptr(void (ParentReflectableType::* function)(PropertyType))
 {
     return member_function_ptr<ReflectableType>(function);
+}
+
+template <typename ReflectableType, typename ParentReflectableType, typename PropertyType>
+auto member_property_set_ptr(void (ParentReflectableType::* function)(PropertyType) &)
+{
+    return member_function_ptr<ReflectableType>(function);
+}
+
+template <typename ReflectableType, typename PropertyType>
+auto member_property_set_ptr(void (*function)(PropertyType))
+{
+    return function;
 }
 
 template <typename PropertyType>

@@ -112,14 +112,19 @@ struct function_traits<ReturnType (ClassType::*)(ArgumentTypes...) const>
     : function_traits<ReturnType(ArgumentTypes...) const> {};
 
 template <class ClassType, typename ReturnType, typename... ArgumentTypes>
+struct function_traits<ReturnType (ClassType::*)(ArgumentTypes...) const&>
+    : function_traits<ReturnType(ArgumentTypes...) const&> {};
+
+template <class ClassType, typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType (ClassType::*)(ArgumentTypes...)>
     : function_traits<ReturnType(ArgumentTypes...)> {};
 
-template <typename>
-struct property_traits;
+template <class ClassType, typename ReturnType, typename... ArgumentTypes>
+struct function_traits<ReturnType (ClassType::*)(ArgumentTypes...) &>
+    : function_traits<ReturnType(ArgumentTypes...) &> {};
 
 template <typename PropertyType>
-struct property_traits<PropertyType*>
+struct property_traits
 {
     using dirty_type = PropertyType;
     using type = clean<PropertyType>;
@@ -127,23 +132,35 @@ struct property_traits<PropertyType*>
 
 template <typename ReflectableType, typename PropertyType>
 struct property_traits<PropertyType (ReflectableType::*)(void) const>
-    : property_traits<PropertyType*> {};
+    : property_traits<PropertyType> {};
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<PropertyType (ReflectableType::*)(void) const&>
+    : property_traits<PropertyType> {};
 
 template <typename ReflectableType, typename PropertyType>
 struct property_traits<PropertyType (ReflectableType::*)(void)>
-    : property_traits<PropertyType*> {};
+    : property_traits<PropertyType> {};
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<PropertyType (ReflectableType::*)(void) &>
+    : property_traits<PropertyType> {};
 
 template <typename ReflectableType, typename PropertyType>
 struct property_traits<void (ReflectableType::*)(PropertyType)>
-    : property_traits<PropertyType*> {};
+    : property_traits<PropertyType> {};
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<void (ReflectableType::*)(PropertyType) &>
+    : property_traits<PropertyType> {};
 
 template <typename PropertyType>
 struct property_traits<PropertyType (*)(void)>
-    : property_traits<PropertyType*> {};
+    : property_traits<PropertyType> {};
 
 template <typename PropertyType>
 struct property_traits<void (*)(PropertyType)>
-    : property_traits<PropertyType*> {};
+    : property_traits<PropertyType> {};
 
 template <typename...>
 struct overload
