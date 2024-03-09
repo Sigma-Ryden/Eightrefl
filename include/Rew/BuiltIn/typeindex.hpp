@@ -6,6 +6,9 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
+// as function argument type
+#include <Rew/BuiltIn/typeinfo.hpp>
+
 REFLECTABLE_DECLARATION(std::type_index)
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()

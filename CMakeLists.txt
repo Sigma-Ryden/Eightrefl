@@ -46,7 +46,6 @@ set(REW
     include/Rew/BuiltIn/deque.hpp
     include/Rew/BuiltIn/stack.hpp
     include/Rew/BuiltIn/queue.hpp
-    include/Rew/BuiltIn/valarray.hpp
     include/Rew/BuiltIn/bitset.hpp
     include/Rew/BuiltIn/complex.hpp
     include/Rew/BuiltIn/optional.hpp
