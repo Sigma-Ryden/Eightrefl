@@ -77,9 +77,6 @@ add_executable(${PROJECT_NAME}
     test/RewTestingBase.hpp
     test/main.cpp
 
-    test/TestCommonIncomplete.cpp
-    test/TestCommonBoolean.cpp
-    test/TestCommonIntegral.cpp
-    test/TestCommonFloatingPoint.cpp
-    test/TestCommonChar.cpp
+    test/TestCommon.cpp
+    test/TestLibrary.cpp
 )
