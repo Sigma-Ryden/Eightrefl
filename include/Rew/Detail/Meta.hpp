@@ -87,8 +87,6 @@ struct function_traits<ReturnType(ArgumentTypes...)>
 
     using type = clean<ReturnType>(clean<ArgumentTypes>...);
     using pointer = clean<ReturnType>(*)(clean<ArgumentTypes>...);
-
-    static constexpr auto is_const = false;
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
@@ -99,8 +97,6 @@ struct function_traits<ReturnType(ArgumentTypes...) const>
 
     using type = clean<ReturnType>(clean<ArgumentTypes>...) const;
     using pointer = clean<ReturnType>(*)(clean<ArgumentTypes>...);
-
-    static constexpr auto is_const = true;
 };
 
 template <typename ReturnType, typename... ArgumentTypes>

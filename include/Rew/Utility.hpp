@@ -191,33 +191,6 @@ auto property_set_ptr(PropertyType* property) { return property; }
 template <typename PropertyType>
 auto property_set_ptr(void (*function)(PropertyType)) { return function; }
 
-template <typename ReturnType, typename ArgumentType = void, typename... ArgumentTypes>
-std::string overload_name()
-{
-    auto result = meta::reflectable_traits<ReturnType>::name();
-    if constexpr (std::is_void_v<ArgumentType>)
-    {
-        return result + "()";
-    }
-    else
-    {
-        return result +
-        "(" + (
-            meta::reflectable_traits<ArgumentType>::name() +
-            ... + (", " + meta::reflectable_traits<ArgumentTypes>::name())
-        ) + ")";
-    }
-}
-
-template <bool IsConstFunction = false, typename ReturnType, typename... ArgumentTypes>
-std::string full_function_name(ReturnType (*)(ArgumentTypes...))
-{
-    auto result = overload_name<ReturnType, ArgumentTypes...>();
-    if constexpr (IsConstFunction) result += " const";
-
-    return result;
-}
-
 } // namespace utility
 
 } // namespace rew

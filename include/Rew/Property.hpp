@@ -57,7 +57,7 @@ namespace detail
 {
 
 template <typename ReflectableType, typename PropertyGetterType>
-auto property_get_impl(PropertyGetterType getter)
+auto handler_property_get_impl(PropertyGetterType getter)
 {
     return [getter](std::any& context, std::any& value)
     {
@@ -72,11 +72,8 @@ auto property_get_impl(PropertyGetterType getter)
 
 } // namespace detail
 
-namespace handler
-{
-
 template <typename ReflectableType, typename PropertyType>
-auto property_get(PropertyType ReflectableType::* property)
+auto handler_property_get(PropertyType ReflectableType::* property)
 {
     return [property](std::any& context, std::any& result)
     {
@@ -88,31 +85,31 @@ auto property_get(PropertyType ReflectableType::* property)
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_get(PropertyType (ReflectableType::* getter)(void) const)
+auto handler_property_get(PropertyType (ReflectableType::* getter)(void) const)
 {
-    return detail::property_get_impl<ReflectableType>(getter);
+    return detail::handler_property_get_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_get(PropertyType (ReflectableType::* getter)(void) const&)
+auto handler_property_get(PropertyType (ReflectableType::* getter)(void) const&)
 {
-    return detail::property_get_impl<ReflectableType>(getter);
+    return detail::handler_property_get_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_get(PropertyType (ReflectableType::* getter)(void))
+auto handler_property_get(PropertyType (ReflectableType::* getter)(void))
 {
-    return detail::property_get_impl<ReflectableType>(getter);
+    return detail::handler_property_get_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_get(PropertyType (ReflectableType::* getter)(void) &)
+auto handler_property_get(PropertyType (ReflectableType::* getter)(void) &)
 {
-    return detail::property_get_impl<ReflectableType>(getter);
+    return detail::handler_property_get_impl<ReflectableType>(getter);
 }
 
 template <typename PropertyType>
-auto property_get(PropertyType* property)
+auto handler_property_get(PropertyType* property)
 {
     return [property](std::any&, std::any& result)
     {
@@ -121,7 +118,7 @@ auto property_get(PropertyType* property)
 }
 
 template <typename PropertyType>
-auto property_get(PropertyType (*getter)(void))
+auto handler_property_get(PropertyType (*getter)(void))
 {
     return [getter](std::any&, std::any& result)
     {
@@ -129,13 +126,11 @@ auto property_get(PropertyType (*getter)(void))
     };
 }
 
-} // namespace handler
-
 namespace detail
 {
 
 template <typename ReflectableType, typename PropertySetterType>
-auto property_set_impl(PropertySetterType setter)
+auto handler_property_set_impl(PropertySetterType setter)
 {
     return [setter](std::any& context, const std::any& value)
     {
@@ -147,11 +142,8 @@ auto property_set_impl(PropertySetterType setter)
 
 } // namespace detail
 
-namespace handler
-{
-
 template <typename ReflectableType, typename PropertyType>
-auto property_set(PropertyType ReflectableType::* property)
+auto handler_property_set(PropertyType ReflectableType::* property)
 {
     return [property](std::any& context, const std::any& value)
     {
@@ -160,19 +152,19 @@ auto property_set(PropertyType ReflectableType::* property)
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_set(void (ReflectableType::* setter)(PropertyType))
+auto handler_property_set(void (ReflectableType::* setter)(PropertyType))
 {
-    return detail::property_set_impl<ReflectableType>(setter);
+    return detail::handler_property_set_impl<ReflectableType>(setter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_set(void (ReflectableType::* setter)(PropertyType) &)
+auto handler_property_set(void (ReflectableType::* setter)(PropertyType) &)
 {
-    return detail::property_set_impl<ReflectableType>(setter);
+    return detail::handler_property_set_impl<ReflectableType>(setter);
 }
 
 template <typename PropertyType>
-auto property_set(PropertyType* property)
+auto handler_property_set(PropertyType* property)
 {
     return [property](std::any&, const std::any& value)
     {
@@ -181,7 +173,7 @@ auto property_set(PropertyType* property)
 }
 
 template <typename PropertyType>
-auto property_set(void (*setter)(PropertyType))
+auto handler_property_set(void (*setter)(PropertyType))
 {
     return [setter](std::any&, const std::any& value)
     {
@@ -189,13 +181,11 @@ auto property_set(void (*setter)(PropertyType))
     };
 }
 
-} // namespace handler
-
 namespace detail
 {
 
 template <typename ReflectableType, typename PropertyGetterType>
-auto property_ptr_impl(PropertyGetterType getter)
+auto handler_property_ptr_impl(PropertyGetterType getter)
 {
     return [getter](std::any& context) -> std::any
     {
@@ -215,11 +205,8 @@ auto property_ptr_impl(PropertyGetterType getter)
 
 } // namespace detail
 
-namespace handler
-{
-
 template <typename ReflectableType, typename PropertyType>
-auto property_ptr(PropertyType ReflectableType::* property)
+auto handler_property_ptr(PropertyType ReflectableType::* property)
 {
     return [property](std::any& context) -> std::any
     {
@@ -228,31 +215,31 @@ auto property_ptr(PropertyType ReflectableType::* property)
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_ptr(PropertyType (ReflectableType::* getter)(void) const)
+auto handler_property_ptr(PropertyType (ReflectableType::* getter)(void) const)
 {
-    return detail::property_ptr_impl<ReflectableType>(getter);
+    return detail::handler_property_ptr_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_ptr(PropertyType (ReflectableType::* getter)(void) const&)
+auto handler_property_ptr(PropertyType (ReflectableType::* getter)(void) const&)
 {
-    return detail::property_ptr_impl<ReflectableType>(getter);
+    return detail::handler_property_ptr_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_ptr(PropertyType (ReflectableType::* getter)(void))
+auto handler_property_ptr(PropertyType (ReflectableType::* getter)(void))
 {
-    return detail::property_ptr_impl<ReflectableType>(getter);
+    return detail::handler_property_ptr_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto property_ptr(PropertyType (ReflectableType::* getter)(void) &)
+auto handler_property_ptr(PropertyType (ReflectableType::* getter)(void) &)
 {
-    return detail::property_ptr_impl<ReflectableType>(getter);
+    return detail::handler_property_ptr_impl<ReflectableType>(getter);
 }
 
 template <typename PropertyType>
-auto property_ptr(PropertyType* property)
+auto handler_property_ptr(PropertyType* property)
 {
     return [property](std::any&) -> std::any
     {
@@ -261,7 +248,7 @@ auto property_ptr(PropertyType* property)
 }
 
 template <typename PropertyType>
-auto property_ptr(PropertyType (*getter)(void))
+auto handler_property_ptr(PropertyType (*getter)(void))
 {
     return [getter](std::any&) -> std::any
     {
@@ -276,8 +263,6 @@ auto property_ptr(PropertyType (*getter)(void))
         }
     };
 }
-
-} // namespace handler
 
 } // namespace rew
 

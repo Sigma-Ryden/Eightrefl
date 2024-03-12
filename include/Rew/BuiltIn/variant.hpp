@@ -25,7 +25,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::variant<ArgumentType, ArgumentTypes...>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::variant<" + NAMEOF(ArgumentType) + (", " + ... + NAMEOF(ArgumentTypes)) + ">")
+    REFLECTABLE_NAME("std::variant<" + ( NAMEOF(ArgumentType) + ... + (", " + NAMEOF(ArgumentTypes)) ) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE

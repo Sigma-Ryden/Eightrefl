@@ -243,7 +243,7 @@ parent_t* find_or_add_parent(reflection_t* reflection)
         {
             __name,
             find_or_add_type<ParentReflectableType>(),
-            handler::parent_cast<ReflectableType, ParentReflectableType>()
+            handler_parent_cast<ReflectableType, ParentReflectableType>()
         }
     );
 
@@ -271,10 +271,11 @@ template <typename DirtyFactoryType>
 factory_t* find_or_add_factory(reflection_t* reflection)
 {
     using function_traits = meta::function_traits<DirtyFactoryType>;
+    using dirty_type = typename function_traits::dirty_type;
     using dirty_pointer = typename function_traits::dirty_pointer;
     using pointer = typename function_traits::pointer;
 
-    auto __name = utility::full_function_name(dirty_pointer{});
+    auto __name = meta::reflectable_traits<dirty_type>::name();
 
     auto __meta = reflection->factory.find(__name);
     if (__meta == nullptr) __meta = &reflection->factory.add
@@ -282,7 +283,7 @@ factory_t* find_or_add_factory(reflection_t* reflection)
         __name,
         {
             __name,
-            handler::factory_call(pointer{}),
+            handler_factory_call(pointer{}),
             detail::function_argument_types(dirty_pointer{})
         }
     );
@@ -298,12 +299,13 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
         std::conditional_t<std::is_void_v<DirtyFunctionType>, FunctionType, DirtyFunctionType>
     >;
 
+    using dirty_type = typename function_traits::dirty_type;
     using dirty_pointer = typename function_traits::dirty_pointer;
 
     auto __function = reflection->function.find(name);
     if (__function == nullptr) __function = &reflection->function.add(name, {});
 
-    auto __overload = utility::full_function_name<function_traits::is_const>(dirty_pointer{});
+    auto __overload = meta::reflectable_traits<dirty_type>::name();
 
     auto __meta = __function->find(__overload);
     if (__meta == nullptr) __meta = &__function->add
@@ -311,7 +313,7 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
         __overload,
         {
             __overload,
-            handler::function_call(ptr),
+            handler_function_call(ptr),
             detail::function_argument_types(dirty_pointer{}),
             detail::function_return_type(dirty_pointer{})
         }
@@ -334,9 +336,9 @@ property_t* find_or_add_property(reflection_t* reflection, const std::string& na
         {
             name,
             find_or_add_type<dirty_type>(),
-            handler::property_get(getter),
-            handler::property_set(setter),
-            handler::property_ptr(getter)
+            handler_property_get(getter),
+            handler_property_set(setter),
+            handler_property_ptr(getter)
         }
     );
 
@@ -365,7 +367,7 @@ injection_t* find_or_add_injection(type_t* type)
         __name,
         {
             __name,
-            handler::injection_call<ReflectableType, InjectionType>()
+            handler_injection_call<ReflectableType, InjectionType>()
         }
     );
 

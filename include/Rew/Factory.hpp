@@ -38,7 +38,7 @@ namespace detail
 {
 
 template <typename ReflectableType, typename... ArgumentTypes, std::size_t... I>
-auto factory_call_impl(std::index_sequence<I...>)
+auto handler_factory_call_impl(std::index_sequence<I...>)
 {
     return [](std::vector<std::any> arguments) -> std::any
     {
@@ -55,19 +55,14 @@ auto factory_call_impl(std::index_sequence<I...>)
 
 } // namespace detail
 
-namespace handler
-{
-
 template <typename ReflectableType, typename... ArgumentTypes>
-auto factory_call(ReflectableType (*)(ArgumentTypes...))
+auto handler_factory_call(ReflectableType (*)(ArgumentTypes...))
 {
-    return detail::factory_call_impl<ReflectableType, ArgumentTypes...>
+    return detail::handler_factory_call_impl<ReflectableType, ArgumentTypes...>
     (
         std::index_sequence_for<ArgumentTypes...>{}
     );
 }
-
-} // namespace handler
 
 } // namespace rew
 

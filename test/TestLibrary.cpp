@@ -17,3 +17,8 @@ TEST(TestLibrary, TestConstRef)
     EXPECT("type", rew::global.find<const int&>() == nullptr);
     EXPECT("type-name", rew::meta::reflectable_traits<const int&>::name() == "int const&");
 }
+
+TEST(TestLibrary, TestRawFunction)
+{
+    EXPECT("type-name", rew::meta::reflectable_traits<void() const>::name() == "void() const");
+}

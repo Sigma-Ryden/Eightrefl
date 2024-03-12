@@ -40,6 +40,31 @@ TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), ElementType 
 REFLECTABLE_DECLARATION_INIT()
 // ~ qualified types
 
+// function types
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ReturnType>), ReturnType())
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME(NAMEOF(ReturnType) + "()")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename ReturnType, typename ArgumentType, typename... ArgumentTypes>),
+    ReturnType(ArgumentType, ArgumentTypes...)
+)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME(NAMEOF(ReturnType) + "(" + ( NAMEOF(ArgumentType) + ... + (", " + NAMEOF(ArgumentTypes)) ) + ")")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    ReturnType(ArgumentTypes...) const
+)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME(NAMEOF(ReturnType(ArgumentTypes...)) + " const")
+REFLECTABLE_DECLARATION_INIT()
+// ~ function types
+
 // boolean type
 REFLECTABLE_DECLARATION(bool)
     BUILTIN_REFLECTABLE()

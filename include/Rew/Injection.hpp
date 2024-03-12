@@ -53,11 +53,8 @@ struct injection_t
     const std::function<void(injectable_t& injection)> call = nullptr;
 };
 
-namespace handler
-{
-
 template <typename ReflectionType, class InjectionType>
-auto injection_call()
+auto handler_injection_call()
 {
     return [](injectable_t& injection)
     {
@@ -65,8 +62,6 @@ auto injection_call()
         reflection_registry::evaluate(dynamic_cast<InjectionType&>(injection));
     };
 }
-
-} // namespace handler
 
 } // namespace rew
 

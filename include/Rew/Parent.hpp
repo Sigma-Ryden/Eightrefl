@@ -30,19 +30,14 @@ struct parent_t
     attribute_t<std::any> meta;
 };
 
-namespace handler
-{
-
 template <typename ReflectableType, typename ParentReflectableType>
-auto parent_cast()
+auto handler_parent_cast()
 {
     return [](std::any& child_context) -> std::any
     {
         return static_cast<ParentReflectableType*>(std::any_cast<ReflectableType*>(child_context));
     };
 }
-
-} // namespace handler
 
 } // namespace rew
 
