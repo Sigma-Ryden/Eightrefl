@@ -18,7 +18,7 @@
 #define RAW_FUNCTION(name_str, name, ...)                                                               \
     {                                                                                                   \
         using __traits = typename rew::meta::member_function_traits<R>::template overload<__VA_ARGS__>; \
-        auto __ptr = rew::utility::member_function_ptr<R>(__traits::of(&R::__REW_EXPAND name));         \
+        auto __ptr = rew::utility::function_ptr<R>(__traits::of(&R::__REW_EXPAND name));                \
         auto __meta = rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);            \
         injection.template function<R, decltype(__ptr)>(*__meta);                                       \
     }
