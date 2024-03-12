@@ -58,7 +58,7 @@ auto handler_injection_call()
 {
     return [](injectable_t& injection)
     {
-        using reflection_registry = ::rew_reflection_registry_t<ReflectionType>;
+        using reflection_registry = rew_reflection_registry_t<ReflectionType>;
         reflection_registry::evaluate(dynamic_cast<InjectionType&>(injection));
     };
 }

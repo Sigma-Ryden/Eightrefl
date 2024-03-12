@@ -12,20 +12,20 @@
     namespace rew { namespace meta {                                                                    \
         __REW_EXPAND template_header                                                                    \
         struct reflectable_traits<__VA_ARGS__> {                                                        \
-            using R = typename ::rew::meta::reflectable_using<__VA_ARGS__>::R;                          \
+            using R = typename rew::meta::reflectable_using<__VA_ARGS__>::R;                            \
             LAZY_REFLECTABLE()
 
 #define RAW_CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                    \
     namespace rew { namespace meta {                                                                    \
         template <typename DirtyR>                                                                      \
         struct reflectable_traits<DirtyR, std::enable_if_t<__VA_ARGS__>> {                              \
-            using R = typename ::rew::meta::reflectable_using<DirtyR>::R;                               \
+            using R = typename rew::meta::reflectable_using<DirtyR>::R;                                 \
             LAZY_REFLECTABLE()
 
 #define RAW_REFLECTABLE_DECLARATION(...)                                                                \
     namespace rew { namespace meta {                                                                    \
         template <> struct reflectable_traits<__VA_ARGS__> {                                            \
-            using R = typename ::rew::meta::reflectable_using<__VA_ARGS__>::R;
+            using R = typename rew::meta::reflectable_using<__VA_ARGS__>::R;
 
 #define RAW_REFLECTABLE_DECLARATION_INIT(...)                                                           \
         };                                                                                              \
@@ -45,19 +45,19 @@
 #ifndef TEMPLATE_REFLECTABLE_DECLARATION
     #define TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                      \
         RAW_TEMPLATE_REFLECTABLE_DECLARATION(template_header, __VA_ARGS__)                              \
-            REFLECTABLE_REGISTRY(&::rew::global)
+            REFLECTABLE_REGISTRY(&rew::global)
 #endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
 #ifndef CONDITIONAL_REFLECTABLE_DECLARATION
     #define CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                    \
         RAW_CONDITIONAL_REFLECTABLE_DECLARATION(__VA_ARGS__)                                            \
-            REFLECTABLE_REGISTRY(&::rew::global)
+            REFLECTABLE_REGISTRY(&rew::global)
 #endif // CONDITIONAL_REFLECTABLE_DECLARATION
 
 #ifndef REFLECTABLE_DECLARATION
     #define REFLECTABLE_DECLARATION(...)                                                                \
         RAW_REFLECTABLE_DECLARATION(__VA_ARGS__)                                                        \
-            REFLECTABLE_REGISTRY(&::rew::global)                                                        \
+            REFLECTABLE_REGISTRY(&rew::global)                                                          \
             REFLECTABLE_NAME(#__VA_ARGS__)
 #endif // REFLECTABLE_DECLARATION
 
@@ -70,7 +70,7 @@
 #define __REW_REFLECTABLE_BODY()                                                                        \
         template <class InjectionType>                                                                  \
         static void evaluate(InjectionType&& injection) {                                               \
-            auto __type = ::rew::find_or_add_type<DirtyR>();                                            \
+            auto __type = rew::find_or_add_type<DirtyR>();                                              \
             auto __reflection = __type->reflection;                                                     \
             injection.template type<R>(*__type);
 
@@ -78,26 +78,26 @@
     __REW_EXPAND template_header                                                                        \
     struct rew_reflection_registry_t<__VA_ARGS__> {                                                     \
         using DirtyR = __VA_ARGS__;                                                                     \
-        using R = typename ::rew::meta::reflectable_traits<DirtyR>::R;                                  \
+        using R = typename rew::meta::reflectable_traits<DirtyR>::R;                                    \
         __REW_REFLECTABLE_BODY()
 
 #define RAW_CONDITIONAL_REFLECTABLE(...)                                                                \
     template <typename DirtyR>                                                                          \
     struct rew_reflection_registry_t<DirtyR, std::enable_if_t<__VA_ARGS__>> {                           \
-        using R = typename ::rew::meta::reflectable_traits<DirtyR>::R;                                  \
+        using R = typename rew::meta::reflectable_traits<DirtyR>::R;                                    \
         __REW_REFLECTABLE_BODY()
 
 #define RAW_REFLECTABLE(...)                                                                            \
     template <> struct rew_reflection_registry_t<__VA_ARGS__> {                                         \
         using DirtyR = __VA_ARGS__;                                                                     \
-        using R = typename ::rew::meta::reflectable_traits<DirtyR>::R;                                  \
+        using R = typename rew::meta::reflectable_traits<DirtyR>::R;                                    \
         __REW_REFLECTABLE_BODY()
 
 #define RAW_REFLECTABLE_INIT(...)                                                                       \
-            ::rew::add_default_injection_set<R>(__type);                                                \
+            rew::add_default_injection_set<R>(__type);                                                  \
         }                                                                                               \
     private:                                                                                            \
-        inline static auto _ = (evaluate(::rew::injectable_t{}), true);                                 \
+        inline static auto _ = (evaluate(rew::injectable_t{}), true);                                   \
     };
 // ~ raw reflectable
 
@@ -168,8 +168,8 @@
 
 
 // reflectable utils
-#define NAMEOF(...) (::rew::meta::reflectable_traits<__VA_ARGS__>::name())
-#define CLEANOF(...) ::rew::meta::clean<__VA_ARGS__>
+#define NAMEOF(...) (rew::meta::reflectable_traits<__VA_ARGS__>::name())
+#define CLEANOF(...) rew::meta::clean<__VA_ARGS__>
 // ~ reflectable utils
 
 namespace rew
@@ -182,7 +182,7 @@ void reflectable()
     if (!locked)
     {
         locked = true;
-        ::rew_reflection_registry_t<ReflectableType>::evaluate(injectable_t{});
+        rew_reflection_registry_t<ReflectableType>::evaluate(injectable_t{});
     }
 }
 

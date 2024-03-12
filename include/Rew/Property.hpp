@@ -18,10 +18,10 @@
 
 #define RAW_PROPERTY(name_str, name_get, name_set)                                                      \
     {                                                                                                   \
-        auto __get = ::rew::utility::member_property_get_ptr<R>(&R::__REW_EXPAND name_get);             \
-        auto __set = ::rew::utility::member_property_set_ptr<R>(&R::__REW_EXPAND name_set);             \
-        using __traits = ::rew::meta::property_traits<decltype(__get)>;                                 \
-        auto __meta = ::rew::find_or_add_property(__reflection, name_str, __get, __set);                \
+        auto __get = rew::utility::member_property_get_ptr<R>(&R::__REW_EXPAND name_get);               \
+        auto __set = rew::utility::member_property_set_ptr<R>(&R::__REW_EXPAND name_set);               \
+        using __traits = rew::meta::property_traits<decltype(__get)>;                                   \
+        auto __meta = rew::find_or_add_property(__reflection, name_str, __get, __set);                  \
         injection.template property<R, typename __traits::type>(*__meta);                               \
     }
 
@@ -29,10 +29,10 @@
 
 #define RAW_FREE_PROPERTY(name_str, name_get, name_set)                                                 \
     {                                                                                                   \
-        auto __get = ::rew::utility::property_get_ptr(&__REW_EXPAND name_get);                          \
-        auto __set = ::rew::utility::property_set_ptr(&__REW_EXPAND name_set);                          \
-        using __traits = ::rew::meta::property_traits<decltype(__get)>;                                 \
-        auto __meta = ::rew::find_or_add_property(__reflection, name_str, __get, __set);                \
+        auto __get = rew::utility::property_get_ptr(&__REW_EXPAND name_get);                            \
+        auto __set = rew::utility::property_set_ptr(&__REW_EXPAND name_set);                            \
+        using __traits = rew::meta::property_traits<decltype(__get)>;                                   \
+        auto __meta = rew::find_or_add_property(__reflection, name_str, __get, __set);                  \
         injection.template property<R, typename __traits::type>(*__meta);                               \
     }
 
