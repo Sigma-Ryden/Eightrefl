@@ -10,8 +10,6 @@
 #include <Rew/Attribute.hpp>
 #include <Rew/Meta.hpp>
 
-#include <Rew/Utility.hpp>
-
 #define RAW_FACTORY(...)                                                                                \
     {                                                                                                   \
         using __traits = rew::meta::function_traits<__VA_ARGS__>;                                       \
@@ -44,11 +42,11 @@ auto handler_factory_call_impl(std::index_sequence<I...>)
     {
         if constexpr (std::is_aggregate_v<ReflectableType>)
         {
-            return ReflectableType{ utility::forward<ArgumentTypes>(arguments[I])... };
+            return ReflectableType{ forward<ArgumentTypes>(arguments[I])... };
         }
         else
         {
-            return ReflectableType( utility::forward<ArgumentTypes>(arguments[I])... );
+            return ReflectableType( forward<ArgumentTypes>(arguments[I])... );
         }
     };
 }

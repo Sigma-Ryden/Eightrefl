@@ -39,7 +39,6 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), std::
     FUNCTION(push, void(typename R::const_reference))
     FUNCTION(pop)
     FUNCTION(swap)
-    PROPERTY(c)
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_QUEUE_HPP

@@ -322,12 +322,12 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
     return __meta;
 }
 
-template <typename DirtyPropertyGetterType, typename DirtyPropertySetterType>
+template <typename PropertyGetterType, typename PropertySetterType>
 property_t* find_or_add_property(reflection_t* reflection, const std::string& name,
-                                 DirtyPropertyGetterType getter, DirtyPropertySetterType setter)
+                                 PropertyGetterType getter, PropertySetterType setter)
 {
-    using property_traits = meta::property_traits<DirtyPropertyGetterType>;
-    using dirty_type = typename property_traits::dirty_type;
+    using property_traits = meta::property_traits<PropertyGetterType>;
+    using type = typename property_traits::type;
 
     auto __meta = reflection->property.find(name);
     if (__meta == nullptr) __meta = &reflection->property.add
@@ -335,7 +335,7 @@ property_t* find_or_add_property(reflection_t* reflection, const std::string& na
         name,
         {
             name,
-            find_or_add_type<dirty_type>(),
+            find_or_add_type<type>(),
             handler_property_get(getter),
             handler_property_set(setter),
             handler_property_ptr(getter)

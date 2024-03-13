@@ -7,7 +7,6 @@
 
 #include <Rew/Attribute.hpp>
 #include <Rew/Meta.hpp>
-#include <Rew/Utility.hpp>
 
 #define RAW_PARENT(...)                                                                                 \
     {                                                                                                   \

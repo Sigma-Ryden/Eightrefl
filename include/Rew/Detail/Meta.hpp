@@ -76,6 +76,44 @@ template <typename T> struct is_lazy_reflectable : all<is_reflectable<T>, detail
 template <typename T> struct is_builtin_reflectable : all<is_reflectable<T>, detail::is_builtin<T>> {};
 template <typename T> struct is_custom_reflectable : all<is_reflectable<T>, std::negation<detail::is_builtin<T>>> {};
 
+template <typename PropertyType>
+struct property_traits
+{
+    using type = PropertyType;
+};
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<PropertyType (ReflectableType::*)(void) const>
+    : property_traits<PropertyType> {};
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<PropertyType (ReflectableType::*)(void) const&>
+    : property_traits<PropertyType> {};
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<PropertyType (ReflectableType::*)(void)>
+    : property_traits<PropertyType> {};
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<PropertyType (ReflectableType::*)(void) &>
+    : property_traits<PropertyType> {};
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<void (ReflectableType::*)(PropertyType)>
+    : property_traits<PropertyType> {};
+
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<void (ReflectableType::*)(PropertyType) &>
+    : property_traits<PropertyType> {};
+
+template <typename PropertyType>
+struct property_traits<PropertyType (*)(void)>
+    : property_traits<PropertyType> {};
+
+template <typename PropertyType>
+struct property_traits<void (*)(PropertyType)>
+    : property_traits<PropertyType> {};
+
 template <typename>
 struct function_traits;
 
@@ -119,66 +157,182 @@ template <class ClassType, typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType (ClassType::*)(ArgumentTypes...) &>
     : function_traits<ReturnType(ArgumentTypes...) &> {};
 
-template <typename PropertyType>
-struct property_traits
+namespace detail
 {
-    using dirty_type = PropertyType;
-    using type = clean<PropertyType>;
-};
 
-template <typename ReflectableType, typename PropertyType>
-struct property_traits<PropertyType (ReflectableType::*)(void) const>
-    : property_traits<PropertyType> {};
+template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
+{
+    struct __inner : protected ReflectableType
+    {
+        static auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
+        {
+            return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) const>(function);
+        }
+    };
+    return __inner::get(function);
+}
 
-template <typename ReflectableType, typename PropertyType>
-struct property_traits<PropertyType (ReflectableType::*)(void) const&>
-    : property_traits<PropertyType> {};
+template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const&)
+{
+    struct __inner : protected ReflectableType
+    {
+        static auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const&)
+        {
+            return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) const&>(function);
+        }
+    };
+    return __inner::get(function);
+}
 
-template <typename ReflectableType, typename PropertyType>
-struct property_traits<PropertyType (ReflectableType::*)(void)>
-    : property_traits<PropertyType> {};
+template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
+{
+    struct __inner : protected ReflectableType
+    {
+        static auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
+        {
+            return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...)>(function);
+        }
+    };
+    return __inner::get(function);
+}
 
-template <typename ReflectableType, typename PropertyType>
-struct property_traits<PropertyType (ReflectableType::*)(void) &>
-    : property_traits<PropertyType> {};
+template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) &)
+{
+    struct __inner : protected ReflectableType
+    {
+        static auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) &)
+        {
+            return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) &>(function);
+        }
+    };
+    return __inner::get(function);
+}
 
-template <typename ReflectableType, typename PropertyType>
-struct property_traits<void (ReflectableType::*)(PropertyType)>
-    : property_traits<PropertyType> {};
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto function_ptr_impl(ReturnType (*function)(ArgumentTypes...))
+{
+    return function;
+}
 
-template <typename ReflectableType, typename PropertyType>
-struct property_traits<void (ReflectableType::*)(PropertyType) &>
-    : property_traits<PropertyType> {};
+template <typename ReflectableType, typename ParentReflectableType, typename ValueType>
+auto property_ptr_impl(ValueType ParentReflectableType::* property)
+{
+    struct __inner : protected ReflectableType
+    {
+        static auto get(ValueType ParentReflectableType::* property)
+        {
+            return static_cast<ValueType ReflectableType::*>(property);
+        }
+    };
+    return __inner::get(property);
+}
 
-template <typename PropertyType>
-struct property_traits<PropertyType (*)(void)>
-    : property_traits<PropertyType> {};
-
-template <typename PropertyType>
-struct property_traits<void (*)(PropertyType)>
-    : property_traits<PropertyType> {};
+} // namespace detail
 
 template <typename...>
-struct overload
+struct access_traits;
+
+template <>
+struct access_traits<>
 {
+    struct getter
+    {
+        template <typename PropertyType>
+        auto of(PropertyType (*function)(void)) { return function; }
+    };
+
+    struct setter
+    {
+        template <typename PropertyType>
+        auto of(void (*function)(PropertyType)) { return function; }
+    };
+
+    template <typename...>
+    struct function
+    {
+        template <typename ReturnType, typename... ArgumentTypes>
+        static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
+    };
+
     template <typename ReturnType, typename... ArgumentTypes>
-    static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
-};
+    struct function<ReturnType(ArgumentTypes...)>
+    {
+        static constexpr auto of(clean<ReturnType> (*function)(clean<ArgumentTypes>...)) { return function; }
 
-template <typename ReturnType, typename... ArgumentTypes>
-struct overload<ReturnType(ArgumentTypes...)>
-{
-    static constexpr auto of(clean<ReturnType> (*function)(clean<ArgumentTypes>...)) { return function; }
-
-    template <typename OtherReturnType, typename... OtherArgumentTypes>
-    static constexpr auto of(OtherReturnType (*function)(OtherArgumentTypes...)) { return function; }
+        template <typename OtherReturnType, typename... OtherArgumentTypes>
+        static constexpr auto of(OtherReturnType (*function)(OtherArgumentTypes...)) { return function; }
+    };
 };
 
 template <class ClassType>
-struct member_function_traits
+struct access_traits<ClassType>
 {
+    struct getter
+    {
+        template <typename ParentClassType, typename PropertyType>
+        auto of(PropertyType ParentClassType::* property)
+        {
+            return detail::property_ptr_impl<ClassType>(property);
+        }
+
+        template <typename ParentClassType, typename PropertyType>
+        auto of(PropertyType (ParentClassType::* function)(void) const)
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
+
+        template <typename ParentClassType, typename PropertyType>
+        auto of(PropertyType (ParentClassType::* function)(void) const&)
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
+
+        template <typename ParentClassType, typename PropertyType>
+        auto of(PropertyType (ParentClassType::* function)(void))
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
+
+        template <typename ParentClassType, typename PropertyType>
+        auto of(PropertyType (ParentClassType::* function)(void) &)
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
+
+        template <typename PropertyType>
+        auto of(PropertyType (*function)(void)) { return function; }
+    };
+
+    struct setter
+    {
+        template <typename ParentClassType, typename PropertyType>
+        auto of(PropertyType ParentClassType::* property)
+        {
+            return detail::property_ptr_impl<ClassType>(property);
+        }
+
+        template <typename ParentClassType, typename PropertyType>
+        auto of(void (ParentClassType::* function)(PropertyType))
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
+
+        template <typename ParentClassType, typename PropertyType>
+        auto of(void (ParentClassType::* function)(PropertyType) &)
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
+
+        template <typename PropertyType>
+        auto of(void (*function)(PropertyType)) { return function; }
+    };
+
     template <typename...>
-    struct overload
+    struct function
     {
         template <typename ReturnType, typename... ArgumentTypes>
         static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) const) { return function; }
@@ -191,43 +345,71 @@ struct member_function_traits
         static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) &) { return function; }
 
         template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) const) { return function; }
-        template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) const&) { return function; }
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) const)
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
 
         template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...)) { return function; }
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) const&)
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
+
         template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) &) { return function; }
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...))
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
+
+        template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) &)
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
 
         template <typename ReturnType, typename... ArgumentTypes>
         static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
     };
 
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
-    struct overload<DirtyReturnType(DirtyArgumentTypes...) const>
+    struct function<DirtyReturnType(DirtyArgumentTypes...) const>
     {
         static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...) const) { return function; }
         static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...) const&) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) const) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) const)
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
+
         template <class ParentClassType>
-        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) const&) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) const&)
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
 
         static constexpr auto of(clean<DirtyReturnType> (*function)(clean<DirtyArgumentTypes>...)) { return function; }
     };
 
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
-    struct overload<DirtyReturnType(DirtyArgumentTypes...)>
+    struct function<DirtyReturnType(DirtyArgumentTypes...)>
     {
         static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...)) { return function; }
         static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...) &) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...)) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...))
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
+
         template <class ParentClassType>
-        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) &) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) &)
+        {
+            return detail::function_ptr_impl<ClassType>(function);
+        }
 
         static constexpr auto of(clean<DirtyReturnType> (*function)(clean<DirtyArgumentTypes>...)) { return function; }
     };
