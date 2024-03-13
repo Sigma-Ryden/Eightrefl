@@ -1,6 +1,8 @@
 #ifndef REW_REFLECTABLE_HPP
 #define REW_REFLECTABLE_HPP
 
+#include <cstddef> // size_t
+
 #include <Rew/Registry.hpp>
 #include <Rew/Injection.hpp>
 

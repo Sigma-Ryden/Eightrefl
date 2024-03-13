@@ -5,7 +5,6 @@
 #include <unordered_map> // unordered_map
 
 #include <typeindex> // type_index
-#include <utility> // ref
 
 #include <Rew/Type.hpp>
 #include <Rew/Reflection.hpp>

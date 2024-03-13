@@ -2,7 +2,7 @@
 #define REW_UTILITY_HPP
 
 #include <any> // any
-#include <utility> // addressof
+#include <memory> // addressof
 
 #include <Rew/Detail/Meta.hpp>
 
