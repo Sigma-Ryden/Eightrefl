@@ -62,12 +62,12 @@ private:
     template <typename ReflectableType>
     auto context()
     {
-    	return [](std::any& object)
+        return [](std::any& object)
     	{
-    		return std::addressof(std::any_cast<ReflectableType&>(object));
+	    return std::addressof(std::any_cast<ReflectableType&>(object));
     	};
     }
-    
+
     template <typename ReflectableType>
     auto size()
     {
@@ -83,10 +83,10 @@ public:
 
         type = new type_t
         {
-        	name,
-        	new reflection_t { name },
-        	size<ReflectableType>(),
-        	context<ReflectableType>()
+            name,
+            new reflection_t { name },
+            size<ReflectableType>(),
+            context<ReflectableType>()
         };
 
         rtti_all.emplace(typeid(DirtyReflectableType), type);
@@ -98,22 +98,22 @@ public:
 template <>
 inline auto registry_t::context<std::any>()
 {
-	return [](std::any& object)
-	{
-		return std::addressof(object);
-	};
+    return [](std::any& object)
+    {
+        return std::addressof(object);
+    };
 }
 
 template <>
 inline auto registry_t::context<void>()
 {
-	return nullptr;
+    return nullptr;
 }
 
 template <>
 inline auto registry_t::size<void>()
 {
-	return std::size_t(0);
+    return std::size_t(0);
 }
 
 inline registry_t global;
