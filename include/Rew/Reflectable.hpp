@@ -73,7 +73,7 @@
         template <class InjectionType>                                                                  \
         static void evaluate(InjectionType&& injection) {                                               \
             auto __type = rew::find_or_add_type<DirtyR>();                                              \
-            auto __reflection = __type->reflection;                                                     \
+            auto __reflection = __type->reflection; (void)__reflection;                                 \
             injection.template type<R>(*__type);
 
 #define RAW_TEMPLATE_REFLECTABLE(template_header, ...)                                                  \

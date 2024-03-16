@@ -58,20 +58,37 @@ public:
         return find(meta::reflectable_traits<ReflectableType>::name());
     }
 
+private:
+    template <typename ReflectableType>
+    auto context()
+    {
+    	return [](std::any& object)
+    	{
+    		return std::addressof(std::any_cast<ReflectableType&>(object));
+    	};
+    }
+    
+    template <typename ReflectableType>
+    auto size()
+    {
+    	return sizeof(ReflectableType);
+    }
+
+public:
     template <typename ReflectableType, typename DirtyReflectableType = ReflectableType>
     type_t* add(const std::string& name)
     {
         auto& type = all[name];
         if (type != nullptr) return type;
 
-        auto reflection = new reflection_t{ name };
-
-        auto context = [](std::any& object) -> std::any
+        type = new type_t
         {
-            return std::addressof(std::any_cast<ReflectableType&>(object));
+        	name,
+        	new reflection_t { name },
+        	size<ReflectableType>(),
+        	context<ReflectableType>()
         };
 
-        type = new type_t { name, reflection, sizeof(ReflectableType), context };
         rtti_all.emplace(typeid(DirtyReflectableType), type);
 
         return type;
@@ -79,18 +96,24 @@ public:
 };
 
 template <>
-inline type_t* registry_t::add<void>(const std::string& name)
+inline auto registry_t::context<std::any>()
 {
-    auto& type = all[name];
-    if (type != nullptr) return type;
+	return [](std::any& object)
+	{
+		return std::addressof(object);
+	};
+}
 
-    auto reflection = new reflection_t{ name };
-    type = new type_t { name, reflection, 0, nullptr };
+template <>
+inline auto registry_t::context<void>()
+{
+	return nullptr;
+}
 
-    all.emplace(name, type);
-    rtti_all.emplace(typeid(void), type);
-
-    return type;
+template <>
+inline auto registry_t::size<void>()
+{
+	return std::size_t(0);
 }
 
 inline registry_t global;
