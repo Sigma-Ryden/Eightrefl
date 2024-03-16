@@ -63,15 +63,15 @@ private:
     auto context()
     {
         return [](std::any& object)
-    	{
-	    return std::addressof(std::any_cast<ReflectableType&>(object));
-    	};
+        {
+            return std::addressof(std::any_cast<ReflectableType&>(object));
+        };
     }
 
     template <typename ReflectableType>
     auto size()
     {
-    	return sizeof(ReflectableType);
+        return sizeof(ReflectableType);
     }
 
 public:
