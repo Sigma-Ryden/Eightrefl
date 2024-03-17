@@ -341,6 +341,12 @@ struct access_traits<ClassType>
         {
             return std::make_pair(get, set);
         }
+
+        template <typename PropertyType>
+        static constexpr auto of(PropertyType* get, PropertyType* set)
+        {
+            return std::make_pair(get, set);
+        }
     };
 
     template <typename...>
