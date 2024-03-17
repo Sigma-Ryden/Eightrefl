@@ -2,6 +2,7 @@
 #define REW_REFLECTION_HPP
 
 #include <string> // string
+#include <any> // any
 
 #include <Rew/Parent.hpp>
 #include <Rew/Function.hpp>

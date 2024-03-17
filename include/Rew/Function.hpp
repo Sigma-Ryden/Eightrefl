@@ -62,14 +62,14 @@ auto handler_member_function_call_impl(FunctionType function, std::index_sequenc
         auto reflectable = std::any_cast<ReflectableType*>(context);
         if constexpr (std::is_void_v<ReturnType>)
         {
-            (reflectable->*function)(forward<ArgumentTypes>(arguments[I])...);
+            (reflectable->*function)(utility::forward<ArgumentTypes>(arguments[I])...);
             return {};
         }
         else
         {
-            return backward
+            return utility::backward
             (
-                (reflectable->*function)(forward<ArgumentTypes>(arguments[I])...)
+                (reflectable->*function)(utility::forward<ArgumentTypes>(arguments[I])...)
             );
         }
     };
@@ -82,14 +82,14 @@ auto handler_free_function_call_impl(ReturnType (*function)(ArgumentTypes...), s
     {
         if constexpr (std::is_void_v<ReturnType>)
         {
-            function(forward<ArgumentTypes>(arguments[I])...);
+            function(utility::forward<ArgumentTypes>(arguments[I])...);
             return {};
         }
         else
         {
-            return backward
+            return utility::backward
             (
-                function(forward<ArgumentTypes>(arguments[I])...)
+                function(utility::forward<ArgumentTypes>(arguments[I])...)
             );
         }
     };

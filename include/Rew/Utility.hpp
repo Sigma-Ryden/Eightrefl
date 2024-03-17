@@ -9,6 +9,9 @@
 namespace rew
 {
 
+inline namespace utility
+{
+
 template <typename ValueType>
 ValueType forward(const std::any& object)
 {
@@ -42,6 +45,8 @@ std::any backward(ValueType&& result)
         return result;
     }
 }
+
+} // inline namespace utility
 
 } // namespace rew
 

@@ -113,6 +113,10 @@ struct property_traits<PropertyType (*)(void)>
 template <typename PropertyType>
 struct property_traits<void (*)(PropertyType)>
     : property_traits<PropertyType> {};
+    
+template <typename ReflectableType, typename PropertyType>
+struct property_traits<PropertyType ReflectableType::*>
+    : property_traits<PropertyType> {};
 
 template <typename>
 struct function_traits;
@@ -161,11 +165,11 @@ namespace detail
 {
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
+constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
 {
     struct __inner : protected ReflectableType
     {
-        static auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
+        static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
         {
             return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) const>(function);
         }
@@ -174,11 +178,11 @@ auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTy
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const&)
+constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const&)
 {
     struct __inner : protected ReflectableType
     {
-        static auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const&)
+        static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const&)
         {
             return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) const&>(function);
         }
@@ -187,11 +191,11 @@ auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTy
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
+constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
 {
     struct __inner : protected ReflectableType
     {
-        static auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
+        static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
         {
             return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...)>(function);
         }
@@ -200,11 +204,11 @@ auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTy
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) &)
+constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) &)
 {
     struct __inner : protected ReflectableType
     {
-        static auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) &)
+        static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) &)
         {
             return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) &>(function);
         }
@@ -213,17 +217,17 @@ auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTy
 }
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto function_ptr_impl(ReturnType (*function)(ArgumentTypes...))
+constexpr auto function_ptr_impl(ReturnType (*function)(ArgumentTypes...))
 {
     return function;
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ValueType>
-auto property_ptr_impl(ValueType ParentReflectableType::* property)
+constexpr auto property_ptr_impl(ValueType ParentReflectableType::* property)
 {
     struct __inner : protected ReflectableType
     {
-        static auto get(ValueType ParentReflectableType::* property)
+        static constexpr auto get(ValueType ParentReflectableType::* property)
         {
             return static_cast<ValueType ReflectableType::*>(property);
         }
@@ -242,13 +246,19 @@ struct access_traits<>
     struct getter
     {
         template <typename PropertyType>
-        auto of(PropertyType (*function)(void)) { return function; }
+        static constexpr auto of(PropertyType (*function)(void)) { return function; }
+        
+        template <typename PropertyType>
+        static constexpr auto of(PropertyType* property) { return property; }
     };
 
     struct setter
     {
         template <typename PropertyType>
-        auto of(void (*function)(PropertyType)) { return function; }
+        static constexpr auto of(void (*function)(PropertyType)) { return function; }
+        
+        template <typename PropertyType>
+        static constexpr auto of(PropertyType* property) { return property; }
     };
 
     template <typename...>
@@ -274,61 +284,61 @@ struct access_traits<ClassType>
     struct getter
     {
         template <typename ParentClassType, typename PropertyType>
-        auto of(PropertyType ParentClassType::* property)
+        static constexpr auto of(PropertyType ParentClassType::* property)
         {
             return detail::property_ptr_impl<ClassType>(property);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        auto of(PropertyType (ParentClassType::* function)(void) const)
+        static constexpr auto of(PropertyType (ParentClassType::* function)(void) const)
         {
             return detail::function_ptr_impl<ClassType>(function);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        auto of(PropertyType (ParentClassType::* function)(void) const&)
+        static constexpr auto of(PropertyType (ParentClassType::* function)(void) const&)
         {
             return detail::function_ptr_impl<ClassType>(function);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        auto of(PropertyType (ParentClassType::* function)(void))
+        static constexpr auto of(PropertyType (ParentClassType::* function)(void))
         {
             return detail::function_ptr_impl<ClassType>(function);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        auto of(PropertyType (ParentClassType::* function)(void) &)
+        static constexpr auto of(PropertyType (ParentClassType::* function)(void) &)
         {
             return detail::function_ptr_impl<ClassType>(function);
         }
 
         template <typename PropertyType>
-        auto of(PropertyType (*function)(void)) { return function; }
+        static constexpr auto of(PropertyType (*function)(void)) { return function; }
     };
 
     struct setter
     {
         template <typename ParentClassType, typename PropertyType>
-        auto of(PropertyType ParentClassType::* property)
+        static constexpr auto of(PropertyType ParentClassType::* property)
         {
             return detail::property_ptr_impl<ClassType>(property);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        auto of(void (ParentClassType::* function)(PropertyType))
+        static constexpr auto of(void (ParentClassType::* function)(PropertyType))
         {
             return detail::function_ptr_impl<ClassType>(function);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        auto of(void (ParentClassType::* function)(PropertyType) &)
+        static constexpr auto of(void (ParentClassType::* function)(PropertyType) &)
         {
             return detail::function_ptr_impl<ClassType>(function);
         }
 
         template <typename PropertyType>
-        auto of(void (*function)(PropertyType)) { return function; }
+        static constexpr auto of(void (*function)(PropertyType)) { return function; }
     };
 
     template <typename...>

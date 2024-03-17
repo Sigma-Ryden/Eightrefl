@@ -79,4 +79,6 @@ add_executable(${PROJECT_NAME}
 
     test/TestCommon.cpp
     test/TestLibrary.cpp
+    test/TestArray.cpp
+    test/TestReflection.cpp
 )

@@ -23,7 +23,7 @@
         auto __set = __access_traits::setter::of(&R::__REW_EXPAND name_set);                            \
         using __traits = rew::meta::property_traits<decltype(__get)>;                                   \
         auto __meta = rew::find_or_add_property(__reflection, name_str, __get, __set);                  \
-        injection.template property<R, typename __traits::type>::type>(*__meta);                        \
+        injection.template property<R, typename __traits::type>(*__meta);                               \
     }
 
 #define PROPERTY(...) RAW_PROPERTY(#__VA_ARGS__, (__VA_ARGS__), (__VA_ARGS__))
@@ -65,7 +65,7 @@ auto handler_property_get_impl(PropertyGetterType getter)
     {
         using type = typename meta::property_traits<PropertyGetterType>::type;
 
-        value = forward<type>
+        value = utility::forward<type>
         (
             (std::any_cast<ReflectableType*>(context)->*getter)()
         );
@@ -79,7 +79,7 @@ auto handler_property_get(PropertyType ReflectableType::* property)
 {
     return [property](const std::any& context, std::any& result)
     {
-        result = forward<PropertyType>
+        result = utility::forward<PropertyType>
         (
             std::any_cast<ReflectableType*>(context)->*property
         );
@@ -115,7 +115,7 @@ auto handler_property_get(PropertyType* property)
 {
     return [property](const std::any&, std::any& result)
     {
-        result = forward<PropertyType>(*property);
+        result = utility::forward<PropertyType>(*property);
     };
 }
 
@@ -124,7 +124,7 @@ auto handler_property_get(PropertyType (*getter)(void))
 {
     return [getter](const std::any&, std::any& result)
     {
-        result = forward<PropertyType>(getter());
+        result = utility::forward<PropertyType>(getter());
     };
 }
 
@@ -138,7 +138,7 @@ auto handler_property_set_impl(PropertySetterType setter)
     {
         using type = typename meta::property_traits<PropertySetterType>::type;
 
-        (std::any_cast<ReflectableType*>(context)->*setter)(forward<type>(value));
+        (std::any_cast<ReflectableType*>(context)->*setter)(utility::forward<type>(value));
     };
 }
 
@@ -149,7 +149,7 @@ auto handler_property_set(PropertyType ReflectableType::* property)
 {
     return [property](const std::any& context, const std::any& value)
     {
-        std::any_cast<ReflectableType*>(context)->*property = forward<PropertyType>(value);
+        std::any_cast<ReflectableType*>(context)->*property = utility::forward<PropertyType>(value);
     };
 }
 
@@ -170,7 +170,7 @@ auto handler_property_set(PropertyType* property)
 {
     return [property](const std::any&, const std::any& value)
     {
-        *property = forward<PropertyType>(value);
+        *property = utility::forward<PropertyType>(value);
     };
 }
 
@@ -179,7 +179,7 @@ auto handler_property_set(void (*setter)(PropertyType))
 {
     return [setter](const std::any&, const std::any& value)
     {
-        setter(forward<PropertyType>(value));
+        setter(utility::forward<PropertyType>(value));
     };
 }
 
