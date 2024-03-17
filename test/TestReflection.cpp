@@ -26,7 +26,7 @@ REFLECTABLE_DECLARATION(rew::reflection_t)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(rew::reflection_t)
-    //PROPERTY(name)
+    PROPERTY(name)
     PROPERTY(parent)
     PROPERTY(function)
     PROPERTY(factory)
@@ -40,6 +40,35 @@ REFLECTABLE_DECLARATION_INIT()
 REFLECTABLE(rew::type_t)
 REFLECTABLE_INIT()
 
-TEST(TestReflection, TestSelf)
+TEST(TestReflection, TestSelfReflection)
+{
+}
+
+
+TEST_SPACE()
+{
+
+struct X
+{
+    int f() { return 0; }
+    void f(int) {}
+
+    const int g() { return 0; }
+
+    const int i = 0;
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(X)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(X)
+    PROPERTY(f)
+    PROPERTY(g)
+    PROPERTY(i)
+REFLECTABLE_INIT()
+
+TEST(TestReflection, TestProperty)
 {
 }
