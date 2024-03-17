@@ -47,6 +47,7 @@ struct function_t
     const std::function<std::any(const std::any& context, const std::vector<std::any>& args)> call = nullptr;
     const std::vector<type_t*> arguments;
     type_t *const result = nullptr;
+    const std::any pointer = nullptr;
     attribute_t<std::any> meta;
 };
 

@@ -317,7 +317,8 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
             __overload,
             handler_function_call(ptr),
             detail::function_argument_types(dirty_pointer{}),
-            detail::function_return_type(dirty_pointer{})
+            detail::function_return_type(dirty_pointer{}),
+            ptr
         }
     );
 
@@ -340,7 +341,7 @@ property_t* find_or_add_property(reflection_t* reflection, const std::string& na
             find_or_add_type<type>(),
             handler_property_get(getter),
             handler_property_set(setter),
-            handler_property_ptr(getter)
+            handler_property_context(getter)
         }
     );
 

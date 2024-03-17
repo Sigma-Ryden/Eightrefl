@@ -45,10 +45,7 @@ TEST(TestReflection, TestSelfReflection)
 }
 
 
-TEST_SPACE()
-{
-
-struct X
+struct TestReflectionProperty
 {
     int f() { return 0; }
     void f(int) {}
@@ -56,17 +53,18 @@ struct X
     const int g() { return 0; }
 
     const int i = 0;
+
+    int j = 0;
 };
 
-} // TEST_SPACE
-
-REFLECTABLE_DECLARATION(X)
+REFLECTABLE_DECLARATION(TestReflectionProperty)
 REFLECTABLE_DECLARATION_INIT()
 
-REFLECTABLE(X)
+REFLECTABLE(TestReflectionProperty)
     PROPERTY(f)
     PROPERTY(g)
     PROPERTY(i)
+    PROPERTY(j)
 REFLECTABLE_INIT()
 
 TEST(TestReflection, TestProperty)

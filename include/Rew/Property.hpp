@@ -49,7 +49,7 @@ struct property_t
     type_t *const type = nullptr;
     const std::function<void(const std::any& context, std::any& result)> get = nullptr;
     const std::function<void(const std::any& context, const std::any& value)> set = nullptr;
-    const std::function<std::any(const std::any& context)> ptr = nullptr;
+    const std::function<std::any(const std::any& context)> context = nullptr;
     attribute_t<std::any> meta;
 };
 
@@ -227,7 +227,7 @@ namespace detail
 {
 
 template <typename ReflectableType, typename PropertyGetterType>
-auto handler_property_ptr_impl(PropertyGetterType getter)
+auto handler_property_context_impl(PropertyGetterType getter)
 {
     using type = typename meta::property_traits<PropertyGetterType>::type;
     if constexpr (std::is_reference_v<type>)
@@ -247,7 +247,7 @@ auto handler_property_ptr_impl(PropertyGetterType getter)
 } // namespace detail
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_ptr(PropertyType ReflectableType::* property)
+auto handler_property_context(PropertyType ReflectableType::* property)
 {
     return [property](const std::any& context) -> std::any
     {
@@ -256,31 +256,31 @@ auto handler_property_ptr(PropertyType ReflectableType::* property)
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_ptr(PropertyType (ReflectableType::* getter)(void) const)
+auto handler_property_context(PropertyType (ReflectableType::* getter)(void) const)
 {
-    return detail::handler_property_ptr_impl<ReflectableType>(getter);
+    return detail::handler_property_context_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_ptr(PropertyType (ReflectableType::* getter)(void) const&)
+auto handler_property_context(PropertyType (ReflectableType::* getter)(void) const&)
 {
-    return detail::handler_property_ptr_impl<ReflectableType>(getter);
+    return detail::handler_property_context_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_ptr(PropertyType (ReflectableType::* getter)(void))
+auto handler_property_context(PropertyType (ReflectableType::* getter)(void))
 {
-    return detail::handler_property_ptr_impl<ReflectableType>(getter);
+    return detail::handler_property_context_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_ptr(PropertyType (ReflectableType::* getter)(void) &)
+auto handler_property_context(PropertyType (ReflectableType::* getter)(void) &)
 {
-    return detail::handler_property_ptr_impl<ReflectableType>(getter);
+    return detail::handler_property_context_impl<ReflectableType>(getter);
 }
 
 template <typename PropertyType>
-auto handler_property_ptr(PropertyType* property)
+auto handler_property_context(PropertyType* property)
 {
     return [property](const std::any&) -> std::any
     {
@@ -289,7 +289,7 @@ auto handler_property_ptr(PropertyType* property)
 }
 
 template <typename PropertyType>
-auto handler_property_ptr(PropertyType (*getter)(void))
+auto handler_property_context(PropertyType (*getter)(void))
 {
     if constexpr (std::is_reference_v<PropertyType>)
     {
