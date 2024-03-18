@@ -14,7 +14,7 @@
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/iterator.hpp>
 
-// as mapped type
+// as value type
 #include <Rew/BuiltIn/pair.hpp>
 
 TEMPLATE_REFLECTABLE_CLEAN

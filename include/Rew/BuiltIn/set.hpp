@@ -9,9 +9,10 @@
 // default allocator for set, multiset
 #include <Rew/BuiltIn/allocator.hpp>
 
-// as function argument type
+// as function argument/result type
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/iterator.hpp>
+#include <Rew/BuiltIn/pair.hpp>
 
 TEMPLATE_REFLECTABLE_CLEAN
 (

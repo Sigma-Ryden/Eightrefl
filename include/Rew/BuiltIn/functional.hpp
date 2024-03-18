@@ -1,5 +1,5 @@
-#ifndef REW_BUILTIN_HASH_HPP
-#define REW_BUILTIN_HASH_HPP
+#ifndef REW_BUILTIN_FUNCTIONAL_HPP
+#define REW_BUILTIN_FUNCTIONAL_HPP
 
 #include <functional> // hash
 
@@ -23,4 +23,15 @@ TEMPLATE_REFLECTABLE((template <typename KeyType>), std::hash<KeyType>)
     FUNCTION(operator())
 REFLECTABLE_INIT()
 
-#endif // REW_BUILTIN_HASH_HPP
+
+TEMPLATE_REFLECTABLE_CLEAN((template <typename T>), (std::equal_to<T>), std::equal_to<CLEANOF(T)>)
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), std::equal_to<T>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::equal_to<" + NAMEOF(T) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename T>), std::equal_to<T>)
+REFLECTABLE_INIT()
+
+#endif // REW_BUILTIN_FUNCTIONAL_HPP

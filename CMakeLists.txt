@@ -25,7 +25,6 @@ set(REW
     include/Rew/Detail/Meta.hpp
     include/Rew/Detail/Macro.hpp
 
-    include/Rew/BuiltIn/hash.hpp
     include/Rew/BuiltIn/function.hpp
     include/Rew/BuiltIn/allocator.hpp
 
@@ -56,6 +55,7 @@ set(REW
     include/Rew/BuiltIn/initializer_list.hpp
     include/Rew/BuiltIn/reference_wrapper.hpp
     include/Rew/BuiltIn/iterator.hpp
+    include/Rew/BuiltIn/functional.hpp
 
     include/Rew/BuiltIn/typeinfo.hpp
     include/Rew/BuiltIn/typeindex.hpp
