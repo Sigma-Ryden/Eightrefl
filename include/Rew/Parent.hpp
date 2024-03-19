@@ -11,8 +11,8 @@
 
 #define RAW_PARENT(...)                                                                                 \
     {                                                                                                   \
-        auto __meta = rew::find_or_add_parent<R, __VA_ARGS__>(__reflection);                            \
-        injection.template parent<R, __VA_ARGS__>(*__meta);                                             \
+        auto __meta = rew::find_or_add_parent<CleanR, __VA_ARGS__>(__reflection);                       \
+        injection.template parent<CleanR, __VA_ARGS__>(*__meta);                                        \
     }
 
 #define PARENT(...) RAW_PARENT(__VA_ARGS__)

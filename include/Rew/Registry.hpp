@@ -60,7 +60,7 @@ public:
 
 private:
     template <typename ReflectableType>
-    auto context()
+    static auto context()
     {
         return [](std::any& object)
         {
@@ -69,7 +69,7 @@ private:
     }
 
     template <typename ReflectableType>
-    auto size()
+    static auto size()
     {
         return sizeof(ReflectableType);
     }
@@ -89,7 +89,13 @@ public:
             context<ReflectableType>()
         };
 
-        rtti_all.emplace(typeid(DirtyReflectableType), type);
+        auto& rtti_type = rtti_all[typeid(ReflectableType)];
+        if (rtti_type == nullptr) rtti_type = type;
+
+        if constexpr (!std::is_same_v<ReflectableType, DirtyReflectableType>)
+        {
+            rtti_all.emplace(typeid(DirtyReflectableType), type);
+        }
 
         return type;
     }

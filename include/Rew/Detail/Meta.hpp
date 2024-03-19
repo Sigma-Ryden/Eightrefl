@@ -30,6 +30,11 @@ struct reflectable_using
     using R = T;
 };
 
+struct dummy_type {};
+
+template <typename T>
+struct reflectable_using_base : std::conditional_t<std::is_class_v<T>, T, dummy_type> {};
+
 template <typename T> using clean = typename reflectable_using<T>::R;
 
 template <typename T>

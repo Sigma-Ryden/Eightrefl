@@ -16,7 +16,7 @@
     {                                                                                                   \
         using __traits = rew::meta::function_traits<__VA_ARGS__>;                                       \
         auto __meta = rew::find_or_add_factory<typename __traits::dirty_pointer>(__reflection);         \
-        injection.template factory<R, typename __traits::pointer>(*__meta);                             \
+        injection.template factory<CleanR, typename __traits::pointer>(*__meta);                        \
     }
 
 #define FACTORY(...) RAW_FACTORY(__VA_ARGS__)

@@ -7,12 +7,12 @@
 #include <Rew/Injection.hpp>
 
 #include <Rew/Detail/Meta.hpp>
-#include <Rew/Detail/Macro.hpp> // __REW_EXPAND
+#include <Rew/Detail/Macro.hpp> // __REWX
 
 // raw reflectable declaration
 #define RAW_TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                      \
     namespace rew { namespace meta {                                                                    \
-        __REW_EXPAND template_header                                                                    \
+        __REWX template_header                                                                          \
         struct reflectable_traits<__VA_ARGS__> {                                                        \
             using R = typename rew::meta::reflectable_using<__VA_ARGS__>::R;                            \
             LAZY_REFLECTABLE()
@@ -72,27 +72,27 @@
 #define __REW_REFLECTABLE_BODY()                                                                        \
         template <class InjectionType>                                                                  \
         static void evaluate(InjectionType&& injection) {                                               \
-            auto __type = rew::find_or_add_type<DirtyR>();                                              \
+            auto __type = rew::find_or_add_type<R>();                                                   \
             auto __reflection = __type->reflection; (void)__reflection;                                 \
             injection.template type<R>(*__type);
 
 #define RAW_TEMPLATE_REFLECTABLE(template_header, ...)                                                  \
-    __REW_EXPAND template_header                                                                        \
+    __REWX template_header                                                                              \
     struct rew_reflection_registry_t<__VA_ARGS__> {                                                     \
-        using DirtyR = __VA_ARGS__;                                                                     \
-        using R = typename rew::meta::reflectable_traits<DirtyR>::R;                                    \
+        using R = __VA_ARGS__;                                                                          \
+        using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
         __REW_REFLECTABLE_BODY()
 
 #define RAW_CONDITIONAL_REFLECTABLE(...)                                                                \
-    template <typename DirtyR>                                                                          \
-    struct rew_reflection_registry_t<DirtyR, std::enable_if_t<__VA_ARGS__>> {                           \
-        using R = typename rew::meta::reflectable_traits<DirtyR>::R;                                    \
+    template <typename R>                                                                               \
+    struct rew_reflection_registry_t<R, std::enable_if_t<__VA_ARGS__>> {                                \
+        using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
         __REW_REFLECTABLE_BODY()
 
 #define RAW_REFLECTABLE(...)                                                                            \
     template <> struct rew_reflection_registry_t<__VA_ARGS__> {                                         \
-        using DirtyR = __VA_ARGS__;                                                                     \
-        using R = typename rew::meta::reflectable_traits<DirtyR>::R;                                    \
+        using R = __VA_ARGS__;                                                                          \
+        using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
         __REW_REFLECTABLE_BODY()
 
 #define RAW_REFLECTABLE_INIT(...)                                                                       \
@@ -138,7 +138,7 @@
 // reflectable clean
 #define TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_clean, ...)                             \
    namespace rew { namespace meta {                                                                     \
-        __REW_EXPAND template_header struct reflectable_using<__REW_EXPAND reflectable_clean> {         \
+        __REWX template_header struct reflectable_using<__REWX reflectable_clean> {                     \
             using R = __VA_ARGS__;                                                                      \
         };                                                                                              \
     }}
@@ -153,13 +153,14 @@
 
 
 // reflectable using
-#define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, ...)                             \
-   __REW_EXPAND template_header struct reflectable_using {};                                            \
-    TEMPLATE_REFLECTABLE_CLEAN(template_header, __VA_ARGS__)
+#define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, reflectable_clean, ...)          \
+   __REWX template_header                                                                               \
+   struct reflectable_using : rew::meta::reflectable_using_base<__VA_ARGS__> {};                        \
+    TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_clean, __VA_ARGS__)
 
-#define REFLECTABLE_USING(reflectable_using, ...)                                                       \
-   struct reflectable_using {};                                                                         \
-   REFLECTABLE_CLEAN(reflectable_using, __VA_ARGS__)
+#define REFLECTABLE_USING(reflectable_using, reflectable_clean, ...)                                    \
+   struct reflectable_using : rew::meta::reflectable_using_base<__VA_ARGS__> {};                        \
+   REFLECTABLE_CLEAN(reflectable_using, reflectable_clean, __VA_ARGS__)
 // ~ reflectable using
 
 

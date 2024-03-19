@@ -1,3 +1,4 @@
+// TODO: add property type specification
 #ifndef REW_PROPERTY_HPP
 #define REW_PROPERTY_HPP
 
@@ -14,15 +15,15 @@
 
 #include <Rew/Utility.hpp>
 
-#include <Rew/Detail/Macro.hpp> // __REW_EXPAND
+#include <Rew/Detail/Macro.hpp> // __REWX
 
 #define RAW_PROPERTY(name_str, get, set)                                                                \
     {                                                                                                   \
-        using __access_traits = rew::meta::access_traits<R>;                                            \
-        auto [__get, __set] = __access_traits::property::of(&R::__REW_EXPAND get, &R::__REW_EXPAND set);\
+        using __access_traits = rew::meta::access_traits<CleanR>;                                       \
+        auto [__get, __set] = __access_traits::property::of(&CleanR::__REWX get, &CleanR::__REWX set);  \
         using __traits = rew::meta::property_traits<decltype(__get)>;                                   \
         auto __meta = rew::find_or_add_property(__reflection, name_str, __get, __set);                  \
-        injection.template property<R, typename __traits::type>(*__meta);                               \
+        injection.template property<CleanR, typename __traits::type>(*__meta);                          \
     }
 
 #define PROPERTY(...) RAW_PROPERTY(#__VA_ARGS__, (__VA_ARGS__), (__VA_ARGS__))
@@ -30,10 +31,10 @@
 #define RAW_FREE_PROPERTY(name_str, get, set)                                                           \
     {                                                                                                   \
         using __access_traits = rew::meta::access_traits<>;                                             \
-        auto [__get, __set] = __access_traits::property::of(&R::__REW_EXPAND get, &R::__REW_EXPAND set);\
+        auto [__get, __set] = __access_traits::property::of(&__REWX get, &__REWX set);                  \
         using __traits = rew::meta::property_traits<decltype(__get)>;                                   \
         auto __meta = rew::find_or_add_property(__reflection, name_str, __get, __set);                  \
-        injection.template property<R, typename __traits::type>(*__meta);                               \
+        injection.template property<CleanR, typename __traits::type>(*__meta);                          \
     }
 
 #define FREE_PROPERTY(...) RAW_FREE_PROPERTY(#__VA_ARGS__, (__VA_ARGS__), (__VA_ARGS__))
