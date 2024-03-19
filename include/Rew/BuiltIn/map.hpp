@@ -99,7 +99,7 @@ struct __rew_is_any_std_ordered_map<std::map<KeyType, ValueType, Comparator, All
 template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
 struct __rew_is_any_std_ordered_map<std::multimap<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<CLEANOF(DirtyR)>::value)
+CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<R>::value)
     FACTORY(R())
     FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(typename R::key_compare const&))

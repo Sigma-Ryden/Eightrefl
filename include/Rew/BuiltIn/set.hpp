@@ -90,7 +90,7 @@ struct __rew_is_any_std_ordered_set<std::set<KeyType, Comparator, AllocatorType>
 template <typename KeyType, typename Comparator, typename AllocatorType>
 struct __rew_is_any_std_ordered_set<std::multiset<KeyType, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<CLEANOF(DirtyR)>::value)
+CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<R>::value)
     FACTORY(R())
     FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(typename R::key_compare const&))

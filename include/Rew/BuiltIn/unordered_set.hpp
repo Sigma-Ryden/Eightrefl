@@ -116,7 +116,7 @@ struct __rew_is_any_std_unordered_set<std::unordered_set<KeyType, Hasher, Compar
 template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
 struct __rew_is_any_std_unordered_set<std::unordered_multiset<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<CLEANOF(DirtyR)>::value)
+CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
     FACTORY(R())
     FACTORY(R(typename R::size_type, typename R::hasher const&, typename R::key_equal const&, typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::hasher const&, typename R::key_equal const&))
