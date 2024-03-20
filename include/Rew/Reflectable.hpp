@@ -7,12 +7,12 @@
 #include <Rew/Injection.hpp>
 
 #include <Rew/Detail/Meta.hpp>
-#include <Rew/Detail/Macro.hpp> // __REWX
+#include <Rew/Detail/Macro.hpp> // __REW_EXPAND
 
 // raw reflectable declaration
 #define RAW_TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                      \
     namespace rew { namespace meta {                                                                    \
-        __REWX template_header                                                                          \
+        __REW_EXPAND template_header                                                                    \
         struct reflectable_traits<__VA_ARGS__> {                                                        \
             using R = typename rew::meta::reflectable_using<__VA_ARGS__>::R;                            \
             LAZY_REFLECTABLE()
@@ -77,7 +77,7 @@
             injection.template type<R>(*__type);
 
 #define RAW_TEMPLATE_REFLECTABLE(template_header, ...)                                                  \
-    __REWX template_header                                                                              \
+    __REW_EXPAND template_header                                                                        \
     struct rew_reflection_registry_t<__VA_ARGS__> {                                                     \
         using R = __VA_ARGS__;                                                                          \
         using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
@@ -138,7 +138,7 @@
 // reflectable clean
 #define TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_clean, ...)                             \
    namespace rew { namespace meta {                                                                     \
-        __REWX template_header struct reflectable_using<__REWX reflectable_clean> {                     \
+        __REW_EXPAND template_header struct reflectable_using<__REW_EXPAND reflectable_clean> {         \
             using R = __VA_ARGS__;                                                                      \
         };                                                                                              \
     }}
@@ -153,14 +153,14 @@
 
 
 // reflectable using
-#define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, reflectable_clean, ...)          \
-   __REWX template_header                                                                               \
+#define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, reflectable_using_full, ...)     \
+   __REW_EXPAND template_header                                                                         \
    struct reflectable_using : rew::meta::reflectable_using_base<__VA_ARGS__> {};                        \
-    TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_clean, __VA_ARGS__)
+    TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_using_full, __VA_ARGS__)
 
-#define REFLECTABLE_USING(reflectable_using, reflectable_clean, ...)                                    \
+#define REFLECTABLE_USING(reflectable_using, ...)                                                       \
    struct reflectable_using : rew::meta::reflectable_using_base<__VA_ARGS__> {};                        \
-   REFLECTABLE_CLEAN(reflectable_using, reflectable_clean, __VA_ARGS__)
+   REFLECTABLE_CLEAN(reflectable_using, __VA_ARGS__)
 // ~ reflectable using
 
 
@@ -326,11 +326,15 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
     return __meta;
 }
 
-template <typename PropertyGetterType, typename PropertySetterType>
+template <typename DirtyPropertyType = void, typename PropertyGetterType, typename PropertySetterType>
 property_t* find_or_add_property(reflection_t* reflection, const std::string& name,
                                  PropertyGetterType getter, PropertySetterType setter)
 {
-    using property_traits = meta::property_traits<PropertyGetterType>;
+    using property_traits = meta::property_traits
+    <
+        std::conditional_t<std::is_void_v<DirtyPropertyType>, PropertyGetterType, DirtyPropertyType>
+    >;
+
     using type = typename property_traits::type;
 
     auto __meta = reflection->property.find(name);

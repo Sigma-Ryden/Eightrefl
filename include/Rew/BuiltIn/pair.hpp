@@ -23,8 +23,8 @@ TEMPLATE_REFLECTABLE((template <typename FirstType, typename SecondType>), std::
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(swap, void(R&))
-//  PROPERTY(first)
-//  PROPERTY(second)
+    PROPERTY(first, typename R::first_type)
+    PROPERTY(second, typename R::second_type)
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_PAIR_HPP
