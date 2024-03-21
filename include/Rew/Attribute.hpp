@@ -10,7 +10,7 @@ namespace rew
 template <class MetaType>
 struct attribute_t
 {
-    auto find(const std::string& name)
+    MetaType* find(const std::string& name)
     {
         auto it = all.find(name);
         return it != all.end() ? &it->second : nullptr;
