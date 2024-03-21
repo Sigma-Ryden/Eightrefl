@@ -7,7 +7,8 @@
 #include <Rew/Injection.hpp>
 
 #include <Rew/Detail/Meta.hpp>
-#include <Rew/Detail/Macro.hpp> // __REW_EXPAND
+
+#define __REW_EXPAND(...) __VA_ARGS__
 
 // raw reflectable declaration
 #define RAW_TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                      \

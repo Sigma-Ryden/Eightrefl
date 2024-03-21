@@ -90,38 +90,15 @@ REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(rew::registry_t)
     FACTORY(rew::registry_t())
-    FUNCTION(find, rew::type_t*(const std::string&))
-    FUNCTION(find, rew::type_t*(std::type_index))
-    FUNCTION(find, rew::type_t*(std::any&))
+    FUNCTION(find, rew::type_t*(const std::string&) const)
+    FUNCTION(find, rew::type_t*(std::type_index) const)
+    FUNCTION(find, rew::type_t*(std::any&) const)
     PROPERTY(all)
     PROPERTY(rtti_all)
 REFLECTABLE_INIT()
 
 TEST(TestReflection, TestSelfReflection)
 {
-    rew::reflectable<std::vector<int>>();
-    auto type = rew::global.find(typeid(std::vector<int>::iterator));
-    (void)type;
-    //static_assert(is_std_vector_iterator(std::vector<int>::iterator{}), "");
-    //rew::reflectable<std::unordered_map<int, int>>();
-    //using dirty_reflectable_type = std::pair<std_iterator<std::vector<int>>, bool>;
-
-    //using reflectable_traits = rew::meta::reflectable_traits<dirty_reflectable_type>;
-    //using reflectable_type = typename meta::reflectable_using<dirty_reflectable_type>::R;
-    //auto xxx = reflectable_traits::name();
-
-    //rew::find_or_add_type<dirty_reflectable_type>();
-    //using R = Struct<Iterator<Array<bool>>>;
-    //rew::reflectable<R>();
-    //auto type = rew::global.find("Struct<Array<bool>::Iterator>");
-    // auto factory = type->reflection->factory.find("Struct<Array<bool>::Iterator>()");
-    // auto obj = factory->call({});
-    // auto context = type->context(obj);
-    // auto function = type->reflection->function.find("Foo")->all.begin()->second;
-    // function.call(context, { Array<bool>::Iterator{} });
-
-    //using type = __ArrayIterator<Array<bool>, Array<bool>::Iterator>::type;
-    //using type = refl<std::vector<int>::iterator>;
 }
 
 struct TestReflectionProperty

@@ -1,6 +1,0 @@
-#ifndef REW_DETAIL_MACRO_HPP
-#define REW_DETAIL_MACRO_HPP
-
-#define __REW_EXPAND(...) __VA_ARGS__
-
-#endif // REW_DETAIL_MACRO_HPP

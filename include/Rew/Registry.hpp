@@ -35,25 +35,25 @@ public:
         }
     }
 
-    type_t* find(const std::string& name)
+    type_t* find(const std::string& name) const
     {
         auto it = all.find(name);
         return it != all.end() ? it->second : nullptr;
     }
 
-    type_t* find(std::type_index typeindex)
+    type_t* find(std::type_index typeindex) const
     {
         auto it = rtti_all.find(typeindex);
         return it != rtti_all.end() ? it->second : nullptr;
     }
 
-    type_t* find(std::any& object)
+    type_t* find(std::any& object) const
     {
         return find(object.type());
     }
 
     template <typename ReflectableType>
-    type_t* find()
+    type_t* find() const
     {
         return find(meta::reflectable_traits<ReflectableType>::name());
     }

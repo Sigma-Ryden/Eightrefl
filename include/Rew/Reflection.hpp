@@ -10,6 +10,9 @@
 #include <Rew/Property.hpp>
 #include <Rew/Meta.hpp>
 
+template <typename ReflectableType, typename enable = void>
+struct rew_reflection_registry_t;
+
 namespace rew
 {
 

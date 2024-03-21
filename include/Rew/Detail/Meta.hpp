@@ -1,13 +1,9 @@
-// TODO: changr function name building and other possible to struct traits
 #ifndef REW_DETAIL_META_HPP
 #define REW_DETAIL_META_HPP
 
 #include <type_traits> // conjunction, disjunction, false_type, true_type, void_t
 
 #include <utility> // pair
-
-template <typename ReflectableType, typename enable = void>
-struct rew_reflection_registry_t;
 
 namespace rew
 {
@@ -316,238 +312,190 @@ struct access_traits<>
 template <class ClassType>
 struct access_traits<ClassType>
 {
+    template <typename PropertyGetterType, typename PropertySetterType>
+    static constexpr auto ppack(PropertyGetterType get, PropertySetterType set)
+    {
+        return std::make_pair(detail::property_ptr_impl<ClassType>(get), detail::property_ptr_impl<ClassType>(set));
+    }
+
+    template <typename PropertyGetterType, typename PropertySetterType>
+    static constexpr auto fpack(PropertyGetterType get, PropertySetterType set)
+    {
+        return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+    }
+
+    template <typename FunctionType>
+    static constexpr auto fpack(FunctionType function)
+    {
+        return detail::function_ptr_impl<ClassType>(function);
+    }
+
     template <typename...>
     struct property
     {
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType ParentClassType::* get,
-                                 PropertyType ParentClassType::* set)
+        static constexpr auto of(PropertyType ParentClassType::* get, PropertyType ParentClassType::* set)
         {
-            return std::make_pair(detail::property_ptr_impl<ClassType>(get), detail::property_ptr_impl<ClassType>(set));
+            return ppack(get, set);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const,
-                                 void (ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, void (ParentClassType::* set)(PropertyType))
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const,
-                                 void (ParentClassType::* set)(PropertyType) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, void (ParentClassType::* set)(PropertyType) &)
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&,
-                                 void (ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, void (ParentClassType::* set)(PropertyType))
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&,
-                                 void (ParentClassType::* set)(PropertyType) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, void (ParentClassType::* set)(PropertyType) &)
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void),
-                                 void (ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void), void (ParentClassType::* set)(PropertyType))
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void),
-                                 void (ParentClassType::* set)(PropertyType) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void), void (ParentClassType::* set)(PropertyType) &)
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) &,
-                                 void (ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) &, void (ParentClassType::* set)(PropertyType))
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) &,
-                                 void (ParentClassType::* set)(PropertyType) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) &, void (ParentClassType::* set)(PropertyType) &)
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename PropertyType>
+        static constexpr auto of(PropertyType (*get)(void), void (*set)(PropertyType)) { return std::make_pair(get, set); }
+
+        template <typename PropertyType>
+        static constexpr auto of(PropertyType* get, PropertyType* set) { return std::make_pair(get, set); }
+    };
+
+    template <typename...>
+    struct __property;
+
+    template <typename DirtyPropertyType>
+    struct __property<DirtyPropertyType>
+    {
+        using PropertyType = clean<DirtyPropertyType>;
+
         static constexpr auto of(PropertyType (*get)(void), void (*set)(PropertyType))
-        {
-            return std::make_pair(get, set);
-        }
-
-        template <typename PropertyType>
-        static constexpr auto of(PropertyType* get, PropertyType* set)
         {
             return std::make_pair(get, set);
         }
     };
 
     template <typename DirtyPropertyType>
-    struct property<DirtyPropertyType>
+    struct __property<DirtyPropertyType()>
     {
         using PropertyType = clean<DirtyPropertyType>;
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType ParentClassType::* get,
-                                 PropertyType ParentClassType::* set)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void), void (ParentClassType::* set)(PropertyType))
         {
-            return std::make_pair(detail::property_ptr_impl<ClassType>(get), detail::property_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const,
-                                 void (ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void), void (ParentClassType::* set)(PropertyType) &)
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const,
-                                 void (ParentClassType::* set)(PropertyType) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) &, void (ParentClassType::* set)(PropertyType))
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&,
-                                 void (ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) &, void (ParentClassType::* set)(PropertyType) &)
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
-        }
-
-        template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&,
-                                 void (ParentClassType::* set)(PropertyType) &)
-        {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
-        }
-
-        template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void),
-                                 void (ParentClassType::* set)(PropertyType))
-        {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
-        }
-
-        template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void),
-                                 void (ParentClassType::* set)(PropertyType) &)
-        {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
-        }
-
-        template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) &,
-                                 void (ParentClassType::* set)(PropertyType))
-        {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
-        }
-
-        template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) &,
-                                 void (ParentClassType::* set)(PropertyType) &)
-        {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
-        }
-
-        static constexpr auto of(PropertyType (*get)(void), void (*set)(PropertyType))
-        {
-            return std::make_pair(get, set);
-        }
-
-        static constexpr auto of(PropertyType* get, PropertyType* set)
-        {
-            return std::make_pair(get, set);
+            return fpack(get, set);
         }
     };
 
     template <typename DirtyPropertyType>
-    struct property<DirtyPropertyType()>
+    struct __property<DirtyPropertyType() const>
     {
+        using PropertyType = clean<DirtyPropertyType>;
+
         template <typename ParentClassType>
-        static constexpr auto of(clean<DirtyPropertyType> (ParentClassType::* get)(void),
-                                 void (ParentClassType::* set)(clean<DirtyPropertyType>))
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, void (ParentClassType::* set)(PropertyType))
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(clean<DirtyPropertyType> (ParentClassType::* get)(void),
-                                 void (ParentClassType::* set)(clean<DirtyPropertyType>) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, void (ParentClassType::* set)(PropertyType) &)
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(clean<DirtyPropertyType> (ParentClassType::* get)(void) &,
-                                 void (ParentClassType::* set)(clean<DirtyPropertyType>))
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, void (ParentClassType::* set)(PropertyType))
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+            return fpack(get, set);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(clean<DirtyPropertyType> (ParentClassType::* get)(void) &,
-                                 void (ParentClassType::* set)(clean<DirtyPropertyType>) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, void (ParentClassType::* set)(PropertyType) &)
         {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
-        }
-
-        static constexpr auto of(clean<DirtyPropertyType> (*get)(void),
-                                 void (*set)(clean<DirtyPropertyType>))
-        {
-            return std::make_pair(get, set);
+            return fpack(get, set);
         }
     };
 
     template <typename DirtyPropertyType>
-    struct property<DirtyPropertyType() const>
+    struct property<DirtyPropertyType()> : __property<DirtyPropertyType()>, __property<DirtyPropertyType>
     {
-        template <typename ParentClassType>
-        static constexpr auto of(clean<DirtyPropertyType> (ParentClassType::* get)(void) const,
-                                 void (ParentClassType::* set)(clean<DirtyPropertyType>))
-        {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
-        }
+        using __property<DirtyPropertyType()>::of;
+        using __property<DirtyPropertyType>::of;
+    };
+
+    template <typename DirtyPropertyType>
+    struct property<DirtyPropertyType() const> : __property<DirtyPropertyType() const>, __property<DirtyPropertyType>
+    {
+        using __property<DirtyPropertyType() const>::of;
+        using __property<DirtyPropertyType>::of;
+    };
+
+    template <typename DirtyPropertyType>
+    struct property<DirtyPropertyType>
+        : __property<DirtyPropertyType()>, __property<DirtyPropertyType() const>, __property<DirtyPropertyType>
+    {
+        using PropertyType = clean<DirtyPropertyType>;
+
+        using __property<DirtyPropertyType()>::of;
+        using __property<DirtyPropertyType() const>::of;
+        using __property<DirtyPropertyType>::of;
 
         template <typename ParentClassType>
-        static constexpr auto of(clean<DirtyPropertyType> (ParentClassType::* get)(void) const,
-                                 void (ParentClassType::* set)(clean<DirtyPropertyType>) &)
-        {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
-        }
+        static constexpr auto of(PropertyType ParentClassType::* get, PropertyType ParentClassType::* set) { return ppack(get, set); }
 
-        template <typename ParentClassType>
-        static constexpr auto of(clean<DirtyPropertyType> (ParentClassType::* get)(void) const&,
-                                 void (ParentClassType::* set)(clean<DirtyPropertyType>))
-        {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
-        }
-
-        template <typename ParentClassType>
-        static constexpr auto of(clean<DirtyPropertyType> (ParentClassType::* get)(void) const&,
-                                 void (ParentClassType::* set)(clean<DirtyPropertyType>) &)
-        {
-            return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
-        }
-
-        static constexpr auto of(clean<DirtyPropertyType> (*get)(void),
-                                 void (*set)(clean<DirtyPropertyType>))
-        {
-            return std::make_pair(get, set);
-        }
+        static constexpr auto of(PropertyType* get, PropertyType* set) { return std::make_pair(get, set); }
     };
 
     template <typename...>
@@ -564,28 +512,16 @@ struct access_traits<ClassType>
         static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) &) { return function; }
 
         template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) const)
-        {
-            return detail::function_ptr_impl<ClassType>(function);
-        }
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) const) { return fpack(function); }
 
         template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) const&)
-        {
-            return detail::function_ptr_impl<ClassType>(function);
-        }
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) const&) { return fpack(function); }
 
         template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...))
-        {
-            return detail::function_ptr_impl<ClassType>(function);
-        }
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...)) { return fpack(function); }
 
         template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) &)
-        {
-            return detail::function_ptr_impl<ClassType>(function);
-        }
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) &) { return fpack(function); }
 
         template <typename ReturnType, typename... ArgumentTypes>
         static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
@@ -600,13 +536,13 @@ struct access_traits<ClassType>
         template <class ParentClassType>
         static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) const)
         {
-            return detail::function_ptr_impl<ClassType>(function);
+            return fpack(function);
         }
 
         template <class ParentClassType>
         static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) const&)
         {
-            return detail::function_ptr_impl<ClassType>(function);
+            return fpack(function);
         }
 
         static constexpr auto of(clean<DirtyReturnType> (*function)(clean<DirtyArgumentTypes>...)) { return function; }
@@ -621,13 +557,13 @@ struct access_traits<ClassType>
         template <class ParentClassType>
         static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...))
         {
-            return detail::function_ptr_impl<ClassType>(function);
+            return fpack(function);
         }
 
         template <class ParentClassType>
         static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) &)
         {
-            return detail::function_ptr_impl<ClassType>(function);
+            return fpack(function);
         }
 
         static constexpr auto of(clean<DirtyReturnType> (*function)(clean<DirtyArgumentTypes>...)) { return function; }

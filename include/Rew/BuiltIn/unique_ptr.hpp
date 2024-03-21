@@ -1,4 +1,3 @@
-// TODO: std::default_deleter comleting
 #ifndef REW_BUILTIN_UNIQUE_PTR_HPP
 #define REW_BUILTIN_UNIQUE_PTR_HPP
 
