@@ -35,7 +35,7 @@ public:
         }
     }
 
-    type_t* find(const std::string& name) const
+    type_t* find(std::string const& name) const
     {
         auto it = all.find(name);
         return it != all.end() ? it->second : nullptr;
@@ -76,7 +76,7 @@ private:
 
 public:
     template <typename ReflectableType, typename DirtyReflectableType = ReflectableType>
-    type_t* add(const std::string& name)
+    type_t* add(std::string const& name)
     {
         auto& type = all[name];
         if (type != nullptr) return type;

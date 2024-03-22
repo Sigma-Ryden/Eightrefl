@@ -18,18 +18,18 @@ namespace rew
 template <class MetaType>
 struct attribute_t
 {
-    MetaType* find(const std::string& name)
+    MetaType* find(std::string const& name)
     {
         auto it = all.find(name);
         return it != all.end() ? &it->second : nullptr;
     }
 
-    MetaType& add(const std::string& name, const MetaType& meta)
+    MetaType& add(std::string const& name, MetaType const& meta)
     {
         return all.emplace(name, meta).first->second;
     }
 
-    bool remove(const std::string& name)
+    bool remove(std::string const& name)
     {
         return all.erase(name)>0;
     }
@@ -62,16 +62,16 @@ struct type_t;
 
 struct parent_t
 {
-    const std::string name;
+    std::string const name;
     type_t *const type = nullptr;
-    const std::function<std::any(const std::any& child_context)> cast = nullptr;
+    std::function<std::any(std::any const& child_context)> const cast = nullptr;
     attribute_t<std::any> meta;
 };
 
 template <typename ReflectableType, typename ParentReflectableType>
 auto handler_parent_cast()
 {
-    return [](const std::any& child_context) -> std::any
+    return [](std::any const& child_context) -> std::any
     {
         return static_cast<ParentReflectableType*>(std::any_cast<ReflectableType*>(child_context));
     };
@@ -663,7 +663,7 @@ inline namespace utility
 {
 
 template <typename ValueType>
-ValueType forward(const std::any& object)
+ValueType forward(std::any const& object)
 {
     if constexpr (std::is_reference_v<ValueType>)
     {
@@ -727,11 +727,11 @@ struct type_t;
 
 struct function_t
 {
-    const std::string name;
-    const std::function<std::any(const std::any& context, const std::vector<std::any>& args)> call = nullptr;
-    const std::vector<type_t*> arguments;
+    std::string const name;
+    std::function<std::any(std::any const& context, std::vector<std::any> const& args)> const call = nullptr;
+    std::vector<type_t*> const arguments;
     type_t *const result = nullptr;
-    const std::any pointer = nullptr;
+    std::any const pointer = nullptr;
     attribute_t<std::any> meta;
 };
 
@@ -742,7 +742,7 @@ template <typename ReflectableType, typename ReturnType, typename... ArgumentTyp
           typename FunctionType, std::size_t... I>
 auto handler_member_function_call_impl(FunctionType function, std::index_sequence<I...>)
 {
-    return [function](const std::any& context, const std::vector<std::any>& arguments) -> std::any
+    return [function](std::any const& context, std::vector<std::any> const& arguments) -> std::any
     {
         auto reflectable = std::any_cast<ReflectableType*>(context);
         if constexpr (std::is_void_v<ReturnType>)
@@ -763,7 +763,7 @@ auto handler_member_function_call_impl(FunctionType function, std::index_sequenc
 template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
 auto handler_free_function_call_impl(ReturnType (*function)(ArgumentTypes...), std::index_sequence<I...>)
 {
-    return [function](const std::any&, const std::vector<std::any>& arguments) -> std::any
+    return [function](std::any const&, std::vector<std::any> const& arguments) -> std::any
     {
         if constexpr (std::is_void_v<ReturnType>)
         {
@@ -842,9 +842,9 @@ struct type_t;
 
 struct factory_t
 {
-    const std::string name;
-    const std::function<std::any(const std::vector<std::any>& args)> call = nullptr;
-    const std::vector<type_t*> arguments;
+    std::string const name;
+    std::function<std::any(std::vector<std::any> const& args)> const call = nullptr;
+    std::vector<type_t*> const arguments;
     attribute_t<std::any> meta;
 };
 
@@ -854,7 +854,7 @@ namespace detail
 template <typename ReflectableType, typename... ArgumentTypes, std::size_t... I>
 auto handler_factory_call_impl(std::index_sequence<I...>)
 {
-    return [](const std::vector<std::any>& arguments) -> std::any
+    return [](std::vector<std::any> const& arguments) -> std::any
     {
         if constexpr (std::is_aggregate_v<ReflectableType>)
         {
@@ -909,11 +909,11 @@ struct type_t;
 
 struct property_t
 {
-    const std::string name;
+    std::string const name;
     type_t *const type = nullptr;
-    const std::function<void(const std::any& context, std::any& result)> get = nullptr;
-    const std::function<void(const std::any& context, const std::any& value)> set = nullptr;
-    const std::function<std::any(const std::any& outer_context)> context = nullptr;
+    std::function<void(std::any const& context, std::any& result)> const get = nullptr;
+    std::function<void(std::any const& context, std::any const& value)> const set = nullptr;
+    std::function<std::any(std::any const& outer_context)> const context = nullptr;
     attribute_t<std::any> meta;
 };
 
@@ -923,7 +923,7 @@ namespace detail
 template <typename ReflectableType, typename PropertyGetterType>
 auto handler_property_get_impl(PropertyGetterType getter)
 {
-    return [getter](const std::any& context, std::any& value)
+    return [getter](std::any const& context, std::any& value)
     {
         using type = typename meta::property_traits<PropertyGetterType>::type;
 
@@ -939,7 +939,7 @@ auto handler_property_get_impl(PropertyGetterType getter)
 template <typename ReflectableType, typename PropertyType>
 auto handler_property_get(PropertyType ReflectableType::* property)
 {
-    return [property](const std::any& context, std::any& result)
+    return [property](std::any const& context, std::any& result)
     {
         result = utility::forward<PropertyType>
         (
@@ -975,7 +975,7 @@ auto handler_property_get(PropertyType (ReflectableType::* getter)(void) &)
 template <typename PropertyType>
 auto handler_property_get(PropertyType* property)
 {
-    return [property](const std::any&, std::any& result)
+    return [property](std::any const&, std::any& result)
     {
         result = utility::forward<PropertyType>(*property);
     };
@@ -984,7 +984,7 @@ auto handler_property_get(PropertyType* property)
 template <typename PropertyType>
 auto handler_property_get(PropertyType (*getter)(void))
 {
-    return [getter](const std::any&, std::any& result)
+    return [getter](std::any const&, std::any& result)
     {
         result = utility::backward<PropertyType>(getter());
     };
@@ -996,7 +996,7 @@ namespace detail
 template <typename ReflectableType, typename PropertySetterType>
 auto handler_property_set_impl(PropertySetterType setter)
 {
-    return [setter](const std::any& context, const std::any& value)
+    return [setter](std::any const& context, std::any const& value)
     {
         using type = typename meta::property_traits<PropertySetterType>::type;
 
@@ -1009,14 +1009,14 @@ auto handler_property_set_impl(PropertySetterType setter)
 template <typename ReflectableType, typename PropertyType>
 auto handler_property_set(PropertyType ReflectableType::* property)
 {
-    return [property](const std::any& context, const std::any& value)
+    return [property](std::any const& context, std::any const& value)
     {
         std::any_cast<ReflectableType*>(context)->*property = utility::forward<PropertyType>(value);
     };
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(const PropertyType ReflectableType::* property)
+auto handler_property_set(PropertyType const ReflectableType::* property)
 {
     return nullptr;
 }
@@ -1036,14 +1036,14 @@ auto handler_property_set(void (ReflectableType::* setter)(PropertyType) &)
 template <typename PropertyType>
 auto handler_property_set(PropertyType* property)
 {
-    return [property](const std::any&, const std::any& value)
+    return [property](std::any const&, std::any const& value)
     {
         *property = utility::forward<PropertyType>(value);
     };
 }
 
 template <typename PropertyType>
-auto handler_property_set(const PropertyType* property)
+auto handler_property_set(PropertyType const* property)
 {
     return nullptr;
 }
@@ -1051,7 +1051,7 @@ auto handler_property_set(const PropertyType* property)
 template <typename PropertyType>
 auto handler_property_set(void (*setter)(PropertyType))
 {
-    return [setter](const std::any&, const std::any& value)
+    return [setter](std::any const&, std::any const& value)
     {
         setter(utility::forward<PropertyType>(value));
     };
@@ -1096,7 +1096,7 @@ auto handler_property_context_impl(PropertyGetterType getter)
     using type = typename meta::property_traits<PropertyGetterType>::type;
     if constexpr (std::is_reference_v<type>)
     {
-        return [getter](const std::any& outer_context) -> std::any
+        return [getter](std::any const& outer_context) -> std::any
         {
             return const_cast<meta::to_reflectable_reference_t<type>>
             (
@@ -1115,7 +1115,7 @@ auto handler_property_context_impl(PropertyGetterType getter)
 template <typename ReflectableType, typename PropertyType>
 auto handler_property_context(PropertyType ReflectableType::* property)
 {
-    return [property](const std::any& outer_context) -> std::any
+    return [property](std::any const& outer_context) -> std::any
     {
         return const_cast<meta::to_reflectable_object_t<PropertyType>*>
         (
@@ -1151,7 +1151,7 @@ auto handler_property_context(PropertyType (ReflectableType::* getter)(void) &)
 template <typename PropertyType>
 auto handler_property_context(PropertyType* property)
 {
-    return [property](const std::any&) -> std::any
+    return [property](std::any const&) -> std::any
     {
         return const_cast<meta::to_reflectable_object_t<PropertyType>*>(std::addressof(property));
     };
@@ -1162,7 +1162,7 @@ auto handler_property_context(PropertyType (*getter)(void))
 {
     if constexpr (std::is_reference_v<PropertyType>)
     {
-        return [getter](const std::any&) -> std::any
+        return [getter](std::any const&) -> std::any
         {
             return const_cast<meta::to_reflectable_reference_t<PropertyType>>
             (
@@ -1179,14 +1179,14 @@ auto handler_property_context(PropertyType (*getter)(void))
 } // namespace rew
 
 template <typename ReflectableType, typename enable = void>
-struct rew_reflection_registry_t;
+struct __rew;
 
 namespace rew
 {
 
 struct reflection_t
 {
-    const std::string name;
+    std::string const name;
 
     attribute_t<parent_t> parent;
     attribute_t<attribute_t<function_t>> function;
@@ -1226,7 +1226,7 @@ struct injectable_t
     void property(rew::property_t& property) {}
 
     template <typename ReflectableType, typename MetaType>
-    void meta(const std::string& name, std::any& meta) {}
+    void meta(std::string const& name, std::any& meta) {}
 };
 
 namespace meta
@@ -1238,8 +1238,8 @@ template <std::size_t InjectionIndex> struct injection_traits;
 
 struct injection_t
 {
-    const std::string name;
-    const std::function<void(injectable_t& injection)> call = nullptr;
+    std::string const name;
+    std::function<void(injectable_t& injection)> const call = nullptr;
 };
 
 template <typename ReflectionType, class InjectionType>
@@ -1247,8 +1247,7 @@ auto handler_injection_call()
 {
     return [](injectable_t& injection)
     {
-        using reflection_registry = rew_reflection_registry_t<ReflectionType>;
-        reflection_registry::evaluate(dynamic_cast<InjectionType&>(injection));
+        ::__rew<ReflectionType>::evaluate(dynamic_cast<InjectionType&>(injection));
     };
 }
 
@@ -1261,10 +1260,10 @@ struct reflection_t;
 
 struct type_t
 {
-    const std::string name;
+    std::string const name;
     reflection_t *const reflection = nullptr;
-    const std::size_t size = 0;
-    const std::function<std::any(std::any& object)> context = nullptr;
+    std::size_t const size = 0;
+    std::function<std::any(std::any& object)> const context = nullptr;
 
     attribute_t<injection_t> injection;
 };
@@ -1297,7 +1296,7 @@ public:
         }
     }
 
-    type_t* find(const std::string& name) const
+    type_t* find(std::string const& name) const
     {
         auto it = all.find(name);
         return it != all.end() ? it->second : nullptr;
@@ -1338,7 +1337,7 @@ private:
 
 public:
     template <typename ReflectableType, typename DirtyReflectableType = ReflectableType>
-    type_t* add(const std::string& name)
+    type_t* add(std::string const& name)
     {
         auto& type = all[name];
         if (type != nullptr) return type;
@@ -1456,20 +1455,18 @@ inline registry_t global;
             injection.template type<R>(*__type);
 
 #define RAW_TEMPLATE_REFLECTABLE(template_header, ...)                                                  \
-    __REW_EXPAND template_header                                                                        \
-    struct rew_reflection_registry_t<__VA_ARGS__> {                                                     \
+    __REW_EXPAND template_header struct __rew<__VA_ARGS__> {                                            \
         using R = __VA_ARGS__;                                                                          \
         using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
         __REW_REFLECTABLE_BODY()
 
 #define RAW_CONDITIONAL_REFLECTABLE(...)                                                                \
-    template <typename R>                                                                               \
-    struct rew_reflection_registry_t<R, std::enable_if_t<__VA_ARGS__>> {                                \
+    template <typename R> struct __rew<R, std::enable_if_t<__VA_ARGS__>> {                              \
         using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
         __REW_REFLECTABLE_BODY()
 
 #define RAW_REFLECTABLE(...)                                                                            \
-    template <> struct rew_reflection_registry_t<__VA_ARGS__> {                                         \
+    template <> struct __rew<__VA_ARGS__> {                                                             \
         using R = __VA_ARGS__;                                                                          \
         using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
         __REW_REFLECTABLE_BODY()
@@ -1478,7 +1475,7 @@ inline registry_t global;
             rew::add_default_injection_set<R>(__type);                                                  \
         }                                                                                               \
     private:                                                                                            \
-        inline static auto _ = (evaluate(rew::injectable_t{}), true);                                   \
+        inline static auto __autogenerated = (evaluate(rew::injectable_t{}), true);                     \
     };
 // ~ raw reflectable
 
@@ -1540,7 +1537,7 @@ inline registry_t global;
 
 // reflectable access
 #define REFLECTABLE_ACCESS(...)                                                                         \
-    template <typename, typename> friend struct rew_reflection_registry_t;
+    template <typename, typename> friend struct __rew;
 // ~ reflectable access
 
 // reflectable utils
@@ -1558,7 +1555,7 @@ void reflectable()
     if (!locked)
     {
         locked = true;
-        rew_reflection_registry_t<ReflectableType>::evaluate(injectable_t{});
+        ::__rew<ReflectableType>::evaluate(injectable_t{});
     }
 }
 
@@ -1668,7 +1665,7 @@ factory_t* find_or_add_factory(reflection_t* reflection)
 }
 
 template <typename DirtyFunctionType = void, typename FunctionType>
-function_t* find_or_add_function(reflection_t* reflection, const std::string& name, FunctionType ptr)
+function_t* find_or_add_function(reflection_t* reflection, std::string const& name, FunctionType ptr)
 {
     using function_traits = meta::function_traits
     <
@@ -1700,7 +1697,7 @@ function_t* find_or_add_function(reflection_t* reflection, const std::string& na
 }
 
 template <typename DirtyPropertyType = void, typename PropertyGetterType, typename PropertySetterType>
-property_t* find_or_add_property(reflection_t* reflection, const std::string& name,
+property_t* find_or_add_property(reflection_t* reflection, std::string const& name,
                                  PropertyGetterType getter, PropertySetterType setter)
 {
     using property_traits = meta::property_traits
@@ -1727,7 +1724,7 @@ property_t* find_or_add_property(reflection_t* reflection, const std::string& na
 }
 
 template <typename MetaType>
-std::any* find_or_add_meta(reflection_t* reflection, const std::string& name, MetaType& data)
+std::any* find_or_add_meta(reflection_t* reflection, std::string const& name, MetaType& data)
 {
     auto __meta = reflection->meta.find(name);
     if (__meta == nullptr) __meta = &reflection->meta.add(name, data);
@@ -2057,7 +2054,11 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE((template <typename ValueType>), std::allocator<ValueType>)
     FACTORY(R())
     FACTORY(R(R const&))
+#if __cplusplus > 201703L
+    FUNCTION(allocate, typename R::value_type*(std::size_t))
+#else
     FUNCTION(allocate, typename R::value_type*(std::size_t, void const*))
+#endif // if
     FUNCTION(deallocate, void(typename R::value_type*, std::size_t))
 REFLECTABLE_INIT()
 

@@ -10,18 +10,18 @@ namespace rew
 template <class MetaType>
 struct attribute_t
 {
-    MetaType* find(const std::string& name)
+    MetaType* find(std::string const& name)
     {
         auto it = all.find(name);
         return it != all.end() ? &it->second : nullptr;
     }
 
-    MetaType& add(const std::string& name, const MetaType& meta)
+    MetaType& add(std::string const& name, MetaType const& meta)
     {
         return all.emplace(name, meta).first->second;
     }
 
-    bool remove(const std::string& name)
+    bool remove(std::string const& name)
     {
         return all.erase(name)>0;
     }

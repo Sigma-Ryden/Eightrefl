@@ -1,0 +1,39 @@
+#include <RewTestingBase.hpp>
+
+#include <Rew/BuiltIn/string.hpp>
+#include <Rew/BuiltIn/unordered_map.hpp>
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename MetaType>), rew::attribute_t<MetaType>)
+    REFLECTABLE_NAME("rew::attribute_t<" + NAMEOF(MetaType) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename MetaType>), rew::attribute_t<MetaType>)
+    FUNCTION(find)
+    FUNCTION(add)
+    FUNCTION(remove)
+    PROPERTY(all)
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(rew::parent_t)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE_DECLARATION(rew::function_t)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE_DECLARATION(rew::factory_t)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE_DECLARATION(rew::property_t)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE_DECLARATION(rew::reflection_t)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE_DECLARATION(rew::injection_t)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE_DECLARATION(rew::type_t)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE_DECLARATION(rew::registry_t)
+REFLECTABLE_DECLARATION_INIT()

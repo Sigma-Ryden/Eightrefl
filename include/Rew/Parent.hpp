@@ -24,16 +24,16 @@ struct type_t;
 
 struct parent_t
 {
-    const std::string name;
+    std::string const name;
     type_t *const type = nullptr;
-    const std::function<std::any(const std::any& child_context)> cast = nullptr;
+    std::function<std::any(std::any const& child_context)> const cast = nullptr;
     attribute_t<std::any> meta;
 };
 
 template <typename ReflectableType, typename ParentReflectableType>
 auto handler_parent_cast()
 {
-    return [](const std::any& child_context) -> std::any
+    return [](std::any const& child_context) -> std::any
     {
         return static_cast<ParentReflectableType*>(std::any_cast<ReflectableType*>(child_context));
     };

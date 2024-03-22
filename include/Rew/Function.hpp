@@ -41,11 +41,11 @@ struct type_t;
 
 struct function_t
 {
-    const std::string name;
-    const std::function<std::any(const std::any& context, const std::vector<std::any>& args)> call = nullptr;
-    const std::vector<type_t*> arguments;
+    std::string const name;
+    std::function<std::any(std::any const& context, std::vector<std::any> const& args)> const call = nullptr;
+    std::vector<type_t*> const arguments;
     type_t *const result = nullptr;
-    const std::any pointer = nullptr;
+    std::any const pointer = nullptr;
     attribute_t<std::any> meta;
 };
 
@@ -56,7 +56,7 @@ template <typename ReflectableType, typename ReturnType, typename... ArgumentTyp
           typename FunctionType, std::size_t... I>
 auto handler_member_function_call_impl(FunctionType function, std::index_sequence<I...>)
 {
-    return [function](const std::any& context, const std::vector<std::any>& arguments) -> std::any
+    return [function](std::any const& context, std::vector<std::any> const& arguments) -> std::any
     {
         auto reflectable = std::any_cast<ReflectableType*>(context);
         if constexpr (std::is_void_v<ReturnType>)
@@ -77,7 +77,7 @@ auto handler_member_function_call_impl(FunctionType function, std::index_sequenc
 template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
 auto handler_free_function_call_impl(ReturnType (*function)(ArgumentTypes...), std::index_sequence<I...>)
 {
-    return [function](const std::any&, const std::vector<std::any>& arguments) -> std::any
+    return [function](std::any const&, std::vector<std::any> const& arguments) -> std::any
     {
         if constexpr (std::is_void_v<ReturnType>)
         {

@@ -37,7 +37,7 @@ struct injectable_t
     void property(rew::property_t& property) {}
 
     template <typename ReflectableType, typename MetaType>
-    void meta(const std::string& name, std::any& meta) {}
+    void meta(std::string const& name, std::any& meta) {}
 };
 
 namespace meta
@@ -49,8 +49,8 @@ template <std::size_t InjectionIndex> struct injection_traits;
 
 struct injection_t
 {
-    const std::string name;
-    const std::function<void(injectable_t& injection)> call = nullptr;
+    std::string const name;
+    std::function<void(injectable_t& injection)> const call = nullptr;
 };
 
 template <typename ReflectionType, class InjectionType>
@@ -58,8 +58,7 @@ auto handler_injection_call()
 {
     return [](injectable_t& injection)
     {
-        using reflection_registry = rew_reflection_registry_t<ReflectionType>;
-        reflection_registry::evaluate(dynamic_cast<InjectionType&>(injection));
+        ::__rew<ReflectionType>::evaluate(dynamic_cast<InjectionType&>(injection));
     };
 }
 

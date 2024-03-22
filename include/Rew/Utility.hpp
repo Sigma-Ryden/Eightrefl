@@ -13,7 +13,7 @@ inline namespace utility
 {
 
 template <typename ValueType>
-ValueType forward(const std::any& object)
+ValueType forward(std::any const& object)
 {
     if constexpr (std::is_reference_v<ValueType>)
     {

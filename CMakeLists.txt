@@ -80,4 +80,6 @@ add_executable(${PROJECT_NAME}
     test/TestLibrary.cpp
     test/TestArray.cpp
     test/TestReflection.cpp
+    test/TestReflectionImpl.cpp
+    test/TestReflectionImpl.hpp
 )

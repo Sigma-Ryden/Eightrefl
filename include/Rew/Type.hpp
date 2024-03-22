@@ -18,10 +18,10 @@ struct reflection_t;
 
 struct type_t
 {
-    const std::string name;
+    std::string const name;
     reflection_t *const reflection = nullptr;
-    const std::size_t size = 0;
-    const std::function<std::any(std::any& object)> context = nullptr;
+    std::size_t const size = 0;
+    std::function<std::any(std::any& object)> const context = nullptr;
 
     attribute_t<injection_t> injection;
 };

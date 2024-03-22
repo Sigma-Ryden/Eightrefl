@@ -11,14 +11,14 @@
 #include <Rew/Meta.hpp>
 
 template <typename ReflectableType, typename enable = void>
-struct rew_reflection_registry_t;
+struct __rew;
 
 namespace rew
 {
 
 struct reflection_t
 {
-    const std::string name;
+    std::string const name;
 
     attribute_t<parent_t> parent;
     attribute_t<attribute_t<function_t>> function;
