@@ -31,4 +31,5 @@ REFLECTABLE_INIT()
 
 TEST(TestReflection, TestProperty)
 {
+    rew::global.find("");
 }

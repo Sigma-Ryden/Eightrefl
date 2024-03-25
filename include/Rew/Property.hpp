@@ -4,6 +4,7 @@
 #include <string> // string
 #include <any> // any
 
+#include <utility> // pair
 #include <functional> // function
 #include <memory> // addressof
 
@@ -18,9 +19,8 @@
     {                                                                                                   \
         using __access = rew::meta::access_traits<CleanR>;                                              \
         auto [__get, __set] = __access::template property<__VA_ARGS__>::of(&CleanR::get, &CleanR::set); \
-        using __traits = rew::meta::property_traits<decltype(__get)>;                                   \
         auto __meta = rew::find_or_add_property<__VA_ARGS__>(__reflection, name_str, __get, __set);     \
-        injection.template property<CleanR, typename __traits::type>(*__meta);                          \
+        injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
     }
 
 #define PROPERTY(name, ...) RAW_PROPERTY(#name, name, name, __VA_ARGS__)
@@ -29,9 +29,8 @@
     {                                                                                                   \
         using __access = rew::meta::access_traits<>;                                                    \
         auto [__get, __set] = __access::template property<__VA_ARGS__>::of(&get, &set);                 \
-        using __traits = rew::meta::property_traits<decltype(__get)>;                                   \
         auto __meta = rew::find_or_add_property<__VA_ARGS__>(__reflection, name_str, __get, __set);     \
-        injection.template property<CleanR, typename __traits::type>(*__meta);                          \
+        injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
     }
 
 #define FREE_PROPERTY(name, ...) RAW_FREE_PROPERTY(#name, name, name, __VA_ARGS__)
@@ -48,18 +47,19 @@ struct property_t
     std::function<void(std::any const& context, std::any& result)> const get = nullptr;
     std::function<void(std::any const& context, std::any const& value)> const set = nullptr;
     std::function<std::any(std::any const& outer_context)> const context = nullptr;
+    std::pair<std::any, std::any> const pointer;
     attribute_t<std::any> meta;
 };
 
 namespace detail
 {
 
-template <typename ReflectableType, typename PropertyGetterType>
-auto handler_property_get_impl(PropertyGetterType getter)
+template <typename ReflectableType, typename GetterType>
+auto handler_property_get_impl(GetterType getter)
 {
     return [getter](std::any const& context, std::any& value)
     {
-        using type = typename meta::property_traits<PropertyGetterType>::type;
+        using type = typename meta::property_traits<GetterType>::type;
 
         value = utility::backward<type>
         (
@@ -127,12 +127,12 @@ auto handler_property_get(PropertyType (*getter)(void))
 namespace detail
 {
 
-template <typename ReflectableType, typename PropertySetterType>
-auto handler_property_set_impl(PropertySetterType setter)
+template <typename ReflectableType, typename SetterType>
+auto handler_property_set_impl(SetterType setter)
 {
     return [setter](std::any const& context, std::any const& value)
     {
-        using type = typename meta::property_traits<PropertySetterType>::type;
+        using type = typename meta::property_traits<SetterType>::type;
 
         (std::any_cast<ReflectableType*>(context)->*setter)(utility::forward<type>(value));
     };
@@ -224,10 +224,10 @@ auto handler_property_set(PropertyType (*getter)(void))
 namespace detail
 {
 
-template <typename ReflectableType, typename PropertyGetterType>
-auto handler_property_context_impl(PropertyGetterType getter)
+template <typename ReflectableType, typename GetterType>
+auto handler_property_context_impl(GetterType getter)
 {
-    using type = typename meta::property_traits<PropertyGetterType>::type;
+    using type = typename meta::property_traits<GetterType>::type;
     if constexpr (std::is_reference_v<type>)
     {
         return [getter](std::any const& outer_context) -> std::any
@@ -308,6 +308,54 @@ auto handler_property_context(PropertyType (*getter)(void))
     {
         return nullptr;
     }
+}
+
+template <typename GetterType, typename SetterType>
+constexpr auto property_pointer(GetterType get, SetterType set)
+{
+    return std::make_pair(get, set);
+}
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(PropertyType const ReflectableType::* get, PropertyType const ReflectableType::* set)
+{
+    return std::make_pair(get, std::any{});
+}
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(PropertyType (ReflectableType::* get)(void) const, PropertyType (ReflectableType::* set)(void) const)
+{
+    return std::make_pair(get, std::any{});
+}
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(PropertyType (ReflectableType::* get)(void) const&, PropertyType (ReflectableType::* set)(void) const&)
+{
+    return std::make_pair(get, std::any{});
+}
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(PropertyType (ReflectableType::* get)(void), PropertyType (ReflectableType::* set)(void))
+{
+    return std::make_pair(get, std::any{});
+}
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(PropertyType (ReflectableType::* get)(void) &, PropertyType (ReflectableType::* set)(void) &)
+{
+    return std::make_pair(get, std::any{});
+}
+
+template <typename PropertyType>
+constexpr auto property_pointer(PropertyType (*get)(void), PropertyType (*set)(void))
+{
+    return std::make_pair(get, std::any{});
+}
+
+template <typename PropertyType>
+constexpr auto property_pointer(PropertyType const* get, PropertyType const* set)
+{
+    return std::make_pair(get, std::any{});
 }
 
 } // namespace rew

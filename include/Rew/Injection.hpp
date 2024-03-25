@@ -33,7 +33,7 @@ struct injectable_t
     template <typename ReflectableType, typename FunctionType>
     void function(rew::function_t& function) {}
 
-    template <typename ReflectableType, typename PropertyType>
+    template <typename ReflectableType, typename GetterType, typename SetterType>
     void property(rew::property_t& property) {}
 
     template <typename ReflectableType, typename MetaType>
