@@ -13,21 +13,16 @@ TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
     (std::function<ReturnType(ArgumentTypes...)>),
-    std::function<CLEANOF(ReturnType)(CLEANOF(ArgumentTypes)...)>
+    std::function<CLEANOF(ReturnType(ArgumentTypes...))>
 )
-
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ReturnType>), std::function<ReturnType()>)
-    BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::function<" + NAMEOF(ReturnType) + "()>")
-REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename ReturnType, typename ArgumentType, typename... ArgumentTypes>),
-    std::function<ReturnType(ArgumentType, ArgumentTypes...)>
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    std::function<ReturnType(ArgumentTypes...)>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::function<" + NAMEOF(ReturnType) + "(" + ( NAMEOF(ArgumentType) + ... + (", " + NAMEOF(ArgumentTypes)) ) + ")>")
+    REFLECTABLE_NAME("std::function<" + NAMEOF(ReturnType(ArgumentTypes...)) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE

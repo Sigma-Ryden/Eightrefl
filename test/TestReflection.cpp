@@ -10,7 +10,6 @@ struct TestReflectionProperty
     void f(int) {}
 
     const int g() { return 0; }
-
     const int i = 0;
 
     int j = 0;

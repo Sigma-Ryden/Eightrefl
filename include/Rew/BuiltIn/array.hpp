@@ -2,6 +2,7 @@
 #define REW_BUILTIN_ARRAY_HPP
 
 #include <array> // array
+#include <string> // to_string
 
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
