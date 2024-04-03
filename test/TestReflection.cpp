@@ -14,7 +14,7 @@ struct TestReflectionProperty
 
     int j = 0;
 
-    void boo(const void *const& p) {}
+    void boo(const void (*p)(char const&)) {}
 };
 
 REFLECTABLE_DECLARATION(TestReflectionProperty)

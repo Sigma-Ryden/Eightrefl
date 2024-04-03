@@ -105,7 +105,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     (template <typename ReturnType, typename... ArgumentTypes>), ReturnType(*)(ArgumentTypes...)
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::type_identity_t<" + NAMEOF(R) + ">*")
+    REFLECTABLE_NAME("std::type_identity_t<" + NAMEOF(ReturnType(ArgumentTypes...)) + ">*")
 REFLECTABLE_DECLARATION_INIT()
 
 // function reference type
@@ -114,7 +114,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     (template <typename ReturnType, typename... ArgumentTypes>), ReturnType(&)(ArgumentTypes...)
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::type_identity_t<" + NAMEOF(R) + ">&")
+    REFLECTABLE_NAME("std::type_identity_t<" + NAMEOF(ReturnType(ArgumentTypes...)) + ">&")
 REFLECTABLE_DECLARATION_INIT()
 
 // boolean type
