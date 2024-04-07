@@ -27,12 +27,20 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), std::shared_ptr<ElementT
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(reset, void())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(reset, void(typename R::element_type*))
     //FUNCTION(swap, void(R&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(get)
     FUNCTION(operator*)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator->)
     FUNCTION(use_count)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator bool)
 REFLECTABLE_INIT()
 

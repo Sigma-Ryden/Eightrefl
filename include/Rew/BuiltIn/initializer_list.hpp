@@ -21,8 +21,12 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::initializer_list<Valu
     FACTORY(R())
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
+    
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(begin)
     FUNCTION(end)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(size)
 REFLECTABLE_INIT()
 

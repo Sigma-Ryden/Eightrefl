@@ -35,10 +35,17 @@ TEMPLATE_REFLECTABLE
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(operator=, R&(std::nullptr_t))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator bool)
     FUNCTION(operator())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(target_type)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_FUNCTION_HPP

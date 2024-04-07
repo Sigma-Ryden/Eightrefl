@@ -27,12 +27,19 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), std::weak_ptr<ElementTyp
     FUNCTION(operator=, R&(R const&))
     FUNCTION(operator=, R&(std::shared_ptr<typename R::element_type> const&))
     FUNCTION(reset)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(swap)
     FUNCTION(use_count)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(expired)
     FUNCTION(lock)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(owner_before, bool(R const&))
     FUNCTION(owner_before, bool(std::shared_ptr<typename R::value_type> const&))
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_WEAK_PTR_HPP

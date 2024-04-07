@@ -36,12 +36,20 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::optional<ValueType>)
     FUNCTION(operator->, typename R::value_type*())
     FUNCTION(operator*, typename R::value_type const&() const)
     FUNCTION(operator*, typename R::value_type&())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator bool)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(has_value)
     FUNCTION(value, typename R::value_type&())
     FUNCTION(value, typename R::value_type const&() const)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(value_or, typename R::value_type(typename R::value_type const&) const)
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(reset)
     FUNCTION(emplace, typename R::value_type&(typename R::value_type const&))
 REFLECTABLE_INIT()

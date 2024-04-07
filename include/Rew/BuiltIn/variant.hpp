@@ -37,8 +37,11 @@ TEMPLATE_REFLECTABLE
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(index)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(valueless_by_exception)
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_VARIANT_HPP

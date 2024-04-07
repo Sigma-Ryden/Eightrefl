@@ -7,8 +7,10 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
+#ifndef REW_CORE_MINIMAL
 // as function argument type
 #include <Rew/BuiltIn/iterator.hpp>
+#endif // REW_CORE_MINIMAL
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -25,16 +27,26 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t ArraySize>), std
     FACTORY(R())
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(at, typename R::const_reference(typename R::size_type) const)
     FUNCTION(at, typename R::reference(typename R::size_type))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator[], typename R::const_reference(typename R::size_type) const)
     FUNCTION(operator[], typename R::reference(typename R::size_type))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(front, typename R::const_reference() const)
     FUNCTION(front, typename R::reference())
     FUNCTION(back, typename R::const_reference() const)
     FUNCTION(back, typename R::reference())
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(data, typename R::const_pointer() const)
     FUNCTION(data, typename R::pointer())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(begin, std_const_iterator<R>() const)
     FUNCTION(begin, std_iterator<R>())
     FUNCTION(cbegin, std_const_iterator<R>() const)
@@ -47,12 +59,17 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t ArraySize>), std
     FUNCTION(rend, std_const_reverse_iterator<R>() const)
     FUNCTION(rend, std_reverse_iterator<R>())
     FUNCTION(crend, std_const_reverse_iterator<R>() const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(empty)
     FUNCTION(size)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(max_size)
     FUNCTION(fill)
     FUNCTION(swap)
     FREE_FUNCTION(std::operator==, bool(const R&, const R&))
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_ARRAY_HPP

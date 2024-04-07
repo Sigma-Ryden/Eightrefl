@@ -23,13 +23,29 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::complex<ValueType>)
     FACTORY(R(typename R::value_type const&, typename R::value_type const&))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator+=, R&(typename R::value_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator+=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator-=, R&(typename R::value_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator-=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator*=, R&(typename R::value_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator*=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator/=, R&(typename R::value_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator/=, R&(R const&))
     PROPERTY(real)
     PROPERTY(imag)

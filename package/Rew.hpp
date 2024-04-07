@@ -2127,10 +2127,17 @@ TEMPLATE_REFLECTABLE
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(operator=, R&(std::nullptr_t))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator bool)
     FUNCTION(operator())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(target_type)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
@@ -2147,16 +2154,19 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE((template <typename ValueType>), std::allocator<ValueType>)
     FACTORY(R())
     FACTORY(R(R const&))
+
 #if __cplusplus > 201703L
     FUNCTION(allocate, typename R::value_type*(std::size_t))
 #else
     FUNCTION(allocate, typename R::value_type*(std::size_t, void const*))
 #endif // if
+
     FUNCTION(deallocate, void(typename R::value_type*, std::size_t))
 REFLECTABLE_INIT()
 
 // default allocator for vector
 
+#ifndef REW_CORE_MINIMAL
 // as function argument type
 
 #include <initializer_list> // initializer_list
@@ -2176,8 +2186,12 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::initializer_list<Valu
     FACTORY(R())
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
+    
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(begin)
     FUNCTION(end)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(size)
 REFLECTABLE_INIT()
 
@@ -2267,6 +2281,8 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE((template <class StdContainerType>), std_const_local_iterator<StdContainerType>)
 REFLECTABLE_INIT()
 
+#endif // REW_CORE_MINIMAL
+
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ValueType, typename AllocatorType>), (std::vector<ValueType, AllocatorType>),
@@ -2291,6 +2307,8 @@ TEMPLATE_REFLECTABLE
     (template <typename ValueType, typename AllocatorType>), std::vector<ValueType, AllocatorType>
 )
     FACTORY(R())
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::const_reference, typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::const_reference))
@@ -2299,10 +2317,18 @@ TEMPLATE_REFLECTABLE
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>))
     FACTORY(R(R const&,  typename R::allocator_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FACTORY(R(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::allocator_type const&))
     FACTORY(R(std::initializer_list<typename R::value_type>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
     FUNCTION(assign, void(typename R::size_type, typename R::const_reference))
     FUNCTION(assign, void(std_const_iterator<R>, std_const_iterator<R>))
@@ -2310,14 +2336,22 @@ TEMPLATE_REFLECTABLE
     FUNCTION(get_allocator)
     FUNCTION(at, typename R::const_reference(typename R::size_type) const)
     FUNCTION(at, typename R::reference(typename R::size_type))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator[], typename R::const_reference(typename R::size_type) const)
     FUNCTION(operator[], typename R::reference(typename R::size_type))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(front, typename R::const_reference() const)
     FUNCTION(front, typename R::reference())
     FUNCTION(back, typename R::const_reference() const)
     FUNCTION(back, typename R::reference())
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(data, typename R::const_pointer() const)
     FUNCTION(data, typename R::pointer())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(begin, std_const_iterator<R>() const)
     FUNCTION(begin, std_iterator<R>())
     FUNCTION(cbegin, std_const_iterator<R>() const)
@@ -2330,29 +2364,48 @@ TEMPLATE_REFLECTABLE
     FUNCTION(rend, std_const_reverse_iterator<R>() const)
     FUNCTION(rend, std_reverse_iterator<R>())
     FUNCTION(crend, std_const_reverse_iterator<R>() const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(empty)
     FUNCTION(size)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(max_size)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(capacity)
     FUNCTION(reserve)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(shrink_to_fit)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(clear)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::size_type, typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>, std_const_iterator<R>))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std::initializer_list<typename R::value_type>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(push_back, void(typename R::const_reference))
     FUNCTION(pop_back)
     FUNCTION(resize, void(typename R::size_type))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(resize, void(typename R::size_type, typename R::const_reference))
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #include <array> // array
 
+#ifndef REW_CORE_MINIMAL
 // as function argument type
+#endif // REW_CORE_MINIMAL
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -2369,16 +2422,26 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t ArraySize>), std
     FACTORY(R())
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(at, typename R::const_reference(typename R::size_type) const)
     FUNCTION(at, typename R::reference(typename R::size_type))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator[], typename R::const_reference(typename R::size_type) const)
     FUNCTION(operator[], typename R::reference(typename R::size_type))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(front, typename R::const_reference() const)
     FUNCTION(front, typename R::reference())
     FUNCTION(back, typename R::const_reference() const)
     FUNCTION(back, typename R::reference())
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(data, typename R::const_pointer() const)
     FUNCTION(data, typename R::pointer())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(begin, std_const_iterator<R>() const)
     FUNCTION(begin, std_iterator<R>())
     FUNCTION(cbegin, std_const_iterator<R>() const)
@@ -2391,19 +2454,26 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t ArraySize>), std
     FUNCTION(rend, std_const_reverse_iterator<R>() const)
     FUNCTION(rend, std_reverse_iterator<R>())
     FUNCTION(crend, std_const_reverse_iterator<R>() const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(empty)
     FUNCTION(size)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(max_size)
     FUNCTION(fill)
     FUNCTION(swap)
     FREE_FUNCTION(std::operator==, bool(const R&, const R&))
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 // TODO: add std::char_traits
 
 // default allocator for basic_string
 
+#ifndef REW_CORE_MINIMAL
 // as function argument type
+#endif // REW_CORE_MINIMAL
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -2464,6 +2534,8 @@ TEMPLATE_REFLECTABLE
     std::basic_string<CharType, Traits, AllocatorType>
 )
     FACTORY(R())
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::value_type, typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::value_type))
@@ -2476,10 +2548,18 @@ TEMPLATE_REFLECTABLE
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>))
     FACTORY(R(R const&, typename R::allocator_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FACTORY(R(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::allocator_type const&))
     FACTORY(R(std::initializer_list<typename R::value_type>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator=, R&(typename R::value_type const*))
     FUNCTION(operator=, R&(typename R::value_type))
     FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
@@ -2493,16 +2573,25 @@ TEMPLATE_REFLECTABLE
     FUNCTION(get_allocator)
     FUNCTION(at, typename R::reference(typename R::size_type))
     FUNCTION(at, typename R::const_reference(typename R::size_type) const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator[], typename R::reference(typename R::size_type))
     FUNCTION(operator[], typename R::const_reference(typename R::size_type) const)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(front, typename R::reference())
     FUNCTION(front, typename R::const_reference() const)
     FUNCTION(back, typename R::reference())
     FUNCTION(back, typename R::const_reference() const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(data, typename R::value_type const*() const)
+
 #if __cplusplus >= 201703L
     FUNCTION(data, typename R::value_type*())
 #endif // if
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(c_str)
     FUNCTION(begin, std_const_iterator<R>() const)
     FUNCTION(begin, std_iterator<R>())
@@ -2516,14 +2605,26 @@ TEMPLATE_REFLECTABLE
     FUNCTION(rend, std_const_reverse_iterator<R>() const)
     FUNCTION(rend, std_reverse_iterator<R>())
     FUNCTION(crend, std_const_reverse_iterator<R>() const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(empty)
     FUNCTION(size)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(length)
     FUNCTION(max_size)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(reserve, void(typename R::size_type))
     FUNCTION(capacity)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(shrink_to_fit)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(clear)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(insert, R&(typename R::size_type, typename R::size_type, typename R::value_type))
     FUNCTION(insert, R&(typename R::size_type, typename R::value_type const*))
     FUNCTION(insert, R&(typename R::size_type, typename R::value_type const*, typename R::size_type))
@@ -2535,8 +2636,12 @@ TEMPLATE_REFLECTABLE
     FUNCTION(erase, R&(typename R::size_type, typename R::size_type))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(push_back)
     FUNCTION(pop_back)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(append, R&(typename R::size_type, typename R::value_type))
     FUNCTION(append, R&(R const&))
     FUNCTION(append, R&(R const&, typename R::size_type, typename R::size_type))
@@ -2548,7 +2653,11 @@ TEMPLATE_REFLECTABLE
     FUNCTION(operator+=, R&(typename R::value_type))
     FUNCTION(operator+=, R&(typename R::value_type const*))
     FUNCTION(operator+=, R&(std::initializer_list<typename R::value_type>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(replace, R&(typename R::size_type, typename R::size_type, R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(replace, R&(std_const_iterator<R>, std_const_iterator<R>, R const&))
     FUNCTION(replace, R&(typename R::size_type, typename R::size_type, R const&, typename R::size_type, typename R::size_type))
     FUNCTION(replace, R&(typename R::size_type, typename R::size_type, typename R::value_type const*, typename R::size_type))
@@ -2560,10 +2669,18 @@ TEMPLATE_REFLECTABLE
     FUNCTION(replace, R&(std_const_iterator<R>, std_const_iterator<R>, std_const_iterator<R>, std_const_iterator<R>))
     FUNCTION(replace, R&(std_const_iterator<R>, std_const_iterator<R>, std::initializer_list<typename R::value_type>))
     FUNCTION(copy)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(resize, void(typename R::size_type))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(resize, void(typename R::size_type, typename R::value_type))
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
+    
     FUNCTION(find, typename R::size_type(R const&, typename R::size_type) const)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(find, typename R::size_type(typename R::value_type const*, typename R::size_type, typename R::size_type) const)
     FUNCTION(find, typename R::size_type(typename R::value_type const*, typename R::size_type) const)
     FUNCTION(find, typename R::size_type(typename R::value_type, typename R::size_type) const)
@@ -2587,18 +2704,27 @@ TEMPLATE_REFLECTABLE
     FUNCTION(find_last_not_of, typename R::size_type(typename R::value_type const*, typename R::size_type, typename R::size_type) const)
     FUNCTION(find_last_not_of, typename R::size_type(typename R::value_type const*, typename R::size_type) const)
     FUNCTION(find_last_not_of, typename R::size_type(typename R::value_type, typename R::size_type) const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(compare, int(R const&) const)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(compare, int(typename R::size_type, typename R::size_type, R const&) const)
     FUNCTION(compare, int(typename R::size_type, typename R::size_type, R const&, typename R::size_type, typename R::size_type) const)
     FUNCTION(compare, int(typename R::value_type const*) const)
     FUNCTION(compare, int(typename R::size_type, typename R::size_type, typename R::value_type const*) const)
     FUNCTION(compare, int(typename R::size_type, typename R::size_type, typename R::value_type const*, typename R::size_type) const)
+    #endif // REW_CORE_MINIMAL
+
 #if __cplusplus >= 202002L
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(starts_with, bool(typename R::value_type) const)
     FUNCTION(starts_with, bool(typename R::value_tyoe const*) const)
     FUNCTION(ends_wtih, bool(typename R::value_type) const)
     FUNCTION(ends_with, bool(typename R::value_tyoe const*) const)
+    #endif // REW_CORE_MINIMAL
 #endif // if
+
     FUNCTION(substr, R(typename R::size_type, typename R::size_type) const)
 REFLECTABLE_INIT()
 
@@ -2615,10 +2741,14 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename FirstType, typename SecondType>), std::pair<FirstType, SecondType>)
     FACTORY(R())
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(typename R::first_type const&, typename R::second_type const&))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(swap, void(R&))
+    #endif // REW_CORE_MINIMAL
+
     PROPERTY(first, typename R::first_type)
     PROPERTY(second, typename R::second_type)
 REFLECTABLE_INIT()
@@ -2650,14 +2780,19 @@ TEMPLATE_REFLECTABLE((template <typename... ArgumentTypes>), std::tuple<Argument
     FACTORY(R(ArgumentTypes...))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #include <list> // list
 
 // default allocator for list
 
+#ifndef REW_CORE_MINIMAL
 // as function argument type
+#endif // REW_CORE_MINIMAL
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -2677,6 +2812,8 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), std::list<ValueType, AllocatorType>)
     FACTORY(R())
+
+    #ifndef REW_CORE_MIMIMAL
     FACTORY(R(typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::const_reference, typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::const_reference))
@@ -2685,10 +2822,18 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>))
     FACTORY(R(R const&, typename R::allocator_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FACTORY(R(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::allocator_type const&))
     FACTORY(R(std::initializer_list<typename R::value_type>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
     FUNCTION(assign, void(typename R::size_type, typename R::const_reference))
     FUNCTION(assign, void(std_const_iterator<R>, std_const_iterator<R>))
@@ -2698,8 +2843,12 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     FUNCTION(front, typename R::reference())
     FUNCTION(back, typename R::const_reference() const)
     FUNCTION(back, typename R::reference())
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(data, typename R::const_pointer() const)
     FUNCTION(data, typename R::pointer())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(begin, std_const_iterator<R>() const)
     FUNCTION(begin, std_iterator<R>())
     FUNCTION(cbegin, std_const_iterator<R>() const)
@@ -2712,49 +2861,87 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     FUNCTION(rend, std_const_reverse_iterator<R>() const)
     FUNCTION(rend, std_reverse_iterator<R>())
     FUNCTION(crend, std_const_reverse_iterator<R>() const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(empty)
     FUNCTION(size)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(max_size)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(clear)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::size_type, typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>, std_const_iterator<R>))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std::initializer_list<typename R::value_type>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(push_back, void(typename R::const_reference))
     FUNCTION(push_front, void(typename R::const_reference))
     FUNCTION(pop_back)
     FUNCTION(pop_front)
     FUNCTION(resize, void(typename R::size_type))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(resize, void(typename R::size_type, typename R::const_reference))
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(merge, void(R&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(merge, void(R&, std::function<bool(typename R::const_reference, typename R::const_reference)>))
     FUNCTION(splice, void(std_const_iterator<R>, R&))
     FUNCTION(splice, void(std_const_iterator<R>, R&, std_const_iterator<R>))
     FUNCTION(splice, void(std_const_iterator<R>, R&, std_const_iterator<R>, std_const_iterator<R>))
+    #endif // REW_CORE_MINIMAL
+
 #if __cplusplus < 202002L
     FUNCTION(remove, void(typename R::const_reference))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(remove_if, void(std::function<bool(typename R::const_reference)>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(unique, void())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(unique, void(std::function<bool(typename R::const_reference, typename R::const_reference)>))
+    #endif // REW_CORE_MINIMAL
 #else
     FUNCTION(remove, typename R::size_type(typename R::const_reference))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(remove_if, typename R::size_type(std::function<bool(typename R::const_reference)>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(unique, typename R::size_type())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(unique, typename R::size_type(std::function<bool(typename R::const_reference, typename R::const_reference)>))
+    #endif // REW_CORE_MINIMAL
 #endif // if
+
     FUNCTION(reverse)
     FUNCTION(sort, void())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(sort, void(std::function<bool(typename R::const_reference, typename R::const_reference)>))
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #include <forward_list> // forward_list
 
 // default allocator for forward_list
 
+#ifndef REW_CORE_MINIMAL
 // as function argument type
+#endif // REW_CORE_MINIMAL
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -2777,6 +2964,8 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), std::forward_list<ValueType, AllocatorType>)
     FACTORY(R())
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::const_reference, typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::const_reference))
@@ -2785,10 +2974,18 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>))
     FACTORY(R(R const&, typename R::allocator_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FACTORY(R(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::allocator_type const&))
     FACTORY(R(std::initializer_list<typename R::value_type>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
     FUNCTION(assign, void(typename R::size_type, typename R::const_reference))
     FUNCTION(assign, void(std_const_iterator<R>, std_const_iterator<R>))
@@ -2805,46 +3002,135 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     FUNCTION(end, std_const_iterator<R>() const)
     FUNCTION(end, std_iterator<R>())
     FUNCTION(cend, std_const_iterator<R>() const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(empty)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(max_size)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(clear)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(insert_after, std_iterator<R>(std_const_iterator<R>, typename R::const_reference))
     FUNCTION(insert_after, std_iterator<R>(std_const_iterator<R>, typename R::size_type, typename R::const_reference))
     FUNCTION(insert_after, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>, std_const_iterator<R>))
     FUNCTION(insert_after, std_iterator<R>(std_const_iterator<R>, std::initializer_list<typename R::value_type>))
     FUNCTION(erase_after, std_iterator<R>(std_const_iterator<R>))
     FUNCTION(erase_after, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(push_front, void(typename R::const_reference))
     FUNCTION(pop_front)
     FUNCTION(resize, void(typename R::size_type))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(resize, void(typename R::size_type, typename R::const_reference))
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(merge, void(R&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(merge, void(R&, std::function<bool(typename R::const_reference, typename R::const_reference)>))
     FUNCTION(splice_after, void(std_const_iterator<R>, R&))
     FUNCTION(splice_after, void(std_const_iterator<R>, R&, std_const_iterator<R>))
     FUNCTION(splice_after, void(std_const_iterator<R>, R&, std_const_iterator<R>, std_const_iterator<R>))
+    #endif // REW_CORE_MINIMAL
+
 #if __cplusplus < 202002L
     FUNCTION(remove, void(typename R::const_reference))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(remove_if, void(std::function<bool(typename R::const_reference)>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(unique, void())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(unique, void(std::function<bool(typename R::const_reference, typename R::const_reference)>))
+    #endif // REW_CORE_MINIMAL
 #else
     FUNCTION(remove, typename R::size_type(typename R::const_reference))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(remove_if, typename R::size_type(std::function<bool(typename R::const_reference)>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(unique, typename R::size_type())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(unique, typename R::size_type(std::function<bool(typename R::const_reference, typename R::const_reference)>))
+    #endif // REW_CORE_MINIMAL
 #endif // if
+
     FUNCTION(reverse)
     FUNCTION(sort, void())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(sort, void(std::function<bool(typename R::const_reference, typename R::const_reference)>))
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #include <set> // set, multiset
 
 // default allocator for set, multiset
 
+#ifndef REW_CORE_MINIMAL
 // as function argument/result type
+#endif // REW_CORE_MINIMAL
+
+//less - as comparator
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename KeyType>), (std::hash<KeyType>),
+    std::hash<CLEANOF(KeyType)>
+)
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType>), std::hash<KeyType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::hash<" + NAMEOF(KeyType) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename KeyType>), std::hash<KeyType>)
+    #ifndef REW_CORE_MINIMAL
+    FACTORY(R())
+    FACTORY(R(R const&))
+    FUNCTION(operator())
+    #endif // REW_CORE_MINIMAL
+REFLECTABLE_INIT()
+
+TEMPLATE_REFLECTABLE_CLEAN((template <typename T>), (std::equal_to<T>), std::equal_to<CLEANOF(T)>)
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), std::equal_to<T>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::equal_to<" + NAMEOF(T) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename T>), std::equal_to<T>)
+REFLECTABLE_INIT()
+
+TEMPLATE_REFLECTABLE_CLEAN((template <typename T>), (std::less<T>), std::less<CLEANOF(T)>)
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), std::less<T>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::less<" + NAMEOF(T) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename T>), std::less<T>)
+REFLECTABLE_INIT()
+
+TEMPLATE_REFLECTABLE_CLEAN((template <typename T>), (std::greater<T>), std::greater<CLEANOF(T)>)
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), std::greater<T>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::greater<" + NAMEOF(T) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename T>), std::greater<T>)
+REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -2922,16 +3208,26 @@ struct __rew_is_any_std_ordered_set<std::multiset<KeyType, Comparator, Allocator
 
 CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<R>::value)
     FACTORY(R())
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(typename R::key_compare const&))
     FACTORY(R(typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::allocator_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FACTORY(R(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(R const&, typename R::allocator_type const&))
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(std::initializer_list<typename R::value_type>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
     FUNCTION(get_allocator)
     FUNCTION(begin, std_const_iterator<R>() const)
@@ -2946,10 +3242,18 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<R>::value)
     FUNCTION(rend, std_const_reverse_iterator<R>() const)
     FUNCTION(rend, std_reverse_iterator<R>())
     FUNCTION(crend, std_const_reverse_iterator<R>() const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(empty)
     FUNCTION(size)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(max_size)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(clear)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(insert, std::pair<std_iterator<R>, bool>(typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_iterator<R>, typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
@@ -2960,13 +3264,21 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<R>::value)
     FUNCTION(swap)
     FUNCTION(extract, typename R::node_type(std_const_iterator<R>))
     FUNCTION(extract, typename R::node_type(typename R::key_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(merge, void(R&))
     FUNCTION(count, typename R::size_type(typename R::key_type const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(find, std_iterator<R>(typename R::key_type const&))
     FUNCTION(find, std_const_iterator<R>(typename R::key_type const&) const)
+    #endif // REW_CORE_MINIMAL
+
 #if __cplusplus >= 202002L
     FUNCTION(contains, bool(typename R::key_type const&) const)
 #endif // if
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(equal_range, std::pair<std_iterator<R>, std_iterator<R>>(typename R::key_type const&))
     FUNCTION(equal_range, std::pair<std_const_iterator<R>, std_const_iterator<R>>(typename R::key_type const&) const)
     FUNCTION(lower_bound, std_iterator<R>(typename R::key_type const&))
@@ -2975,13 +3287,16 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<R>::value)
     FUNCTION(upper_bound, std_const_iterator<R>(typename R::key_type const&) const)
 //  FUNCTION(key_comp)
 //  FUNCTION(value_comp)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #include <unordered_set> // unordered_set, unordered_multiset
 
 // default allocator for unordered_set, unordered_multiset
 
+#ifndef REW_CORE_MINIMAL
 // as function argument/result type
+#endif // REW_CORE_MINIMAL
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -3085,6 +3400,8 @@ struct __rew_is_any_std_unordered_set<std::unordered_multiset<KeyType, Hasher, C
 
 CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
     FACTORY(R())
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(typename R::size_type, typename R::hasher const&, typename R::key_equal const&, typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::hasher const&, typename R::key_equal const&))
     FACTORY(R(typename R::size_type, typename R::hasher const&))
@@ -3103,6 +3420,12 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::size_type, typename R::hasher const&))
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::size_type))
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::size_type, typename R::hasher const&, typename R::allocator_type const&))
+    #endif // REW_CORE_MINIMAL
+
+    FACTORY(R(R const&))
+    FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(get_allocator)
     FUNCTION(begin, std_const_iterator<R>() const)
     FUNCTION(begin, std_iterator<R>())
@@ -3110,10 +3433,18 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
     FUNCTION(end, std_const_iterator<R>() const)
     FUNCTION(end, std_iterator<R>())
     FUNCTION(cend, std_const_iterator<R>() const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(empty)
     FUNCTION(size)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(max_size)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(clear)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(insert, std::pair<std_iterator<R>, bool>(typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::const_reference))
     FUNCTION(insert, void(std_const_iterator<R>, std_const_iterator<R>))
@@ -3124,13 +3455,21 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
     FUNCTION(swap)
 //  FUNCTION(extract, typename R::node_type(std_const_iterator<R>))
 //  FUNCTION(extract, typename R::node_type(typename R::key_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(merge, void(R&))
     FUNCTION(count, typename R::size_type(typename R::key_type const&) const)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(find, std_iterator<R>(typename R::key_type const&))
     FUNCTION(find, std_const_iterator<R>(typename R::key_type const&) const)
+    #endif // REW_CORE_MINIMAL
+
 #if __cplusplus >= 202002L
     FUNCTION(contains, bool(typename R::key_type const&) const)
 #endif // if
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(equal_range, std::pair<std_iterator<R>, std_iterator<R>>(typename R::key_type const&))
     FUNCTION(equal_range, std::pair<std_const_iterator<R>, std_const_iterator<R>>(typename R::key_type const&) const)
     FUNCTION(begin, std_const_local_iterator<R>(typename R::size_type) const)
@@ -3146,10 +3485,15 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
     FUNCTION(load_factor)
     FUNCTION(max_load_factor, float() const)
     FUNCTION(max_load_factor, void(float))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(rehash)
     FUNCTION(reserve)
+
+    #ifndef REW_CORE_MINIMAL
 //  FUNCTION(hash_function)
 //  FUNCTION(key_eq)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 // as function argument type
@@ -3190,13 +3534,24 @@ TEMPLATE_REFLECTABLE
     FUNCTION(operator=, R&(std::nullptr_t))
     FUNCTION(release)
     FUNCTION(reset, void(typename R::pointer))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(get)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(get_deleter, typename R::deleter_type&())
     FUNCTION(get_deleter, typename R::deleter_type const&() const)
+    #endif // REM_CORE_MINIMAL
+
     FUNCTION(operator bool)
     FUNCTION(operator*)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator->)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 // as function argument type
@@ -3219,12 +3574,20 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), std::shared_ptr<ElementT
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(reset, void())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(reset, void(typename R::element_type*))
     //FUNCTION(swap, void(R&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(get)
     FUNCTION(operator*)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator->)
     FUNCTION(use_count)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator bool)
 REFLECTABLE_INIT()
 
@@ -3248,23 +3611,32 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), std::weak_ptr<ElementTyp
     FUNCTION(operator=, R&(R const&))
     FUNCTION(operator=, R&(std::shared_ptr<typename R::element_type> const&))
     FUNCTION(reset)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(swap)
     FUNCTION(use_count)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(expired)
     FUNCTION(lock)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(owner_before, bool(R const&))
     FUNCTION(owner_before, bool(std::shared_ptr<typename R::value_type> const&))
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
-
-// TODO: add std::less, std::greater
 
 #include <map> // map, multimap
 
 // default allocator for map, multimap
 
+#ifndef REW_CORE_MINIMAL
 // as function argument type
+#endif // REW_CORE_MINIMAL
 
 // as value type
+
+//less - as comparator
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -3348,21 +3720,35 @@ struct __rew_is_any_std_ordered_map<std::multimap<KeyType, ValueType, Comparator
 
 CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<R>::value)
     FACTORY(R())
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(typename R::key_compare const&))
     FACTORY(R(typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::allocator_type const&))
+    #endif // REW_CORE_MINIMAL
+ 
     FACTORY(R(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(R const&, typename R::allocator_type const&))
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(std::initializer_list<typename R::value_type>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
     FUNCTION(get_allocator)
     FUNCTION(at, typename R::mapped_type&(typename R::key_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(at, typename R::mapped_type const&(typename R::key_type const&) const)
     FUNCTION(operator[], typename R::mapped_type&(typename R::key_type const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(begin, std_const_iterator<R>() const)
     FUNCTION(begin, std_iterator<R>())
     FUNCTION(cbegin, std_const_iterator<R>() const)
@@ -3375,10 +3761,18 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<R>::value)
     FUNCTION(rend, std_const_reverse_iterator<R>() const)
     FUNCTION(rend, std_reverse_iterator<R>())
     FUNCTION(crend, std_const_reverse_iterator<R>() const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(empty)
     FUNCTION(size)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(max_size)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(clear)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(insert, std::pair<std_iterator<R>, bool>(typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
@@ -3389,13 +3783,20 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<R>::value)
     FUNCTION(swap)
     FUNCTION(extract, typename R::node_type(std_const_iterator<R>))
     FUNCTION(extract, typename R::node_type(typename R::key_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(merge, void(R&))
     FUNCTION(count, typename R::size_type(typename R::key_type const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(find, std_iterator<R>(typename R::key_type const&))
     FUNCTION(find, std_const_iterator<R>(typename R::key_type const&) const)
+    #endif // REW_CORE_MINIMAL
+
 #if __cplusplus >= 202002L
     FUNCTION(contains, bool(typename R::key_type const&) const)
 #endif // if
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(equal_range, std::pair<std_iterator<R>, std_iterator<R>>(typename R::key_type const&))
     FUNCTION(equal_range, std::pair<std_const_iterator<R>, std_const_iterator<R>>(typename R::key_type const&) const)
     FUNCTION(lower_bound, std_iterator<R>(typename R::key_type const&))
@@ -3404,43 +3805,19 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<R>::value)
     FUNCTION(upper_bound, std_const_iterator<R>(typename R::key_type const&) const)
 //  FUNCTION(key_comp)
 //  FUNCTION(value_comp)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 // default allocator for unordered_map, unordered_multimap
 
+#ifndef REW_CORE_MININAL
 // as function argument type
 
 // as value type
+#endif // REW_CORE_MININAL
 
 // hash - as hasher
 // equal_to - as comparator
-
-TEMPLATE_REFLECTABLE_CLEAN
-(
-    (template <typename KeyType>), (std::hash<KeyType>),
-    std::hash<CLEANOF(KeyType)>
-)
-
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType>), std::hash<KeyType>)
-    BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::hash<" + NAMEOF(KeyType) + ">")
-REFLECTABLE_DECLARATION_INIT()
-
-TEMPLATE_REFLECTABLE((template <typename KeyType>), std::hash<KeyType>)
-    FACTORY(R())
-    FACTORY(R(R const&))
-    FUNCTION(operator())
-REFLECTABLE_INIT()
-
-TEMPLATE_REFLECTABLE_CLEAN((template <typename T>), (std::equal_to<T>), std::equal_to<CLEANOF(T)>)
-
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename T>), std::equal_to<T>)
-    BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::equal_to<" + NAMEOF(T) + ">")
-REFLECTABLE_DECLARATION_INIT()
-
-TEMPLATE_REFLECTABLE((template <typename T>), std::equal_to<T>)
-REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -3546,6 +3923,8 @@ struct __rew_is_any_std_unordered_map<std::unordered_multimap<KeyType, Hasher, C
 
 CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_map<R>::value)
     FACTORY(R())
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(typename R::size_type, typename R::hasher const&, typename R::key_equal const&, typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::hasher const&, typename R::key_equal const&))
     FACTORY(R(typename R::size_type, typename R::hasher const&))
@@ -3564,6 +3943,12 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_map<R>::value)
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::size_type, typename R::hasher const&))
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::size_type))
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::size_type, typename R::hasher const&, typename R::allocator_type const&))
+    #endif // REW_CORE_MINIMAL
+
+    FACTORY(R(R const&))
+    FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(get_allocator)
     FUNCTION(begin, std_const_iterator<R>() const)
     FUNCTION(begin, std_iterator<R>())
@@ -3571,10 +3956,18 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_map<R>::value)
     FUNCTION(end, std_const_iterator<R>() const)
     FUNCTION(end, std_iterator<R>())
     FUNCTION(cend, std_const_iterator<R>() const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(empty)
     FUNCTION(size)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(max_size)
+    #endif // REW_CORE_MININAL
+
     FUNCTION(clear)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(insert, std::pair<std_iterator<R>, bool>(typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::const_reference))
     FUNCTION(insert, void(std_const_iterator<R>, std_const_iterator<R>))
@@ -3585,16 +3978,28 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_map<R>::value)
     FUNCTION(swap)
 //  FUNCTION(extract, typename R::node_type(std_const_iterator<R>))
 //  FUNCTION(extract, typename R::node_type(typename R::key_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(merge, void(R&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(at, typename R::mapped_type&(typename R::key_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(at, typename R::mapped_type const&(typename R::key_type const&) const)
     FUNCTION(operator[], typename R::mapped_type&(typename R::key_type const&))
     FUNCTION(count, typename R::size_type(typename R::key_type const&) const)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(find, std_iterator<R>(typename R::key_type const&))
     FUNCTION(find, std_const_iterator<R>(typename R::key_type const&) const)
+    #endif // REW_CORE_MINIMAL
+
 #if __cplusplus >= 202002L
     FUNCTION(contains, bool(typename R::key_type const&) const)
 #endif // if
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(equal_range, std::pair<std_iterator<R>, std_iterator<R>>(typename R::key_type const&))
     FUNCTION(equal_range, std::pair<std_const_iterator<R>, std_const_iterator<R>>(typename R::key_type const&) const)
     FUNCTION(begin, std_const_local_iterator<R>(typename R::size_type) const)
@@ -3610,17 +4015,24 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_map<R>::value)
     FUNCTION(load_factor)
     FUNCTION(max_load_factor, float() const)
     FUNCTION(max_load_factor, void(float))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(rehash)
     FUNCTION(reserve)
+
+    #ifndef REW_CORE_MINIMAL
 //  FUNCTION(hash_function)
 //  FUNCTION(key_eq)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #include <deque> // deque
 
 // default allocator for deque
 
+#ifndef RWW_CORE_MINIMAL
 // as function argument type
+#endif // REW_CORE_MINIMAL
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -3640,6 +4052,8 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), std::deque<ValueType, AllocatorType>)
     FACTORY(R())
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::const_reference, typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::const_reference))
@@ -3648,10 +4062,18 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>))
     FACTORY(R(R const&, typename R::allocator_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FACTORY(R(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::allocator_type const&))
     FACTORY(R(std::initializer_list<typename R::value_type>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
     FUNCTION(assign, void(typename R::size_type, typename R::const_reference))
     FUNCTION(assign, void(std_const_iterator<R>, std_const_iterator<R>))
@@ -3659,8 +4081,12 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     FUNCTION(get_allocator)
     FUNCTION(at, typename R::const_reference(typename R::size_type) const)
     FUNCTION(at, typename R::reference(typename R::size_type))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator[], typename R::const_reference(typename R::size_type) const)
     FUNCTION(operator[], typename R::reference(typename R::size_type))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(front, typename R::const_reference() const)
     FUNCTION(front, typename R::reference())
     FUNCTION(back, typename R::const_reference() const)
@@ -3677,24 +4103,37 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     FUNCTION(rend, std_const_reverse_iterator<R>() const)
     FUNCTION(rend, std_reverse_iterator<R>())
     FUNCTION(crend, std_const_reverse_iterator<R>() const)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(empty)
     FUNCTION(size)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(max_size)
     FUNCTION(shrink_to_fit)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(clear)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::size_type, typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::const_reference, typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std::initializer_list<typename R::value_type>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(push_back, void(typename R::const_reference))
     FUNCTION(push_front, void(typename R::const_reference))
     FUNCTION(pop_back)
     FUNCTION(pop_front)
     FUNCTION(resize, void(typename R::size_type))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(resize, void(typename R::size_type, typename R::const_reference))
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #include <stack> // stack
@@ -3728,7 +4167,10 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), std::
     FUNCTION(size)
     FUNCTION(push, void(typename R::const_reference))
     FUNCTION(pop)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #include <queue> // queue
@@ -3764,7 +4206,10 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), std::
     FUNCTION(size)
     FUNCTION(push, void(typename R::const_reference))
     FUNCTION(pop)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #include <bitset> // bitest
@@ -3777,16 +4222,30 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE((template <std::size_t BitsetSize>), std::bitset<BitsetSize>)
     FACTORY(R())
     FACTORY(R(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(unsigned long))
+    #endif // REW_CORE_MINIMAL
+
     FACTORY(R(unsigned long long))
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(std::string const&, std::size_t))
+    #endif // REW_CORE_MINIMAL
+
     FACTORY(R(std::string const&))
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(char const*, std::size_t))
     FACTORY(R(char const*))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator=, R&(R const&))
     FUNCTION(operator==)
     FUNCTION(operator[], bool(std::size_t) const)
     FUNCTION(operator[], typename R::reference(std::size_t))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(test)
     FUNCTION(all)
     FUNCTION(any)
@@ -3802,13 +4261,27 @@ TEMPLATE_REFLECTABLE((template <std::size_t BitsetSize>), std::bitset<BitsetSize
     FUNCTION(operator>>)
     FUNCTION(operator>>=)
     FUNCTION(set, R&())
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(set, R&(std::size_t, bool))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(reset, R&())
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(reset, R&(std::size_t))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(flip, R&())
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(flip, R&(std::size_t))
     FUNCTION(to_string, std::string(char, char) const)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(to_ulong)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(to_ullong)
 REFLECTABLE_INIT()
 
@@ -3832,13 +4305,29 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::complex<ValueType>)
     FACTORY(R(typename R::value_type const&, typename R::value_type const&))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator+=, R&(typename R::value_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator+=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator-=, R&(typename R::value_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator-=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator*=, R&(typename R::value_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator*=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator/=, R&(typename R::value_type const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator/=, R&(R const&))
     PROPERTY(real)
     PROPERTY(imag)
@@ -3875,12 +4364,20 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::optional<ValueType>)
     FUNCTION(operator->, typename R::value_type*())
     FUNCTION(operator*, typename R::value_type const&() const)
     FUNCTION(operator*, typename R::value_type&())
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator bool)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(has_value)
     FUNCTION(value, typename R::value_type&())
     FUNCTION(value, typename R::value_type const&() const)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(value_or, typename R::value_type(typename R::value_type const&) const)
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(reset)
     FUNCTION(emplace, typename R::value_type&(typename R::value_type const&))
 REFLECTABLE_INIT()
@@ -3917,8 +4414,11 @@ TEMPLATE_REFLECTABLE
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(index)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(valueless_by_exception)
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 // as return type of the type() function
@@ -3945,7 +4445,11 @@ REFLECTABLE(std::any)
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(reset)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(has_value)
     FUNCTION(type)
 REFLECTABLE_INIT()
@@ -3977,13 +4481,17 @@ REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(std::type_index)
     FACTORY(R(std::type_info const&))
+
 #if __cplusplus < 202002L
     FUNCTION(operator==)
     FUNCTION(operator!=)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator<)
     FUNCTION(operator<=)
     FUNCTION(operator>)
     FUNCTION(operator>=)
+    #endif // REW_CORE_MINIMAL
 #else
     // TODO: add support for std::strong_ordering
 #endif // if

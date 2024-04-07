@@ -38,7 +38,10 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), std::
     FUNCTION(size)
     FUNCTION(push, void(typename R::const_reference))
     FUNCTION(pop)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_QUEUE_HPP

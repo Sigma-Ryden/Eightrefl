@@ -31,7 +31,10 @@ TEMPLATE_REFLECTABLE((template <typename... ArgumentTypes>), std::tuple<Argument
     FACTORY(R(ArgumentTypes...))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_TUPLE_HPP

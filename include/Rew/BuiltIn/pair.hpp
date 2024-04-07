@@ -19,10 +19,14 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename FirstType, typename SecondType>), std::pair<FirstType, SecondType>)
     FACTORY(R())
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(typename R::first_type const&, typename R::second_type const&))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(swap, void(R&))
+    #endif // REW_CORE_MINIMAL
+
     PROPERTY(first, typename R::first_type)
     PROPERTY(second, typename R::second_type)
 REFLECTABLE_INIT()

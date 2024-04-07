@@ -15,13 +15,17 @@ REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(std::type_index)
     FACTORY(R(std::type_info const&))
+
 #if __cplusplus < 202002L
     FUNCTION(operator==)
     FUNCTION(operator!=)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator<)
     FUNCTION(operator<=)
     FUNCTION(operator>)
     FUNCTION(operator>=)
+    #endif // REW_CORE_MINIMAL
 #else
     // TODO: add support for std::strong_ordering
 #endif // if

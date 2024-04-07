@@ -45,13 +45,24 @@ TEMPLATE_REFLECTABLE
     FUNCTION(operator=, R&(std::nullptr_t))
     FUNCTION(release)
     FUNCTION(reset, void(typename R::pointer))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(swap)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(get)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(get_deleter, typename R::deleter_type&())
     FUNCTION(get_deleter, typename R::deleter_type const&() const)
+    #endif // REM_CORE_MINIMAL
+
     FUNCTION(operator bool)
     FUNCTION(operator*)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator->)
+    #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_UNIQUE_PTR_HPP
