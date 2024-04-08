@@ -1,3 +1,4 @@
+#define REW_CORE_MINIMAL
 #include <RewTestingBase.hpp>
 
 #include <TestReflectionImpl.hpp>
