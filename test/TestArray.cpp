@@ -8,14 +8,50 @@ TEST(TestBuiltin, TestArray)
 
     auto type = rew::global.find("std::array<int, 8>");
 
-    auto factory = type->reflection->factory.find("std::array<int, 8>()");
+    ASSERT("type", type != nullptr);
+    EXPECT("type-name", type->name == "std::array<int, 8>");
+    EXPECT("type-size", type->size == sizeof(std::array<int, 8>));
+    EXPECT("type-context", type->context != nullptr);
 
-    auto lhs = factory->call({});
-    auto rhs = factory->call({});
+    auto reflection = type->reflection;
 
-    auto compare = type->reflection->function.find("std::operator==")->all.begin()->second;
+    ASSERT("reflection", reflection != nullptr);
+    EXPECT("reflection-name", reflection->name == "std::array<int, 8>");
 
-    auto result = compare.call(nullptr, { type->context(lhs), type->context(rhs) });
+    EXPECT("factory-R()", reflection->factory.find("std::array<int, 8>()") != nullptr);
+    EXPECT("factory-R(R const&)", reflection->factory.find("std::array<int, 8>(std::array<int, 8> const&)") != nullptr);
 
-    EXPECT("compare", std::any_cast<bool>(result) == true);
+    #ifndef REW_CORE_MINIMAL
+    ASSERT("function-at", reflection->function.find("at") != nullptr);
+    #endif // REW_CORE_MINIMAL
+
+    EXPECT("function-operator[]", reflection->function.find("operator[]") != nullptr);
+
+    #ifndef REW_CORE_MINIMAL
+    EXPECT("function-front", reflection->function.find("front") != nullptr);
+    EXPECT("function-back", reflection->function.find("back") != nullptr);
+    #endif // REW_CORE_MINIMAL
+
+    EXPECT("function-data", reflection->function.find("data") != nullptr);
+
+    #ifndef REW_CORE_MINIMAL
+    EXPECT("function-begin", reflection->function.find("begin") != nullptr);
+    EXPECT("function-cbegin", reflection->function.find("cbegin") != nullptr);
+    EXPECT("function-end", reflection->function.find("end") != nullptr);
+    EXPECT("function-cend", reflection->function.find("cend") != nullptr);
+    EXPECT("function-rbegin", reflection->function.find("rbegin") != nullptr);
+    EXPECT("function-crbegin", reflection->function.find("crbegin") != nullptr);
+    EXPECT("function-rend", reflection->function.find("rend") != nullptr);
+    EXPECT("function-crend", reflection->function.find("crend") != nullptr);
+    #endif // REW_CORE_MINIMAL
+
+    EXPECT("function-empty", reflection->function.find("empty") != nullptr);
+    EXPECT("function-size", reflection->function.find("size") != nullptr);
+
+    #ifndef REW_CORE_MINIMAL
+    EXPECT("function-max_size", reflection->function.find("max_size") != nullptr);
+    EXPECT("function-fill", reflection->function.find("fill") != nullptr);
+    EXPECT("function-swap", reflection->function.find("swap") != nullptr);
+    EXPECT("function-std::operator==", reflection->function.find("std::operator==") != nullptr);
+    #endif // REW_CORE_MINIMAL
 }
