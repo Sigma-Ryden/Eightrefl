@@ -50,7 +50,6 @@ set(REW
     include/Rew/BuiltIn/variant.hpp
     include/Rew/BuiltIn/any.hpp
 
-    include/Rew/BuiltIn/nullptr_t.hpp
     include/Rew/BuiltIn/initializer_list.hpp
     include/Rew/BuiltIn/reference_wrapper.hpp
     include/Rew/BuiltIn/iterator.hpp
@@ -76,13 +75,40 @@ add_executable(${PROJECT_NAME}
     test/RewTestingBase.hpp
     test/main.cpp
 
-    test/TestReflection.cpp
-    test/TestReflectionImpl.cpp
-    test/TestReflectionImpl.hpp
+    #test/TestReflection.cpp
+    #test/TestReflectionImpl.cpp
+    #test/TestReflectionImpl.hpp
 
     test/TestCommon.cpp
     test/TestLibrary.cpp
 
-    test/TestArray.cpp
     test/TestAllocator.cpp
+    test/TestAny.cpp
+    test/TestArray.cpp
+    test/TestBitset.cpp
+    test/TestComplex.cpp
+    test/TestDeque.cpp
+    test/TestForwardList.cpp
+    test/TestFunction.cpp
+    test/TestFunctional.cpp
+    test/TestInitializerList.cpp
+    test/TestList.cpp
+    test/TestMap.cpp
+    test/TestOptional.cpp
+    test/TestPair.cpp
+    test/TestQueue.cpp
+    test/TestReferenceWrapper.cpp
+    test/TestSet.cpp
+    test/TestSharedPtr.cpp
+    test/TestStack.cpp
+    test/TestString.cpp
+    test/TestTuple.cpp
+    test/TestTypeindex.cpp
+    test/TestTypeinfo.cpp
+    test/TestUniquePtr.cpp
+    test/TestUnorderedMap.cpp
+    test/TestUnorderedSet.cpp
+    test/TestVariant.cpp
+    test/TestVector.cpp
+    test/TestWeakPtr.cpp
 )

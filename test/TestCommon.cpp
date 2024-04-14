@@ -17,6 +17,23 @@ TEST(TestCommon, TestVoid)
 }
 
 
+TEST(TestCommon, TestNullptr)
+{
+    auto type = rew::global.find("std::nullptr_t");
+
+    ASSERT("type", type != nullptr);
+
+    EXPECT("type-name", type->name == "std::nullptr_t");
+    EXPECT("type-size", type->size == sizeof(std::nullptr_t));
+    EXPECT("type-context", type->context != nullptr);
+
+    auto reflection = type->reflection;
+    ASSERT("reflection", reflection != nullptr);
+
+    EXPECT("reflection-name", reflection->name == "std::nullptr_t");
+}
+
+
 TEST(TestCommon, TestBool)
 {
     auto type = rew::global.find("bool");

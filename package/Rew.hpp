@@ -1838,6 +1838,14 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), ElementType*)
     FACTORY(R(R))
 REFLECTABLE_INIT()
 
+// nullptr type
+REFLECTABLE_DECLARATION(std::nullptr_t)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(std::nullptr_t)
+REFLECTABLE_INIT()
+
 // qualified types
 TEMPLATE_REFLECTABLE_CLEAN((template <typename ElementType>), (ElementType&), CLEANOF(ElementType)&)
 
@@ -2091,15 +2099,6 @@ REFLECTABLE(long double)
     FACTORY(R(R))
 REFLECTABLE_INIT()
 // ~ floating point types
-
-// as function argument type
-
-REFLECTABLE_DECLARATION(std::nullptr_t)
-    BUILTIN_REFLECTABLE()
-REFLECTABLE_DECLARATION_INIT()
-
-REFLECTABLE(std::nullptr_t)
-REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -3496,8 +3495,6 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
-// as function argument type
-
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ElementType, typename DeleterType>), (std::unique_ptr<ElementType, DeleterType>),
@@ -3553,8 +3550,6 @@ TEMPLATE_REFLECTABLE
     FUNCTION(operator->)
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
-
-// as function argument type
 
 TEMPLATE_REFLECTABLE_CLEAN
 (

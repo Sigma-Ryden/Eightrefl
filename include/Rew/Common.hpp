@@ -1,6 +1,8 @@
 #ifndef REW_COMMON_HPP
 #define REW_COMMON_HPP
 
+#include <cstddef> // nullptr_t
+
 #include <string> // to_string
 
 #include <Rew/Reflectable.hpp>
@@ -24,6 +26,14 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE((template <typename ElementType>), ElementType*)
     FACTORY(R())
     FACTORY(R(R))
+REFLECTABLE_INIT()
+
+// nullptr type
+REFLECTABLE_DECLARATION(std::nullptr_t)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(std::nullptr_t)
 REFLECTABLE_INIT()
 
 // qualified types

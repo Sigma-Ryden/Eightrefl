@@ -6,9 +6,6 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
-// as function argument type
-#include <Rew/BuiltIn/nullptr_t.hpp>
-
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ElementType, typename DeleterType>), (std::unique_ptr<ElementType, DeleterType>),
