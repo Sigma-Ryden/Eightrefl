@@ -23,6 +23,16 @@ TEST(TestLibrary, TestRawFunction)
     EXPECT("type-name", rew::meta::reflectable_traits<void() const>::name() == "void() const");
 }
 
+// REFLECTABLE_USING(std_size_t, std::size_t)
+
+// RAW_REFLECTABLE_DECLARATION(std_size_t)
+//     REFLECTABLE_REGISTRY(&rew::global)
+//     REFLECTABLE_NAME("std::size_t")
+// REFLECTABLE_DECLARATION_INIT()
+
+// REFLECTABLE(std_size_t)
+// REFLECTABLE_INIT()
+
 // TEST_SPACE()
 // {
 

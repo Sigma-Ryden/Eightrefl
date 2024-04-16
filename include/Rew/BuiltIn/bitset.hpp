@@ -8,6 +8,29 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
+// as function argument tye
+#include <Rew/BuiltIn/string.hpp>
+
+TEMPLATE_REFLECTABLE_USING
+(
+    (template <class StdBitsetType>), std_bitset_reference,
+    (std_bitset_reference<StdBitsetType>), typename CLEANOF(StdBitsetType)::reference
+)
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <class StdBitsetType>), std_bitset_reference<StdBitsetType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME(NAMEOF(StdBitsetType) + "::reference")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <class StdBitsetType>), std_bitset_reference<StdBitsetType>)
+    FUNCTION(operator=, R&(bool))
+    FUNCTION(operator=, R&(R const&))
+    FUNCTION(operator bool)
+    FUNCTION(operator~)
+    FUNCTION(flip, R&())
+REFLECTABLE_INIT()
+
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <std::size_t BitsetSize>), std::bitset<BitsetSize>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::bitset<" + std::to_string(BitsetSize) + ">")
@@ -37,7 +60,7 @@ TEMPLATE_REFLECTABLE((template <std::size_t BitsetSize>), std::bitset<BitsetSize
     FUNCTION(operator=, R&(R const&))
     FUNCTION(operator==)
     FUNCTION(operator[], bool(std::size_t) const)
-    FUNCTION(operator[], typename R::reference(std::size_t))
+    FUNCTION(operator[], std_bitset_reference<R>(std::size_t))
 
     #ifndef REW_CORE_MINIMAL
     FUNCTION(test)
