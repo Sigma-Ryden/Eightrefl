@@ -1,4 +1,3 @@
-// TODO: add specializations for: complex<float>, complex<double>, complex<long double>
 #ifndef REW_BUILTIN_COMPLEX_HPP
 #define REW_BUILTIN_COMPLEX_HPP
 
@@ -44,6 +43,106 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::complex<ValueType>)
 
     #ifndef REW_CORE_MINIMAL
     FUNCTION(operator/=, R&(typename R::value_type const&))
+    #endif // REW_CORE_MINIMAL
+
+    FUNCTION(operator/=, R&(R const&))
+    PROPERTY(real)
+    PROPERTY(imag)
+REFLECTABLE_INIT()
+
+
+TEMPLATE_REFLECTABLE((template <>), std::complex<float>)
+    FACTORY(R())
+    FACTORY(R(typename R::value_type, typename R::value_type))
+    FACTORY(R(R const&))
+    FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(operator+=, R&(typename R::value_type))
+    #endif // REW_CORE_MINIMAL
+
+    FUNCTION(operator+=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(operator-=, R&(typename R::value_type))
+    #endif // REW_CORE_MINIMAL
+
+    FUNCTION(operator-=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(operator*=, R&(typename R::value_type))
+    #endif // REW_CORE_MINIMAL
+
+    FUNCTION(operator*=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(operator/=, R&(typename R::value_type))
+    #endif // REW_CORE_MINIMAL
+
+    FUNCTION(operator/=, R&(R const&))
+    PROPERTY(real)
+    PROPERTY(imag)
+REFLECTABLE_INIT()
+
+TEMPLATE_REFLECTABLE((template <>), std::complex<double>)
+    FACTORY(R())
+    FACTORY(R(typename R::value_type, typename R::value_type))
+    FACTORY(R(R const&))
+    FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(operator+=, R&(typename R::value_type))
+    #endif // REW_CORE_MINIMAL
+
+    FUNCTION(operator+=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(operator-=, R&(typename R::value_type))
+    #endif // REW_CORE_MINIMAL
+
+    FUNCTION(operator-=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(operator*=, R&(typename R::value_type))
+    #endif // REW_CORE_MINIMAL
+
+    FUNCTION(operator*=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(operator/=, R&(typename R::value_type))
+    #endif // REW_CORE_MINIMAL
+
+    FUNCTION(operator/=, R&(R const&))
+    PROPERTY(real)
+    PROPERTY(imag)
+REFLECTABLE_INIT()
+
+TEMPLATE_REFLECTABLE((template <>), std::complex<long double>)
+    FACTORY(R())
+    FACTORY(R(typename R::value_type, typename R::value_type))
+    FACTORY(R(R const&))
+    FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(operator+=, R&(typename R::value_type))
+    #endif // REW_CORE_MINIMAL
+
+    FUNCTION(operator+=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(operator-=, R&(typename R::value_type))
+    #endif // REW_CORE_MINIMAL
+
+    FUNCTION(operator-=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(operator*=, R&(typename R::value_type))
+    #endif // REW_CORE_MINIMAL
+
+    FUNCTION(operator*=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(operator/=, R&(typename R::value_type))
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(operator/=, R&(R const&))
