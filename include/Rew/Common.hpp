@@ -1,7 +1,7 @@
 #ifndef REW_COMMON_HPP
 #define REW_COMMON_HPP
 
-#include <cstddef> // nullptr_t
+#include <cstddef> // nullptr_t, size_t, ptrdiff_t
 
 #include <string> // to_string
 
@@ -126,6 +126,32 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::type_identity_t<" + NAMEOF(ReturnType(ArgumentTypes...)) + ">&")
 REFLECTABLE_DECLARATION_INIT()
+
+// aliasing
+REFLECTABLE_USING(std_size_t, std::size_t)
+
+RAW_REFLECTABLE_DECLARATION(std_size_t)
+    REFLECTABLE_REGISTRY(&rew::global)
+    REFLECTABLE_NAME("std::size_t")
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(std_size_t)
+    FACTORY(R())
+    FACTORY(R(R))
+REFLECTABLE_INIT()
+
+REFLECTABLE_USING(std_ptrdiff_t, std::ptrdiff_t)
+
+RAW_REFLECTABLE_DECLARATION(std_ptrdiff_t)
+    REFLECTABLE_REGISTRY(&rew::global)
+    REFLECTABLE_NAME("std::ptrdiff_t")
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(std_ptrdiff_t)
+    FACTORY(R())
+    FACTORY(R(R))
+REFLECTABLE_INIT()
+// ~ aliasing
 
 // boolean type
 REFLECTABLE_DECLARATION(bool)

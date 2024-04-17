@@ -1937,6 +1937,32 @@ TEMPLATE_REFLECTABLE_DECLARATION
     REFLECTABLE_NAME("std::type_identity_t<" + NAMEOF(ReturnType(ArgumentTypes...)) + ">&")
 REFLECTABLE_DECLARATION_INIT()
 
+// aliasing
+REFLECTABLE_USING(std_size_t, std::size_t)
+
+RAW_REFLECTABLE_DECLARATION(std_size_t)
+    REFLECTABLE_REGISTRY(&rew::global)
+    REFLECTABLE_NAME("std::size_t")
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(std_size_t)
+    FACTORY(R())
+    FACTORY(R(R))
+REFLECTABLE_INIT()
+
+REFLECTABLE_USING(std_ptrdiff_t, std::ptrdiff_t)
+
+RAW_REFLECTABLE_DECLARATION(std_ptrdiff_t)
+    REFLECTABLE_REGISTRY(&rew::global)
+    REFLECTABLE_NAME("std::ptrdiff_t")
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(std_ptrdiff_t)
+    FACTORY(R())
+    FACTORY(R(R))
+REFLECTABLE_INIT()
+// ~ aliasing
+
 // boolean type
 REFLECTABLE_DECLARATION(bool)
     BUILTIN_REFLECTABLE()
@@ -4246,20 +4272,20 @@ TEMPLATE_REFLECTABLE((template <std::size_t BitsetSize>), std::bitset<BitsetSize
     FACTORY(R(unsigned long long))
 
     #ifndef REW_CORE_MINIMAL
-    FACTORY(R(std::string const&, std::size_t))
+    FACTORY(R(std::string const&, std_size_t))
     #endif // REW_CORE_MINIMAL
 
     FACTORY(R(std::string const&))
 
     #ifndef REW_CORE_MINIMAL
-    FACTORY(R(char const*, std::size_t))
+    FACTORY(R(char const*, std_size_t))
     FACTORY(R(char const*))
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(operator=, R&(R const&))
     FUNCTION(operator==)
-    FUNCTION(operator[], bool(std::size_t) const)
-    FUNCTION(operator[], std_bitset_reference<R>(std::size_t))
+    FUNCTION(operator[], bool(std_size_t) const)
+    FUNCTION(operator[], std_bitset_reference<R>(std_size_t))
 
     #ifndef REW_CORE_MINIMAL
     FUNCTION(test)
@@ -4279,19 +4305,19 @@ TEMPLATE_REFLECTABLE((template <std::size_t BitsetSize>), std::bitset<BitsetSize
     FUNCTION(set, R&())
     #endif // REW_CORE_MINIMAL
 
-    FUNCTION(set, R&(std::size_t, bool))
+    FUNCTION(set, R&(std_size_t, bool))
 
     #ifndef REW_CORE_MINIMAL
     FUNCTION(reset, R&())
     #endif // REW_CORE_MINIMAL
 
-    FUNCTION(reset, R&(std::size_t))
+    FUNCTION(reset, R&(std_size_t))
 
     #ifndef REW_CORE_MINIMAL
     FUNCTION(flip, R&())
     #endif // REW_CORE_MINIMAL
 
-    FUNCTION(flip, R&(std::size_t))
+    FUNCTION(flip, R&(std_size_t))
     FUNCTION(to_string, std::string(char, char) const)
 
     #ifndef REW_CORE_MINIMAL
@@ -4302,6 +4328,18 @@ TEMPLATE_REFLECTABLE((template <std::size_t BitsetSize>), std::bitset<BitsetSize
 REFLECTABLE_INIT()
 
 #include <complex> // complex
+
+template <typename> struct __rew_std_complex_pass_value;
+
+template <typename ValueType>
+struct __rew_std_complex_pass_value<std::complex<ValueType>>
+{
+    using type = ValueType const&;
+};
+
+template <> struct __rew_std_complex_pass_value<std::complex<float>> { using type = float; };
+template <> struct __rew_std_complex_pass_value<std::complex<double>> { using type = double; };
+template <> struct __rew_std_complex_pass_value<std::complex<long double>> { using type = long double; };
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -4316,129 +4354,30 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType>), std::complex<ValueType>)
     FACTORY(R())
-    FACTORY(R(typename R::value_type const&, typename R::value_type const&))
+    FACTORY(R(typename __rew_std_complex_pass_value<R>::type, typename __rew_std_complex_pass_value<R>::type))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
 
     #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator+=, R&(typename R::value_type const&))
+    FUNCTION(operator+=, R&(typename __rew_std_complex_pass_value<R>::type))
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(operator+=, R&(R const&))
 
     #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator-=, R&(typename R::value_type const&))
+    FUNCTION(operator-=, R&(typename __rew_std_complex_pass_value<R>::type))
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(operator-=, R&(R const&))
 
     #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator*=, R&(typename R::value_type const&))
+    FUNCTION(operator*=, R&(typename __rew_std_complex_pass_value<R>::type))
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(operator*=, R&(R const&))
 
     #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator/=, R&(typename R::value_type const&))
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(operator/=, R&(R const&))
-    PROPERTY(real)
-    PROPERTY(imag)
-REFLECTABLE_INIT()
-
-TEMPLATE_REFLECTABLE((template <>), std::complex<float>)
-    FACTORY(R())
-    FACTORY(R(typename R::value_type, typename R::value_type))
-    FACTORY(R(R const&))
-    FUNCTION(operator=, R&(R const&))
-
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator+=, R&(typename R::value_type))
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(operator+=, R&(R const&))
-
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator-=, R&(typename R::value_type))
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(operator-=, R&(R const&))
-
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator*=, R&(typename R::value_type))
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(operator*=, R&(R const&))
-
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator/=, R&(typename R::value_type))
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(operator/=, R&(R const&))
-    PROPERTY(real)
-    PROPERTY(imag)
-REFLECTABLE_INIT()
-
-TEMPLATE_REFLECTABLE((template <>), std::complex<double>)
-    FACTORY(R())
-    FACTORY(R(typename R::value_type, typename R::value_type))
-    FACTORY(R(R const&))
-    FUNCTION(operator=, R&(R const&))
-
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator+=, R&(typename R::value_type))
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(operator+=, R&(R const&))
-
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator-=, R&(typename R::value_type))
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(operator-=, R&(R const&))
-
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator*=, R&(typename R::value_type))
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(operator*=, R&(R const&))
-
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator/=, R&(typename R::value_type))
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(operator/=, R&(R const&))
-    PROPERTY(real)
-    PROPERTY(imag)
-REFLECTABLE_INIT()
-
-TEMPLATE_REFLECTABLE((template <>), std::complex<long double>)
-    FACTORY(R())
-    FACTORY(R(typename R::value_type, typename R::value_type))
-    FACTORY(R(R const&))
-    FUNCTION(operator=, R&(R const&))
-
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator+=, R&(typename R::value_type))
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(operator+=, R&(R const&))
-
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator-=, R&(typename R::value_type))
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(operator-=, R&(R const&))
-
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator*=, R&(typename R::value_type))
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(operator*=, R&(R const&))
-
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator/=, R&(typename R::value_type))
+    FUNCTION(operator/=, R&(typename __rew_std_complex_pass_value<R>::type))
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(operator/=, R&(R const&))

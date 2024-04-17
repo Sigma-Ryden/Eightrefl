@@ -4,6 +4,8 @@
 
 TEST(TestCommon, TestComplex)
 {
+    rew::reflectable<std::complex<float>>();
+
     auto type = rew::global.find("std::complex<float>");
 
     ASSERT("type", type != nullptr);
