@@ -6,6 +6,11 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
+#ifndef REW_CORE_MINIMAL
+// as function return type
+#include <Rew/BuiltIn/typeinfo.hpp>
+#endif // REW_CORE_MINIMAL
+
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),

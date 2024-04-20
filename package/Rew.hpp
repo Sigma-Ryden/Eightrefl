@@ -2126,6 +2126,24 @@ REFLECTABLE(long double)
 REFLECTABLE_INIT()
 // ~ floating point types
 
+#ifndef REW_CORE_MINIMAL
+// as function return type
+
+#include <typeinfo> // type_info
+
+REFLECTABLE_DECLARATION(std::type_info)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(std::type_info)
+    FUNCTION(operator==)
+    FUNCTION(before)
+    FUNCTION(hash_code)
+    FUNCTION(name)
+REFLECTABLE_INIT()
+
+#endif // REW_CORE_MINIMAL
+
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
@@ -2868,12 +2886,6 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     FUNCTION(front, typename R::reference())
     FUNCTION(back, typename R::const_reference() const)
     FUNCTION(back, typename R::reference())
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(data, typename R::const_pointer() const)
-    FUNCTION(data, typename R::pointer())
-
-    #ifndef REW_CORE_MINIMAL
     FUNCTION(begin, std_const_iterator<R>() const)
     FUNCTION(begin, std_iterator<R>())
     FUNCTION(cbegin, std_const_iterator<R>() const)
@@ -4412,12 +4424,12 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::optional<ValueType>)
     FACTORY(R(typename R::value_type const&))
     FUNCTION(operator=, R&(std::nullopt_t))
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator->, typename R::value_type const*() const)
     FUNCTION(operator->, typename R::value_type*())
     FUNCTION(operator*, typename R::value_type const&() const)
     FUNCTION(operator*, typename R::value_type&())
-
-    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator bool)
     #endif // REW_CORE_MINIMAL
 
@@ -4474,19 +4486,6 @@ TEMPLATE_REFLECTABLE
 REFLECTABLE_INIT()
 
 // as return type of the type() function
-
-#include <typeinfo> // type_info
-
-REFLECTABLE_DECLARATION(std::type_info)
-    BUILTIN_REFLECTABLE()
-REFLECTABLE_DECLARATION_INIT()
-
-REFLECTABLE(std::type_info)
-    FUNCTION(operator==)
-    FUNCTION(before)
-    FUNCTION(hash_code)
-    FUNCTION(name)
-REFLECTABLE_INIT()
 
 REFLECTABLE_DECLARATION(std::any)
     BUILTIN_REFLECTABLE()

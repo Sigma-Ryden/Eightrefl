@@ -2,7 +2,7 @@
 
 #include <Rew/BuiltIn/complex.hpp>
 
-TEST(TestCommon, TestComplex)
+TEST(TestBuiltin, TestComplex)
 {
     rew::reflectable<std::complex<float>>();
 

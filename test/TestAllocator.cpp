@@ -2,7 +2,7 @@
 
 #include <Rew/BuiltIn/allocator.hpp>
 
-TEST(TestLibrary, TestAllocator)
+TEST(TestBuiltin, TestAllocator)
 {
     rew::reflectable<std::allocator<int>>();
 

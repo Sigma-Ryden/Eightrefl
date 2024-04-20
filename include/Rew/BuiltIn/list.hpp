@@ -65,12 +65,6 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     FUNCTION(front, typename R::reference())
     FUNCTION(back, typename R::const_reference() const)
     FUNCTION(back, typename R::reference())
-    #endif // REW_CORE_MINIMAL
-
-    FUNCTION(data, typename R::const_pointer() const)
-    FUNCTION(data, typename R::pointer())
-
-    #ifndef REW_CORE_MINIMAL
     FUNCTION(begin, std_const_iterator<R>() const)
     FUNCTION(begin, std_iterator<R>())
     FUNCTION(cbegin, std_const_iterator<R>() const)

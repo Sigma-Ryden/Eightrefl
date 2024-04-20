@@ -32,12 +32,12 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::optional<ValueType>)
     FACTORY(R(typename R::value_type const&))
     FUNCTION(operator=, R&(std::nullopt_t))
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator->, typename R::value_type const*() const)
     FUNCTION(operator->, typename R::value_type*())
     FUNCTION(operator*, typename R::value_type const&() const)
     FUNCTION(operator*, typename R::value_type&())
-
-    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator bool)
     #endif // REW_CORE_MINIMAL
 

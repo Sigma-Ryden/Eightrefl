@@ -2,7 +2,7 @@
 
 #include <Rew/BuiltIn/any.hpp>
 
-TEST(TestCommon, TestAny)
+TEST(TestBuiltin, TestAny)
 {
     auto type = rew::global.find("std::any");
 

@@ -2,7 +2,7 @@
 
 #include <Rew/BuiltIn/deque.hpp>
 
-TEST(TestCommon, TestDeque)
+TEST(TestBuiltin, TestDeque)
 {
     rew::reflectable<std::deque<int>>();
 
@@ -49,7 +49,8 @@ TEST(TestCommon, TestDeque)
     EXPECT("function-operator[]", reflection->function.find("operator[]") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
-    EXPECT("function-front", reflection->function.find("assign") != nullptr);
+    EXPECT("function-front", reflection->function.find("front") != nullptr);
+    EXPECT("function-back", reflection->function.find("back") != nullptr);
     EXPECT("function-begin", reflection->function.find("begin") != nullptr);
     EXPECT("function-cbegin", reflection->function.find("cbegin") != nullptr);
     EXPECT("function-end", reflection->function.find("end") != nullptr);
