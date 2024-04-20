@@ -99,7 +99,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     #ifndef REW_CORE_MINIMAL
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::size_type, typename R::const_reference))
-    FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::const_reference, typename R::const_reference))
+    FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>, std_const_iterator<R>))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std::initializer_list<typename R::value_type>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))

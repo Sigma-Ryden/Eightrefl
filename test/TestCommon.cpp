@@ -16,7 +16,7 @@ TEST(TestCommon, TestVoid)
 }
 
 
-TEST(TestCommon, TestNullptr)
+TEST(TestCommon, TestNullptrT)
 {
     auto type = rew::global.find("std::nullptr_t");
 
@@ -29,6 +29,43 @@ TEST(TestCommon, TestNullptr)
 
     ASSERT("reflection", reflection != nullptr);
     EXPECT("reflection-name", reflection->name == "std::nullptr_t");
+}
+
+
+TEST(TestCommon, TestSizeT)
+{
+    auto type = rew::global.find("std::size_t");
+
+    ASSERT("type", type != nullptr);
+    EXPECT("type-name", type->name == "std::size_t");
+    EXPECT("type-size", type->size == sizeof(std::size_t));
+    EXPECT("type-context", type->context != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+    EXPECT("reflection-name", reflection->name == "std::size_t");
+
+    EXPECT("factory-R()", reflection->factory.find("std::size_t()") != nullptr);
+    EXPECT("factory-R(R)", reflection->factory.find("std::size_t(std::size_t)") != nullptr);
+}
+
+TEST(TestCommon, TestPtrDiffT)
+{
+    auto type = rew::global.find("std::ptrdiff_t");
+
+    ASSERT("type", type != nullptr);
+    EXPECT("type-name", type->name == "std::ptrdiff_t");
+    EXPECT("type-size", type->size == sizeof(std::ptrdiff_t));
+    EXPECT("type-context", type->context != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+    EXPECT("reflection-name", reflection->name == "std::ptrdiff_t");
+
+    EXPECT("factory-R()", reflection->factory.find("std::ptrdiff_t()") != nullptr);
+    EXPECT("factory-R(R)", reflection->factory.find("std::ptrdiff_t(std::ptrdiff_t)") != nullptr);
 }
 
 
