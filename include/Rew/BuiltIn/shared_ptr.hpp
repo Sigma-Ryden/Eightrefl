@@ -19,7 +19,11 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ElementType>), std::shared_ptr<ElementType>)
     FACTORY(R())
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(std::nullptr_t))
+    #endif // REW_CORE_MINIMAL
+
     FACTORY(R(typename R::element_type*))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))

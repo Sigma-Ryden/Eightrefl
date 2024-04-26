@@ -12,7 +12,11 @@ REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(std::type_info)
     FUNCTION(operator==)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(before)
+    #endif // REW_CRE_MINIMAL
+
     FUNCTION(hash_code)
     FUNCTION(name)
 REFLECTABLE_INIT()
