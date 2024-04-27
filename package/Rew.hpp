@@ -2137,7 +2137,11 @@ REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(std::type_info)
     FUNCTION(operator==)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(before)
+    #endif // REW_CRE_MINIMAL
+
     FUNCTION(hash_code)
     FUNCTION(name)
 REFLECTABLE_INIT()
@@ -3602,7 +3606,11 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ElementType>), std::shared_ptr<ElementType>)
     FACTORY(R())
+
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(std::nullptr_t))
+    #endif // REW_CORE_MINIMAL
+
     FACTORY(R(typename R::element_type*))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
@@ -3646,7 +3654,7 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), std::weak_ptr<ElementTyp
     FUNCTION(reset)
 
     #ifndef REW_CORE_MINIMAL
-    FUNCTION(swap)
+    //FUNCTION(swap)
     FUNCTION(use_count)
     #endif // REW_CORE_MINIMAL
 
@@ -3654,8 +3662,8 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), std::weak_ptr<ElementTyp
     FUNCTION(lock)
 
     #ifndef REW_CORE_MINIMAL
-    FUNCTION(owner_before, bool(R const&))
-    FUNCTION(owner_before, bool(std::shared_ptr<typename R::value_type> const&))
+    //FUNCTION(owner_before, bool(R const&) const)
+    //FUNCTION(owner_before, bool(std::shared_ptr<typename R::element_type> const&) const)
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
@@ -4520,7 +4528,11 @@ TEMPLATE_REFLECTABLE((template <typename ValueType>), std::reference_wrapper<Val
     FACTORY(R(ValueType&))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
+
+    #ifndef REW_CORE_MINIMAL
     RAW_FUNCTION("operator " + NAMEOF(ValueType&), operator CLEANOF(ValueType)&)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(get)
 REFLECTABLE_INIT()
 

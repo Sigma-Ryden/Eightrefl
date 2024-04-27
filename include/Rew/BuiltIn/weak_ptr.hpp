@@ -29,7 +29,7 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), std::weak_ptr<ElementTyp
     FUNCTION(reset)
 
     #ifndef REW_CORE_MINIMAL
-    FUNCTION(swap)
+    //FUNCTION(swap)
     FUNCTION(use_count)
     #endif // REW_CORE_MINIMAL
 
@@ -37,8 +37,8 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), std::weak_ptr<ElementTyp
     FUNCTION(lock)
 
     #ifndef REW_CORE_MINIMAL
-    FUNCTION(owner_before, bool(R const&))
-    FUNCTION(owner_before, bool(std::shared_ptr<typename R::value_type> const&))
+    //FUNCTION(owner_before, bool(R const&) const)
+    //FUNCTION(owner_before, bool(std::shared_ptr<typename R::element_type> const&) const)
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
