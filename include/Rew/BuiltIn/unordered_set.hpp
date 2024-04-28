@@ -16,6 +16,10 @@
 #include <Rew/BuiltIn/pair.hpp>
 #endif // REW_CORE_MINIMAL
 
+// hash - as hasher
+// equal_to - as comparator
+#include <Rew/BuiltIn/functional.hpp>
+
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>),
@@ -131,7 +135,6 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::hasher const&, typename R::key_equal const&, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::hasher const&, typename R::key_equal const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::hasher const&))
-    FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::hasher const&, typename R::allocator_type const&))

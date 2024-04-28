@@ -2766,9 +2766,9 @@ TEMPLATE_REFLECTABLE
 #if __cplusplus >= 202002L
     #ifndef REW_CORE_MINIMAL
     FUNCTION(starts_with, bool(typename R::value_type) const)
-    FUNCTION(starts_with, bool(typename R::value_tyoe const*) const)
-    FUNCTION(ends_wtih, bool(typename R::value_type) const)
-    FUNCTION(ends_with, bool(typename R::value_tyoe const*) const)
+    FUNCTION(starts_with, bool(typename R::value_type const*) const)
+    FUNCTION(ends_with, bool(typename R::value_type) const)
+    FUNCTION(ends_with, bool(typename R::value_type const*) const)
     #endif // REW_CORE_MINIMAL
 #endif // if
 
@@ -3335,6 +3335,9 @@ REFLECTABLE_INIT()
 // as function argument/result type
 #endif // REW_CORE_MINIMAL
 
+// hash - as hasher
+// equal_to - as comparator
+
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>),
@@ -3448,7 +3451,6 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::hasher const&, typename R::key_equal const&, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::hasher const&, typename R::key_equal const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::hasher const&))
-    FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::hasher const&, typename R::allocator_type const&))
@@ -3853,7 +3855,6 @@ REFLECTABLE_INIT()
 
 // as value type
 #endif // REW_CORE_MININAL
-//  FUNCTION(value_comp)
 
 // hash - as hasher
 // equal_to - as comparator
@@ -3973,7 +3974,6 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_map<R>::value)
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::hasher const&, typename R::key_equal const&, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::hasher const&, typename R::key_equal const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::hasher const&))
-    FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::size_type, typename R::hasher const&, typename R::allocator_type const&))

@@ -260,9 +260,9 @@ TEMPLATE_REFLECTABLE
 #if __cplusplus >= 202002L
     #ifndef REW_CORE_MINIMAL
     FUNCTION(starts_with, bool(typename R::value_type) const)
-    FUNCTION(starts_with, bool(typename R::value_tyoe const*) const)
-    FUNCTION(ends_wtih, bool(typename R::value_type) const)
-    FUNCTION(ends_with, bool(typename R::value_tyoe const*) const)
+    FUNCTION(starts_with, bool(typename R::value_type const*) const)
+    FUNCTION(ends_with, bool(typename R::value_type) const)
+    FUNCTION(ends_with, bool(typename R::value_type const*) const)
     #endif // REW_CORE_MINIMAL
 #endif // if
 
