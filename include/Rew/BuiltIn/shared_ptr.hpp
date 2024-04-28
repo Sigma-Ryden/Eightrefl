@@ -31,7 +31,7 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), std::shared_ptr<ElementT
 
     #ifndef REW_CORE_MINIMAL
     FUNCTION(reset, void(typename R::element_type*))
-    //FUNCTION(swap, void(R&))
+//  FUNCTION(swap, void(R&))
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(get)

@@ -17,6 +17,7 @@
 // as value type
 #include <Rew/BuiltIn/pair.hpp>
 #endif // REW_CORE_MININAL
+//  FUNCTION(value_comp)
 
 // hash - as hasher
 // equal_to - as comparator

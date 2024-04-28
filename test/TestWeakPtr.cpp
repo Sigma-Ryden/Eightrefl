@@ -26,7 +26,7 @@ TEST(TestBuiltin, TestWseakPtr)
     EXPECT("function-reset", reflection->function.find("reset") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
-    //EXPECT("function-swap", reflection->function.find("swap") != nullptr);
+//  EXPECT("function-swap", reflection->function.find("swap") != nullptr);
     EXPECT("function-use_count", reflection->function.find("use_count") != nullptr);
     #endif // REW_CORE_MINIMAL
 
@@ -34,6 +34,6 @@ TEST(TestBuiltin, TestWseakPtr)
     EXPECT("function-lock", reflection->function.find("lock") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
-    //EXPECT("function-owner_before", reflection->function.find("owner_before") != nullptr);
+//  EXPECT("function-owner_before", reflection->function.find("owner_before") != nullptr);
     #endif // REW_CORE_MINIMAL
 }

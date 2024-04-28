@@ -160,18 +160,18 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<R>::value)
     #ifndef REW_CORE_MINIMAL
     FUNCTION(insert, std::pair<std_iterator<R>, bool>(typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::const_reference))
-    FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
+    FUNCTION(insert, void(std_const_iterator<R>, std_const_iterator<R>))
     FUNCTION(insert, void(std::initializer_list<typename R::value_type>))
     FUNCTION(erase, std_iterator<R>(std_iterator<R>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
     FUNCTION(swap)
-    FUNCTION(extract, typename R::node_type(std_const_iterator<R>))
-    FUNCTION(extract, typename R::node_type(typename R::key_type const&))
+//  FUNCTION(extract, typename R::node_type(std_const_iterator<R>))
+//  FUNCTION(extract, typename R::node_type(typename R::key_type const&))
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(merge, void(R&))
-    FUNCTION(count, typename R::size_type(typename R::key_type const&))
+    FUNCTION(count, typename R::size_type(typename R::key_type const&) const)
 
     #ifndef REW_CORE_MINIMAL
     FUNCTION(find, std_iterator<R>(typename R::key_type const&))
@@ -181,6 +181,7 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<R>::value)
 #if __cplusplus >= 202002L
     FUNCTION(contains, bool(typename R::key_type const&) const)
 #endif // if
+
     #ifndef REW_CORE_MINIMAL
     FUNCTION(equal_range, std::pair<std_iterator<R>, std_iterator<R>>(typename R::key_type const&))
     FUNCTION(equal_range, std::pair<std_const_iterator<R>, std_const_iterator<R>>(typename R::key_type const&) const)

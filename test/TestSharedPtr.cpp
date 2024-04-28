@@ -31,7 +31,7 @@ TEST(TestBuiltin, TestSharedPtr)
     EXPECT("function-reset", reflection->function.find("reset") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
-    //EXPECT("function-swap", reflection->function.find("swap") != nullptr);
+//  EXPECT("function-swap", reflection->function.find("swap") != nullptr);
     #endif // REW_CORE_MINIMAL
 
     EXPECT("function-get", reflection->function.find("get") != nullptr);

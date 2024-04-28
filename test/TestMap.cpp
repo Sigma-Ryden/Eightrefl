@@ -21,39 +21,29 @@ TEST(TestBuiltin, TestMap)
     EXPECT("factory-R()", reflection->factory.find("std::map<int, float>()") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
-    EXPECT("factory-R(allocator_type const&)", reflection->factory.find("std::map<int, float>(std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(size_type, const_reference, allocator_type const&)", reflection->factory.find("std::map<int, float>(unsigned long, int const&, std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(size_type, const_reference)", reflection->factory.find("std::map<int, float>(unsigned long, int const&)") != nullptr);
-    EXPECT("factory-R(size_type, allocator_type const&)", reflection->factory.find("std::map<int, float>(unsigned long, std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(size_type)", reflection->factory.find("std::map<int, float>(unsigned long)") != nullptr);
-    EXPECT("factory-R(const_iterator, const_iterator, allocator_type const&)", reflection->factory.find("std::map<int, float>(std::map<int, float>::const_iterator, std::map<int, float>::const_iterator, std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(const_iterator, const_iterator)", reflection->factory.find("std::map<int, float>(std::map<int, float>::const_iterator, std::map<int, float>::const_iterator)") != nullptr);
-    EXPECT("factory-R(R const&, allocator_type const&)", reflection->factory.find("std::map<int, float>(std::map<int, float> const&, std::allocator<int> const&)") != nullptr);
+    EXPECT("factory-R(key_compare const&, allocator_type const&)", reflection->factory.find("std::map<int, float>(std::less<int> const&, std::allocator<std::pair<int const, float>> const&)") != nullptr);
+    EXPECT("factory-R(key_compare const&)", reflection->factory.find("std::map<int, float>(std::less<int> const&)") != nullptr);
+    EXPECT("factory-R(allocator_type const&)", reflection->factory.find("std::map<int, float>(std::allocator<std::pair<int const, float>> const&)") != nullptr);
+    EXPECT("factory-R(const_iterator, const_iterator, key_compare const&, allocator_type const&)", reflection->factory.find("std::map<int, float>(std::map<int, float>::const_iterator, std::map<int, float>::const_iterator, std::less<int> const&, std::allocator<std::pair<int const, float>> const&)") != nullptr);
+    EXPECT("factory-R(const_iterator, const_iterator, allocator_type const&)", reflection->factory.find("std::map<int, float>(std::map<int, float>::const_iterator, std::map<int, float>::const_iterator, std::allocator<std::pair<int const, float>> const&)") != nullptr);
     #endif // REW_CORE_MINIMAL
 
     EXPECT("factory-R(R const&)", reflection->factory.find("std::map<int, float>(std::map<int, float> const&)") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
-    EXPECT("factory-R(std::initializer_list<value_type>, allocator_type const&)", reflection->factory.find("std::map<int, float>(std::initializer_list<int>, std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(std::initializer_list<value_type>)", reflection->factory.find("std::map<int, float>(std::initializer_list<int>)") != nullptr);
+    EXPECT("factory-R(R const&, allocator_type const&)", reflection->factory.find("std::map<int, float>(std::map<int, float> const&, std::allocator<std::pair<int const, float>> const&)") != nullptr);
+    EXPECT("factory-R(std::initializer_list<value_type>, key_compare const&, allocator_type const&)", reflection->factory.find("std::map<int, float>(std::initializer_list<std::pair<int const, float>>, std::less<int> const&, std::allocator<std::pair<int const, float>> const&)") != nullptr);
+    EXPECT("factory-R(std::initializer_list<value_type>)", reflection->factory.find("std::map<int, float>(std::initializer_list<std::pair<int const, float>>)") != nullptr);
     #endif // REW_CORE_MINIMAL
 
     EXPECT("function-operator=", reflection->function.find("operator=") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
-    EXPECT("function-assign", reflection->function.find("assign") != nullptr);
     EXPECT("function-get_allocator", reflection->function.find("get_allocator") != nullptr);
+    #endif // REW_CORE_MINIMAL
+
     EXPECT("function-at", reflection->function.find("at") != nullptr);
-    #endif // REW_CORE_MINIMAL
-
     EXPECT("function-operator[]", reflection->function.find("operator[]") != nullptr);
-
-    #ifndef REW_CORE_MINIMAL
-    EXPECT("function-front", reflection->function.find("front") != nullptr);
-    EXPECT("function-back", reflection->function.find("back") != nullptr);
-    #endif // REW_CORE_MINIMAL
-
-    EXPECT("function-data", reflection->function.find("data") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
     EXPECT("function-begin", reflection->function.find("begin") != nullptr);
@@ -73,25 +63,31 @@ TEST(TestBuiltin, TestMap)
     EXPECT("function-max_size", reflection->function.find("max_size") != nullptr);
     #endif // REW_CORE_MINIMAL
 
-    EXPECT("function-capacity", reflection->function.find("capacity") != nullptr);
-    EXPECT("function-reserve", reflection->function.find("reserve") != nullptr);
-
-    #ifndef REW_CORE_MINIMAL
-    EXPECT("function-shrink_to_fit", reflection->function.find("shrink_to_fit") != nullptr);
-    #endif // REW_CORE_MINIMAL
-
     EXPECT("function-clear", reflection->function.find("clear") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
     EXPECT("function-insert", reflection->function.find("insert") != nullptr);
     EXPECT("function-erase", reflection->function.find("erase") != nullptr);
+    EXPECT("function-swap", reflection->function.find("swap") != nullptr);
+//  EXPECT("function-extract", reflection->function.find("extract") != nullptr);
     #endif // REW_CORE_MINIMAL
 
-    EXPECT("function-push_back", reflection->function.find("push_back") != nullptr);
-    EXPECT("function-pop_back", reflection->function.find("pop_back") != nullptr);
-    EXPECT("function-resize", reflection->function.find("resize") != nullptr);
+    EXPECT("function-merge", reflection->function.find("merge") != nullptr);
+    EXPECT("function-count", reflection->function.find("count") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
-    EXPECT("function-swap", reflection->function.find("swap") != nullptr);
+    EXPECT("function-find", reflection->function.find("find") != nullptr);
+    #endif // REW_CORE_MINIMAL
+
+#if __cplusplus >= 202002L
+    EXPECT("function-contains", reflection->function.find("contains") != nullptr);
+#endif // if
+
+    #ifndef REW_CORE_MINIMAL
+    EXPECT("function-equal_range", reflection->function.find("equal_range") != nullptr);
+    EXPECT("function-lower_bound", reflection->function.find("lower_bound") != nullptr);
+    EXPECT("function-upper_bound", reflection->function.find("upper_bound") != nullptr);
+//  EXPECT("function-key_comp", reflection->function.find("key_comp") != nullptr);
+//  EXPECT("function-value_comp", reflection->function.find("value_comp") != nullptr);
     #endif // REW_CORE_MINIMAL
 }

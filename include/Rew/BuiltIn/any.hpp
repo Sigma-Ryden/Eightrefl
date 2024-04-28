@@ -6,7 +6,7 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
-// as return type of the type() function
+// as function return type
 #include <Rew/BuiltIn/typeinfo.hpp>
 
 REFLECTABLE_DECLARATION(std::any)
