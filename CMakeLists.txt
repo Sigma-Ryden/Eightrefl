@@ -103,8 +103,8 @@ add_executable(${PROJECT_NAME}
     test/TestStack.cpp
     test/TestString.cpp
     test/TestTuple.cpp
-    test/TestTypeindex.cpp
-    test/TestTypeinfo.cpp
+    test/TestTypeIndex.cpp
+    test/TestTypeInfo.cpp
     test/TestUniquePtr.cpp
     test/TestUnorderedMap.cpp
     test/TestUnorderedSet.cpp

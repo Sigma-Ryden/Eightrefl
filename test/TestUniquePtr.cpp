@@ -2,7 +2,7 @@
 
 #include <Rew/BuiltIn/unique_ptr.hpp>
 
-TEST(TestBuiltin, TestuniquePtr)
+TEST(TestBuiltin, TestUniquePtr)
 {
     rew::reflectable<std::unique_ptr<int>>();
 

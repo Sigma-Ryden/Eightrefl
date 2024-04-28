@@ -2,7 +2,7 @@
 
 #include <Rew/BuiltIn/weak_ptr.hpp>
 
-TEST(TestBuiltin, TestweakPtr)
+TEST(TestBuiltin, TestWseakPtr)
 {
     rew::reflectable<std::weak_ptr<int>>();
 
