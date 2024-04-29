@@ -52,6 +52,5 @@ TEST(TestBuiltin, TestArray)
     EXPECT("function-max_size", reflection->function.find("max_size") != nullptr);
     EXPECT("function-fill", reflection->function.find("fill") != nullptr);
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    EXPECT("function-std::operator==", reflection->function.find("std::operator==") != nullptr);
     #endif // REW_CORE_MINIMAL
 }

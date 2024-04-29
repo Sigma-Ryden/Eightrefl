@@ -170,7 +170,7 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<R>::value)
     FUNCTION(lower_bound, std_const_iterator<R>(typename R::key_type const&) const)
     FUNCTION(upper_bound, std_iterator<R>(typename R::key_type const&))
     FUNCTION(upper_bound, std_const_iterator<R>(typename R::key_type const&) const)
-//  FUNCTION(key_comp)
+    FUNCTION(key_comp)
 //  FUNCTION(value_comp)
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()

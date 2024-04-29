@@ -84,7 +84,7 @@ TEST(TestBuiltin, TestSet)
     EXPECT("function-equal_range", reflection->function.find("equal_range") != nullptr);
     EXPECT("function-lower_bound", reflection->function.find("lower_bound") != nullptr);
     EXPECT("function-upper_bound", reflection->function.find("upper_bound") != nullptr);
-//  EXPECT("function-key_comp", reflection->function.find("key_comp") != nullptr);
+    EXPECT("function-key_comp", reflection->function.find("key_comp") != nullptr);
 //  EXPECT("function-value_comp", reflection->function.find("value_comp") != nullptr);
     #endif // REW_CORE_MINIMAL
 }

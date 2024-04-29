@@ -91,7 +91,7 @@ TEST(TestBuiltin, TestUnorderedSet)
     EXPECT("function-reserve", reflection->function.find("reserve") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
-//  EXPECT("function-hash_function", reflection->function.find("hash_function") != nullptr);
-//  EXPECT("function-key_eq", reflection->function.find("key_eq") != nullptr);
+    EXPECT("function-hash_function", reflection->function.find("hash_function") != nullptr);
+    EXPECT("function-key_eq", reflection->function.find("key_eq") != nullptr);
     #endif // REW_CORE_MINIMAL
 }

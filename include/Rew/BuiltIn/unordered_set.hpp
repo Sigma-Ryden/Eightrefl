@@ -214,8 +214,8 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
     FUNCTION(reserve)
 
     #ifndef REW_CORE_MINIMAL
-//  FUNCTION(hash_function)
-//  FUNCTION(key_eq)
+    FUNCTION(hash_function)
+    FUNCTION(key_eq)
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 

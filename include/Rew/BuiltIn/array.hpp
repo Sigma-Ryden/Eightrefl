@@ -68,8 +68,9 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t ArraySize>), std
     FUNCTION(max_size)
     FUNCTION(fill)
     FUNCTION(swap)
-    FREE_FUNCTION(std::operator==, bool(const R&, const R&))
     #endif // REW_CORE_MINIMAL
+
+    //FREE_FUNCTION(std::operator==, bool(R const&, R const&))
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_ARRAY_HPP

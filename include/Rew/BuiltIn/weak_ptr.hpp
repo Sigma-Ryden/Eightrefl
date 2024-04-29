@@ -6,7 +6,7 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
-// as return type of the lock() function
+// as function argument/return type
 #include <Rew/BuiltIn/shared_ptr.hpp>
 
 TEMPLATE_REFLECTABLE_CLEAN
