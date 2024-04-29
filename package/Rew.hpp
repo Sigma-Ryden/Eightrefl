@@ -2510,8 +2510,9 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t ArraySize>), std
     FUNCTION(max_size)
     FUNCTION(fill)
     FUNCTION(swap)
-    FREE_FUNCTION(std::operator==, bool(const R&, const R&))
     #endif // REW_CORE_MINIMAL
+
+    //FREE_FUNCTION(std::operator==, bool(R const&, R const&))
 REFLECTABLE_INIT()
 
 // TODO: add std::char_traits
@@ -2521,6 +2522,36 @@ REFLECTABLE_INIT()
 #ifndef REW_CORE_MINIMAL
 // as function argument type
 #endif // REW_CORE_MINIMAL
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename CharType>),
+    (std::char_traits<CharType>), std::char_traits<CLEANOF(CharType)>
+)
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename CharType>), std::char_traits<CharType>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::char_traits<" + NAMEOF(CharType) + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename CharType>), std::char_traits<CharType>)
+    #ifndef REW_CORE_MINIMAL
+    FUNCTION(assign, void(typename R::char_type&, typename R::char_type const&))
+    FUNCTION(assign, typename R::char_type*(typename R::char_type*, std::size_t, typename R::char_type))
+    FUNCTION(eq, bool(typename R::char_type const&, typename R::char_type const&))
+    FUNCTION(lt, bool(typename R::char_type const&, typename R::char_type const&))
+    FUNCTION(move, typename R::char_type*(typename R::char_type*, typename R::char_type const*, std::size_t))
+    FUNCTION(copy, typename R::char_type*(typename R::char_type*, typename R::char_type const*, std::size_t))
+    FUNCTION(compare, int(typename R::char_type const*, typename R::char_type const*, std::size_t))
+    FUNCTION(length, std::size_t(typename R::char_type const*))
+    FUNCTION(find, typename R::char_type const*(typename R::char_type const*, std::size_t, typename R::char_type const&))
+    FUNCTION(to_char_type, typename R::char_type(typename R::int_type const&))
+    FUNCTION(to_int_type, typename R::int_type(typename R::char_type const&))
+    FUNCTION(eq_int_type, bool(typename R::int_type const&, typename R::int_type const&))
+    FUNCTION(eof, typename R::int_type())
+    FUNCTION(not_eof, typename R::int_type(typename R::int_type const&))
+    #endif // REW_CORE_MINIMAL
+REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -3322,7 +3353,7 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<R>::value)
     FUNCTION(lower_bound, std_const_iterator<R>(typename R::key_type const&) const)
     FUNCTION(upper_bound, std_iterator<R>(typename R::key_type const&))
     FUNCTION(upper_bound, std_const_iterator<R>(typename R::key_type const&) const)
-//  FUNCTION(key_comp)
+    FUNCTION(key_comp)
 //  FUNCTION(value_comp)
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
@@ -3530,8 +3561,8 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
     FUNCTION(reserve)
 
     #ifndef REW_CORE_MINIMAL
-//  FUNCTION(hash_function)
-//  FUNCTION(key_eq)
+    FUNCTION(hash_function)
+    FUNCTION(key_eq)
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
@@ -3630,7 +3661,7 @@ TEMPLATE_REFLECTABLE((template <typename ElementType>), std::shared_ptr<ElementT
     FUNCTION(operator bool)
 REFLECTABLE_INIT()
 
-// as return type of the lock() function
+// as function argument/return type
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -3843,7 +3874,7 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<R>::value)
     FUNCTION(lower_bound, std_const_iterator<R>(typename R::key_type const&) const)
     FUNCTION(upper_bound, std_iterator<R>(typename R::key_type const&))
     FUNCTION(upper_bound, std_const_iterator<R>(typename R::key_type const&) const)
-//  FUNCTION(key_comp)
+    FUNCTION(key_comp)
 //  FUNCTION(value_comp)
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
@@ -4060,8 +4091,8 @@ CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_map<R>::value)
     FUNCTION(reserve)
 
     #ifndef REW_CORE_MINIMAL
-//  FUNCTION(hash_function)
-//  FUNCTION(key_eq)
+    FUNCTION(hash_function)
+    FUNCTION(key_eq)
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
