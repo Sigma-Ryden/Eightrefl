@@ -2201,14 +2201,6 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE((template <typename ValueType>), std::allocator<ValueType>)
     FACTORY(R())
     FACTORY(R(R const&))
-
-#if __cplusplus > 201703L
-    FUNCTION(allocate, typename R::value_type*(std::size_t))
-#else
-    FUNCTION(allocate, typename R::value_type*(std::size_t, void const*))
-#endif // if
-
-    FUNCTION(deallocate, void(typename R::value_type*, std::size_t))
 REFLECTABLE_INIT()
 
 // default allocator for vector
@@ -2515,13 +2507,13 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t ArraySize>), std
     //FREE_FUNCTION(std::operator==, bool(R const&, R const&))
 REFLECTABLE_INIT()
 
-// TODO: add std::char_traits
-
 // default allocator for basic_string
 
 #ifndef REW_CORE_MINIMAL
 // as function argument type
 #endif // REW_CORE_MINIMAL
+
+// as traits type
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -2538,18 +2530,18 @@ TEMPLATE_REFLECTABLE((template <typename CharType>), std::char_traits<CharType>)
     #ifndef REW_CORE_MINIMAL
     FUNCTION(assign, void(typename R::char_type&, typename R::char_type const&))
     FUNCTION(assign, typename R::char_type*(typename R::char_type*, std::size_t, typename R::char_type))
-    FUNCTION(eq, bool(typename R::char_type const&, typename R::char_type const&))
-    FUNCTION(lt, bool(typename R::char_type const&, typename R::char_type const&))
-    FUNCTION(move, typename R::char_type*(typename R::char_type*, typename R::char_type const*, std::size_t))
-    FUNCTION(copy, typename R::char_type*(typename R::char_type*, typename R::char_type const*, std::size_t))
-    FUNCTION(compare, int(typename R::char_type const*, typename R::char_type const*, std::size_t))
-    FUNCTION(length, std::size_t(typename R::char_type const*))
-    FUNCTION(find, typename R::char_type const*(typename R::char_type const*, std::size_t, typename R::char_type const&))
-    FUNCTION(to_char_type, typename R::char_type(typename R::int_type const&))
-    FUNCTION(to_int_type, typename R::int_type(typename R::char_type const&))
-    FUNCTION(eq_int_type, bool(typename R::int_type const&, typename R::int_type const&))
-    FUNCTION(eof, typename R::int_type())
-    FUNCTION(not_eof, typename R::int_type(typename R::int_type const&))
+    FUNCTION(eq)
+    FUNCTION(lt)
+    FUNCTION(move)
+    FUNCTION(copy)
+    FUNCTION(compare)
+    FUNCTION(length)
+    FUNCTION(find)
+    FUNCTION(to_char_type)
+    FUNCTION(to_int_type)
+    FUNCTION(eq_int_type)
+    FUNCTION(eof)
+    FUNCTION(not_eof)
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
@@ -4567,6 +4559,35 @@ REFLECTABLE_INIT()
 
 // as function argument type
 
+#if __cplusplus > 201703L
+
+#if __cplusplus > 201703L
+#include <compare> // strong_ordering
+
+REFLECTABLE_DECLARATION(std::partial_ordering)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(std::partial_ordering)
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(std::weak_ordering)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(std::weak_ordering)
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(std::strong_ordering)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(std::strong_ordering)
+REFLECTABLE_INIT()
+#endif // if
+
+#endif // if
+
 REFLECTABLE_DECLARATION(std::type_index)
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
@@ -4574,7 +4595,9 @@ REFLECTABLE_DECLARATION_INIT()
 REFLECTABLE(std::type_index)
     FACTORY(R(std::type_info const&))
 
-#if __cplusplus < 202002L
+#if __cplusplus > 201703L
+    FUNCTION(operator<=>)
+#else
     FUNCTION(operator==)
     FUNCTION(operator!=)
 
@@ -4584,8 +4607,6 @@ REFLECTABLE(std::type_index)
     FUNCTION(operator>)
     FUNCTION(operator>=)
     #endif // REW_CORE_MINIMAL
-#else
-    // TODO: add support for std::strong_ordering
 #endif // if
     FUNCTION(hash_code)
     FUNCTION(name)
