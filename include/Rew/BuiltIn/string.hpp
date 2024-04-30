@@ -1,4 +1,3 @@
-// TODO: add std::char_traits
 #ifndef REW_BUILTIN_STRING_HPP
 #define REW_BUILTIN_STRING_HPP
 
@@ -16,35 +15,8 @@
 #include <Rew/BuiltIn/iterator.hpp>
 #endif // REW_CORE_MINIMAL
 
-TEMPLATE_REFLECTABLE_CLEAN
-(
-    (template <typename CharType>),
-    (std::char_traits<CharType>), std::char_traits<CLEANOF(CharType)>
-)
-
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename CharType>), std::char_traits<CharType>)
-    BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::char_traits<" + NAMEOF(CharType) + ">")
-REFLECTABLE_DECLARATION_INIT()
-
-TEMPLATE_REFLECTABLE((template <typename CharType>), std::char_traits<CharType>)
-    #ifndef REW_CORE_MINIMAL
-    FUNCTION(assign, void(typename R::char_type&, typename R::char_type const&))
-    FUNCTION(assign, typename R::char_type*(typename R::char_type*, std::size_t, typename R::char_type))
-    FUNCTION(eq, bool(typename R::char_type const&, typename R::char_type const&))
-    FUNCTION(lt, bool(typename R::char_type const&, typename R::char_type const&))
-    FUNCTION(move, typename R::char_type*(typename R::char_type*, typename R::char_type const*, std::size_t))
-    FUNCTION(copy, typename R::char_type*(typename R::char_type*, typename R::char_type const*, std::size_t))
-    FUNCTION(compare, int(typename R::char_type const*, typename R::char_type const*, std::size_t))
-    FUNCTION(length, std::size_t(typename R::char_type const*))
-    FUNCTION(find, typename R::char_type const*(typename R::char_type const*, std::size_t, typename R::char_type const&))
-    FUNCTION(to_char_type, typename R::char_type(typename R::int_type const&))
-    FUNCTION(to_int_type, typename R::int_type(typename R::char_type const&))
-    FUNCTION(eq_int_type, bool(typename R::int_type const&, typename R::int_type const&))
-    FUNCTION(eof, typename R::int_type())
-    FUNCTION(not_eof, typename R::int_type(typename R::int_type const&))
-    #endif // REW_CORE_MINIMAL
-REFLECTABLE_INIT()
+// as traits type
+#include <Rew/BuiltIn/char_traits.hpp>
 
 TEMPLATE_REFLECTABLE_CLEAN
 (

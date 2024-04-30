@@ -18,7 +18,9 @@ TEST(TestBuiltin, TestTypeIndex)
 
     EXPECT("factory-R(std::type_info const&)", reflection->factory.find("std::type_index(std::type_info const&)") != nullptr);
 
-#if __cplusplus < 202002L
+#if __cplusplus > 201703L
+    EXPECT("function-operator<=>", reflection->function.find("operator<=>") != nullptr);
+#else
     EXPECT("function-operator==", reflection->function.find("operator==") != nullptr);
     EXPECT("function-operator!=", reflection->function.find("operator!=") != nullptr);
 
@@ -28,8 +30,6 @@ TEST(TestBuiltin, TestTypeIndex)
     EXPECT("function-operator>", reflection->function.find("operator>") != nullptr);
     EXPECT("function-operator>=", reflection->function.find("operator>=") != nullptr);
     #endif // REW_CORE_MINIMAL
-#else
-    // TODO: add support for std::strong_ordering
 #endif // if
 
     EXPECT("function-hash_code", reflection->function.find("hash_code") != nullptr);

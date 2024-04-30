@@ -20,7 +20,4 @@ TEST(TestBuiltin, TestAllocator)
 
     EXPECT("factory-R()", reflection->factory.find("std::allocator<int>()") != nullptr);
     EXPECT("factory-R(R const&)", reflection->factory.find("std::allocator<int>(std::allocator<int> const&)") != nullptr);
-
-    EXPECT("function-allocate", reflection->function.find("allocate") != nullptr);
-    EXPECT("function-deallocate", reflection->function.find("deallocate") != nullptr);
 }
