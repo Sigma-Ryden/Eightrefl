@@ -1152,7 +1152,7 @@ auto handler_property_context(PropertyType* property)
 {
     return [property](std::any const&) -> std::any
     {
-        return const_cast<meta::to_reflectable_object_t<PropertyType>*>(std::addressof(property));
+        return const_cast<meta::to_reflectable_object_t<PropertyType>*>(property);
     };
 }
 
