@@ -96,6 +96,21 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
+    (ReturnType(ArgumentTypes...) &), CLEANOF(ReturnType(ArgumentTypes...)) &
+)
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    ReturnType(ArgumentTypes...) &
+)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME(NAMEOF(ReturnType(ArgumentTypes...)) + "&")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
     (ReturnType(ArgumentTypes...) const), CLEANOF(ReturnType(ArgumentTypes...)) const
 )
 
@@ -106,6 +121,21 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(ReturnType(ArgumentTypes...)) + " const")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    (ReturnType(ArgumentTypes...) const&), CLEANOF(ReturnType(ArgumentTypes...)) const&
+)
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    ReturnType(ArgumentTypes...) const&
+)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME(NAMEOF(ReturnType(ArgumentTypes...)) + " const&")
 REFLECTABLE_DECLARATION_INIT()
 // ~ function types
 

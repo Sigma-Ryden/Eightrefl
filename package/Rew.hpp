@@ -223,6 +223,26 @@ template <typename>
 struct function_traits;
 
 template <typename ReturnType, typename... ArgumentTypes>
+struct function_traits<ReturnType(ArgumentTypes...) const>
+{
+    using dirty_type = ReturnType(ArgumentTypes...) const;
+    using dirty_pointer = ReturnType(*)(ArgumentTypes...);
+
+    using type = clean<ReturnType>(clean<ArgumentTypes>...) const;
+    using pointer = clean<ReturnType>(*)(clean<ArgumentTypes>...);
+};
+
+template <typename ReturnType, typename... ArgumentTypes>
+struct function_traits<ReturnType(ArgumentTypes...) const&>
+{
+    using dirty_type = ReturnType(ArgumentTypes...) const&;
+    using dirty_pointer = ReturnType(*)(ArgumentTypes...);
+
+    using type = clean<ReturnType>(clean<ArgumentTypes>...) const&;
+    using pointer = clean<ReturnType>(*)(clean<ArgumentTypes>...);
+};
+
+template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(ArgumentTypes...)>
 {
     using dirty_type = ReturnType(ArgumentTypes...);
@@ -233,12 +253,12 @@ struct function_traits<ReturnType(ArgumentTypes...)>
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
-struct function_traits<ReturnType(ArgumentTypes...) const>
+struct function_traits<ReturnType(ArgumentTypes...) &>
 {
-    using dirty_type = ReturnType(ArgumentTypes...) const;
+    using dirty_type = ReturnType(ArgumentTypes...) &;
     using dirty_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using type = clean<ReturnType>(clean<ArgumentTypes>...) const;
+    using type = clean<ReturnType>(clean<ArgumentTypes>...) &;
     using pointer = clean<ReturnType>(*)(clean<ArgumentTypes>...);
 };
 
@@ -1906,6 +1926,21 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
+    (ReturnType(ArgumentTypes...) &), CLEANOF(ReturnType(ArgumentTypes...)) &
+)
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    ReturnType(ArgumentTypes...) &
+)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME(NAMEOF(ReturnType(ArgumentTypes...)) + "&")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
     (ReturnType(ArgumentTypes...) const), CLEANOF(ReturnType(ArgumentTypes...)) const
 )
 
@@ -1916,6 +1951,21 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(ReturnType(ArgumentTypes...)) + " const")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    (ReturnType(ArgumentTypes...) const&), CLEANOF(ReturnType(ArgumentTypes...)) const&
+)
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    ReturnType(ArgumentTypes...) const&
+)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME(NAMEOF(ReturnType(ArgumentTypes...)) + " const&")
 REFLECTABLE_DECLARATION_INIT()
 // ~ function types
 

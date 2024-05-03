@@ -141,6 +141,26 @@ template <typename>
 struct function_traits;
 
 template <typename ReturnType, typename... ArgumentTypes>
+struct function_traits<ReturnType(ArgumentTypes...) const>
+{
+    using dirty_type = ReturnType(ArgumentTypes...) const;
+    using dirty_pointer = ReturnType(*)(ArgumentTypes...);
+
+    using type = clean<ReturnType>(clean<ArgumentTypes>...) const;
+    using pointer = clean<ReturnType>(*)(clean<ArgumentTypes>...);
+};
+
+template <typename ReturnType, typename... ArgumentTypes>
+struct function_traits<ReturnType(ArgumentTypes...) const&>
+{
+    using dirty_type = ReturnType(ArgumentTypes...) const&;
+    using dirty_pointer = ReturnType(*)(ArgumentTypes...);
+
+    using type = clean<ReturnType>(clean<ArgumentTypes>...) const&;
+    using pointer = clean<ReturnType>(*)(clean<ArgumentTypes>...);
+};
+
+template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(ArgumentTypes...)>
 {
     using dirty_type = ReturnType(ArgumentTypes...);
@@ -151,12 +171,12 @@ struct function_traits<ReturnType(ArgumentTypes...)>
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
-struct function_traits<ReturnType(ArgumentTypes...) const>
+struct function_traits<ReturnType(ArgumentTypes...) &>
 {
-    using dirty_type = ReturnType(ArgumentTypes...) const;
+    using dirty_type = ReturnType(ArgumentTypes...) &;
     using dirty_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using type = clean<ReturnType>(clean<ArgumentTypes>...) const;
+    using type = clean<ReturnType>(clean<ArgumentTypes>...) &;
     using pointer = clean<ReturnType>(*)(clean<ArgumentTypes>...);
 };
 
