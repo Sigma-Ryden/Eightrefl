@@ -22,9 +22,9 @@ TEST_SPACE()
 
 struct TestFieldPropertyStruct
 {
-    int FieldProperty = 0;
-    int const ReadonlyFieldProperty = 0;
-    int& ReferenceFieldProperty;
+    int Property = 0;
+    int const Readonly = 0;
+    int& Reference;
 };
 
 } // TEST_SPACE
@@ -33,9 +33,9 @@ REFLECTABLE_DECLARATION(TestFieldPropertyStruct)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestFieldPropertyStruct)
-    PROPERTY(FieldProperty)
-    PROPERTY(ReadonlyFieldProperty)
-//  PROPERTY(ReferenceFieldProperty) // unsupported!
+    PROPERTY(Property)
+    PROPERTY(Readonly)
+//  PROPERTY(Reference) // unsupported!
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestFieldProperty)
@@ -48,19 +48,19 @@ TEST(TestLibrary, TestFieldProperty)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto field_property = reflection->property.find("FieldProperty");
+    auto property = reflection->property.find("Property");
 
-    ASSERT("property-field_property", field_property != nullptr);
-    EXPECT("property-field_property-get", field_property->get != nullptr);
-    EXPECT("property-field_property-set", field_property->set != nullptr);
-    EXPECT("property-field_property-context", field_property->context != nullptr);
+    ASSERT("property", property != nullptr);
+    EXPECT("property-get", property->get != nullptr);
+    EXPECT("property-set", property->set != nullptr);
+    EXPECT("property-context", property->context != nullptr);
 
-    auto readonly_field_property = reflection->property.find("ReadonlyFieldProperty");
+    auto readonly = reflection->property.find("Readonly");
 
-    ASSERT("property-readonly_field_property", readonly_field_property != nullptr);
-    EXPECT("property-readonly_field_property-get", readonly_field_property->get != nullptr);
-    EXPECT("property-readonly_field_property-set", readonly_field_property->set == nullptr);
-    EXPECT("property-readonly_field_property-context", readonly_field_property->context != nullptr);
+    ASSERT("property-readonly", readonly != nullptr);
+    EXPECT("property-readonly-get", readonly->get != nullptr);
+    EXPECT("property-readonly-set", readonly->set == nullptr);
+    EXPECT("property-readonly-context", readonly->context != nullptr);
 }
 
 
@@ -69,12 +69,12 @@ TEST_SPACE()
 
 struct TestStaticFieldPropertyStruct
 {
-    static int StaticFieldProperty;
-    static int const StaticReadonlyFieldProperty;
+    static int Property;
+    static int const Readonly;
 };
 
-int TestStaticFieldPropertyStruct::StaticFieldProperty = 0;
-int const TestStaticFieldPropertyStruct::StaticReadonlyFieldProperty = 0;
+int TestStaticFieldPropertyStruct::Property = 0;
+int const TestStaticFieldPropertyStruct::Readonly = 0;
 
 } // TEST_SPACE
 
@@ -82,8 +82,8 @@ REFLECTABLE_DECLARATION(TestStaticFieldPropertyStruct)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestStaticFieldPropertyStruct)
-    PROPERTY(StaticFieldProperty)
-    PROPERTY(StaticReadonlyFieldProperty)
+    PROPERTY(Property)
+    PROPERTY(Readonly)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestStaticFieldProperty)
@@ -96,19 +96,19 @@ TEST(TestLibrary, TestStaticFieldProperty)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto static_field_property = reflection->property.find("StaticFieldProperty");
+    auto property = reflection->property.find("Property");
 
-    ASSERT("property-static_field_property", static_field_property != nullptr);
-    EXPECT("property-static_field_property-get", static_field_property->get != nullptr);
-    EXPECT("property-static_field_property-set", static_field_property->set != nullptr);
-    EXPECT("property-static_field_property-context", static_field_property->context != nullptr);
+    ASSERT("property", property != nullptr);
+    EXPECT("property-get", property->get != nullptr);
+    EXPECT("property-set", property->set != nullptr);
+    EXPECT("property-context", property->context != nullptr);
 
-    auto static_readonly_field_property = reflection->property.find("StaticReadonlyFieldProperty");
+    auto readonly = reflection->property.find("Readonly");
 
-    ASSERT("property-static_readonly_field_property", static_readonly_field_property != nullptr);
-    EXPECT("property-static_readonly_field_property-get", static_readonly_field_property->get != nullptr);
-    EXPECT("property-static_readonly_field_property-set", static_readonly_field_property->set == nullptr);
-    EXPECT("property-static_readonly_field_property-context", static_readonly_field_property->context != nullptr);
+    ASSERT("property-readonly", readonly != nullptr);
+    EXPECT("property-readonly-get", readonly->get != nullptr);
+    EXPECT("property-readonly-set", readonly->set == nullptr);
+    EXPECT("property-readonly-context", readonly->context != nullptr);
 }
 
 
@@ -117,9 +117,9 @@ TEST_SPACE()
 
 struct TestFreeFieldPropertyStruct {};
 
-int FreeFieldProperty = 0;
-int const FreeReadonlyFieldProperty = 0;
-int& FreeReferenceFieldProperty = FreeFieldProperty;
+int Property = 0;
+int const Readonly = 0;
+int& Reference = Property;
 
 } // TEST_SPACE
 
@@ -127,9 +127,9 @@ REFLECTABLE_DECLARATION(TestFreeFieldPropertyStruct)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestFreeFieldPropertyStruct)
-    FREE_PROPERTY(FreeFieldProperty)
-    FREE_PROPERTY(FreeReadonlyFieldProperty)
-    FREE_PROPERTY(FreeReferenceFieldProperty)
+    FREE_PROPERTY(Property)
+    FREE_PROPERTY(Readonly)
+    FREE_PROPERTY(Reference)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestFreeFieldProperty)
@@ -142,26 +142,26 @@ TEST(TestLibrary, TestFreeFieldProperty)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto free_field_property = reflection->property.find("FreeFieldProperty");
+    auto property = reflection->property.find("Property");
 
-    ASSERT("property-free_field_property", free_field_property != nullptr);
-    EXPECT("property-free_field_property-get", free_field_property->get != nullptr);
-    EXPECT("property-free_field_property-set", free_field_property->set != nullptr);
-    EXPECT("property-free_field_property-context", free_field_property->context != nullptr);
+    ASSERT("property", property != nullptr);
+    EXPECT("property-get", property->get != nullptr);
+    EXPECT("property-set", property->set != nullptr);
+    EXPECT("property-context", property->context != nullptr);
 
-    auto free_readonly_field_property = reflection->property.find("FreeReadonlyFieldProperty");
+    auto readonly = reflection->property.find("Readonly");
 
-    ASSERT("property-free_readonly_field_property", free_readonly_field_property != nullptr);
-    EXPECT("property-free_readonly_field_property-get", free_readonly_field_property->get != nullptr);
-    EXPECT("property-free_readonly_field_property-set", free_readonly_field_property->set == nullptr);
-    EXPECT("property-free_readonly_field_property-context", free_readonly_field_property->context != nullptr);
+    ASSERT("property-readonly", readonly != nullptr);
+    EXPECT("property-readonly-get", readonly->get != nullptr);
+    EXPECT("property-readonly-set", readonly->set == nullptr);
+    EXPECT("property-readonly-context", readonly->context != nullptr);
 
-    auto free_reference_field_property = reflection->property.find("FreeReferenceFieldProperty");
+    auto reference = reflection->property.find("Reference");
 
-    ASSERT("property-free_reference_field_property", free_reference_field_property != nullptr);
-    EXPECT("property-free_reference_field_property-get", free_reference_field_property->get != nullptr);
-    EXPECT("property-free_reference_field_property-set", free_reference_field_property->set != nullptr);
-    EXPECT("property-free_reference_field_property-context", free_reference_field_property->context != nullptr);
+    ASSERT("property-reference", reference != nullptr);
+    EXPECT("property-reference-get", reference->get != nullptr);
+    EXPECT("property-reference-set", reference->set != nullptr);
+    EXPECT("property-reference-context", reference->context != nullptr);
 }
 
 
@@ -170,30 +170,17 @@ TEST_SPACE()
 
 struct TestFunctionPropertyStruct : TestFieldPropertyStruct
 {
-    int& FunctionPropertyWithContext() { return FieldProperty; }
-    void FunctionPropertyWithContext(int& value) { FieldProperty = value; }
+    int& WithContext() { return Property; } void WithContext(int& value) { Property = value; }
+    int const& WithConstContext() { return Property; } void WithConstContext(int const& value) { Property = value; }
+    int const& ConstWithConstContext() const { return Property; } void ConstWithConstContext(int const& value) { Property = value; }
+    int NoContext() { return 0; } void NoContext(int) {}
+    int ConstNoContext() const { return 0; } void ConstNoContext(int) {}
 
-    int const& FunctionPropertyWithConstContext() { return FieldProperty; }
-    void FunctionPropertyWithConstContext(int const& value) { FieldProperty = value; }
-
-    int const& ConstFunctionPropertyWithConstContext() const { return FieldProperty; }
-    void ConstFunctionPropertyWithConstContext(int const& value) { FieldProperty = value; }
-
-    int FunctionPropertyNoContext() { return 0; }
-    void FunctionPropertyNoContext(int) {}
-
-    int ConstFunctionPropertyNoContext() const { return 0; }
-    void ConstFunctionPropertyNoContext(int) {}
-
-    int& ReadonlyFunctionPropertyWithContext() { return FieldProperty; }
-
-    int const& ReadonlyFunctionPropertyWithConstContext() { return FieldProperty; }
-
-    int const& ReadonlyConstFunctionPropertyWithConstContext() const { return FieldProperty; }
-
-    int ReadonlyFunctionPropertyNoContext() { return 0; }
-
-    int ReadonlyConstFunctionPropertyNoContext() const { return 0; }
+    int& ReadonlyWithContext() { return Property; }
+    int const& ReadonlyWithConstContext() { return Property; }
+    int const& ReadonlyConstWithConstContext() const { return Property; }
+    int ReadonlyNoContext() { return 0; }
+    int ReadonlyConstNoContext() const { return 0; }
 };
 
 } // TEST_SPACE
@@ -202,16 +189,17 @@ REFLECTABLE_DECLARATION(TestFunctionPropertyStruct)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestFunctionPropertyStruct)
-    PROPERTY(FunctionPropertyWithContext)
-    PROPERTY(FunctionPropertyWithConstContext)
-    PROPERTY(ConstFunctionPropertyWithConstContext)
-    PROPERTY(FunctionPropertyNoContext)
-    PROPERTY(ConstFunctionPropertyNoContext)
-    PROPERTY(ReadonlyFunctionPropertyWithContext)
-    PROPERTY(ReadonlyFunctionPropertyWithConstContext)
-    PROPERTY(ReadonlyConstFunctionPropertyWithConstContext)
-    PROPERTY(ReadonlyFunctionPropertyNoContext)
-    PROPERTY(ReadonlyConstFunctionPropertyNoContext)
+    PROPERTY(WithContext)
+    PROPERTY(WithConstContext)
+    PROPERTY(ConstWithConstContext)
+    PROPERTY(NoContext)
+    PROPERTY(ConstNoContext)
+
+    PROPERTY(ReadonlyWithContext)
+    PROPERTY(ReadonlyWithConstContext)
+    PROPERTY(ReadonlyConstWithConstContext)
+    PROPERTY(ReadonlyNoContext)
+    PROPERTY(ReadonlyConstNoContext)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestFunctionProperty)
@@ -224,76 +212,76 @@ TEST(TestLibrary, TestFunctionProperty)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto function_property_with_context = reflection->property.find("FunctionPropertyWithContext");
+    auto with_context = reflection->property.find("WithContext");
 
-    ASSERT("property-function_property_with_context", function_property_with_context != nullptr);
-    EXPECT("property-function_property_with_context-get", function_property_with_context->get != nullptr);
-    EXPECT("property-function_property_with_context-set", function_property_with_context->set != nullptr);
-    EXPECT("property-function_property_with_context-context", function_property_with_context->context != nullptr);
+    ASSERT("property-with_context", with_context != nullptr);
+    EXPECT("property-with_context-get", with_context->get != nullptr);
+    EXPECT("property-with_context-set", with_context->set != nullptr);
+    EXPECT("property-with_context-context", with_context->context != nullptr);
 
-    auto function_property_with_const_context = reflection->property.find("FunctionPropertyWithConstContext");
+    auto with_const_context = reflection->property.find("WithConstContext");
 
-    ASSERT("property-function_property_with_const_context", function_property_with_const_context != nullptr);
-    EXPECT("property-function_property_with_const_context-get", function_property_with_const_context->get != nullptr);
-    EXPECT("property-function_property_with_const_context-set", function_property_with_const_context->set != nullptr);
-    EXPECT("property-function_property_with_const_context-context", function_property_with_const_context->context != nullptr);
+    ASSERT("property-with_const_context", with_const_context != nullptr);
+    EXPECT("property-with_const_context-get", with_const_context->get != nullptr);
+    EXPECT("property-with_const_context-set", with_const_context->set != nullptr);
+    EXPECT("property-with_const_context-context", with_const_context->context != nullptr);
 
-    auto const_function_property_with_const_context = reflection->property.find("ConstFunctionPropertyWithConstContext");
+    auto const_with_const_context = reflection->property.find("ConstWithConstContext");
 
-    ASSERT("property-const_function_property_with_const_context", const_function_property_with_const_context != nullptr);
-    EXPECT("property-const_function_property_with_const_context-get", const_function_property_with_const_context->get != nullptr);
-    EXPECT("property-const_function_property_with_const_context-set", const_function_property_with_const_context->set != nullptr);
-    EXPECT("property-const_function_property_with_const_context-context", const_function_property_with_const_context->context != nullptr);
+    ASSERT("property-const_with_const_context", const_with_const_context != nullptr);
+    EXPECT("property-const_with_const_context-get", const_with_const_context->get != nullptr);
+    EXPECT("property-const_with_const_context-set", const_with_const_context->set != nullptr);
+    EXPECT("property-const_with_const_context-context", const_with_const_context->context != nullptr);
 
-    auto function_property_no_context = reflection->property.find("FunctionPropertyNoContext");
+    auto no_context = reflection->property.find("NoContext");
 
-    ASSERT("property-function_property_no_context", function_property_no_context != nullptr);
-    EXPECT("property-function_property_no_context-get", function_property_no_context->get != nullptr);
-    EXPECT("property-function_property_no_context-set", function_property_no_context->set != nullptr);
-    EXPECT("property-function_property_no_context-context", function_property_no_context->context == nullptr);
+    ASSERT("property-no_context", no_context != nullptr);
+    EXPECT("property-no_context-get", no_context->get != nullptr);
+    EXPECT("property-no_context-set", no_context->set != nullptr);
+    EXPECT("property-no_context-context", no_context->context == nullptr);
 
-    auto const_function_property_no_context = reflection->property.find("ConstFunctionPropertyNoContext");
+    auto const_no_context = reflection->property.find("ConstNoContext");
 
-    ASSERT("property-const_function_property_no_context", const_function_property_no_context != nullptr);
-    EXPECT("property-const_function_property_no_context-get", const_function_property_no_context->get != nullptr);
-    EXPECT("property-const_function_property_no_context-set", const_function_property_no_context->set != nullptr);
-    EXPECT("property-const_function_property_no_context-context", const_function_property_no_context->context == nullptr);
+    ASSERT("property-const_no_context", const_no_context != nullptr);
+    EXPECT("property-const_no_context-get", const_no_context->get != nullptr);
+    EXPECT("property-const_no_context-set", const_no_context->set != nullptr);
+    EXPECT("property-const_no_context-context", const_no_context->context == nullptr);
 
 
-    auto readonly_function_property_with_context = reflection->property.find("ReadonlyFunctionPropertyWithContext");
+    auto readonly_with_context = reflection->property.find("ReadonlyWithContext");
 
-    ASSERT("property-readonly_function_property_with_context", readonly_function_property_with_context != nullptr);
-    EXPECT("property-readonly_function_property_with_context-get", readonly_function_property_with_context->get != nullptr);
-    EXPECT("property-readonly_function_property_with_context-set", readonly_function_property_with_context->set == nullptr);
-    EXPECT("property-readonly_function_property_with_context-context", readonly_function_property_with_context->context != nullptr);
+    ASSERT("property-readonly_with_context", readonly_with_context != nullptr);
+    EXPECT("property-readonly_with_context-get", readonly_with_context->get != nullptr);
+    EXPECT("property-readonly_with_context-set", readonly_with_context->set == nullptr);
+    EXPECT("property-readonly_with_context-context", readonly_with_context->context != nullptr);
 
-    auto readonly_function_property_with_const_context = reflection->property.find("ReadonlyFunctionPropertyWithConstContext");
+    auto readonly_with_const_context = reflection->property.find("ReadonlyWithConstContext");
 
-    ASSERT("property-readonly_function_property_with_const_context", readonly_function_property_with_const_context != nullptr);
-    EXPECT("property-readonly_function_property_with_const_context-get", readonly_function_property_with_const_context->get != nullptr);
-    EXPECT("property-readonly_function_property_with_const_context-set", readonly_function_property_with_const_context->set == nullptr);
-    EXPECT("property-readonly_function_property_with_const_context-context", readonly_function_property_with_const_context->context != nullptr);
+    ASSERT("property-readonly_with_const_context", readonly_with_const_context != nullptr);
+    EXPECT("property-readonly_with_const_context-get", readonly_with_const_context->get != nullptr);
+    EXPECT("property-readonly_with_const_context-set", readonly_with_const_context->set == nullptr);
+    EXPECT("property-readonly_with_const_context-context", readonly_with_const_context->context != nullptr);
 
-    auto readonly_const_function_property_with_const_context = reflection->property.find("ReadonlyConstFunctionPropertyWithConstContext");
+    auto readonly_const_with_const_context = reflection->property.find("ReadonlyConstWithConstContext");
 
-    ASSERT("property-readonly_const_function_property_with_const_context", readonly_const_function_property_with_const_context != nullptr);
-    EXPECT("property-readonly_const_function_property_with_const_context-get", readonly_const_function_property_with_const_context->get != nullptr);
-    EXPECT("property-readonly_const_function_property_with_const_context-set", readonly_const_function_property_with_const_context->set == nullptr);
-    EXPECT("property-readonly_const_function_property_with_const_context-context", readonly_const_function_property_with_const_context->context != nullptr);
+    ASSERT("property-readonly_const_with_const_context", readonly_const_with_const_context != nullptr);
+    EXPECT("property-readonly_const_with_const_context-get", readonly_const_with_const_context->get != nullptr);
+    EXPECT("property-readonly_const_with_const_context-set", readonly_const_with_const_context->set == nullptr);
+    EXPECT("property-readonly_const_with_const_context-context", readonly_const_with_const_context->context != nullptr);
 
-    auto readonly_function_property_no_context = reflection->property.find("ReadonlyFunctionPropertyNoContext");
+    auto readonly_no_context = reflection->property.find("ReadonlyNoContext");
 
-    ASSERT("property-readonly_function_property_no_context", readonly_function_property_no_context != nullptr);
-    EXPECT("property-readonly_function_property_no_context-get", readonly_function_property_no_context->get != nullptr);
-    EXPECT("property-readonly_function_property_no_context-set", readonly_function_property_no_context->set == nullptr);
-    EXPECT("property-readonly_function_property_no_context-context", readonly_function_property_no_context->context == nullptr);
+    ASSERT("property-readonly_no_context", readonly_no_context != nullptr);
+    EXPECT("property-readonly_no_context-get", readonly_no_context->get != nullptr);
+    EXPECT("property-readonly_no_context-set", readonly_no_context->set == nullptr);
+    EXPECT("property-readonly_no_context-context", readonly_no_context->context == nullptr);
 
-    auto readonly_const_function_property_no_context = reflection->property.find("ReadonlyConstFunctionPropertyNoContext");
+    auto readonly_const_no_context = reflection->property.find("ReadonlyConstNoContext");
 
-    ASSERT("property-readonly_const_function_property_no_context", readonly_const_function_property_no_context != nullptr);
-    EXPECT("property-readonly_const_function_property_no_context-get", readonly_const_function_property_no_context->get != nullptr);
-    EXPECT("property-readonly_const_function_property_no_context-set", readonly_const_function_property_no_context->set == nullptr);
-    EXPECT("property-readonly_const_function_property_no_context-context", readonly_const_function_property_no_context->context == nullptr);
+    ASSERT("property-readonly_const_no_context", readonly_const_no_context != nullptr);
+    EXPECT("property-readonly_const_no_context-get", readonly_const_no_context->get != nullptr);
+    EXPECT("property-readonly_const_no_context-set", readonly_const_no_context->set == nullptr);
+    EXPECT("property-readonly_const_no_context-context", readonly_const_no_context->context == nullptr);
 }
 
 
@@ -302,20 +290,13 @@ TEST_SPACE()
 
 struct TestStaticFunctionPropertyStruct : TestStaticFieldPropertyStruct
 {
-    static int& StaticFunctionPropertyWithContext() { return StaticFieldProperty; }
-    static void StaticFunctionPropertyWithContext(int& value) { StaticFieldProperty = value; }
+    static int& WithContext() { return Property; } static void WithContext(int& value) { Property = value; }
+    static int const& WithConstContext() { return Property; } static void WithConstContext(int const& value) { Property = value; }
+    static int NoContext() { return 0; } static void NoContext(int) {}
 
-    static int const& StaticFunctionPropertyWithConstContext() { return StaticFieldProperty; }
-    static void StaticFunctionPropertyWithConstContext(int const& value) { StaticFieldProperty = value; }
-
-    static int StaticFunctionPropertyNoContext() { return 0; }
-    static void StaticFunctionPropertyNoContext(int) {}
-
-    static int& StaticReadonlyFunctionPropertyWithContext() { return StaticFieldProperty; }
-
-    static int const& StaticReadonlyFunctionPropertyWithConstContext() { return StaticFieldProperty; }
-
-    static int StaticReadonlyFunctionPropertyNoContext() { return 0; }
+    static int& ReadonlyWithContext() { return Property; }
+    static int const& ReadonlyWithConstContext() { return Property; }
+    static int ReadonlyNoContext() { return 0; }
 };
 
 } // TEST_SPACE
@@ -324,13 +305,13 @@ REFLECTABLE_DECLARATION(TestStaticFunctionPropertyStruct)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestStaticFunctionPropertyStruct)
-    PROPERTY(StaticFunctionPropertyWithContext)
-    PROPERTY(StaticFunctionPropertyWithConstContext)
-    PROPERTY(StaticFunctionPropertyNoContext)
+    PROPERTY(WithContext)
+    PROPERTY(WithConstContext)
+    PROPERTY(NoContext)
 
-    PROPERTY(StaticReadonlyFunctionPropertyWithContext)
-    PROPERTY(StaticReadonlyFunctionPropertyWithConstContext)
-    PROPERTY(StaticReadonlyFunctionPropertyNoContext)
+    PROPERTY(ReadonlyWithContext)
+    PROPERTY(ReadonlyWithConstContext)
+    PROPERTY(ReadonlyNoContext)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestStaticFunctionProperty)
@@ -343,48 +324,48 @@ TEST(TestLibrary, TestStaticFunctionProperty)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto static_function_property_with_context = reflection->property.find("StaticFunctionPropertyWithContext");
+    auto with_context = reflection->property.find("WithContext");
 
-    ASSERT("property-static_function_property_with_context", static_function_property_with_context != nullptr);
-    EXPECT("property-static_function_property_with_context-get", static_function_property_with_context->get != nullptr);
-    EXPECT("property-static_function_property_with_context-set", static_function_property_with_context->set != nullptr);
-    EXPECT("property-static_function_property_with_context-context", static_function_property_with_context->context != nullptr);
+    ASSERT("property-with_context", with_context != nullptr);
+    EXPECT("property-with_context-get", with_context->get != nullptr);
+    EXPECT("property-with_context-set", with_context->set != nullptr);
+    EXPECT("property-with_context-context", with_context->context != nullptr);
 
-    auto static_function_property_with_const_context = reflection->property.find("StaticFunctionPropertyWithConstContext");
+    auto with_const_context = reflection->property.find("WithConstContext");
 
-    ASSERT("property-static_function_property_with_const_context", static_function_property_with_const_context != nullptr);
-    EXPECT("property-static_function_property_with_const_context-get", static_function_property_with_const_context->get != nullptr);
-    EXPECT("property-static_function_property_with_const_context-set", static_function_property_with_const_context->set != nullptr);
-    EXPECT("property-static_function_property_with_const_context-context", static_function_property_with_const_context->context != nullptr);
+    ASSERT("property-with_const_context", with_const_context != nullptr);
+    EXPECT("property-with_const_context-get", with_const_context->get != nullptr);
+    EXPECT("property-with_const_context-set", with_const_context->set != nullptr);
+    EXPECT("property-with_const_context-context", with_const_context->context != nullptr);
 
-    auto static_function_property_no_context = reflection->property.find("StaticFunctionPropertyNoContext");
+    auto no_context = reflection->property.find("NoContext");
 
-    ASSERT("property-static_function_property_no_context", static_function_property_no_context != nullptr);
-    EXPECT("property-static_function_property_no_context-get", static_function_property_no_context->get != nullptr);
-    EXPECT("property-static_function_property_no_context-set", static_function_property_no_context->set != nullptr);
-    EXPECT("property-static_function_property_no_context-context", static_function_property_no_context->context == nullptr);
+    ASSERT("property-no_context", no_context != nullptr);
+    EXPECT("property-no_context-get", no_context->get != nullptr);
+    EXPECT("property-no_context-set", no_context->set != nullptr);
+    EXPECT("property-no_context-context", no_context->context == nullptr);
 
 
-    auto static_readonly_function_property_with_context = reflection->property.find("StaticReadonlyFunctionPropertyWithContext");
+    auto readonly_with_context = reflection->property.find("ReadonlyWithContext");
 
-    ASSERT("property-static_readonly_function_property_with_context", static_readonly_function_property_with_context != nullptr);
-    EXPECT("property-static_readonly_function_property_with_context-get", static_readonly_function_property_with_context->get != nullptr);
-    EXPECT("property-static_readonly_function_property_with_context-set", static_readonly_function_property_with_context->set == nullptr);
-    EXPECT("property-static_readonly_function_property_with_context-context", static_readonly_function_property_with_context->context != nullptr);
+    ASSERT("property-readonly_with_context", readonly_with_context != nullptr);
+    EXPECT("property-readonly_with_context-get", readonly_with_context->get != nullptr);
+    EXPECT("property-readonly_with_context-set", readonly_with_context->set == nullptr);
+    EXPECT("property-readonly_with_context-context", readonly_with_context->context != nullptr);
 
-    auto static_readonly_function_property_with_const_context = reflection->property.find("StaticReadonlyFunctionPropertyWithConstContext");
+    auto readonly_with_const_context = reflection->property.find("ReadonlyWithConstContext");
 
-    ASSERT("property-static_readonly_function_property_with_const_context", static_readonly_function_property_with_const_context != nullptr);
-    EXPECT("property-static_readonly_function_property_with_const_context-get", static_readonly_function_property_with_const_context->get != nullptr);
-    EXPECT("property-static_readonly_function_property_with_const_context-set", static_readonly_function_property_with_const_context->set == nullptr);
-    EXPECT("property-static_readonly_function_property_with_const_context-context", static_readonly_function_property_with_const_context->context != nullptr);
+    ASSERT("property-readonly_with_const_context", readonly_with_const_context != nullptr);
+    EXPECT("property-readonly_with_const_context-get", readonly_with_const_context->get != nullptr);
+    EXPECT("property-readonly_with_const_context-set", readonly_with_const_context->set == nullptr);
+    EXPECT("property-readonly_with_const_context-context", readonly_with_const_context->context != nullptr);
 
-    auto static_readonly_function_property_no_context = reflection->property.find("StaticReadonlyFunctionPropertyNoContext");
+    auto readonly_no_context = reflection->property.find("ReadonlyNoContext");
 
-    ASSERT("property-static_readonly_function_property_no_context", static_readonly_function_property_no_context != nullptr);
-    EXPECT("property-static_readonly_function_property_no_context-get", static_readonly_function_property_no_context->get != nullptr);
-    EXPECT("property-static_readonly_function_property_no_context-set", static_readonly_function_property_no_context->set == nullptr);
-    EXPECT("property-static_readonly_function_property_no_context-context", static_readonly_function_property_no_context->context == nullptr);
+    ASSERT("property-readonly_no_context", readonly_no_context != nullptr);
+    EXPECT("property-readonly_no_context-get", readonly_no_context->get != nullptr);
+    EXPECT("property-readonly_no_context-set", readonly_no_context->set == nullptr);
+    EXPECT("property-readonly_no_context-context", readonly_no_context->context == nullptr);
 }
 
 
@@ -393,20 +374,13 @@ TEST_SPACE()
 
 struct TestFreeFunctionPropertyStruct {};
 
-int& FreeFunctionPropertyWithContext() { return FreeFieldProperty; }
-void FreeFunctionPropertyWithContext(int& value) { FreeFieldProperty = value; }
+int& WithContext() { return Property; } void WithContext(int& value) { Property = value; }
+int const& WithConstContext() { return Property; } void WithConstContext(int const& value) { Property = value; }
+int NoContext() { return 0; } void NoContext(int) {}
 
-int const& FreeFunctionPropertyWithConstContext() { return FreeFieldProperty; }
-void FreeFunctionPropertyWithConstContext(int const& value) { FreeFieldProperty = value; }
-
-int FreeFunctionPropertyNoContext() { return 0; }
-void FreeFunctionPropertyNoContext(int) {}
-
-int& FreeReadonlyFunctionPropertyWithContext() { return FreeFieldProperty; }
-
-int const& FreeReadonlyFunctionPropertyWithConstContext() { return FreeFieldProperty; }
-
-int FreeReadonlyFunctionPropertyNoContext() { return 0; }
+int& ReadonlyWithContext() { return Property; }
+int const& ReadonlyWithConstContext() { return Property; }
+int ReadonlyNoContext() { return 0; }
 
 } // TEST_SPACE
 
@@ -414,13 +388,13 @@ REFLECTABLE_DECLARATION(TestFreeFunctionPropertyStruct)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestFreeFunctionPropertyStruct)
-    FREE_PROPERTY(FreeFunctionPropertyWithContext)
-    FREE_PROPERTY(FreeFunctionPropertyWithConstContext)
-    FREE_PROPERTY(FreeFunctionPropertyNoContext)
+    FREE_PROPERTY(WithContext)
+    FREE_PROPERTY(WithConstContext)
+    FREE_PROPERTY(NoContext)
 
-    FREE_PROPERTY(FreeReadonlyFunctionPropertyWithContext)
-    FREE_PROPERTY(FreeReadonlyFunctionPropertyWithConstContext)
-    FREE_PROPERTY(FreeReadonlyFunctionPropertyNoContext)
+    FREE_PROPERTY(ReadonlyWithContext)
+    FREE_PROPERTY(ReadonlyWithConstContext)
+    FREE_PROPERTY(ReadonlyNoContext)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestFreeFunctionProperty)
@@ -433,46 +407,46 @@ TEST(TestLibrary, TestFreeFunctionProperty)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto free_function_property_with_context = reflection->property.find("FreeFunctionPropertyWithContext");
+    auto with_context = reflection->property.find("WithContext");
 
-    ASSERT("property-free_function_property_with_context", free_function_property_with_context != nullptr);
-    EXPECT("property-free_function_property_with_context-get", free_function_property_with_context->get != nullptr);
-    EXPECT("property-free_function_property_with_context-set", free_function_property_with_context->set != nullptr);
-    EXPECT("property-free_function_property_with_context-context", free_function_property_with_context->context != nullptr);
+    ASSERT("property-with_context", with_context != nullptr);
+    EXPECT("property-with_context-get", with_context->get != nullptr);
+    EXPECT("property-with_context-set", with_context->set != nullptr);
+    EXPECT("property-with_context-context", with_context->context != nullptr);
 
-    auto free_function_property_with_const_context = reflection->property.find("FreeFunctionPropertyWithConstContext");
+    auto with_const_context = reflection->property.find("WithConstContext");
 
-    ASSERT("property-free_function_property_with_const_context", free_function_property_with_const_context != nullptr);
-    EXPECT("property-free_function_property_with_const_context-get", free_function_property_with_const_context->get != nullptr);
-    EXPECT("property-free_function_property_with_const_context-set", free_function_property_with_const_context->set != nullptr);
-    EXPECT("property-free_function_property_with_const_context-context", free_function_property_with_const_context->context != nullptr);
+    ASSERT("property-with_const_context", with_const_context != nullptr);
+    EXPECT("property-with_const_context-get", with_const_context->get != nullptr);
+    EXPECT("property-with_const_context-set", with_const_context->set != nullptr);
+    EXPECT("property-with_const_context-context", with_const_context->context != nullptr);
 
-    auto free_function_property_no_context = reflection->property.find("FreeFunctionPropertyNoContext");
+    auto no_context = reflection->property.find("NoContext");
 
-    ASSERT("property-free_function_property_no_context", free_function_property_no_context != nullptr);
-    EXPECT("property-free_function_property_no_context-get", free_function_property_no_context->get != nullptr);
-    EXPECT("property-free_function_property_no_context-set", free_function_property_no_context->set != nullptr);
-    EXPECT("property-free_function_property_no_context-context", free_function_property_no_context->context == nullptr);
+    ASSERT("property-no_context", no_context != nullptr);
+    EXPECT("property-no_context-get", no_context->get != nullptr);
+    EXPECT("property-no_context-set", no_context->set != nullptr);
+    EXPECT("property-no_context-context", no_context->context == nullptr);
 
 
-    auto free_readonly_function_property_with_context = reflection->property.find("FreeReadonlyFunctionPropertyWithContext");
+    auto readonly_with_context = reflection->property.find("ReadonlyWithContext");
 
-    ASSERT("property-free_readonly_function_property_with_context", free_readonly_function_property_with_context != nullptr);
-    EXPECT("property-free_readonly_function_property_with_context-get", free_readonly_function_property_with_context->get != nullptr);
-    EXPECT("property-free_readonly_function_property_with_context-set", free_readonly_function_property_with_context->set == nullptr);
-    EXPECT("property-free_readonly_function_property_with_context-context", free_readonly_function_property_with_context->context != nullptr);
+    ASSERT("property-readonly_with_context", readonly_with_context != nullptr);
+    EXPECT("property-readonly_with_context-get", readonly_with_context->get != nullptr);
+    EXPECT("property-readonly_with_context-set", readonly_with_context->set == nullptr);
+    EXPECT("property-readonly_with_context-context", readonly_with_context->context != nullptr);
 
-    auto free_readonly_function_property_with_const_context = reflection->property.find("FreeReadonlyFunctionPropertyWithConstContext");
+    auto readonly_with_const_context = reflection->property.find("ReadonlyWithConstContext");
 
-    ASSERT("property-free_readonly_function_property_with_const_context", free_readonly_function_property_with_const_context != nullptr);
-    EXPECT("property-free_readonly_function_property_with_const_context-get", free_readonly_function_property_with_const_context->get != nullptr);
-    EXPECT("property-free_readonly_function_property_with_const_context-set", free_readonly_function_property_with_const_context->set == nullptr);
-    EXPECT("property-free_readonly_function_property_with_const_context-context", free_readonly_function_property_with_const_context->context != nullptr);
+    ASSERT("property-readonly_with_const_context", readonly_with_const_context != nullptr);
+    EXPECT("property-readonly_with_const_context-get", readonly_with_const_context->get != nullptr);
+    EXPECT("property-readonly_with_const_context-set", readonly_with_const_context->set == nullptr);
+    EXPECT("property-readonly_with_const_context-context", readonly_with_const_context->context != nullptr);
 
-    auto free_readonly_function_property_no_context = reflection->property.find("FreeReadonlyFunctionPropertyNoContext");
+    auto readonly_no_context = reflection->property.find("ReadonlyNoContext");
 
-    ASSERT("property-free_readonly_function_property_no_context", free_readonly_function_property_no_context != nullptr);
-    EXPECT("property-free_readonly_function_property_no_context-get", free_readonly_function_property_no_context->get != nullptr);
-    EXPECT("property-free_readonly_function_property_no_context-set", free_readonly_function_property_no_context->set == nullptr);
-    EXPECT("property-free_readonly_function_property_no_context-context", free_readonly_function_property_no_context->context == nullptr);
+    ASSERT("property-readonly_no_context", readonly_no_context != nullptr);
+    EXPECT("property-readonly_no_context-get", readonly_no_context->get != nullptr);
+    EXPECT("property-readonly_no_context-set", readonly_no_context->set == nullptr);
+    EXPECT("property-readonly_no_context-context", readonly_no_context->context == nullptr);
 }
