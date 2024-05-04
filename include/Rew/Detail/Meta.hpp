@@ -106,7 +106,7 @@ struct property_traits<PropertyType (ReflectableType::*)(void)>
     : property_traits<PropertyType> {};
 
 template <typename ReflectableType, typename PropertyType>
-struct property_traits<PropertyType (ReflectableType::*)(void) &>
+struct property_traits<PropertyType (ReflectableType::*)(void)&>
     : property_traits<PropertyType> {};
 
 template <typename ReflectableType, typename PropertyType>
@@ -114,7 +114,7 @@ struct property_traits<void (ReflectableType::*)(PropertyType)>
     : property_traits<PropertyType> {};
 
 template <typename ReflectableType, typename PropertyType>
-struct property_traits<void (ReflectableType::*)(PropertyType) &>
+struct property_traits<void (ReflectableType::*)(PropertyType)&>
     : property_traits<PropertyType> {};
 
 template <typename PropertyType>
@@ -171,12 +171,12 @@ struct function_traits<ReturnType(ArgumentTypes...)>
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
-struct function_traits<ReturnType(ArgumentTypes...) &>
+struct function_traits<ReturnType(ArgumentTypes...)&>
 {
-    using dirty_type = ReturnType(ArgumentTypes...) &;
+    using dirty_type = ReturnType(ArgumentTypes...)&;
     using dirty_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using type = clean<ReturnType>(clean<ArgumentTypes>...) &;
+    using type = clean<ReturnType>(clean<ArgumentTypes>...)&;
     using pointer = clean<ReturnType>(*)(clean<ArgumentTypes>...);
 };
 
@@ -197,8 +197,8 @@ struct function_traits<ReturnType (ClassType::*)(ArgumentTypes...)>
     : function_traits<ReturnType(ArgumentTypes...)> {};
 
 template <class ClassType, typename ReturnType, typename... ArgumentTypes>
-struct function_traits<ReturnType (ClassType::*)(ArgumentTypes...) &>
-    : function_traits<ReturnType(ArgumentTypes...) &> {};
+struct function_traits<ReturnType (ClassType::*)(ArgumentTypes...)&>
+    : function_traits<ReturnType(ArgumentTypes...)&> {};
 
 namespace detail
 {
@@ -243,13 +243,13 @@ constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
-constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) &)
+constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...)&)
 {
     struct __inner : protected ReflectableType
     {
-        static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) &)
+        static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...)&)
         {
-            return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) &>(function);
+            return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...)&>(function);
         }
     };
     return __inner::get(function);
@@ -366,7 +366,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, void (ParentClassType::* set)(PropertyType) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, void (ParentClassType::* set)(PropertyType)&)
         {
             return fpack(get, set);
         }
@@ -378,7 +378,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, void (ParentClassType::* set)(PropertyType) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, void (ParentClassType::* set)(PropertyType)&)
         {
             return fpack(get, set);
         }
@@ -390,19 +390,19 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void), void (ParentClassType::* set)(PropertyType) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void), void (ParentClassType::* set)(PropertyType)&)
         {
             return fpack(get, set);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) &, void (ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, void (ParentClassType::* set)(PropertyType))
         {
             return fpack(get, set);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) &, void (ParentClassType::* set)(PropertyType) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, void (ParentClassType::* set)(PropertyType)&)
         {
             return fpack(get, set);
         }
@@ -440,19 +440,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void), void (ParentClassType::* set)(PropertyType) &)
-        {
-            return fpack(get, set);
-        }
-
-        template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) &, void (ParentClassType::* set)(PropertyType))
-        {
-            return fpack(get, set);
-        }
-
-        template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) &, void (ParentClassType::* set)(PropertyType) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void), void (ParentClassType::* set)(PropertyType)&)
         {
             return fpack(get, set);
         }
@@ -470,19 +458,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, void (ParentClassType::* set)(PropertyType) &)
-        {
-            return fpack(get, set);
-        }
-
-        template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, void (ParentClassType::* set)(PropertyType))
-        {
-            return fpack(get, set);
-        }
-
-        template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, void (ParentClassType::* set)(PropertyType) &)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, void (ParentClassType::* set)(PropertyType)&)
         {
             return fpack(get, set);
         }
@@ -523,25 +499,23 @@ struct access_traits<ClassType>
     {
         template <typename ReturnType, typename... ArgumentTypes>
         static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) const) { return function; }
-        template <typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) const&) { return function; }
-
-        template <typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
-        template <typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) &) { return function; }
-
         template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
         static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) const) { return fpack(function); }
 
+        template <typename ReturnType, typename... ArgumentTypes>
+        static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...) const&) { return function; }
         template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
         static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) const&) { return fpack(function); }
 
+        template <typename ReturnType, typename... ArgumentTypes>
+        static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...)) { return function; }
         template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
         static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...)) { return fpack(function); }
 
+        template <typename ReturnType, typename... ArgumentTypes>
+        static constexpr auto of(ReturnType (ClassType::* function)(ArgumentTypes...)&) { return function; }
         template <class ParentClassType, typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...) &) { return fpack(function); }
+        static constexpr auto of(ReturnType (ParentClassType::* function)(ArgumentTypes...)&) { return fpack(function); }
 
         template <typename ReturnType, typename... ArgumentTypes>
         static constexpr auto of(ReturnType (*function)(ArgumentTypes...)) { return function; }
@@ -551,16 +525,33 @@ struct access_traits<ClassType>
     struct function<DirtyReturnType(DirtyArgumentTypes...) const>
     {
         static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...) const) { return function; }
-        static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...) const&) { return function; }
 
         template <class ParentClassType>
         static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) const)
         {
             return fpack(function);
         }
+    };
+
+    template <typename DirtyReturnType, typename... DirtyArgumentTypes>
+    struct function<DirtyReturnType(DirtyArgumentTypes...) const&>
+    {
+        static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...) const&) { return function; }
 
         template <class ParentClassType>
         static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) const&)
+        {
+            return fpack(function);
+        }
+    };
+
+    template <typename DirtyReturnType, typename... DirtyArgumentTypes>
+    struct function<DirtyReturnType(DirtyArgumentTypes...)>
+    {
+        static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...)) { return function; }
+
+        template <class ParentClassType>
+        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...))
         {
             return fpack(function);
         }
@@ -569,24 +560,15 @@ struct access_traits<ClassType>
     };
 
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
-    struct function<DirtyReturnType(DirtyArgumentTypes...)>
+    struct function<DirtyReturnType(DirtyArgumentTypes...)&>
     {
-        static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...)) { return function; }
-        static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...) &) { return function; }
+        static constexpr auto of(clean<DirtyReturnType> (ClassType::* function)(clean<DirtyArgumentTypes>...)&) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...))
+        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...)&)
         {
             return fpack(function);
         }
-
-        template <class ParentClassType>
-        static constexpr auto of(clean<DirtyReturnType> (ParentClassType::* function)(clean<DirtyArgumentTypes>...) &)
-        {
-            return fpack(function);
-        }
-
-        static constexpr auto of(clean<DirtyReturnType> (*function)(clean<DirtyArgumentTypes>...)) { return function; }
     };
 };
 

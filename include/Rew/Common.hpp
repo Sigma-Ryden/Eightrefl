@@ -96,13 +96,13 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    (ReturnType(ArgumentTypes...) &), CLEANOF(ReturnType(ArgumentTypes...)) &
+    (ReturnType(ArgumentTypes...)&), CLEANOF(ReturnType(ArgumentTypes...))&
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    ReturnType(ArgumentTypes...) &
+    ReturnType(ArgumentTypes...)&
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME(NAMEOF(ReturnType(ArgumentTypes...)) + "&")

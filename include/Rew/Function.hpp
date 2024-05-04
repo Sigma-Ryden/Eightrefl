@@ -124,7 +124,7 @@ auto handler_function_call(ReturnType (ReflectableType::* function)(ArgumentType
 }
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto handler_function_call(ReturnType (ReflectableType::* function)(ArgumentTypes...) &)
+auto handler_function_call(ReturnType (ReflectableType::* function)(ArgumentTypes...)&)
 {
     return detail::handler_member_function_call_impl<ReflectableType, ReturnType, ArgumentTypes...>
     (
