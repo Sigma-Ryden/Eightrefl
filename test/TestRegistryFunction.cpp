@@ -15,9 +15,6 @@ struct TestFunctionStruct
     void Overload(int) {}
     void Overload(int) const {}
 
-    template <typename T>
-    void Template(T) {}
-
     template <typename... Args>
     void Template() {}
 
@@ -70,11 +67,11 @@ TEST(TestLibrary::TestRegistryFunction, TestFunction)
 
     EXPECT("function-template", reflection->function.find("Template") != nullptr);
 
-    auto template_with_t = reflection->function.find("Template<int>");
+    auto template_with_arg = reflection->function.find("Template<int>");
 
-    ASSERT("function-template_with_t",template_with_t != nullptr);
-    EXPECT("function-template_with_t-overload-1", template_with_t->all.find("void()") != nullptr);
-    EXPECT("function-template_with_t-overload-2", template_with_t->all.find("void(float)") != nullptr);
+    ASSERT("function-template_with_arg",template_with_arg != nullptr);
+    EXPECT("function-template_with_arg-overload-1", template_with_arg->all.find("void()") != nullptr);
+    EXPECT("function-template_with_arg-overload-2", template_with_arg->all.find("void(float)") != nullptr);
 
     EXPECT("function-template_with_args", reflection->function.find("Template<int, bool>") != nullptr);
 }
@@ -89,14 +86,11 @@ struct TestStaticFunctionStruct
     static void Overload() {}
     static void Overload(int) {}
 
-    template <typename T>
-    void Template(T) {}
-
     template <typename... Args>
-    void Template() {}
+    static void Template() {}
 
     template <typename... Args, typename T>
-    void Template(T) {}
+    static void Template(T) {}
 };
 
 } // TEST_SPACE
@@ -134,11 +128,11 @@ TEST(TestLibrary::TestRegistryFunction, TestStaticFunction)
 
     EXPECT("function-template", reflection->function.find("Template") != nullptr);
 
-    auto template_with_t = reflection->function.find("Template<int>");
+    auto template_with_arg = reflection->function.find("Template<int>");
 
-    ASSERT("function-template_with_t",template_with_t != nullptr);
-    EXPECT("function-template_with_t-overload-1", template_with_t->all.find("void()") != nullptr);
-    EXPECT("function-template_with_t-overload-2", template_with_t->all.find("void(float)") != nullptr);
+    ASSERT("function-template_with_arg",template_with_arg != nullptr);
+    EXPECT("function-template_with_arg-overload-1", template_with_arg->all.find("void()") != nullptr);
+    EXPECT("function-template_with_arg-overload-2", template_with_arg->all.find("void(float)") != nullptr);
 
     EXPECT("function-template_with_args", reflection->function.find("Template<int, bool>") != nullptr);
 }
@@ -152,9 +146,6 @@ struct TestFreeFunctionStruct {};
 void Function() {}
 void Overload() {}
 void Overload(int) {}
-
-template <typename T>
-void Template(T) {}
 
 template <typename... Args>
 void Template() {}
@@ -196,11 +187,11 @@ TEST(TestLibrary::TestRegistryFunction, TestFreeFunction)
 
     EXPECT("function-template", reflection->function.find("Template") != nullptr);
 
-    auto template_with_t = reflection->function.find("Template<int>");
+    auto template_with_arg = reflection->function.find("Template<int>");
 
-    ASSERT("function-template_with_t",template_with_t != nullptr);
-    EXPECT("function-template_with_t-overload-1", template_with_t->all.find("void()") != nullptr);
-    EXPECT("function-template_with_t-overload-2", template_with_t->all.find("void(float)") != nullptr);
+    ASSERT("function-template_with_arg",template_with_arg != nullptr);
+    EXPECT("function-template_with_arg-overload-1", template_with_arg->all.find("void()") != nullptr);
+    EXPECT("function-template_with_arg-overload-2", template_with_arg->all.find("void(float)") != nullptr);
 
     EXPECT("function-template_with_args", reflection->function.find("Template<int, bool>") != nullptr);
 }
