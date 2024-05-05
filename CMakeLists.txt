@@ -23,6 +23,7 @@ set(REW
     include/Rew/Common.hpp
 
     include/Rew/Detail/Meta.hpp
+    include/Rew/Detail/Macro.hpp
 
     include/Rew/BuiltIn/function.hpp
     include/Rew/BuiltIn/allocator.hpp
@@ -83,7 +84,10 @@ add_executable(${PROJECT_NAME}
     #test/TestReflectionImpl.hpp
 
     test/TestCommon.cpp
-    test/TestLibrary.cpp
+    test/TestEnum.cpp
+    test/TestNameOf.cpp
+    test/TestRegistryFunction.cpp
+    test/TestRegistryProperty.cpp
 
     test/TestAllocator.cpp
     test/TestAny.cpp

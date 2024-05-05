@@ -14,25 +14,27 @@
 
 #include <Rew/Utility.hpp>
 
+#include <Rew/Detail/Macro.hpp>
+
 #define RAW_FUNCTION(name_str, name, ...)                                                               \
     {                                                                                                   \
         using __access_traits = rew::meta::access_traits<CleanR>;                                       \
-        auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&CleanR::name);                \
+        auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&CleanR::__REW_EXPAND name);   \
         auto __meta = rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);            \
         injection.template function<CleanR, decltype(__ptr)>(*__meta);                                  \
     }
 
-#define FUNCTION(name, ...) RAW_FUNCTION(#name, name, __VA_ARGS__)
+#define FUNCTION(name, ...) RAW_FUNCTION(#name, (name), __VA_ARGS__)
 
 #define RAW_FREE_FUNCTION(name_str, name, ...)                                                          \
     {                                                                                                   \
         using __access_traits = rew::meta::access_traits<>;                                             \
-        auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&name);                        \
+        auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&__REW_EXPAND name);           \
         auto __meta = rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);            \
         injection.template function<CleanR, decltype(__ptr)>(*__meta);                                  \
     }
 
-#define FREE_FUNCTION(name, ...) RAW_FREE_FUNCTION(#name, name, __VA_ARGS__)
+#define FREE_FUNCTION(name, ...) RAW_FREE_FUNCTION(#name, (name), __VA_ARGS__)
 
 namespace rew
 {

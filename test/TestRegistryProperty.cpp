@@ -1,220 +1,5 @@
 #include <RewTestingBase.hpp>
 
-TEST(TestLibrary, TestNameOf)
-{
-    EXPECT("const-type", rew::meta::reflectable_traits<const int>::name() == "int const");
-    EXPECT("reference-type", rew::meta::reflectable_traits<int&>::name() == "int&");
-    EXPECT("const_reference-type", rew::meta::reflectable_traits<const int&>::name() == "int const&");
-    EXPECT("function-type", rew::meta::reflectable_traits<void(int, float)>::name() == "void(int, float)");
-    EXPECT("const-function-type", rew::meta::reflectable_traits<void(int, float) const>::name() == "void(int, float) const");
-    EXPECT("reference-function-type", rew::meta::reflectable_traits<void(int, float)&>::name() == "void(int, float)&");
-    EXPECT("const_reference-function-type", rew::meta::reflectable_traits<void(int, float) const&>::name() == "void(int, float) const&");
-}
-
-
-TEST_SPACE()
-{
-
-enum TestEnum { Blue, Green, Red, Alpha };
-
-} // TEST_SPACE
-
-REFLECTABLE_DECLARATION(TestEnum)
-REFLECTABLE_DECLARATION_INIT()
-
-REFLECTABLE(TestEnum)
-    META("Blue", TestEnum::Blue)
-    META("Green", TestEnum::Green)
-//  META("Red", TestEnum::Red) // skip for test
-    META("Alpha", Alpha) // since TestEnum is no scoped enum, we can ommit 'TestEnum::'
-REFLECTABLE_INIT()
-
-TEST(TestLibrary, TestEnum)
-{
-    auto type = rew::global.find("TestEnum");
-
-    ASSERT("type", type != nullptr);
-
-    auto reflection = type->reflection;
-
-    ASSERT("reflection", reflection != nullptr);
-
-    EXPECT("meta-1", reflection->meta.find("Blue") != nullptr);
-    EXPECT("meta-2", reflection->meta.find("Green") != nullptr);
-    EXPECT("meta-3", reflection->meta.find("Alpha") != nullptr);
-}
-
-
-TEST_SPACE()
-{
-
-enum TestScopedEnum { Up, Down, Size };
-
-} // TEST_SPACE
-
-REFLECTABLE_DECLARATION(TestScopedEnum)
-REFLECTABLE_DECLARATION_INIT()
-
-REFLECTABLE(TestScopedEnum)
-    META("Up", TestScopedEnum::Up)
-    META("Down", TestScopedEnum::Down)
-    META("Size", (int)TestScopedEnum::Size)
-REFLECTABLE_INIT()
-
-TEST(TestLibrary, TestScopedEnum)
-{
-    auto type = rew::global.find("TestScopedEnum");
-
-    ASSERT("type", type != nullptr);
-
-    auto reflection = type->reflection;
-
-    ASSERT("reflection", reflection != nullptr);
-
-    EXPECT("meta-1", reflection->meta.find("Up") != nullptr);
-    EXPECT("meta-2", reflection->meta.find("Down") != nullptr);
-    EXPECT("meta-3", reflection->meta.find("Size") != nullptr);
-}
-
-
-TEST_SPACE()
-{
-
-struct TestFunctionStruct
-{
-    void Function() {}
-    void Reference()& {}
-    void Const() const {}
-    void ConstReference() const& {}
-
-    void Overload()& {}
-    void Overload() const& {}
-    void Overload(int) {}
-    void Overload(int) const {}
-};
-
-} // TEST_SPACE
-
-REFLECTABLE_DECLARATION(TestFunctionStruct)
-REFLECTABLE_DECLARATION_INIT()
-
-REFLECTABLE(TestFunctionStruct)
-    FUNCTION(Function)
-    FUNCTION(Reference)
-    FUNCTION(Const)
-    FUNCTION(ConstReference)
-    FUNCTION(Overload, void()&)
-    FUNCTION(Overload, void() const&)
-    FUNCTION(Overload, void(int))
-    FUNCTION(Overload, void(int) const)
-REFLECTABLE_INIT()
-
-TEST(TestLibrary, TestFunction)
-{
-    auto type = rew::global.find("TestFunctionStruct");
-
-    ASSERT("type", type != nullptr);
-
-    auto reflection = type->reflection;
-
-    ASSERT("reflection", reflection != nullptr);
-
-    EXPECT("function", reflection->function.find("Function") != nullptr);
-    EXPECT("function-reference", reflection->function.find("Reference") != nullptr);
-    EXPECT("function-const", reflection->function.find("Const") != nullptr);
-    EXPECT("function-const_reference", reflection->function.find("ConstReference") != nullptr);
-
-    auto overload = reflection->function.find("Overload");
-
-    ASSERT("function-overload", overload != nullptr);
-    EXPECT("function-overload-1", overload->all.find("void()&") != nullptr);
-    EXPECT("function-overload-2", overload->all.find("void() const&") != nullptr);
-    EXPECT("function-overload-3", overload->all.find("void(int)") != nullptr);
-    EXPECT("function-overload-4", overload->all.find("void(int) const") != nullptr);
-}
-
-
-TEST_SPACE()
-{
-
-struct TestStaticFunctionStruct
-{
-    static void Function() {}
-    static void Overload() {}
-    static void Overload(int) {}
-};
-
-} // TEST_SPACE
-
-REFLECTABLE_DECLARATION(TestStaticFunctionStruct)
-REFLECTABLE_DECLARATION_INIT()
-
-REFLECTABLE(TestStaticFunctionStruct)
-    FUNCTION(Function)
-    FUNCTION(Overload, void())
-    FUNCTION(Overload, void(int))
-REFLECTABLE_INIT()
-
-TEST(TestLibrary, TestStaticFunction)
-{
-    auto type = rew::global.find("TestStaticFunctionStruct");
-
-    ASSERT("type", type != nullptr);
-
-    auto reflection = type->reflection;
-
-    ASSERT("reflection", reflection != nullptr);
-
-    EXPECT("function", reflection->function.find("Function") != nullptr);
-
-    auto overload = reflection->function.find("Overload");
-
-    ASSERT("function-overload", overload != nullptr);
-    EXPECT("function-overload-1", overload->all.find("void()") != nullptr);
-    EXPECT("function-overload-2", overload->all.find("void(int)") != nullptr);
-}
-
-
-TEST_SPACE()
-{
-
-struct TestFreeFunctionStruct {};
-
-void Function() {}
-void Overload() {}
-void Overload(int) {}
-
-} // TEST_SPACE
-
-REFLECTABLE_DECLARATION(TestFreeFunctionStruct)
-REFLECTABLE_DECLARATION_INIT()
-
-REFLECTABLE(TestFreeFunctionStruct)
-    FREE_FUNCTION(Function)
-    FREE_FUNCTION(Overload, void())
-    FREE_FUNCTION(Overload, void(int))
-REFLECTABLE_INIT()
-
-TEST(TestLibrary, TestFreeFunction)
-{
-    auto type = rew::global.find("TestFreeFunctionStruct");
-
-    ASSERT("type", type != nullptr);
-
-    auto reflection = type->reflection;
-
-    ASSERT("reflection", reflection != nullptr);
-
-    EXPECT("function", reflection->function.find("Function") != nullptr);
-
-    auto overload = reflection->function.find("Overload");
-
-    ASSERT("function-overload", overload != nullptr);
-    EXPECT("function-overload-1", overload->all.find("void()") != nullptr);
-    EXPECT("function-overload-2", overload->all.find("void(int)") != nullptr);
-}
-
-
 TEST_SPACE()
 {
 
@@ -236,7 +21,7 @@ REFLECTABLE(TestFieldPropertyStruct)
 //  PROPERTY(Reference) // unsupported!
 REFLECTABLE_INIT()
 
-TEST(TestLibrary, TestFieldProperty)
+TEST(TestLibrary::TestRegistryProperty, TestFieldProperty)
 {
     auto type = rew::global.find("TestFieldPropertyStruct");
 
@@ -284,7 +69,7 @@ REFLECTABLE(TestStaticFieldPropertyStruct)
     PROPERTY(Readonly)
 REFLECTABLE_INIT()
 
-TEST(TestLibrary, TestStaticFieldProperty)
+TEST(TestLibrary::TestRegistryProperty, TestStaticFieldProperty)
 {
     auto type = rew::global.find("TestStaticFieldPropertyStruct");
 
@@ -330,7 +115,7 @@ REFLECTABLE(TestFreeFieldPropertyStruct)
     FREE_PROPERTY(Reference)
 REFLECTABLE_INIT()
 
-TEST(TestLibrary, TestFreeFieldProperty)
+TEST(TestLibrary::TestRegistryProperty, TestFreeFieldProperty)
 {
     auto type = rew::global.find("TestFreeFieldPropertyStruct");
 
@@ -400,7 +185,7 @@ REFLECTABLE(TestFunctionPropertyStruct)
     PROPERTY(ReadonlyConstNoContext)
 REFLECTABLE_INIT()
 
-TEST(TestLibrary, TestFunctionProperty)
+TEST(TestLibrary::TestRegistryProperty, TestFunctionProperty)
 {
     auto type = rew::global.find("TestFunctionPropertyStruct");
 
@@ -512,7 +297,7 @@ REFLECTABLE(TestStaticFunctionPropertyStruct)
     PROPERTY(ReadonlyNoContext)
 REFLECTABLE_INIT()
 
-TEST(TestLibrary, TestStaticFunctionProperty)
+TEST(TestLibrary::TestRegistryProperty, TestStaticFunctionProperty)
 {
     auto type = rew::global.find("TestStaticFunctionPropertyStruct");
 
@@ -595,7 +380,7 @@ REFLECTABLE(TestFreeFunctionPropertyStruct)
     FREE_PROPERTY(ReadonlyNoContext)
 REFLECTABLE_INIT()
 
-TEST(TestLibrary, TestFreeFunctionProperty)
+TEST(TestLibrary::TestRegistryProperty, TestFreeFunctionProperty)
 {
     auto type = rew::global.find("TestFreeFunctionPropertyStruct");
 
