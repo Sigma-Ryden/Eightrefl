@@ -354,7 +354,7 @@ property_t* find_or_add_property(reflection_t* reflection, std::string const& na
 }
 
 template <typename MetaType>
-std::any* find_or_add_meta(reflection_t* reflection, std::string const& name, MetaType& data)
+std::any* find_or_add_meta(reflection_t* reflection, std::string const& name, const MetaType& data)
 {
     auto __meta = reflection->meta.find(name);
     if (__meta == nullptr) __meta = &reflection->meta.add(name, data);
