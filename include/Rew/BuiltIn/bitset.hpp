@@ -24,9 +24,17 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <class StdBitsetType>), std_bitset_reference<StdBitsetType>)
     FUNCTION(operator=, R&(bool))
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator=, R&(R const&))
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(operator bool)
+
+    #ifndef REW_CORE_MINIMAL
     FUNCTION(operator~)
+    #endif // REW_CORE_MINIMAL
+
     FUNCTION(flip, R&())
 REFLECTABLE_INIT()
 
