@@ -1,6 +1,14 @@
 #ifndef REW_DETAIL_MACRO_HPP
 #define REW_DETAIL_MACRO_HPP
 
-#define __REW_EXPAND(...) __VA_ARGS__
+#define __REW_DEPAREN(arg) __REW_DEPAREN_IMPL(__REW_UATE arg)
+#define __REW_UATE(...) __REW_UATE __VA_ARGS__
+#define __REW_DEPAREN_IMPL(...) __REW_DEPAREN_IMPL_(__VA_ARGS__)
+#define __REW_DEPAREN_IMPL_(...) __REW_EVAL ## __VA_ARGS__
+#define __REW_EVAL__REW_UATE
+
+#define __REW_TO_STRING(...) __REW_TO_STRING_IMPL(__REW_DEPAREN(__VA_ARGS__))
+#define __REW_TO_STRING_IMPL(...) __REW_TO_STRING_IMPL_(__VA_ARGS__)
+#define __REW_TO_STRING_IMPL_(...) #__VA_ARGS__
 
 #endif // REW_DETAIL_MACRO_HPP

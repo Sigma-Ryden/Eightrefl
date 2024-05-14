@@ -23,7 +23,7 @@
         injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
     }
 
-#define PROPERTY(name, ...) RAW_PROPERTY(#name, name, name, __VA_ARGS__)
+#define PROPERTY(name, ...) RAW_PROPERTY(__REW_TO_STRING(name), name, name, __VA_ARGS__)
 
 #define RAW_FREE_PROPERTY(name_str, get, set, ...)                                                      \
     {                                                                                                   \
@@ -33,7 +33,7 @@
         injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
     }
 
-#define FREE_PROPERTY(name, ...) RAW_FREE_PROPERTY(#name, name, name, __VA_ARGS__)
+#define FREE_PROPERTY(name, ...) RAW_FREE_PROPERTY(__REW_TO_STRING(name), name, name, __VA_ARGS__)
 
 namespace rew
 {

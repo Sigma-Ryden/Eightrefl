@@ -714,27 +714,35 @@ std::any backward(ValueType&& result)
 
 } // namespace rew
 
-#define __REW_EXPAND(...) __VA_ARGS__
+#define __REW_DEPAREN(arg) __REW_DEPAREN_IMPL(__REW_UATE arg)
+#define __REW_UATE(...) __REW_UATE __VA_ARGS__
+#define __REW_DEPAREN_IMPL(...) __REW_DEPAREN_IMPL_(__VA_ARGS__)
+#define __REW_DEPAREN_IMPL_(...) __REW_EVAL ## __VA_ARGS__
+#define __REW_EVAL__REW_UATE
+
+#define __REW_TO_STRING(...) __REW_TO_STRING_IMPL(__REW_DEPAREN(__VA_ARGS__))
+#define __REW_TO_STRING_IMPL(...) __REW_TO_STRING_IMPL_(__VA_ARGS__)
+#define __REW_TO_STRING_IMPL_(...) #__VA_ARGS__
 
 #define RAW_FUNCTION(name_str, name, ...)                                                               \
     {                                                                                                   \
         using __access_traits = rew::meta::access_traits<CleanR>;                                       \
-        auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&CleanR::__REW_EXPAND name);   \
+        auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&CleanR::__REW_DEPAREN(name)); \
         auto __meta = rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);            \
         injection.template function<CleanR, decltype(__ptr)>(*__meta);                                  \
     }
 
-#define FUNCTION(name, ...) RAW_FUNCTION(#name, (name), __VA_ARGS__)
+#define FUNCTION(name, ...) RAW_FUNCTION(__REW_TO_STRING(name), name, __VA_ARGS__)
 
 #define RAW_FREE_FUNCTION(name_str, name, ...)                                                          \
     {                                                                                                   \
         using __access_traits = rew::meta::access_traits<>;                                             \
-        auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&__REW_EXPAND name);           \
+        auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&__REW_DEPAREN(name));         \
         auto __meta = rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);            \
         injection.template function<CleanR, decltype(__ptr)>(*__meta);                                  \
     }
 
-#define FREE_FUNCTION(name, ...) RAW_FREE_FUNCTION(#name, (name), __VA_ARGS__)
+#define FREE_FUNCTION(name, ...) RAW_FREE_FUNCTION(__REW_TO_STRING(name), name, __VA_ARGS__)
 
 namespace rew
 {
@@ -904,7 +912,7 @@ auto handler_factory_call(ReflectableType (*)(ArgumentTypes...))
         injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
     }
 
-#define PROPERTY(name, ...) RAW_PROPERTY(#name, name, name, __VA_ARGS__)
+#define PROPERTY(name, ...) RAW_PROPERTY(__REW_TO_STRING(name), name, name, __VA_ARGS__)
 
 #define RAW_FREE_PROPERTY(name_str, get, set, ...)                                                      \
     {                                                                                                   \
@@ -914,7 +922,7 @@ auto handler_factory_call(ReflectableType (*)(ArgumentTypes...))
         injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
     }
 
-#define FREE_PROPERTY(name, ...) RAW_FREE_PROPERTY(#name, name, name, __VA_ARGS__)
+#define FREE_PROPERTY(name, ...) RAW_FREE_PROPERTY(__REW_TO_STRING(name), name, name, __VA_ARGS__)
 
 namespace rew
 {
@@ -1453,7 +1461,7 @@ inline registry_t global;
 // raw reflectable declaration
 #define RAW_TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                      \
     namespace rew { namespace meta {                                                                    \
-        __REW_EXPAND template_header                                                                    \
+        __REW_DEPAREN(template_header)                                                                  \
         struct reflectable_traits<__VA_ARGS__> {                                                        \
             using R = typename rew::meta::reflectable_using<__VA_ARGS__>::R;                            \
             LAZY_REFLECTABLE()
@@ -1516,7 +1524,7 @@ inline registry_t global;
             injection.template type<R>(*__type);
 
 #define RAW_TEMPLATE_REFLECTABLE(template_header, ...)                                                  \
-    __REW_EXPAND template_header struct __rew<__VA_ARGS__> {                                            \
+    __REW_DEPAREN(template_header) struct __rew<__VA_ARGS__> {                                          \
         using R = __VA_ARGS__;                                                                          \
         using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
         __REW_REFLECTABLE_BODY()
@@ -1572,7 +1580,7 @@ inline registry_t global;
 // reflectable clean
 #define TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_clean, ...)                             \
    namespace rew { namespace meta {                                                                     \
-        __REW_EXPAND template_header struct reflectable_using<__REW_EXPAND reflectable_clean> {         \
+        __REW_DEPAREN(template_header) struct reflectable_using<__REW_DEPAREN(reflectable_clean)> {     \
             using R = __VA_ARGS__;                                                                      \
         };                                                                                              \
     }}
@@ -1587,7 +1595,7 @@ inline registry_t global;
 
 // reflectable using
 #define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, reflectable_using_full, ...)     \
-   __REW_EXPAND template_header                                                                         \
+   __REW_DEPAREN(template_header)                                                                       \
    struct reflectable_using : rew::meta::reflectable_using_base<__VA_ARGS__> {};                        \
     TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_using_full, __VA_ARGS__)
 

@@ -79,9 +79,9 @@ add_executable(${PROJECT_NAME}
     test/RewTestingBase.hpp
     test/main.cpp
 
-    #test/TestReflection.cpp
-    #test/TestReflectionImpl.cpp
-    #test/TestReflectionImpl.hpp
+    test/TestReflection.cpp
+    # test/TestReflectionImpl.cpp
+    # test/TestReflectionImpl.hpp
 
     test/TestCommon.cpp
     test/TestEnum.cpp

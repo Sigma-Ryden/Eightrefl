@@ -12,7 +12,7 @@
 // raw reflectable declaration
 #define RAW_TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                      \
     namespace rew { namespace meta {                                                                    \
-        __REW_EXPAND template_header                                                                    \
+        __REW_DEPAREN(template_header)                                                                  \
         struct reflectable_traits<__VA_ARGS__> {                                                        \
             using R = typename rew::meta::reflectable_using<__VA_ARGS__>::R;                            \
             LAZY_REFLECTABLE()
@@ -77,7 +77,7 @@
             injection.template type<R>(*__type);
 
 #define RAW_TEMPLATE_REFLECTABLE(template_header, ...)                                                  \
-    __REW_EXPAND template_header struct __rew<__VA_ARGS__> {                                            \
+    __REW_DEPAREN(template_header) struct __rew<__VA_ARGS__> {                                          \
         using R = __VA_ARGS__;                                                                          \
         using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
         __REW_REFLECTABLE_BODY()
@@ -136,7 +136,7 @@
 // reflectable clean
 #define TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_clean, ...)                             \
    namespace rew { namespace meta {                                                                     \
-        __REW_EXPAND template_header struct reflectable_using<__REW_EXPAND reflectable_clean> {         \
+        __REW_DEPAREN(template_header) struct reflectable_using<__REW_DEPAREN(reflectable_clean)> {     \
             using R = __VA_ARGS__;                                                                      \
         };                                                                                              \
     }}
@@ -152,7 +152,7 @@
 
 // reflectable using
 #define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, reflectable_using_full, ...)     \
-   __REW_EXPAND template_header                                                                         \
+   __REW_DEPAREN(template_header)                                                                       \
    struct reflectable_using : rew::meta::reflectable_using_base<__VA_ARGS__> {};                        \
     TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_using_full, __VA_ARGS__)
 
