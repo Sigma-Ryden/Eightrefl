@@ -9,6 +9,7 @@
 #include <Rew/Attribute.hpp>
 #include <Rew/Meta.hpp>
 
+// .parent<R, type>()
 #define RAW_PARENT(...)                                                                                 \
     {                                                                                                   \
         auto __meta = rew::find_or_add_parent<CleanR, __VA_ARGS__>(__reflection);                       \

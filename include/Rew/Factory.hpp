@@ -12,6 +12,7 @@
 
 #include <Rew/Utility.hpp>
 
+// .factory<signature>()
 #define RAW_FACTORY(...)                                                                                \
     {                                                                                                   \
         using __traits = rew::meta::function_traits<__VA_ARGS__>;                                       \

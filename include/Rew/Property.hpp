@@ -15,6 +15,7 @@
 
 #include <Rew/Utility.hpp>
 
+// .property<R,type>(name, &R::get, &R::set)
 #define RAW_PROPERTY(name_str, get, set, ...)                                                           \
     {                                                                                                   \
         using __access = rew::meta::access_traits<CleanR>;                                              \
@@ -25,6 +26,7 @@
 
 #define PROPERTY(name, ...) RAW_PROPERTY(__REW_TO_STRING(name), name, name, __VA_ARGS__)
 
+// .property<type>(name, &get, &set)
 #define RAW_FREE_PROPERTY(name_str, get, set, ...)                                                      \
     {                                                                                                   \
         using __access = rew::meta::access_traits<>;                                                    \

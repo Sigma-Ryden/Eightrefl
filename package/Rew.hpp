@@ -39,6 +39,7 @@ struct attribute_t
 
 } // namespace rew
 
+// .meta(name, expr)
 #define RAW_META(meta_name_str, ...)                                                                    \
     {                                                                                                   \
         auto __meta = rew::find_or_add_meta(__reflection, meta_name_str, __VA_ARGS__);                  \
@@ -47,6 +48,7 @@ struct attribute_t
 
 #define META(name, ...) RAW_META(name, __VA_ARGS__)
 
+// .parent<R, type>()
 #define RAW_PARENT(...)                                                                                 \
     {                                                                                                   \
         auto __meta = rew::find_or_add_parent<CleanR, __VA_ARGS__>(__reflection);                       \
@@ -724,6 +726,7 @@ std::any backward(ValueType&& result)
 #define __REW_TO_STRING_IMPL(...) __REW_TO_STRING_IMPL_(__VA_ARGS__)
 #define __REW_TO_STRING_IMPL_(...) #__VA_ARGS__
 
+// .function<R, signature>(name, &R::func)
 #define RAW_FUNCTION(name_str, name, ...)                                                               \
     {                                                                                                   \
         using __access_traits = rew::meta::access_traits<CleanR>;                                       \
@@ -734,6 +737,7 @@ std::any backward(ValueType&& result)
 
 #define FUNCTION(name, ...) RAW_FUNCTION(__REW_TO_STRING(name), name, __VA_ARGS__)
 
+// .function<signature>(name, &func)
 #define RAW_FREE_FUNCTION(name_str, name, ...)                                                          \
     {                                                                                                   \
         using __access_traits = rew::meta::access_traits<>;                                             \
@@ -850,6 +854,7 @@ auto handler_function_call(ReturnType (*function)(ArgumentTypes...))
 
 } // namespace rew
 
+// .factory<signature>()
 #define RAW_FACTORY(...)                                                                                \
     {                                                                                                   \
         using __traits = rew::meta::function_traits<__VA_ARGS__>;                                       \
@@ -904,6 +909,7 @@ auto handler_factory_call(ReflectableType (*)(ArgumentTypes...))
 
 } // namespace rew
 
+// .property<R,type>(name, &R::get, &R::set)
 #define RAW_PROPERTY(name_str, get, set, ...)                                                           \
     {                                                                                                   \
         using __access = rew::meta::access_traits<CleanR>;                                              \
@@ -914,6 +920,7 @@ auto handler_factory_call(ReflectableType (*)(ArgumentTypes...))
 
 #define PROPERTY(name, ...) RAW_PROPERTY(__REW_TO_STRING(name), name, name, __VA_ARGS__)
 
+// .property<type>(name, &get, &set)
 #define RAW_FREE_PROPERTY(name_str, get, set, ...)                                                      \
     {                                                                                                   \
         using __access = rew::meta::access_traits<>;                                                    \

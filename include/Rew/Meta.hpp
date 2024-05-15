@@ -1,6 +1,7 @@
 #ifndef REW_META_HPP
 #define REW_META_HPP
 
+// .meta(name, expr)
 #define RAW_META(meta_name_str, ...)                                                                    \
     {                                                                                                   \
         auto __meta = rew::find_or_add_meta(__reflection, meta_name_str, __VA_ARGS__);                  \

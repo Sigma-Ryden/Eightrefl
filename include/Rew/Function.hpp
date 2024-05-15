@@ -16,6 +16,7 @@
 
 #include <Rew/Detail/Macro.hpp>
 
+// .function<R, signature>(name, &R::func)
 #define RAW_FUNCTION(name_str, name, ...)                                                               \
     {                                                                                                   \
         using __access_traits = rew::meta::access_traits<CleanR>;                                       \
@@ -26,6 +27,7 @@
 
 #define FUNCTION(name, ...) RAW_FUNCTION(__REW_TO_STRING(name), name, __VA_ARGS__)
 
+// .function<signature>(name, &func)
 #define RAW_FREE_FUNCTION(name_str, name, ...)                                                          \
     {                                                                                                   \
         using __access_traits = rew::meta::access_traits<>;                                             \
