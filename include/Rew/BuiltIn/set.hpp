@@ -22,13 +22,12 @@
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename KeyType, typename Comparator, typename AllocatorType>),
-    (std::set<KeyType, Comparator, AllocatorType>),
-    std::set<CLEANOF(KeyType), CLEANOF(Comparator), CLEANOF(AllocatorType)>
+    (std::set<KeyType, Comparator, AllocatorType>), std::set<rew::cleanof<KeyType>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType>), std::set<KeyType>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::set<KeyType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::set<" + NAMEOF(KeyType) + ">")
+    REFLECTABLE_NAME("std::set<" + rew::nameof<KeyType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -37,7 +36,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::set<KeyType, Comparator>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::set<" + NAMEOF(KeyType) + ", " + NAMEOF(Comparator) + ">")
+    REFLECTABLE_NAME("std::set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -48,7 +47,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::set<" + NAMEOF(KeyType) + ", " + NAMEOF(Comparator) + ", " + NAMEOF(AllocatorType) + ">"
+        "std::set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
@@ -57,12 +56,12 @@ TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename KeyType, typename Comparator, typename AllocatorType>),
     (std::multiset<KeyType, Comparator, AllocatorType>),
-    std::multiset<CLEANOF(KeyType), CLEANOF(Comparator), CLEANOF(AllocatorType)>
+    std::multiset<rew::cleanof<KeyType>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType>), std::multiset<KeyType>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::multiset<KeyType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::multiset<" + NAMEOF(KeyType) + ">")
+    REFLECTABLE_NAME("std::multiset<" + rew::nameof<KeyType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -71,7 +70,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::multiset<KeyType, Comparator>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::multiset<" + NAMEOF(KeyType) + ", " + NAMEOF(Comparator) + ">")
+    REFLECTABLE_NAME("std::multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -82,7 +81,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::multiset<" + NAMEOF(KeyType) + ", " + NAMEOF(Comparator) + ", " + NAMEOF(AllocatorType) + ">"
+        "std::multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 

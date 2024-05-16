@@ -11,16 +11,16 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename ElementType>), (std::weak_ptr<ElementType>),
-    std::weak_ptr<CLEANOF(ElementType)>
+    template <typename ElementType>,
+    std::weak_ptr<ElementType>, std::weak_ptr<rew::cleanof<ElementType>>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), std::weak_ptr<ElementType>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename ElementType>, std::weak_ptr<ElementType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::weak_ptr<" + NAMEOF(ElementType) + ">")
+    REFLECTABLE_NAME("std::weak_ptr<" + rew::nameof<ElementType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename ElementType>), std::weak_ptr<ElementType>)
+TEMPLATE_REFLECTABLE(template <typename ElementType>, std::weak_ptr<ElementType>)
     FACTORY(R())
     FACTORY(R(R const&))
     FACTORY(R(std::shared_ptr<typename R::element_type> const&))

@@ -4,7 +4,7 @@
 #include <Rew/BuiltIn/unordered_map.hpp>
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename MetaType>), rew::attribute_t<MetaType>)
-    REFLECTABLE_NAME("rew::attribute_t<" + NAMEOF(MetaType) + ">")
+    REFLECTABLE_NAME("rew::attribute_t<" + rew::nameof<MetaType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename MetaType>), rew::attribute_t<MetaType>)

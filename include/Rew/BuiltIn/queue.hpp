@@ -11,18 +11,18 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename ValueType, class ContainerType>), (std::queue<ValueType, ContainerType>),
-    std::queue<CLEANOF(ValueType), CLEANOF(ContainerType)>
+    (template <typename ValueType, class ContainerType>),
+    (std::queue<ValueType, ContainerType>), std::queue<rew::cleanof<ValueType>, rew::cleanof<ContainerType>>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::queue<ValueType>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::queue<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::queue<" + NAMEOF(ValueType) + ">")
+    REFLECTABLE_NAME("std::queue<" + rew::nameof<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, class ContainerType>), std::queue<ValueType, ContainerType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::queue<" + NAMEOF(ValueType) + ", " + NAMEOF(ContainerType) + ">")
+    REFLECTABLE_NAME("std::queue<" + rew::nameof<ValueType>() + ", " + rew::nameof<ContainerType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), std::queue<ValueType, ContainerType>)

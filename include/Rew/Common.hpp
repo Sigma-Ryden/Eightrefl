@@ -16,14 +16,14 @@ REFLECTABLE(void)
 REFLECTABLE_INIT()
 
 // pointer type
-TEMPLATE_REFLECTABLE_CLEAN((template <typename ElementType>), (ElementType*), CLEANOF(ElementType)*)
+TEMPLATE_REFLECTABLE_CLEAN(template <typename ElementType>, ElementType*, rew::cleanof<ElementType>*)
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), ElementType*)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename ElementType>, ElementType*)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(NAMEOF(ElementType) + "*")
+    REFLECTABLE_NAME(rew::nameof<ElementType>() + "*")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename ElementType>), ElementType*)
+TEMPLATE_REFLECTABLE(template <typename ElementType>, ElementType*)
     FACTORY(R())
     FACTORY(R(R))
 REFLECTABLE_INIT()
@@ -37,51 +37,51 @@ REFLECTABLE(std::nullptr_t)
 REFLECTABLE_INIT()
 
 // qualified types
-TEMPLATE_REFLECTABLE_CLEAN((template <typename ElementType>), (ElementType&), CLEANOF(ElementType)&)
+TEMPLATE_REFLECTABLE_CLEAN(template <typename ElementType>, ElementType&, rew::cleanof<ElementType>&)
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), ElementType&)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename ElementType>, ElementType&)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(NAMEOF(ElementType) + "&")
+    REFLECTABLE_NAME(rew::nameof<ElementType>() + "&")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE_CLEAN((template <typename ElementType>), (ElementType const), CLEANOF(ElementType) const)
+TEMPLATE_REFLECTABLE_CLEAN(template <typename ElementType>, ElementType const, rew::cleanof<ElementType> const)
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType>), ElementType const)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename ElementType>, ElementType const)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(NAMEOF(ElementType) + " const")
+    REFLECTABLE_NAME(rew::nameof<ElementType>() + " const")
 REFLECTABLE_DECLARATION_INIT()
 // ~ qualified types
 
 // static array type
-TEMPLATE_REFLECTABLE_CLEAN((template <typename ElementType, std::size_t N>), (ElementType[N]), CLEANOF(ElementType)[N])
+TEMPLATE_REFLECTABLE_CLEAN((template <typename ElementType, std::size_t N>), ElementType[N], rew::cleanof<ElementType>[N])
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t N>), ElementType[N])
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(NAMEOF(ElementType) + "[" + std::to_string(N) + "]")
+    REFLECTABLE_NAME(rew::nameof<ElementType>() + "[" + std::to_string(N) + "]")
 REFLECTABLE_DECLARATION_INIT()
 
 // static array pointer type
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t N>), ElementType(*)[N])
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::type_identity_t<" + NAMEOF(ElementType[N]) + ">*")
+    REFLECTABLE_NAME("std::type_identity_t<" + rew::nameof<ElementType[N]>() + ">*")
 REFLECTABLE_DECLARATION_INIT()
 
 // static array reference type
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t N>), ElementType(&)[N])
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::type_identity_t<" + NAMEOF(ElementType[N]) + ">&")
+    REFLECTABLE_NAME("std::type_identity_t<" + rew::nameof<ElementType[N]>() + ">&")
 REFLECTABLE_DECLARATION_INIT()
 
 // function types
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    (ReturnType(ArgumentTypes...)), CLEANOF(ReturnType)(CLEANOF(ArgumentTypes)...)
+    (ReturnType(ArgumentTypes...)), rew::cleanof<ReturnType>(rew::cleanof<ArgumentTypes>...)
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ReturnType>), ReturnType())
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename ReturnType>, ReturnType())
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(NAMEOF(ReturnType) + "()")
+    REFLECTABLE_NAME(rew::nameof<ReturnType>() + "()")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -90,13 +90,13 @@ TEMPLATE_REFLECTABLE_DECLARATION
     ReturnType(ArgumentType, ArgumentTypes...)
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(NAMEOF(ReturnType) + "(" + ( NAMEOF(ArgumentType) + ... + (", " + NAMEOF(ArgumentTypes)) ) + ")")
+    REFLECTABLE_NAME(rew::nameof<ReturnType>() + "(" + ( rew::nameof<ArgumentType>() + ... + (", " + rew::nameof<ArgumentTypes>()) ) + ")")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    (ReturnType(ArgumentTypes...)&), CLEANOF(ReturnType(ArgumentTypes...))&
+    (ReturnType(ArgumentTypes...)&), rew::cleanof<ReturnType(ArgumentTypes...)>&
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -105,13 +105,13 @@ TEMPLATE_REFLECTABLE_DECLARATION
     ReturnType(ArgumentTypes...)&
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(NAMEOF(ReturnType(ArgumentTypes...)) + "&")
+    REFLECTABLE_NAME(rew::nameof<ReturnType(ArgumentTypes...)>() + "&")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    (ReturnType(ArgumentTypes...) const), CLEANOF(ReturnType(ArgumentTypes...)) const
+    (ReturnType(ArgumentTypes...) const), rew::cleanof<ReturnType(ArgumentTypes...)> const
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -120,13 +120,13 @@ TEMPLATE_REFLECTABLE_DECLARATION
     ReturnType(ArgumentTypes...) const
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(NAMEOF(ReturnType(ArgumentTypes...)) + " const")
+    REFLECTABLE_NAME(rew::nameof<ReturnType(ArgumentTypes...)>() + " const")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    (ReturnType(ArgumentTypes...) const&), CLEANOF(ReturnType(ArgumentTypes...)) const&
+    (ReturnType(ArgumentTypes...) const&), rew::cleanof<ReturnType(ArgumentTypes...)> const&
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -135,7 +135,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     ReturnType(ArgumentTypes...) const&
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(NAMEOF(ReturnType(ArgumentTypes...)) + " const&")
+    REFLECTABLE_NAME(rew::nameof<ReturnType(ArgumentTypes...)>() + " const&")
 REFLECTABLE_DECLARATION_INIT()
 // ~ function types
 
@@ -145,7 +145,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     (template <typename ReturnType, typename... ArgumentTypes>), ReturnType(*)(ArgumentTypes...)
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::type_identity_t<" + NAMEOF(ReturnType(ArgumentTypes...)) + ">*")
+    REFLECTABLE_NAME("std::type_identity_t<" + rew::nameof<ReturnType(ArgumentTypes...)>() + ">*")
 REFLECTABLE_DECLARATION_INIT()
 
 // function reference type
@@ -154,15 +154,16 @@ TEMPLATE_REFLECTABLE_DECLARATION
     (template <typename ReturnType, typename... ArgumentTypes>), ReturnType(&)(ArgumentTypes...)
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::type_identity_t<" + NAMEOF(ReturnType(ArgumentTypes...)) + ">&")
+    REFLECTABLE_NAME("std::type_identity_t<" + rew::nameof<ReturnType(ArgumentTypes...)>() + ">&")
 REFLECTABLE_DECLARATION_INIT()
 
 // aliasing
 REFLECTABLE_USING(std_size_t, std::size_t)
 
-RAW_REFLECTABLE_DECLARATION(std_size_t)
+CUSTOM_REFLECTABLE_DECLARATION(std_size_t)
     REFLECTABLE_REGISTRY(&rew::global)
     REFLECTABLE_NAME("std::size_t")
+    BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(std_size_t)
@@ -172,9 +173,10 @@ REFLECTABLE_INIT()
 
 REFLECTABLE_USING(std_ptrdiff_t, std::ptrdiff_t)
 
-RAW_REFLECTABLE_DECLARATION(std_ptrdiff_t)
+CUSTOM_REFLECTABLE_DECLARATION(std_ptrdiff_t)
     REFLECTABLE_REGISTRY(&rew::global)
     REFLECTABLE_NAME("std::ptrdiff_t")
+    BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(std_ptrdiff_t)

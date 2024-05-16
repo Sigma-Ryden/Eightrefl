@@ -25,12 +25,12 @@ TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>),
     (std::map<KeyType, ValueType, Comparator, AllocatorType>),
-    std::map<CLEANOF(KeyType), CLEANOF(ValueType), CLEANOF(Comparator), CLEANOF(AllocatorType)>
+    std::map<rew::cleanof<KeyType>, rew::cleanof<ValueType>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::map<KeyType, ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME( "std::map<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ">")
+    REFLECTABLE_NAME( "std::map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -41,7 +41,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::map<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", " + NAMEOF(Comparator) + ">"
+        "std::map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<Comparator>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
@@ -53,7 +53,8 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::map<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", " + NAMEOF(Comparator) + ", " + NAMEOF(AllocatorType) + ">"
+        "std::map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", "
+                    + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
@@ -62,12 +63,12 @@ TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>),
     (std::multimap<KeyType, ValueType, Comparator, AllocatorType>),
-    std::multimap<CLEANOF(KeyType), CLEANOF(ValueType), CLEANOF(Comparator), CLEANOF(AllocatorType)>
+    std::multimap<rew::cleanof<KeyType>, rew::cleanof<ValueType>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::multimap<KeyType, ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME( "std::multimap<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ">")
+    REFLECTABLE_NAME( "std::multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -78,7 +79,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::multimap<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", " + NAMEOF(Comparator) + ">"
+        "std::multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<Comparator>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
@@ -90,7 +91,8 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::multimap<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", " + NAMEOF(Comparator) + ", " + NAMEOF(AllocatorType) + ">"
+        "std::multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", "
+                         + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 

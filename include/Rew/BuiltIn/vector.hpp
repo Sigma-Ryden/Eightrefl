@@ -19,13 +19,13 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename ValueType, typename AllocatorType>), (std::vector<ValueType, AllocatorType>),
-    std::vector<CLEANOF(ValueType), CLEANOF(AllocatorType)>
+    (template <typename ValueType, typename AllocatorType>),
+    (std::vector<ValueType, AllocatorType>), std::vector<rew::cleanof<ValueType>, rew::cleanof<AllocatorType>>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::vector<ValueType>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::vector<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::vector<" + NAMEOF(ValueType) + ">")
+    REFLECTABLE_NAME("std::vector<" + rew::nameof<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -33,7 +33,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     (template <typename ValueType, typename AllocatorType>), std::vector<ValueType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::vector<" + NAMEOF(ValueType) + ", " + NAMEOF(AllocatorType) + ">")
+    REFLECTABLE_NAME("std::vector<" + rew::nameof<ValueType>() + ", " + rew::nameof<AllocatorType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE
@@ -138,16 +138,16 @@ REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_USING
 (
-    (template <class StdContainer>), std_vectorbool_reference,
-    (std_vectorbool_reference<StdContainer>), typename CLEANOF(StdContainer)::reference
+    template <class StdContainer>, std_vectorbool_reference,
+    std_vectorbool_reference<StdContainer>, typename rew::cleanof<StdContainer>::reference
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <class StdContainer>), std_vectorbool_reference<StdContainer>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <class StdContainer>, std_vectorbool_reference<StdContainer>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(NAMEOF(StdContainer) + "::reference")
+    REFLECTABLE_NAME(rew::nameof<StdContainer>() + "::reference")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <class StdContainer>), std_vectorbool_reference<StdContainer>)
+TEMPLATE_REFLECTABLE(template <class StdContainer>, std_vectorbool_reference<StdContainer>)
     FUNCTION(operator=, R&(bool))
 
     #ifndef REW_CORE_MINIMAL
@@ -159,7 +159,7 @@ TEMPLATE_REFLECTABLE((template <class StdContainer>), std_vectorbool_reference<S
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE((template <typename AllocatorType>), std::vector<bool, AllocatorType>)
+TEMPLATE_REFLECTABLE(template <typename AllocatorType>, std::vector<bool, AllocatorType>)
     FACTORY(R())
 
     #ifndef REW_CORE_MINIMAL

@@ -79,7 +79,6 @@ add_executable(${PROJECT_NAME}
     test/RewTestingBase.hpp
     test/main.cpp
 
-    # test/TestReflection.cpp
     # test/TestReflectionImpl.cpp
     # test/TestReflectionImpl.hpp
 
@@ -88,6 +87,7 @@ add_executable(${PROJECT_NAME}
     test/TestNameOf.cpp
     test/TestRegistryFunction.cpp
     test/TestRegistryProperty.cpp
+    test/TestLibrary.cpp
 
     test/TestAllocator.cpp
     test/TestAny.cpp

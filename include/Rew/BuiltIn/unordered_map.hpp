@@ -26,12 +26,12 @@ TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename KeyType, typename ValueType, typename Hasher, typename Comparator, typename AllocatorType>),
     (std::unordered_map<KeyType, ValueType, Hasher, Comparator, AllocatorType>),
-    std::unordered_map<CLEANOF(KeyType), CLEANOF(ValueType), CLEANOF(Hasher), CLEANOF(Comparator), CLEANOF(AllocatorType)>
+    std::unordered_map<rew::cleanof<KeyType>, rew::cleanof<ValueType>, rew::cleanof<Hasher>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::unordered_map<KeyType, ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_map<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ">")
+    REFLECTABLE_NAME("std::unordered_map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -40,7 +40,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::unordered_map<KeyType, ValueType, Hasher>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_map<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", " + NAMEOF(Hasher) + ">")
+    REFLECTABLE_NAME("std::unordered_map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<Hasher>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -51,8 +51,8 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_map<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", "
-                              + NAMEOF(Comparator) + ", " + NAMEOF(Hasher) + ">"
+        "std::unordered_map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", "
+                              + rew::nameof<Comparator>() + ", " + rew::nameof<Hasher>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
@@ -64,8 +64,8 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_map<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", " + NAMEOF(Hasher) + ", "
-                              + NAMEOF(Comparator) + ", " + NAMEOF(AllocatorType) + ">"
+        "std::unordered_map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<Hasher>() + ", "
+                              + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
@@ -74,12 +74,12 @@ TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename KeyType, typename ValueType, typename Hasher, typename Comparator, typename AllocatorType>),
     (std::unordered_multimap<KeyType, ValueType, Hasher, Comparator, AllocatorType>),
-    std::unordered_multimap<CLEANOF(KeyType), CLEANOF(ValueType), CLEANOF(Hasher), CLEANOF(Comparator), CLEANOF(AllocatorType)>
+    std::unordered_multimap<rew::cleanof<KeyType>, rew::cleanof<ValueType>, rew::cleanof<Hasher>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::unordered_multimap<KeyType, ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_multimap<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ">")
+    REFLECTABLE_NAME("std::unordered_multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -88,7 +88,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::unordered_multimap<KeyType, ValueType, Hasher>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_multimap<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", " + NAMEOF(Hasher) + ">")
+    REFLECTABLE_NAME("std::unordered_multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<Hasher>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -99,8 +99,8 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_multimap<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", "
-                                   + NAMEOF(Comparator) + ", " + NAMEOF(Hasher) + ">"
+        "std::unordered_multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", "
+                                   + rew::nameof<Comparator>() + ", " + rew::nameof<Hasher>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
@@ -112,8 +112,8 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_multimap<" + NAMEOF(KeyType) + ", " + NAMEOF(ValueType) + ", " + NAMEOF(Hasher) + ", "
-                                   + NAMEOF(Comparator) + ", " + NAMEOF(AllocatorType) + ">"
+        "std::unordered_multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<Hasher>() + ", "
+                                   + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 

@@ -8,22 +8,22 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename ValueType>), (std::reference_wrapper<ValueType>),
-    std::reference_wrapper<CLEANOF(ValueType)>
+    template <typename ValueType>,
+    std::reference_wrapper<ValueType>, std::reference_wrapper<rew::cleanof<ValueType>>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::reference_wrapper<ValueType>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::reference_wrapper<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::reference_wrapper<" + NAMEOF(ValueType) + ">")
+    REFLECTABLE_NAME("std::reference_wrapper<" + rew::nameof<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename ValueType>), std::reference_wrapper<ValueType>)
+TEMPLATE_REFLECTABLE(template <typename ValueType>, std::reference_wrapper<ValueType>)
     FACTORY(R(ValueType&))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
 
     #ifndef REW_CORE_MINIMAL
-    RAW_FUNCTION("operator " + NAMEOF(ValueType&), (operator CLEANOF(ValueType)&))
+    NAMED_FUNCTION("operator " + rew::nameof<ValueType&>(), operator rew::cleanof<ValueType>&)
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(get)

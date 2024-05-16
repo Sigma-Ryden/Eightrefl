@@ -8,16 +8,16 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename ValueType>), (std::allocator<ValueType>),
-    std::allocator<CLEANOF(ValueType)>
+    template <typename ValueType>,
+    std::allocator<ValueType>, std::allocator<rew::cleanof<ValueType>>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::allocator<ValueType>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::allocator<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::allocator<" + NAMEOF(ValueType) + ">")
+    REFLECTABLE_NAME("std::allocator<" + rew::nameof<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename ValueType>), std::allocator<ValueType>)
+TEMPLATE_REFLECTABLE(template <typename ValueType>, std::allocator<ValueType>)
     FACTORY(R())
     FACTORY(R(R const&))
 REFLECTABLE_INIT()

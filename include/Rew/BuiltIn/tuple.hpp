@@ -8,11 +8,11 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename... ArgumentTypes>), (std::tuple<ArgumentTypes...>),
-    std::tuple<CLEANOF(ArgumentTypes)...>
+    (template <typename... ArgumentTypes>),
+    (std::tuple<ArgumentTypes...>), std::tuple<rew::cleanof<ArgumentTypes>...>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <>), std::tuple<>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <>, std::tuple<>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::tuple<>")
 REFLECTABLE_DECLARATION_INIT()
@@ -23,7 +23,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::tuple<ArgumentType, ArgumentTypes...>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::tuple<" + ( NAMEOF(ArgumentType) + ... + (", " + NAMEOF(ArgumentTypes)) ) + ">")
+    REFLECTABLE_NAME("std::tuple<" + ( rew::nameof<ArgumentType>() + ... + (", " + rew::nameof<ArgumentTypes>()) ) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename... ArgumentTypes>), std::tuple<ArgumentTypes...>)

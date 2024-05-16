@@ -17,18 +17,18 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename ValueType, typename AllocatorType>), (std::deque<ValueType, AllocatorType>),
-    std::deque<CLEANOF(ValueType), CLEANOF(AllocatorType)>
+    (template <typename ValueType, typename AllocatorType>),
+    (std::deque<ValueType, AllocatorType>), std::deque<rew::cleanof<ValueType>, rew::cleanof<AllocatorType>>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::deque<ValueType>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::deque<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::deque<" + NAMEOF(ValueType) + ">")
+    REFLECTABLE_NAME("std::deque<" + rew::nameof<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, typename AllocatorType>), std::deque<ValueType, AllocatorType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::deque<" + NAMEOF(ValueType) + ", " + NAMEOF(AllocatorType) + ">")
+    REFLECTABLE_NAME("std::deque<" + rew::nameof<ValueType>() + ", " + rew::nameof<AllocatorType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), std::deque<ValueType, AllocatorType>)

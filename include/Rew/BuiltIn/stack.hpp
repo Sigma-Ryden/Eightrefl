@@ -11,18 +11,18 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename ValueType, class ContainerType>), (std::stack<ValueType, ContainerType>),
-    std::stack<CLEANOF(ValueType), CLEANOF(ContainerType)>
+    (template <typename ValueType, class ContainerType>),
+    (std::stack<ValueType, ContainerType>), std::stack<rew::cleanof<ValueType>, rew::cleanof<ContainerType>>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::stack<ValueType>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::stack<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::stack<" + NAMEOF(ValueType) + ">")
+    REFLECTABLE_NAME("std::stack<" + rew::nameof<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, class ContainerType>), std::stack<ValueType, ContainerType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::stack<" + NAMEOF(ValueType) + ", " + NAMEOF(ContainerType) + ">")
+    REFLECTABLE_NAME("std::stack<" + rew::nameof<ValueType>() + ", " + rew::nameof<ContainerType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), std::stack<ValueType, ContainerType>)

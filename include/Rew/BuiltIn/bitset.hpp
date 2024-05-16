@@ -13,16 +13,16 @@
 
 TEMPLATE_REFLECTABLE_USING
 (
-    (template <class StdBitsetType>), std_bitset_reference,
-    (std_bitset_reference<StdBitsetType>), typename CLEANOF(StdBitsetType)::reference
+    template <class StdBitsetType>, std_bitset_reference,
+    std_bitset_reference<StdBitsetType>, typename rew::cleanof<StdBitsetType>::reference
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <class StdBitsetType>), std_bitset_reference<StdBitsetType>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <class StdBitsetType>, std_bitset_reference<StdBitsetType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(NAMEOF(StdBitsetType) + "::reference")
+    REFLECTABLE_NAME(rew::nameof<StdBitsetType>() + "::reference")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <class StdBitsetType>), std_bitset_reference<StdBitsetType>)
+TEMPLATE_REFLECTABLE(template <class StdBitsetType>, std_bitset_reference<StdBitsetType>)
     FUNCTION(operator=, R&(bool))
 
     #ifndef REW_CORE_MINIMAL
@@ -39,12 +39,12 @@ TEMPLATE_REFLECTABLE((template <class StdBitsetType>), std_bitset_reference<StdB
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <std::size_t BitsetSize>), std::bitset<BitsetSize>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <std::size_t BitsetSize>, std::bitset<BitsetSize>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::bitset<" + std::to_string(BitsetSize) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <std::size_t BitsetSize>), std::bitset<BitsetSize>)
+TEMPLATE_REFLECTABLE(template <std::size_t BitsetSize>, std::bitset<BitsetSize>)
     FACTORY(R())
     FACTORY(R(R const&))
 

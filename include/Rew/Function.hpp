@@ -17,7 +17,7 @@
 #include <Rew/Detail/Macro.hpp>
 
 // .function<R, signature>(name, &R::func)
-#define RAW_FUNCTION(name_str, name, ...)                                                               \
+#define NAMED_FUNCTION(name_str, name, ...)                                                             \
     {                                                                                                   \
         using __access_traits = rew::meta::access_traits<CleanR>;                                       \
         auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&CleanR::__REW_DEPAREN(name)); \
@@ -25,10 +25,10 @@
         injection.template function<CleanR, decltype(__ptr)>(*__meta);                                  \
     }
 
-#define FUNCTION(name, ...) RAW_FUNCTION(__REW_TO_STRING(name), name, __VA_ARGS__)
+#define FUNCTION(name, ...) NAMED_FUNCTION(__REW_TO_STRING(name), name, __VA_ARGS__)
 
 // .function<signature>(name, &func)
-#define RAW_FREE_FUNCTION(name_str, name, ...)                                                          \
+#define NAMED_FREE_FUNCTION(name_str, name, ...)                                                        \
     {                                                                                                   \
         using __access_traits = rew::meta::access_traits<>;                                             \
         auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&__REW_DEPAREN(name));         \
@@ -36,7 +36,7 @@
         injection.template function<CleanR, decltype(__ptr)>(*__meta);                                  \
     }
 
-#define FREE_FUNCTION(name, ...) RAW_FREE_FUNCTION(__REW_TO_STRING(name), name, __VA_ARGS__)
+#define FREE_FUNCTION(name, ...) NAMED_FREE_FUNCTION(__REW_TO_STRING(name), name, __VA_ARGS__)
 
 namespace rew
 {

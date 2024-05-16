@@ -16,16 +16,16 @@ REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename ValueType>), (std::optional<ValueType>),
-    std::optional<CLEANOF(ValueType)>
+    template <typename ValueType>,
+    std::optional<ValueType>, std::optional<rew::cleanof<ValueType>>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType>), std::optional<ValueType>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::optional<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::optional<" + NAMEOF(ValueType) + ">")
+    REFLECTABLE_NAME("std::optional<" + rew::nameof<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename ValueType>), std::optional<ValueType>)
+TEMPLATE_REFLECTABLE(template <typename ValueType>, std::optional<ValueType>)
     FACTORY(R())
     FACTORY(R(std::nullopt_t))
     FACTORY(R(R const&))

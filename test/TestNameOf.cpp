@@ -2,19 +2,19 @@
 
 TEST(TestLibrary, TestNameOf)
 {
-    EXPECT("const-type", rew::meta::reflectable_traits<const int>::name() == "int const");
-    EXPECT("pointer-type", rew::meta::reflectable_traits<int*>::name() == "int*");
-    EXPECT("reference-type", rew::meta::reflectable_traits<int&>::name() == "int&");
-    EXPECT("function-type", rew::meta::reflectable_traits<void(int, float)>::name() == "void(int, float)");
-    EXPECT("function-pointer-type", rew::meta::reflectable_traits<void(*)(int, float)>::name() == "std::type_identity_t<void(int, float)>*");
-    EXPECT("function-reference-type", rew::meta::reflectable_traits<void(&)(int, float)>::name() == "std::type_identity_t<void(int, float)>&");
-    EXPECT("const-qualified_function-type", rew::meta::reflectable_traits<void(int, float) const>::name() == "void(int, float) const");
-    EXPECT("reference-qualified_function-type", rew::meta::reflectable_traits<void(int, float)&>::name() == "void(int, float)&");
-    EXPECT("const-reference_qualified_function-type", rew::meta::reflectable_traits<void(int, float) const&>::name() == "void(int, float) const&");
-    EXPECT("array-type", rew::meta::reflectable_traits<int[8]>::name() == "int[8]");
-    EXPECT("array-pointer-type", rew::meta::reflectable_traits<int(*)[8]>::name() == "std::type_identity_t<int[8]>*");
-    EXPECT("array-reference-type", rew::meta::reflectable_traits<int(&)[8]>::name() == "std::type_identity_t<int[8]>&");
-    EXPECT("mixed-type", rew::meta::reflectable_traits<char(*(* const*&)[8])(void)>::name() == "std::type_identity_t<std::type_identity_t<char()>*[8]>* const*&");
+    EXPECT("const-type", rew::nameof<const int>() == "int const");
+    EXPECT("pointer-type", rew::nameof<int*>() == "int*");
+    EXPECT("reference-type", rew::nameof<int&>() == "int&");
+    EXPECT("function-type", rew::nameof<void(int, float)>() == "void(int, float)");
+    EXPECT("function-pointer-type", rew::nameof<void(*)(int, float)>() == "std::type_identity_t<void(int, float)>*");
+    EXPECT("function-reference-type", rew::nameof<void(&)(int, float)>() == "std::type_identity_t<void(int, float)>&");
+    EXPECT("const-qualified_function-type", rew::nameof<void(int, float) const>() == "void(int, float) const");
+    EXPECT("reference-qualified_function-type", rew::nameof<void(int, float)&>() == "void(int, float)&");
+    EXPECT("const-reference_qualified_function-type", rew::nameof<void(int, float) const&>() == "void(int, float) const&");
+    EXPECT("array-type", rew::nameof<int[8]>() == "int[8]");
+    EXPECT("array-pointer-type", rew::nameof<int(*)[8]>() == "std::type_identity_t<int[8]>*");
+    EXPECT("array-reference-type", rew::nameof<int(&)[8]>() == "std::type_identity_t<int[8]>&");
+    EXPECT("mixed-type", rew::nameof<char(*(* const*&)[8])(void)>() == "std::type_identity_t<std::type_identity_t<char()>*[8]>* const*&");
 }
 
 // Patterns:

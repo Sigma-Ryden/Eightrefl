@@ -8,16 +8,16 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename CharType>),
-    (std::char_traits<CharType>), std::char_traits<CLEANOF(CharType)>
+    template <typename CharType>,
+    std::char_traits<CharType>, std::char_traits<rew::cleanof<CharType>>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename CharType>), std::char_traits<CharType>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <typename CharType>, std::char_traits<CharType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::char_traits<" + NAMEOF(CharType) + ">")
+    REFLECTABLE_NAME("std::char_traits<" + rew::nameof<CharType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename CharType>), std::char_traits<CharType>)
+TEMPLATE_REFLECTABLE(template <typename CharType>, std::char_traits<CharType>)
     #ifndef REW_CORE_MINIMAL
     FUNCTION(assign, void(typename R::char_type&, typename R::char_type const&))
     FUNCTION(assign, typename R::char_type*(typename R::char_type*, std::size_t, typename R::char_type))
