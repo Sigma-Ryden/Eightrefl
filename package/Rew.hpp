@@ -868,6 +868,7 @@ struct factory_t
     std::string const name;
     std::function<std::any(std::vector<std::any> const& args)> const call = nullptr;
     std::vector<type_t*> const arguments;
+    type_t *const result = nullptr;
     attribute_t<std::any> meta;
 };
 
@@ -1686,7 +1687,8 @@ factory_t* find_or_add_factory(reflection_t* reflection)
         {
             __name,
             handler_factory_call(pointer{}),
-            detail::function_argument_types(dirty_pointer{})
+            detail::function_argument_types(dirty_pointer{}),
+            detail::function_return_type(dirty_pointer{})
         }
     );
 

@@ -232,7 +232,8 @@ factory_t* find_or_add_factory(reflection_t* reflection)
         {
             __name,
             handler_factory_call(pointer{}),
-            detail::function_argument_types(dirty_pointer{})
+            detail::function_argument_types(dirty_pointer{}),
+            detail::function_return_type(dirty_pointer{})
         }
     );
 
