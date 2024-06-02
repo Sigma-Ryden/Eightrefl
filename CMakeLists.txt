@@ -87,8 +87,9 @@ add_executable(${PROJECT_NAME}
     # test/TestNameOf.cpp
     # test/TestRegistryFunction.cpp
     # test/TestRegistryProperty.cpp
-    test/TestLibrary.cpp
     test/TestFactory.cpp
+    test/TestInjection.cpp
+    test/TestLibrary.cpp
 
     # test/TestAllocator.cpp
     # test/TestAny.cpp
