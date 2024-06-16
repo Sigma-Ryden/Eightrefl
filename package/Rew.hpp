@@ -1347,7 +1347,7 @@ struct type_t
 
 } // namespace rew
 
-#define REW_REGISTRY_RESERVE_SIZE std::size_t(4096)
+#define REW_REGISTRY_RESERVE_SIZE std::size_t(1024)
 
 namespace rew
 {
@@ -1637,8 +1637,9 @@ type_t* find_or_add_type()
 template <typename ReflectableType, typename ParentReflectableType>
 parent_t* find_or_add_parent(reflection_t* reflection)
 {
-    using reflectable_traits = meta::reflectable_traits<ParentReflectableType>;
     static_assert(std::is_base_of_v<ParentReflectableType, ReflectableType>);
+
+    using reflectable_traits = meta::reflectable_traits<ParentReflectableType>;
 
     auto __name = reflectable_traits::name();
 
@@ -1770,6 +1771,8 @@ std::any* find_or_add_meta(reflection_t* reflection, std::string const& name, co
 template <typename ReflectableType, class InjectionType>
 injection_t* find_or_add_injection(type_t* type)
 {
+    static_assert(std::is_base_of_v<injectable_t, InjectionType>);
+
     using reflectable_injection_traits = meta::reflectable_traits<InjectionType>;
 
     auto __name = reflectable_injection_traits::name();

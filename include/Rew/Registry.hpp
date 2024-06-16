@@ -9,7 +9,7 @@
 #include <Rew/Type.hpp>
 #include <Rew/Reflection.hpp>
 
-#define REW_REGISTRY_RESERVE_SIZE std::size_t(4096)
+#define REW_REGISTRY_RESERVE_SIZE std::size_t(1024)
 
 namespace rew
 {

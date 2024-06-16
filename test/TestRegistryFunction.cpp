@@ -1,4 +1,3 @@
-// TODO: add tests for DEPAREN
 #include <RewTestingBase.hpp>
 
 TEST_SPACE()

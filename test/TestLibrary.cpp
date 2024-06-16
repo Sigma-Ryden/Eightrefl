@@ -206,5 +206,121 @@ TEST(TestLibrary, TestMeta)
     ASSERT("reflection", reflection != nullptr);
 }
 
-// TODO: add test custom reflectable registry
-// TODO: add test reflectable registry reallocation
+
+// TODO: add tests for implicit add to registry through other types
+TEST_SPACE()
+{
+
+struct TestCustomRegistryStruct {};
+
+rew::registry_t CustomRegistry;
+
+} // TEST_SPACE
+
+// REFLECTABLE_DECLARATION use CUSTOM_REFLECTABLE_DECLARATION with
+// REFLECTABLE_REGISTRY(&rew::global)
+// REFLECTABLE_NAME(typename)
+CUSTOM_REFLECTABLE_DECLARATION(TestCustomRegistryStruct)
+    REFLECTABLE_REGISTRY(&CustomRegistry)
+    REFLECTABLE_NAME("TestCustomRegistryStruct")
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestCustomRegistryStruct)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestCustomRegistry)
+{
+    auto registry = rew::meta::reflectable_traits<TestCustomRegistryStruct>::registry();
+
+    ASSERT("registry", registry == &CustomRegistry);
+
+    auto type = CustomRegistry.find("TestCustomRegistryStruct");
+
+    ASSERT("type", type != nullptr);
+
+    auto reflection = type->reflection;
+
+    EXPECT("reflection", reflection != nullptr);
+}
+
+// TODO: test without macros
+TEST_SPACE()
+{
+
+struct TestWithoutMacroBaseStruct {};
+
+struct TestWithoutMacroStruct : TestWithoutMacroBaseStruct
+{
+    void Function() {}
+
+    int Property = 0;
+};
+
+struct TestWithoutMacroInjection : rew::injectable_t {};
+
+} // TEST_SPACE
+
+// need only for default injections
+/*
+namespace rew::meta
+{
+
+template <>
+struct injection_traits<1>
+{
+    using type = TestWithoutMacroInjection;
+};
+
+template <>
+struct reflectable_traits<TestWithoutMacroInjection>
+{
+    static auto name() { return "TestWithoutMacroInjection"; }
+};
+
+} // namespace rew::meta
+*/
+namespace rew::meta
+{
+
+template <>
+struct reflectable_traits<TestWithoutMacroStruct>
+{
+    static auto registry() { return &rew::global; }
+    static auto name() { return "TestWithoutMacroStruct"; }
+};
+
+} // namespace rew::meta
+
+template <>
+struct __rew<TestWithoutMacroStruct>
+{
+    using R = TestWithoutMacroStruct; // not required by library
+
+    template <typename InjectionType>
+    void evaluate(InjectionType& injection)
+    {
+        auto type = rew::find_or_add_type<R>();
+        rew::find_or_add_parent<R, TestWithoutMacroBaseStruct>(type->reflection);
+        rew::find_or_add_factory<R()>(type->reflection);
+        rew::find_or_add_function(type->reflection, "Function", &R::Function);
+        rew::find_or_add_property(type->reflection, "Property", &R::Property, &R::Property);
+        rew::find_or_add_meta(type->reflection, "Meta", 123);
+        rew::find_or_add_injection<R, TestWithoutMacroInjection>(type);
+    }
+};
+
+TEST(TestLibrary, TestWithoutMacro)
+{
+    auto type = rew::global.find("TestWithoutMacroStruct");
+
+    ASSERT("type", type != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+    EXPECT("reflection-name", reflection->name == "TestWithoutMacroStruct");
+
+    EXPECT("factory-R()", reflection->factory.find("TestWithoutMacroStruct()") != nullptr);
+
+    EXPECT("function-Function", reflection->function.find("Function") != nullptr);
+}

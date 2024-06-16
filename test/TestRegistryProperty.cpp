@@ -55,10 +55,16 @@ struct TestStaticFieldPropertyStruct
 {
     static int Property;
     static int const Readonly;
+
+    template <typename T, typename... Args>
+    static T Template;
 };
 
 int TestStaticFieldPropertyStruct::Property = 0;
 int const TestStaticFieldPropertyStruct::Readonly = 0;
+
+template <typename T, typename... Args>
+T TestStaticFieldPropertyStruct::Template = T();
 
 } // TEST_SPACE
 
@@ -68,6 +74,8 @@ REFLECTABLE_DECLARATION_INIT()
 REFLECTABLE(TestStaticFieldPropertyStruct)
     PROPERTY(Property)
     PROPERTY(Readonly)
+    PROPERTY(Template<int>)
+    PROPERTY((Template<int, bool>))
 REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryProperty, TestStaticFieldProperty)
@@ -93,6 +101,20 @@ TEST(TestLibrary::TestRegistryProperty, TestStaticFieldProperty)
     EXPECT("property-readonly-get", readonly->get != nullptr);
     EXPECT("property-readonly-set", readonly->set == nullptr);
     EXPECT("property-readonly-context", readonly->context != nullptr);
+
+    auto template_with_arg = reflection->property.find("Template<int>");
+
+    ASSERT("property-template_with_arg", template_with_arg != nullptr);
+    EXPECT("property-template_with_arg-get", template_with_arg->get != nullptr);
+    EXPECT("property-template_with_arg-set", template_with_arg->set != nullptr);
+    EXPECT("property-template_with_arg-context", template_with_arg->context != nullptr);
+
+    auto template_with_args = reflection->property.find("Template<int, bool>");
+
+    ASSERT("property-template_with_args", template_with_args != nullptr);
+    EXPECT("property-template_with_args-get", template_with_args->get != nullptr);
+    EXPECT("property-template_with_args-set", template_with_args->set != nullptr);
+    EXPECT("property-template_with_args-context", template_with_args->context != nullptr);
 }
 
 
@@ -105,6 +127,9 @@ int Property = 0;
 int const Readonly = 0;
 int& Reference = Property;
 
+template <typename T, typename... Args>
+T Template = T();
+
 } // TEST_SPACE
 
 REFLECTABLE_DECLARATION(TestFreeFieldPropertyStruct)
@@ -114,6 +139,8 @@ REFLECTABLE(TestFreeFieldPropertyStruct)
     FREE_PROPERTY(Property)
     FREE_PROPERTY(Readonly)
     FREE_PROPERTY(Reference)
+    FREE_PROPERTY(Template<int>)
+    FREE_PROPERTY((Template<int, bool>))
 REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryProperty, TestFreeFieldProperty)
@@ -146,6 +173,20 @@ TEST(TestLibrary::TestRegistryProperty, TestFreeFieldProperty)
     EXPECT("property-reference-get", reference->get != nullptr);
     EXPECT("property-reference-set", reference->set != nullptr);
     EXPECT("property-reference-context", reference->context != nullptr);
+
+    auto template_with_arg = reflection->property.find("Template<int>");
+
+    ASSERT("property-template_with_arg", template_with_arg != nullptr);
+    EXPECT("property-template_with_arg-get", template_with_arg->get != nullptr);
+    EXPECT("property-template_with_arg-set", template_with_arg->set != nullptr);
+    EXPECT("property-template_with_arg-context", template_with_arg->context != nullptr);
+
+    auto template_with_args = reflection->property.find("Template<int, bool>");
+
+    ASSERT("property-template_with_args", template_with_args != nullptr);
+    EXPECT("property-template_with_args-get", template_with_args->get != nullptr);
+    EXPECT("property-template_with_args-set", template_with_args->set != nullptr);
+    EXPECT("property-template_with_args-context", template_with_args->context != nullptr);
 }
 
 
@@ -165,6 +206,8 @@ struct TestFunctionPropertyStruct : TestFieldPropertyStruct
     int const& ReadonlyConstWithConstContext() const { return Property; }
     int ReadonlyNoContext() { return 0; }
     int ReadonlyConstNoContext() const { return 0; }
+
+    // u can also use function template as property
 };
 
 } // TEST_SPACE
