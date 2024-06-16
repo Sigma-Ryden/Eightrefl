@@ -58,7 +58,7 @@ REFLECTABLE_INIT()
 
 REFLECTABLE(rew::registry_t)
     FACTORY(rew::registry_t())
-    FUNCTION(find, rew::type_t*(const std::string&) const)
+    FUNCTION(find, rew::type_t*(std::string const&) const)
     FUNCTION(find, rew::type_t*(std::type_index) const)
     FUNCTION(find, rew::type_t*(std::any&) const)
     PROPERTY(all)
