@@ -61,7 +61,6 @@ TEST(TestLibrary, TestDefaultInjection)
 }
 
 
-
 struct VirusInjection : rew::injectable_t
 {
     template <typename ReflectableType, typename FunctionType>
