@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(Rew LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(include)
@@ -79,45 +79,46 @@ add_executable(${PROJECT_NAME}
     test/RewTestingBase.hpp
     test/main.cpp
 
-    # test/TestReflectionImpl.cpp
-    # test/TestReflectionImpl.hpp
+    test/TestReflectionImpl.cpp
+    test/TestReflectionImpl.hpp
 
-    # test/TestCommon.cpp
-    # test/TestEnum.cpp
-    # test/TestNameOf.cpp
-    # test/TestRegistryFunction.cpp
-    # test/TestRegistryProperty.cpp
+    test/TestCommon.cpp
+    test/TestEnum.cpp
+    test/TestNameOf.cpp
+    test/TestRegistryFunction.cpp
+    test/TestRegistryProperty.cpp
     test/TestFactory.cpp
     test/TestInjection.cpp
     test/TestLibrary.cpp
+    test/TestWithoutMacro.cpp
 
-    # test/TestAllocator.cpp
-    # test/TestAny.cpp
-    # test/TestArray.cpp
-    # test/TestBitset.cpp
-    # test/TestComplex.cpp
-    # test/TestDeque.cpp
-    # test/TestForwardList.cpp
-    # test/TestFunction.cpp
-    # test/TestFunctional.cpp
-    # test/TestInitializerList.cpp
-    # test/TestList.cpp
-    # test/TestMap.cpp
-    # test/TestOptional.cpp
-    # test/TestPair.cpp
-    # test/TestQueue.cpp
-    # test/TestReferenceWrapper.cpp
-    # test/TestSet.cpp
-    # test/TestSharedPtr.cpp
-    # test/TestStack.cpp
-    # test/TestString.cpp
-    # test/TestTuple.cpp
-    # test/TestTypeIndex.cpp
-    # test/TestTypeInfo.cpp
-    # test/TestUniquePtr.cpp
-    # test/TestUnorderedMap.cpp
-    # test/TestUnorderedSet.cpp
-    # test/TestVariant.cpp
-    # test/TestVector.cpp
-    # test/TestWeakPtr.cpp
+    test/TestAllocator.cpp
+    test/TestAny.cpp
+    test/TestArray.cpp
+    test/TestBitset.cpp
+    test/TestComplex.cpp
+    test/TestDeque.cpp
+    test/TestForwardList.cpp
+    test/TestFunction.cpp
+    test/TestFunctional.cpp
+    test/TestInitializerList.cpp
+    test/TestList.cpp
+    test/TestMap.cpp
+    test/TestOptional.cpp
+    test/TestPair.cpp
+    test/TestQueue.cpp
+    test/TestReferenceWrapper.cpp
+    test/TestSet.cpp
+    test/TestSharedPtr.cpp
+    test/TestStack.cpp
+    test/TestString.cpp
+    test/TestTuple.cpp
+    test/TestTypeIndex.cpp
+    test/TestTypeInfo.cpp
+    test/TestUniquePtr.cpp
+    test/TestUnorderedMap.cpp
+    test/TestUnorderedSet.cpp
+    test/TestVariant.cpp
+    test/TestVector.cpp
+    test/TestWeakPtr.cpp
 )

@@ -40,7 +40,7 @@
         REFLECTABLE_NAME(#__VA_ARGS__)
 
 #define REFLECTABLE_REGISTRY(...)  static auto registry() { return __VA_ARGS__; }
-#define REFLECTABLE_NAME(...) static std::string name() { return __VA_ARGS__; }
+#define REFLECTABLE_NAME(...) static auto name() { return __VA_ARGS__; }
 #define LAZY_REFLECTABLE(...) static auto lazy() { __VA_ARGS__ }
 #define BUILTIN_REFLECTABLE(...) static auto builtin() { __VA_ARGS__ }
 
@@ -119,7 +119,7 @@ namespace rew
 {
 
 template <typename ReflectableType>
-auto const nameof()
+std::string nameof()
 {
     return meta::reflectable_traits<ReflectableType>::name();
 }

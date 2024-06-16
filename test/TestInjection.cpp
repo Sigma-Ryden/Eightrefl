@@ -23,7 +23,7 @@ struct ToString
     }
 };
 
-struct ToStringInjection : rew::injectable_t
+struct TestToStringInjection : rew::injectable_t
 {
     template <typename ReflectableType>
     void type(rew::type_t& type)
@@ -34,7 +34,7 @@ struct ToStringInjection : rew::injectable_t
 
 // will reflect injection to all types
 // for correct registry u must add injection before all library includes
-REFLECTABLE_INJECTION_DECLARATION(0, ToStringInjection)
+REFLECTABLE_INJECTION_DECLARATION(0, TestToStringInjection)
 REFLECTABLE_DECLARATION_INIT()
 
 TEST(TestLibrary, TestDefaultInjection)
@@ -48,11 +48,11 @@ TEST(TestLibrary, TestDefaultInjection)
     ASSERT("reflection", reflection != nullptr);
     EXPECT("before_injection", reflection->meta.find("ToString") == nullptr);
     
-    auto injection = type->injection.find("ToStringInjection");
+    auto injection = type->injection.find("TestToStringInjection");
 
     ASSERT("injection", injection != nullptr);
 
-    ToStringInjection to_string;
+    TestToStringInjection to_string;
     injection->call(to_string);
 
     auto meta = std::any_cast<ToString<TestInjectionStruct>>(reflection->meta.find("ToString"));
@@ -61,7 +61,7 @@ TEST(TestLibrary, TestDefaultInjection)
 }
 
 
-struct VirusInjection : rew::injectable_t
+struct TestVirusInjection : rew::injectable_t
 {
     template <typename ReflectableType, typename FunctionType>
     void factory(rew::factory_t& factory)
@@ -70,7 +70,7 @@ struct VirusInjection : rew::injectable_t
     }
 };
 
-REFLECTABLE_DECLARATION(VirusInjection)
+REFLECTABLE_DECLARATION(TestVirusInjection)
 REFLECTABLE_DECLARATION_INIT()
 
 TEST(TestLibrary, TestDynamicInjection)
@@ -83,12 +83,12 @@ TEST(TestLibrary, TestDynamicInjection)
 
     ASSERT("reflection", reflection != nullptr);
 
-    //EXPECT("default-injection", type->injection.find("ToStringInjection") != nullptr);
-    ASSERT("before_add-injection", type->injection.find("VirusInjection") == nullptr);
+    //EXPECT("default-injection", type->injection.find("TestToStringInjection") != nullptr);
+    ASSERT("before_add-injection", type->injection.find("TestVirusInjection") == nullptr);
     
-    rew::find_or_add_injection<int, VirusInjection>(type);
+    rew::find_or_add_injection<int, TestVirusInjection>(type);
  
-    auto injection = type->injection.find("VirusInjection");
+    auto injection = type->injection.find("TestVirusInjection");
 
     ASSERT("after_add-injection", injection != nullptr);
 
@@ -99,7 +99,7 @@ TEST(TestLibrary, TestDynamicInjection)
         EXPECT("before_injection", default_constructible == nullptr && no_default_constructible == nullptr);
     }
 
-    VirusInjection virus;
+    TestVirusInjection virus;
     injection->call(virus);
 
     {
