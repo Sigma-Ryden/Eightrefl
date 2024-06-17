@@ -110,4 +110,29 @@ REFLECTABLE(std::ios_base)
     PROPERTY(cur, std_ios_base_seekdir)
 REFLECTABLE_INIT()
 
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename CharT, typename Traits>),
+    (std::basic_ios<CharT, Traits>), std::basic_ios<rew::cleanof<CharT>, rew::cleanof<Traits>>
+)
+
+TEMPLATE_REFLECTABLE_DECLARATION(template <>, std::ios)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::ios")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION(template <>, std::wios)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::wios")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename CharT, typename Traits>), std::basic_ios<CharT, Traits>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME("std::basic_ios<" + rew::nameof<CharT>() + ", " + rew::nameof<Traits>() + ">")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE((template <typename CharT, typename Traits>), std::basic_ios<CharT, Traits>)
+REFLECTABLE_INIT()
+
 #endif // REW_BUILTIN_IOSTREAM_HPP

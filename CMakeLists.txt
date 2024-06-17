@@ -63,6 +63,7 @@ set(REW
     include/Rew/BuiltIn/char_traits.hpp
 
     include/Rew/BuiltIn/locale.hpp
+    include/Rew/BuiltIn/streambuf.hpp
     include/Rew/BuiltIn/iostream.hpp
 
     include/Rew/Core.hpp
