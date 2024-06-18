@@ -434,6 +434,12 @@ struct access_traits<ClassType>
         {
             return fpack(get, set);
         }
+
+        template <typename ParentClassType>
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, ...)
+        {
+            return fpack(get, get);
+        }
     };
 
     template <typename DirtyPropertyType>
@@ -451,6 +457,12 @@ struct access_traits<ClassType>
         static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, void (ParentClassType::* set)(PropertyType)&)
         {
             return fpack(get, set);
+        }
+
+        template <typename ParentClassType>
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, ...)
+        {
+            return fpack(get, get);
         }
     };
 
@@ -471,9 +483,20 @@ struct access_traits<ClassType>
             return fpack(get, set);
         }
 
+        template <typename ParentClassType>
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void), ...)
+        {
+            return fpack(get, get);
+        }
+
         static constexpr auto of(PropertyType (*get)(void), void (*set)(PropertyType))
         {
             return std::make_pair(get, set);
+        }
+
+        static constexpr auto of(PropertyType (*get)(void), ...)
+        {
+            return std::make_pair(get, get);
         }
     };
 
@@ -492,6 +515,12 @@ struct access_traits<ClassType>
         static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, void (ParentClassType::* set)(PropertyType)&)
         {
             return fpack(get, set);
+        }
+
+        template <typename ParentClassType>
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, ...)
+        {
+            return fpack(get, get);
         }
     };
 

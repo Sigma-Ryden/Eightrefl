@@ -242,3 +242,52 @@ TEST(TestLibrary, TestCustomRegistry)
 
     EXPECT("reflection", reflection != nullptr);
 }
+
+
+TEST_SPACE()
+{
+
+struct TestTypedPropertyStruct
+{
+    int const& FunctionProperty() { return Property; }
+    //int const& FunctionProperty() const { return Property; }
+    void FunctionProperty(int& value) { Property = value; }
+
+    int RFunctionProperty() &{ return 0; }
+    int RFunctionProperty() const& { return 0; }
+    void RFunctionProperty(int value) {}
+
+    int SFunctionProperty() { return 0; }
+    int SFunctionProperty() const { return 0; }
+    void SFunctionProperty(int value) {}
+
+    template <typename T> T TemplateProperty() { return T(); }
+
+    int Property = 0;
+    static constexpr int ConstProperty = 0;
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestTypedPropertyStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+// REFLECTABLE(TestTypedPropertyStruct)
+//     PROPERTY(FunctionProperty, int&())
+//     PROPERTY(FunctionProperty, int const&() const)
+//     PROPERTY(TemplateProperty<char>, char())
+//     PROPERTY(Property, int)
+//     PROPERTY(ConstProperty, int const)
+// REFLECTABLE_INIT()
+
+// TEST(TestLibrary, TestTypedProperty)
+// {
+//     using T = TestTypedPropertyStruct;
+
+//     //rew::meta::access_traits<T>::property<int const&()>::of(&T::FunctionProperty, &T::FunctionProperty);
+//     //rew::meta::access_traits<T>::property<int const&()const>::of(&T::FunctionProperty, &T::FunctionProperty);
+//     rew::meta::access_traits<T>::property<int()const&>::of(&T::RFunctionProperty, &T::RFunctionProperty);
+//     rew::meta::access_traits<T>::property<int()&>::of(&T::RFunctionProperty, &T::RFunctionProperty);
+//     rew::meta::access_traits<T>::property<int()const>::of(&T::SFunctionProperty, &T::SFunctionProperty);
+//     rew::meta::access_traits<T>::property<int()>::of(&T::SFunctionProperty, &T::SFunctionProperty);
+// }

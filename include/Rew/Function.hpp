@@ -19,8 +19,8 @@
 // .function<R, signature>(name, &R::func)
 #define NAMED_FUNCTION(name_str, name, ...)                                                             \
     {                                                                                                   \
-        using __access_traits = rew::meta::access_traits<CleanR>;                                       \
-        auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&CleanR::__REW_DEPAREN(name)); \
+        using __access = typename rew::meta::access_traits<CleanR>::template function<__VA_ARGS__>;     \
+        auto __ptr = __access::of(&CleanR::__REW_DEPAREN(name));                                        \
         auto __meta = rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);            \
         injection.template function<CleanR, decltype(__ptr)>(*__meta);                                  \
     }
@@ -30,8 +30,8 @@
 // .function<signature>(name, &func)
 #define NAMED_FREE_FUNCTION(name_str, name, ...)                                                        \
     {                                                                                                   \
-        using __access_traits = rew::meta::access_traits<>;                                             \
-        auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&__REW_DEPAREN(name));         \
+        using __access = typename rew::meta::access_traits<>::template function<__VA_ARGS__>;           \
+        auto __ptr = __access::of(&__REW_DEPAREN(name));                                                \
         auto __meta = rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);            \
         injection.template function<CleanR, decltype(__ptr)>(*__meta);                                  \
     }

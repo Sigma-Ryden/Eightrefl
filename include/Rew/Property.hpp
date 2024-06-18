@@ -20,10 +20,8 @@
 // .property<R,type>(name, &R::get, &R::set)
 #define NAMED_PROPERTY(name_str, get, set, ...)                                                         \
     {                                                                                                   \
-        using __access = rew::meta::access_traits<CleanR>;                                              \
-        auto [__get, __set] = __access::template property<__VA_ARGS__>::of(                             \
-            &CleanR::__REW_DEPAREN(get), &CleanR::__REW_DEPAREN(set)                                    \
-        );                                                                                              \
+        using __access = typename rew::meta::access_traits<CleanR>::template property<__VA_ARGS__>;     \
+        auto [__get, __set] = __access::of(&CleanR::__REW_DEPAREN(get), &CleanR::__REW_DEPAREN(set));   \
         auto __meta = rew::find_or_add_property<__VA_ARGS__>(__reflection, name_str, __get, __set);     \
         injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
     }
@@ -33,10 +31,8 @@
 // .property<type>(name, &get, &set)
 #define NAMED_FREE_PROPERTY(name_str, get, set, ...)                                                    \
     {                                                                                                   \
-        using __access = rew::meta::access_traits<>;                                                    \
-        auto [__get, __set] = __access::template property<__VA_ARGS__>::of(                             \
-            &__REW_DEPAREN(get), &__REW_DEPAREN(set)                                                    \
-        );                                                                                              \
+        using __access = typename rew::meta::access_traits<>::template property<__VA_ARGS__>;           \
+        auto [__get, __set] = __access::of(&__REW_DEPAREN(get), &__REW_DEPAREN(set));                   \
         auto __meta = rew::find_or_add_property<__VA_ARGS__>(__reflection, name_str, __get, __set);     \
         injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
     }
