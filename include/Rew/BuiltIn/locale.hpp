@@ -3,6 +3,8 @@
 
 #include <Rew/Reflectable.hpp>
 
+#include <locale> // locale
+
 #include <Rew/BuiltIn/string.hpp>
 
 REFLECTABLE_USING(std_locale_id, std::locale::id)

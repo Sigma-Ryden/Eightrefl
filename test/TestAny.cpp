@@ -1,6 +1,7 @@
 #include <RewTestingBase.hpp>
 
 #include <Rew/BuiltIn/any.hpp>
+#include <Rew/BuiltIn/iostream.hpp> // TODO: temp
 
 TEST(TestBuiltin, TestAny)
 {
