@@ -333,6 +333,17 @@ struct access_traits<>
     };
 };
 
+namespace detail {
+template <typename T>
+struct explicit_t
+{
+    using type = T;
+};
+
+}
+template <typename T>
+using explicit_t = typename detail::explicit_t<T>::type;
+
 template <class ClassType>
 struct access_traits<ClassType>
 {
@@ -436,7 +447,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, ...)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, explicit_t<PropertyType (ParentClassType::*)(void) const>)
         {
             return fpack(get, get);
         }
@@ -460,7 +471,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, ...)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, explicit_t<PropertyType (ParentClassType::*)(void) const&>)
         {
             return fpack(get, get);
         }
@@ -484,7 +495,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void), ...)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void), explicit_t<PropertyType (ParentClassType::*)(void)>)
         {
             return fpack(get, get);
         }
@@ -494,7 +505,7 @@ struct access_traits<ClassType>
             return std::make_pair(get, set);
         }
 
-        static constexpr auto of(PropertyType (*get)(void), ...)
+        static constexpr auto of(PropertyType (*get)(void), explicit_t<PropertyType (*)(void)>)
         {
             return std::make_pair(get, get);
         }
@@ -518,7 +529,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, ...)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, explicit_t<PropertyType (ParentClassType::*)(void)&>)
         {
             return fpack(get, get);
         }
