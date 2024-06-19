@@ -413,6 +413,17 @@ struct access_traits<>
     };
 };
 
+namespace detail {
+template <typename T>
+struct explicit_t
+{
+    using type = T;
+};
+
+}
+template <typename T>
+using explicit_t = typename detail::explicit_t<T>::type;
+
 template <class ClassType>
 struct access_traits<ClassType>
 {
@@ -514,6 +525,12 @@ struct access_traits<ClassType>
         {
             return fpack(get, set);
         }
+
+        template <typename ParentClassType>
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, explicit_t<PropertyType (ParentClassType::*)(void) const>)
+        {
+            return fpack(get, get);
+        }
     };
 
     template <typename DirtyPropertyType>
@@ -531,6 +548,12 @@ struct access_traits<ClassType>
         static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, void (ParentClassType::* set)(PropertyType)&)
         {
             return fpack(get, set);
+        }
+
+        template <typename ParentClassType>
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, explicit_t<PropertyType (ParentClassType::*)(void) const&>)
+        {
+            return fpack(get, get);
         }
     };
 
@@ -551,9 +574,20 @@ struct access_traits<ClassType>
             return fpack(get, set);
         }
 
+        template <typename ParentClassType>
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void), explicit_t<PropertyType (ParentClassType::*)(void)>)
+        {
+            return fpack(get, get);
+        }
+
         static constexpr auto of(PropertyType (*get)(void), void (*set)(PropertyType))
         {
             return std::make_pair(get, set);
+        }
+
+        static constexpr auto of(PropertyType (*get)(void), explicit_t<PropertyType (*)(void)>)
+        {
+            return std::make_pair(get, get);
         }
     };
 
@@ -572,6 +606,12 @@ struct access_traits<ClassType>
         static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, void (ParentClassType::* set)(PropertyType)&)
         {
             return fpack(get, set);
+        }
+
+        template <typename ParentClassType>
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, explicit_t<PropertyType (ParentClassType::*)(void)&>)
+        {
+            return fpack(get, get);
         }
     };
 
@@ -725,8 +765,8 @@ std::any backward(ValueType&& result)
 // .function<R, signature>(name, &R::func)
 #define NAMED_FUNCTION(name_str, name, ...)                                                             \
     {                                                                                                   \
-        using __access_traits = rew::meta::access_traits<CleanR>;                                       \
-        auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&CleanR::__REW_DEPAREN(name)); \
+        using __access = typename rew::meta::access_traits<CleanR>::template function<__VA_ARGS__>;     \
+        auto __ptr = __access::of(&CleanR::__REW_DEPAREN(name));                                        \
         auto __meta = rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);            \
         injection.template function<CleanR, decltype(__ptr)>(*__meta);                                  \
     }
@@ -736,8 +776,8 @@ std::any backward(ValueType&& result)
 // .function<signature>(name, &func)
 #define NAMED_FREE_FUNCTION(name_str, name, ...)                                                        \
     {                                                                                                   \
-        using __access_traits = rew::meta::access_traits<>;                                             \
-        auto __ptr = __access_traits::template function<__VA_ARGS__>::of(&__REW_DEPAREN(name));         \
+        using __access = typename rew::meta::access_traits<>::template function<__VA_ARGS__>;           \
+        auto __ptr = __access::of(&__REW_DEPAREN(name));                                                \
         auto __meta = rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);            \
         injection.template function<CleanR, decltype(__ptr)>(*__meta);                                  \
     }
@@ -907,10 +947,8 @@ auto handler_factory_call(ReflectableType (*)(ArgumentTypes...))
 // .property<R,type>(name, &R::get, &R::set)
 #define NAMED_PROPERTY(name_str, get, set, ...)                                                         \
     {                                                                                                   \
-        using __access = rew::meta::access_traits<CleanR>;                                              \
-        auto [__get, __set] = __access::template property<__VA_ARGS__>::of(                             \
-            &CleanR::__REW_DEPAREN(get), &CleanR::__REW_DEPAREN(set)                                    \
-        );                                                                                              \
+        using __access = typename rew::meta::access_traits<CleanR>::template property<__VA_ARGS__>;     \
+        auto [__get, __set] = __access::of(&CleanR::__REW_DEPAREN(get), &CleanR::__REW_DEPAREN(set));   \
         auto __meta = rew::find_or_add_property<__VA_ARGS__>(__reflection, name_str, __get, __set);     \
         injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
     }
@@ -920,10 +958,8 @@ auto handler_factory_call(ReflectableType (*)(ArgumentTypes...))
 // .property<type>(name, &get, &set)
 #define NAMED_FREE_PROPERTY(name_str, get, set, ...)                                                    \
     {                                                                                                   \
-        using __access = rew::meta::access_traits<>;                                                    \
-        auto [__get, __set] = __access::template property<__VA_ARGS__>::of(                             \
-            &__REW_DEPAREN(get), &__REW_DEPAREN(set)                                                    \
-        );                                                                                              \
+        using __access = typename rew::meta::access_traits<>::template property<__VA_ARGS__>;           \
+        auto [__get, __set] = __access::of(&__REW_DEPAREN(get), &__REW_DEPAREN(set));                   \
         auto __meta = rew::find_or_add_property<__VA_ARGS__>(__reflection, name_str, __get, __set);     \
         injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
     }
@@ -1495,7 +1531,7 @@ inline registry_t global;
         REFLECTABLE_NAME(#__VA_ARGS__)
 
 #define REFLECTABLE_REGISTRY(...)  static auto registry() { return __VA_ARGS__; }
-#define REFLECTABLE_NAME(...) static std::string name() { return __VA_ARGS__; }
+#define REFLECTABLE_NAME(...) static auto name() { return __VA_ARGS__; }
 #define LAZY_REFLECTABLE(...) static auto lazy() { __VA_ARGS__ }
 #define BUILTIN_REFLECTABLE(...) static auto builtin() { __VA_ARGS__ }
 
@@ -1573,7 +1609,7 @@ namespace rew
 {
 
 template <typename ReflectableType>
-auto const nameof()
+std::string nameof()
 {
     return meta::reflectable_traits<ReflectableType>::name();
 }
