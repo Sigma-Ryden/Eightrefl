@@ -256,7 +256,7 @@ struct TestTypedPropertyStruct
     int const& OtherFunctionProperty() const { return Property; }
     void OtherFunctionProperty(int& value) { Property = value; }
 
-    template <typename T> T TemplateProperty() { return T(); }
+    template <typename T> T TemplateFunctionProperty() { return T(); }
 
     int Property = 0;
     static constexpr int ConstProperty = 0;
@@ -270,15 +270,130 @@ REFLECTABLE_DECLARATION_INIT()
 REFLECTABLE(TestTypedPropertyStruct)
     PROPERTY(FunctionProperty, int&())
     PROPERTY(OtherFunctionProperty, int const&() const)
-    PROPERTY(TemplateProperty<char>, char())
+    PROPERTY(TemplateFunctionProperty<char>, char())
     PROPERTY(Property, int)
     PROPERTY(ConstProperty, int const)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestTypedProperty)
 {
-    // using T = TestTypedPropertyStruct;
+    auto type = rew::global.find("TestTypedPropertyStruct");
 
-    // rew::meta::access_traits<T>::property<int&()>::of(&T::FunctionProperty, &T::FunctionProperty);
-    // rew::meta::access_traits<T>::property<int const&() const>::of(&T::FunctionProperty, &T::FunctionProperty);
+    ASSERT("type", type != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+
+    auto function_property = reflection->property.find("FunctionProperty");
+
+    ASSERT("function_property", function_property != nullptr);
+    EXPECT("function_property-get", function_property->get != nullptr);
+    EXPECT("function_property-set", function_property->set != nullptr);
+    EXPECT("function_property-context", function_property->context != nullptr);
+
+    auto other_function_property = reflection->property.find("OtherFunctionProperty");
+
+    ASSERT("other_function_property", other_function_property != nullptr);
+    EXPECT("other_function_property-get", other_function_property->get != nullptr);
+    EXPECT("other_function_property-set", other_function_property->set == nullptr);
+    EXPECT("other_function_property-context", other_function_property->context != nullptr);
+
+    auto template_function_property = reflection->property.find("TemplateFunctionProperty<char>");
+
+    ASSERT("template_function_property", template_function_property != nullptr);
+    EXPECT("template_function_property-get", template_function_property->get != nullptr);
+    EXPECT("template_function_property-set", template_function_property->set == nullptr);
+    EXPECT("template_function_property-context", template_function_property->context == nullptr);
+
+    auto property = reflection->property.find("Property");
+
+    ASSERT("property", property != nullptr);
+    EXPECT("property-get", property->get != nullptr);
+    EXPECT("property-set", property->set != nullptr);
+    EXPECT("property-context", property->context != nullptr);
+
+    auto const_property = reflection->property.find("ConstProperty");
+
+    ASSERT("const_property", const_property != nullptr);
+    EXPECT("const_property-get", const_property->get != nullptr);
+    EXPECT("const_property-set", const_property->set == nullptr);
+    EXPECT("const_property-context", const_property->context != nullptr);
+}
+
+
+TEST_SPACE()
+{
+
+struct TestNamedPropertyStruct
+{
+    bool IsActivated() const { return bIsActivated; }
+
+    void Activate(bool yes)
+    {
+        bIsActivatedBuffer = bIsActivated;
+        bIsActivated = yes;
+    }
+
+    bool bIsActivated = false;
+    bool bIsActivatedBuffer = false;
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestNamedPropertyStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+// without macro using we can put function get and variable set to one or inverse,
+// just if u want max flexibility, please, use no macro version
+REFLECTABLE(TestNamedPropertyStruct)
+    NAMED_PROPERTY("IsActivated", IsActivated, Activate)
+    NAMED_PROPERTY("Flag", bIsActivated, bIsActivatedBuffer)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestNamedProperty)
+{
+    auto type = rew::global.find("TestNamedPropertyStruct");
+
+    ASSERT("type", type != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+
+    auto function_property = reflection->property.find("IsActivated");
+
+    ASSERT("function_property", function_property != nullptr);
+    ASSERT("function_property-get", function_property->get != nullptr);
+    ASSERT("function_property-set", function_property->set != nullptr);
+    EXPECT("function_property-context", function_property->context == nullptr);
+
+    auto [function_property_get_ptr, function_property_set_ptr] = function_property->pointer;
+
+    EXPECT("function_property-get-pointer",
+        std::any_cast<bool(TestNamedPropertyStruct::*)() const>(function_property_get_ptr) ==
+        &TestNamedPropertyStruct::IsActivated
+    );
+    EXPECT("function_property-set-pointer",
+        std::any_cast<void(TestNamedPropertyStruct::*)(bool)>(function_property_set_ptr) ==
+        &TestNamedPropertyStruct::Activate
+    );
+
+    auto property = reflection->property.find("Flag");
+
+    ASSERT("property", property != nullptr);
+    ASSERT("property-get", property->get != nullptr);
+    ASSERT("function_property-set", function_property->set != nullptr);
+    EXPECT("property-context", property->context != nullptr);
+
+    auto [property_get_ptr, property_set_ptr] = property->pointer;
+
+    EXPECT("property-get-pointer",
+        std::any_cast<bool TestNamedPropertyStruct::*>(property_get_ptr) ==
+        &TestNamedPropertyStruct::bIsActivated
+    );
+    EXPECT("property-set-pointer",
+        std::any_cast<bool TestNamedPropertyStruct::*>(property_set_ptr) ==
+        &TestNamedPropertyStruct::bIsActivatedBuffer
+    );
 }
