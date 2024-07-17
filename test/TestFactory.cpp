@@ -68,7 +68,7 @@ TEST(TestLibrary, TestFactoryStruct)
         auto object = custom->call({});
         auto object_ptr = std::any_cast<TestCustomFactoryStruct>(&object);
     
-        EXPECT("custom-factory-object", object_ptr != nullptr && object_ptr->result);
+        EXPECT("custom-factory-object", object_ptr != nullptr && object_ptr->result != nullptr);
     }
     {
         auto custom = reflection->factory.find("TestCustomFactoryStructTemplate<int>()");
@@ -78,6 +78,6 @@ TEST(TestLibrary, TestFactoryStruct)
         auto object = custom->call({});
         auto object_ptr = std::any_cast<TestCustomFactoryStructTemplate<int>>(&object);
     
-        EXPECT("custom-factory-template-object", object_ptr != nullptr && object_ptr->result);
+        EXPECT("custom-factory-template-object", object_ptr != nullptr && object_ptr->result != nullptr);
     }
 }
