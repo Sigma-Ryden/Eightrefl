@@ -73,7 +73,7 @@ struct __rew<TestWithoutMacroStruct>
 {
     using R = TestWithoutMacroStruct; // not required by library
 
-    // you can call it function with default injection,
+    // you can call evaluate<>() function with default injection,
     // before main, using inline static or static variable,
     // with auto evaluation you can ommit reflectable<>() call
     template <typename InjectionType>
