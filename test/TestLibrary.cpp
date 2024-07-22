@@ -397,3 +397,150 @@ TEST(TestLibrary, TestNamedProperty)
         &TestNamedPropertyStruct::bIsActivatedBuffer
     );
 }
+
+
+TEST_SPACE()
+{
+
+struct TestBaseWithReflection {};
+struct TestWrongMediatorWithReflection : TestBaseWithReflection {};
+struct TestRightMediatorWithReflection : TestBaseWithReflection {};
+
+struct TestWrongDerivedWithReflection : TestWrongMediatorWithReflection {};
+struct TestRightDerivedWithReflection : TestRightMediatorWithReflection {};
+
+struct TestDerivedWithReflection
+    : TestWrongMediatorWithReflection, TestRightMediatorWithReflection {};
+
+
+bool is_parent_of(rew::type_t const* type, rew::type_t const* child)
+{
+    if (type == child)
+    {
+        return true;
+    }
+    for (auto& [name, parent] : child->reflection->parent.all)
+    {
+        if (is_parent_of(type, parent.type))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool is_child_of(rew::type_t const* child, rew::type_t const* type)
+{
+    return is_parent_of(type, child);
+}
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestBaseWithReflection)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestBaseWithReflection)
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(TestWrongMediatorWithReflection)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestWrongMediatorWithReflection)
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(TestRightMediatorWithReflection)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestRightMediatorWithReflection)
+    PARENT(TestBaseWithReflection)
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(TestWrongDerivedWithReflection)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestWrongDerivedWithReflection)
+    PARENT(TestWrongMediatorWithReflection)
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(TestRightDerivedWithReflection)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestRightDerivedWithReflection)
+    PARENT(TestRightMediatorWithReflection)
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(TestDerivedWithReflection)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestDerivedWithReflection)
+    PARENT(TestWrongMediatorWithReflection)
+    PARENT(TestRightMediatorWithReflection)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestIsParentOf)
+{
+    auto base = rew::global.find("TestBaseWithReflection");
+
+    ASSERT("base-type", base != nullptr);
+
+    auto reflection = base->reflection;
+
+    ASSERT("base-reflection", reflection != nullptr);
+
+    {
+        auto type = rew::global.find("TestRightMediatorWithReflection");
+
+        ASSERT("right-mediator-type", type != nullptr);
+
+        auto reflection = type->reflection;
+
+        ASSERT("right-mediator-reflection", reflection != nullptr);
+        EXPECT("right-mediator-is_child_of", is_child_of(type, base));
+    }
+    {
+        auto type = rew::global.find("TestWrongMediatorWithReflection");
+
+        ASSERT("wrong-mediator-type", type != nullptr);
+
+        auto reflection = type->reflection;
+
+        ASSERT("wrong-mediator-reflection", reflection != nullptr);
+        EXPECT("wrong-mediator-is_child_of", !is_child_of(type, base));
+    }
+    {
+        auto type = rew::global.find("TestWrongDerivedWithReflection");
+
+        ASSERT("wrong-derived-type", type != nullptr);
+
+        auto reflection = type->reflection;
+
+        ASSERT("wrong-derived-reflection", reflection != nullptr);
+        EXPECT("wrong-derived-is_child_of", !is_child_of(type, base));
+    }
+    {
+        auto type = rew::global.find("TestRightDerivedWithReflection");
+
+        ASSERT("right-derived-type", type != nullptr);
+
+        auto reflection = type->reflection;
+
+        ASSERT("right-derived-reflection", reflection != nullptr);
+        EXPECT("right-derived-is_child_of", is_child_of(type, base));
+    }
+    {
+        auto type = rew::global.find("TestDerivedWithReflection");
+
+        ASSERT("derived-type", type != nullptr);
+
+        auto reflection = type->reflection;
+
+        ASSERT("derived-reflection", reflection != nullptr);
+        EXPECT("derived-is_parent_of", is_parent_of(base, type));
+    }
+}
+
+
+TEST(TestLibrary, TestRTTIRegistry)
+{
+    // TODO: impl
+}

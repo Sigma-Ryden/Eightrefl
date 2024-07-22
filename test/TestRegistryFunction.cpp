@@ -60,18 +60,18 @@ TEST(TestLibrary::TestRegistryFunction, TestFunction)
     auto overload = reflection->function.find("Overload");
 
     ASSERT("function-overload", overload != nullptr);
-    EXPECT("function-overload-1", overload->all.find("void()&") != nullptr);
-    EXPECT("function-overload-2", overload->all.find("void() const&") != nullptr);
-    EXPECT("function-overload-3", overload->all.find("void(int)") != nullptr);
-    EXPECT("function-overload-4", overload->all.find("void(int) const") != nullptr);
+    EXPECT("function-overload-1", overload->find("void()&") != nullptr);
+    EXPECT("function-overload-2", overload->find("void() const&") != nullptr);
+    EXPECT("function-overload-3", overload->find("void(int)") != nullptr);
+    EXPECT("function-overload-4", overload->find("void(int) const") != nullptr);
 
     EXPECT("function-template", reflection->function.find("Template") != nullptr);
 
     auto template_with_arg = reflection->function.find("Template<int>");
 
     ASSERT("function-template_with_arg",template_with_arg != nullptr);
-    EXPECT("function-template_with_arg-overload-1", template_with_arg->all.find("void()") != nullptr);
-    EXPECT("function-template_with_arg-overload-2", template_with_arg->all.find("void(float)") != nullptr);
+    EXPECT("function-template_with_arg-overload-1", template_with_arg->find("void()") != nullptr);
+    EXPECT("function-template_with_arg-overload-2", template_with_arg->find("void(float)") != nullptr);
 
     EXPECT("function-template_with_args", reflection->function.find("Template<int, bool>") != nullptr);
 }
@@ -123,16 +123,16 @@ TEST(TestLibrary::TestRegistryFunction, TestStaticFunction)
     auto overload = reflection->function.find("Overload");
 
     ASSERT("function-overload", overload != nullptr);
-    EXPECT("function-overload-1", overload->all.find("void()") != nullptr);
-    EXPECT("function-overload-2", overload->all.find("void(int)") != nullptr);
+    EXPECT("function-overload-1", overload->find("void()") != nullptr);
+    EXPECT("function-overload-2", overload->find("void(int)") != nullptr);
 
     EXPECT("function-template", reflection->function.find("Template") != nullptr);
 
     auto template_with_arg = reflection->function.find("Template<int>");
 
     ASSERT("function-template_with_arg",template_with_arg != nullptr);
-    EXPECT("function-template_with_arg-overload-1", template_with_arg->all.find("void()") != nullptr);
-    EXPECT("function-template_with_arg-overload-2", template_with_arg->all.find("void(float)") != nullptr);
+    EXPECT("function-template_with_arg-overload-1", template_with_arg->find("void()") != nullptr);
+    EXPECT("function-template_with_arg-overload-2", template_with_arg->find("void(float)") != nullptr);
 
     EXPECT("function-template_with_args", reflection->function.find("Template<int, bool>") != nullptr);
 }
@@ -183,16 +183,16 @@ TEST(TestLibrary::TestRegistryFunction, TestFreeFunction)
     auto overload = reflection->function.find("Overload");
 
     ASSERT("function-overload", overload != nullptr);
-    EXPECT("function-overload-1", overload->all.find("void()") != nullptr);
-    EXPECT("function-overload-2", overload->all.find("void(int)") != nullptr);
+    EXPECT("function-overload-1", overload->find("void()") != nullptr);
+    EXPECT("function-overload-2", overload->find("void(int)") != nullptr);
 
     EXPECT("function-template", reflection->function.find("Template") != nullptr);
 
     auto template_with_arg = reflection->function.find("Template<int>");
 
     ASSERT("function-template_with_arg",template_with_arg != nullptr);
-    EXPECT("function-template_with_arg-overload-1", template_with_arg->all.find("void()") != nullptr);
-    EXPECT("function-template_with_arg-overload-2", template_with_arg->all.find("void(float)") != nullptr);
+    EXPECT("function-template_with_arg-overload-1", template_with_arg->find("void()") != nullptr);
+    EXPECT("function-template_with_arg-overload-2", template_with_arg->find("void(float)") != nullptr);
 
     EXPECT("function-template_with_args", reflection->function.find("Template<int, bool>") != nullptr);
 }
