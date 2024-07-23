@@ -118,24 +118,19 @@ struct property_traits<void (ReflectableType::*)(PropertyType)&>
     : property_traits<PropertyType> {};
 
 template <typename PropertyType>
-struct property_traits<PropertyType (*)(void)>
-    : property_traits<PropertyType> {};
+struct property_traits<PropertyType (*)(void)> : property_traits<PropertyType> {};
 
 template <typename PropertyType>
-struct property_traits<PropertyType() const>
-    : property_traits<PropertyType> {};
+struct property_traits<PropertyType() const> : property_traits<PropertyType> {};
 
 template <typename PropertyType>
-struct property_traits<PropertyType()>
-    : property_traits<PropertyType> {};
+struct property_traits<PropertyType()> : property_traits<PropertyType> {};
 
 template <typename PropertyType>
-struct property_traits<void(PropertyType)>
-    : property_traits<PropertyType> {};
+struct property_traits<void(PropertyType)> : property_traits<PropertyType> {};
 
 template <typename ReflectableType, typename PropertyType>
-struct property_traits<PropertyType ReflectableType::*>
-    : property_traits<PropertyType> {};
+struct property_traits<PropertyType ReflectableType::*> : property_traits<PropertyType> {};
 
 template <typename>
 struct function_traits;

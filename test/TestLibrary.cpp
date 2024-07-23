@@ -588,7 +588,7 @@ TEST_SPACE()
 struct TestImplicitRegistryStruct
 {
     TestImplicitRegistryStruct* const* Data = nullptr;
-    static std::shared_ptr<TestImplicitRegistryStruct> Instance;
+    static std::shared_ptr<TestImplicitRegistryStruct> Instance = nullptr;
 };
 
 std::shared_ptr<TestImplicitRegistryStruct> TestImplicitRegistryStruct::Instance = nullptr;
@@ -606,6 +606,6 @@ REFLECTABLE_INIT()
 TEST(TestLibrary, TestImplicitRegistry)
 {
     EXPECT("type", rew::global.find("TestImplicitRegistryStruct") != nullptr);
-    EXPECT("type-property0", rew::global.find("TestImplicitRegistryStruct* const*") != nullptr);
+    EXPECT("type-property0", rew::global.find("TestImplicitRegistryStruct**") != nullptr);
     EXPECT("type-property1", rew::global.find("std::shared_ptr<TestImplicitRegistryStruct>") != nullptr);
 }
