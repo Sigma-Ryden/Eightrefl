@@ -588,7 +588,7 @@ TEST_SPACE()
 struct TestImplicitRegistryStruct
 {
     TestImplicitRegistryStruct* const* Data = nullptr;
-    static std::shared_ptr<TestImplicitRegistryStruct> Instance = nullptr;
+    static std::shared_ptr<TestImplicitRegistryStruct> Instance;
 };
 
 std::shared_ptr<TestImplicitRegistryStruct> TestImplicitRegistryStruct::Instance = nullptr;
