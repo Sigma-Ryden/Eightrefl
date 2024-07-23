@@ -207,7 +207,6 @@ TEST(TestLibrary, TestMeta)
 }
 
 
-// TODO: add tests for implicit add to registry through other types
 TEST_SPACE()
 {
 
@@ -540,7 +539,45 @@ TEST(TestLibrary, TestIsParentOf)
 }
 
 
+TEST_SPACE()
+{
+
+struct TestRTTIRegistryStruct {};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestRTTIRegistryStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestRTTIRegistryStruct)
+REFLECTABLE_INIT()
+
 TEST(TestLibrary, TestRTTIRegistry)
 {
-    // TODO: impl
+    auto type = rew::find_or_add_type<TestRTTIRegistryStruct>();
+    auto const_type = rew::find_or_add_type<TestRTTIRegistryStruct const>();
+    auto reference_type = rew::find_or_add_type<TestRTTIRegistryStruct&>(); // will break to TestRTTIRegistryStruct*
+    auto const_reference_type = rew::find_or_add_type<TestRTTIRegistryStruct const&>(); // will break to TestRTTIRegistryStruct*
+    auto pointer_type = rew::find_or_add_type<TestRTTIRegistryStruct*>();
+    auto pointer_to_const_type = rew::find_or_add_type<TestRTTIRegistryStruct const*>(); // will break to TestRTTIRegistryStruct*
+    auto const_pointer_to_const_type = rew::find_or_add_type<TestRTTIRegistryStruct const* const>(); // will break to TestRTTIRegistryStruct*
+    auto pointer_type_reference = rew::find_or_add_type<TestRTTIRegistryStruct*&>();
+    auto pointer_to_const_type_reference = rew::find_or_add_type<TestRTTIRegistryStruct const*&>(); // will break to TestRTTIRegistryStruct const**
+    auto const_pointer_to_const_type_reference = rew::find_or_add_type<TestRTTIRegistryStruct const* const&>(); // will break to TestRTTIRegistryStruct*
+    auto mixed_type = rew::find_or_add_type<TestRTTIRegistryStruct const** const&>();
+
+    EXPECT("type-typeid", rew::global.find(typeid(TestRTTIRegistryStruct)) == type);
+    EXPECT("const_type-typeid", rew::global.find(typeid(TestRTTIRegistryStruct const)) == const_type);
+    EXPECT("reference_type-typeid", rew::global.find(typeid(TestRTTIRegistryStruct*)) == reference_type);
+    EXPECT("const_reference_type-typeid", rew::global.find(typeid(TestRTTIRegistryStruct*)) == const_reference_type);
+    EXPECT("pointer_type-typeid", rew::global.find(typeid(TestRTTIRegistryStruct*)) == pointer_type);
+    EXPECT("pointer_to_const_type-typeid", rew::global.find(typeid(TestRTTIRegistryStruct*)) == pointer_to_const_type);
+    EXPECT("const_pointer_to_const_type-typeid", rew::global.find(typeid(TestRTTIRegistryStruct*)) == const_pointer_to_const_type);
+    EXPECT("pointer_type_reference-typeid", rew::global.find(typeid(TestRTTIRegistryStruct**)) == pointer_type_reference);
+    EXPECT("pointer_to_const_type_reference-typeid", rew::global.find(typeid(TestRTTIRegistryStruct const**)) == pointer_to_const_type_reference);
+    EXPECT("const_pointer_to_const_type_reference-typeid", rew::global.find(typeid(TestRTTIRegistryStruct const**)) == const_pointer_to_const_type_reference);
+    EXPECT("mixed_type-typeid", rew::global.find(typeid(TestRTTIRegistryStruct const***)) == mixed_type);
 }
+
+
+// TODO: add tests for implicit add to registry through other types

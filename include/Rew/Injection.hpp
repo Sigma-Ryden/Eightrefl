@@ -58,7 +58,7 @@ auto handler_injection_call()
 {
     return [](injectable_t& injection)
     {
-        ::__rew<ReflectionType>::evaluate(dynamic_cast<InjectionType&>(injection));
+        ::__rew<ReflectionType>::evaluate(static_cast<InjectionType&>(injection));
     };
 }
 

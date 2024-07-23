@@ -47,11 +47,6 @@ public:
         return it != rtti_all.end() ? it->second : nullptr;
     }
 
-    type_t* find(std::any& object) const
-    {
-        return find(object.type());
-    }
-
     template <typename ReflectableType>
     type_t* find() const
     {
