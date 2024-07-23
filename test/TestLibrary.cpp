@@ -580,4 +580,32 @@ TEST(TestLibrary, TestRTTIRegistry)
 }
 
 
-// TODO: add tests for implicit add to registry through other types
+#include <Rew/BuiltIn/shared_ptr.hpp>
+
+TEST_SPACE()
+{
+
+struct TestImplicitRegistryStruct
+{
+    TestImplicitRegistryStruct* const* Data = nullptr;
+    static std::shared_ptr<TestImplicitRegistryStruct> Instance;
+};
+
+std::shared_ptr<TestImplicitRegistryStruct> TestImplicitRegistryStruct::Instance = nullptr;
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestImplicitRegistryStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestImplicitRegistryStruct)
+    PROPERTY(Data)
+    PROPERTY(Instance)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestImplicitRegistry)
+{
+    EXPECT("type", rew::global.find("TestImplicitRegistryStruct") != nullptr);
+    EXPECT("type-property0", rew::global.find("TestImplicitRegistryStruct* const*") != nullptr);
+    EXPECT("type-property1", rew::global.find("std::shared_ptr<TestImplicitRegistryStruct>") != nullptr);
+}
