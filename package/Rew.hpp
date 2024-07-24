@@ -97,6 +97,14 @@ template <typename... Bn> using one = std::disjunction<Bn...>;
 template <typename T, typename enable = void> struct is_complete : std::false_type {};
 template <typename T> struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
 
+template <typename T> struct type_identity
+{
+    using type = T;
+};
+
+template <typename T>
+using type_identity_t = typename type_identity<T>::type;
+
 template <typename T, typename enable = void>
 struct reflectable_traits;
 
@@ -168,54 +176,51 @@ template <typename T> struct is_builtin_reflectable : all<is_reflectable<T>, det
 template <typename T> struct is_custom_reflectable : all<is_reflectable<T>, std::negation<detail::is_builtin<T>>> {};
 
 template <typename PropertyType>
-struct property_traits
+struct property_traits { using type = PropertyType; };
+
+template <typename PropertyType>
+struct property_traits<PropertyType*>
 {
-    using type = PropertyType;
+    using type = typename std::conditional_t
+    <
+        std::is_pointer_v<PropertyType>,
+        type_identity<PropertyType>,
+        property_traits<PropertyType>
+    >::type;
 };
 
 template <typename ReflectableType, typename PropertyType>
-struct property_traits<PropertyType (ReflectableType::*)(void) const>
-    : property_traits<PropertyType> {};
+struct property_traits<PropertyType (ReflectableType::*)(void) const> { using type = PropertyType; };
 
 template <typename ReflectableType, typename PropertyType>
-struct property_traits<PropertyType (ReflectableType::*)(void) const&>
-    : property_traits<PropertyType> {};
+struct property_traits<PropertyType (ReflectableType::*)(void) const&> { using type = PropertyType; };
 
 template <typename ReflectableType, typename PropertyType>
-struct property_traits<PropertyType (ReflectableType::*)(void)>
-    : property_traits<PropertyType> {};
+struct property_traits<PropertyType (ReflectableType::*)(void)> { using type = PropertyType; };
 
 template <typename ReflectableType, typename PropertyType>
-struct property_traits<PropertyType (ReflectableType::*)(void)&>
-    : property_traits<PropertyType> {};
+struct property_traits<PropertyType (ReflectableType::*)(void)&> { using type = PropertyType; };
 
 template <typename ReflectableType, typename PropertyType>
-struct property_traits<void (ReflectableType::*)(PropertyType)>
-    : property_traits<PropertyType> {};
+struct property_traits<void (ReflectableType::*)(PropertyType)> { using type = PropertyType; };
 
 template <typename ReflectableType, typename PropertyType>
-struct property_traits<void (ReflectableType::*)(PropertyType)&>
-    : property_traits<PropertyType> {};
+struct property_traits<void (ReflectableType::*)(PropertyType)&> { using type = PropertyType; };
 
 template <typename PropertyType>
-struct property_traits<PropertyType (*)(void)>
-    : property_traits<PropertyType> {};
+struct property_traits<PropertyType (*)(void)> { using type = PropertyType; };
 
 template <typename PropertyType>
-struct property_traits<PropertyType() const>
-    : property_traits<PropertyType> {};
+struct property_traits<PropertyType() const> { using type = PropertyType; };
 
 template <typename PropertyType>
-struct property_traits<PropertyType()>
-    : property_traits<PropertyType> {};
+struct property_traits<PropertyType()> { using type = PropertyType; };
 
 template <typename PropertyType>
-struct property_traits<void(PropertyType)>
-    : property_traits<PropertyType> {};
+struct property_traits<void(PropertyType)> { using type = PropertyType; };
 
 template <typename ReflectableType, typename PropertyType>
-struct property_traits<PropertyType ReflectableType::*>
-    : property_traits<PropertyType> {};
+struct property_traits<PropertyType ReflectableType::*> { using type = PropertyType; };
 
 template <typename>
 struct function_traits;
@@ -413,17 +418,6 @@ struct access_traits<>
     };
 };
 
-namespace detail {
-template <typename T>
-struct explicit_t
-{
-    using type = T;
-};
-
-}
-template <typename T>
-using explicit_t = typename detail::explicit_t<T>::type;
-
 template <class ClassType>
 struct access_traits<ClassType>
 {
@@ -527,7 +521,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, explicit_t<PropertyType (ParentClassType::*)(void) const>)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, type_identity_t<PropertyType (ParentClassType::*)(void) const>)
         {
             return fpack(get, get);
         }
@@ -551,7 +545,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, explicit_t<PropertyType (ParentClassType::*)(void) const&>)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, type_identity_t<PropertyType (ParentClassType::*)(void) const&>)
         {
             return fpack(get, get);
         }
@@ -575,7 +569,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void), explicit_t<PropertyType (ParentClassType::*)(void)>)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void), type_identity_t<PropertyType (ParentClassType::*)(void)>)
         {
             return fpack(get, get);
         }
@@ -585,7 +579,7 @@ struct access_traits<ClassType>
             return std::make_pair(get, set);
         }
 
-        static constexpr auto of(PropertyType (*get)(void), explicit_t<PropertyType (*)(void)>)
+        static constexpr auto of(PropertyType (*get)(void), type_identity_t<PropertyType (*)(void)>)
         {
             return std::make_pair(get, get);
         }
@@ -609,7 +603,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, explicit_t<PropertyType (ParentClassType::*)(void)&>)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, type_identity_t<PropertyType (ParentClassType::*)(void)&>)
         {
             return fpack(get, get);
         }
@@ -1360,7 +1354,7 @@ auto handler_injection_call()
 {
     return [](injectable_t& injection)
     {
-        ::__rew<ReflectionType>::evaluate(dynamic_cast<InjectionType&>(injection));
+        ::__rew<ReflectionType>::evaluate(static_cast<InjectionType&>(injection));
     };
 }
 
@@ -1419,11 +1413,6 @@ public:
     {
         auto it = rtti_all.find(typeindex);
         return it != rtti_all.end() ? it->second : nullptr;
-    }
-
-    type_t* find(std::any& object) const
-    {
-        return find(object.type());
     }
 
     template <typename ReflectableType>
