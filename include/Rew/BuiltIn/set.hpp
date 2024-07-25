@@ -86,15 +86,15 @@ TEMPLATE_REFLECTABLE_DECLARATION
 REFLECTABLE_DECLARATION_INIT()
 
 
-template <typename> struct __rew_is_any_std_ordered_set : std::false_type {};
+template <typename> struct xxrew_is_any_std_ordered_set : std::false_type {};
 
 template <typename KeyType, typename Comparator, typename AllocatorType>
-struct __rew_is_any_std_ordered_set<std::set<KeyType, Comparator, AllocatorType>> : std::true_type {};
+struct xxrew_is_any_std_ordered_set<std::set<KeyType, Comparator, AllocatorType>> : std::true_type {};
 
 template <typename KeyType, typename Comparator, typename AllocatorType>
-struct __rew_is_any_std_ordered_set<std::multiset<KeyType, Comparator, AllocatorType>> : std::true_type {};
+struct xxrew_is_any_std_ordered_set<std::multiset<KeyType, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<R>::value)
+CONDITIONAL_REFLECTABLE(xxrew_is_any_std_ordered_set<R>::value)
     FACTORY(R())
 
     #ifndef REW_CORE_MINIMAL

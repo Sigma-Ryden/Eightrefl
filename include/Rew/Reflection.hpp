@@ -11,7 +11,7 @@
 #include <Rew/Meta.hpp>
 
 template <typename ReflectableType, typename enable = void>
-struct __rew;
+struct xxrew;
 
 namespace rew
 {

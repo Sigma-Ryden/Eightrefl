@@ -20,24 +20,24 @@
 // .property<R,type>(name, &R::get, &R::set)
 #define NAMED_PROPERTY(name_str, get, set, ...)                                                         \
     {                                                                                                   \
-        using __access = typename rew::meta::access_traits<CleanR>::template property<__VA_ARGS__>;     \
-        auto [__get, __set] = __access::of(&CleanR::__REW_DEPAREN(get), &CleanR::__REW_DEPAREN(set));   \
-        auto __meta = rew::find_or_add_property<__VA_ARGS__>(__reflection, name_str, __get, __set);     \
-        injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
+        using xxaccess = typename rew::meta::access_traits<CleanR>::template property<__VA_ARGS__>;     \
+        auto [xxget, xxset] = xxaccess::of(&CleanR::REW_DEPAREN(get), &CleanR::REW_DEPAREN(set));       \
+        auto xxmeta = rew::find_or_add_property<__VA_ARGS__>(xxreflection, name_str, xxget, xxset);     \
+        injection.template property<CleanR, decltype(xxget), decltype(xxset)>(*xxmeta);                 \
     }
 
-#define PROPERTY(name, ...) NAMED_PROPERTY(__REW_TO_STRING(name), name, name, __VA_ARGS__)
+#define PROPERTY(name, ...) NAMED_PROPERTY(REW_TO_STRING(name), name, name, __VA_ARGS__)
 
 // .property<type>(name, &get, &set)
 #define NAMED_FREE_PROPERTY(name_str, get, set, ...)                                                    \
     {                                                                                                   \
-        using __access = typename rew::meta::access_traits<>::template property<__VA_ARGS__>;           \
-        auto [__get, __set] = __access::of(&__REW_DEPAREN(get), &__REW_DEPAREN(set));                   \
-        auto __meta = rew::find_or_add_property<__VA_ARGS__>(__reflection, name_str, __get, __set);     \
-        injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
+        using xxaccess = typename rew::meta::access_traits<>::template property<__VA_ARGS__>;           \
+        auto [xxget, xxset] = xxaccess::of(&REW_DEPAREN(get), &REW_DEPAREN(set));                       \
+        auto xxmeta = rew::find_or_add_property<__VA_ARGS__>(xxreflection, name_str, xxget, xxset);     \
+        injection.template property<CleanR, decltype(xxget), decltype(xxset)>(*xxmeta);                 \
     }
 
-#define FREE_PROPERTY(name, ...) NAMED_FREE_PROPERTY(__REW_TO_STRING(name), name, name, __VA_ARGS__)
+#define FREE_PROPERTY(name, ...) NAMED_FREE_PROPERTY(REW_TO_STRING(name), name, name, __VA_ARGS__)
 
 namespace rew
 {

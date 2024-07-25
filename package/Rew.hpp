@@ -42,15 +42,15 @@ struct attribute_t
 // .meta(name, expr)
 #define META(name_str, ...)                                                                             \
     {                                                                                                   \
-        auto __meta = rew::find_or_add_meta(__reflection, name_str, __VA_ARGS__);                       \
-        injection.template meta<CleanR, decltype(__VA_ARGS__)>(name_str, *__meta);                      \
+        auto xxmeta = rew::find_or_add_meta(xxreflection, name_str, __VA_ARGS__);                       \
+        injection.template meta<CleanR, decltype(__VA_ARGS__)>(name_str, *xxmeta);                      \
     }
 
 // .parent<R, type>()
 #define PARENT(...)                                                                                     \
     {                                                                                                   \
-        auto __meta = rew::find_or_add_parent<CleanR, __VA_ARGS__>(__reflection);                       \
-        injection.template parent<CleanR, __VA_ARGS__>(*__meta);                                        \
+        auto xxmeta = rew::find_or_add_parent<CleanR, __VA_ARGS__>(xxreflection);                       \
+        injection.template parent<CleanR, __VA_ARGS__>(*xxmeta);                                        \
     }
 
 namespace rew
@@ -281,53 +281,53 @@ namespace detail
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
 constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
 {
-    struct __inner : protected ReflectableType
+    struct xxinner : protected ReflectableType
     {
         static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
         {
             return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) const>(function);
         }
     };
-    return __inner::get(function);
+    return xxinner::get(function);
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
 constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const&)
 {
-    struct __inner : protected ReflectableType
+    struct xxinner : protected ReflectableType
     {
         static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const&)
         {
             return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) const&>(function);
         }
     };
-    return __inner::get(function);
+    return xxinner::get(function);
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
 constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
 {
-    struct __inner : protected ReflectableType
+    struct xxinner : protected ReflectableType
     {
         static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
         {
             return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...)>(function);
         }
     };
-    return __inner::get(function);
+    return xxinner::get(function);
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
 constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...)&)
 {
-    struct __inner : protected ReflectableType
+    struct xxinner : protected ReflectableType
     {
         static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...)&)
         {
             return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...)&>(function);
         }
     };
-    return __inner::get(function);
+    return xxinner::get(function);
 }
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
@@ -339,14 +339,14 @@ constexpr auto function_ptr_impl(ReturnType (*function)(ArgumentTypes...))
 template <typename ReflectableType, typename ParentReflectableType, typename ValueType>
 constexpr auto property_ptr_impl(ValueType ParentReflectableType::* property)
 {
-    struct __inner : protected ReflectableType
+    struct xxinner : protected ReflectableType
     {
         static constexpr auto get(ValueType ParentReflectableType::* property)
         {
             return static_cast<ValueType ReflectableType::*>(property);
         }
     };
-    return __inner::get(property);
+    return xxinner::get(property);
 }
 
 } // namespace detail
@@ -739,37 +739,37 @@ std::any backward(ValueType&& result)
 
 } // namespace rew
 
-#define __REW_DEPAREN(arg) __REW_DEPAREN_IMPL(__REW_UATE arg)
-#define __REW_UATE(...) __REW_UATE __VA_ARGS__
-#define __REW_DEPAREN_IMPL(...) __REW_DEPAREN_IMPL_(__VA_ARGS__)
-#define __REW_DEPAREN_IMPL_(...) __REW_EVAL ## __VA_ARGS__
-#define __REW_EVAL__REW_UATE
+#define REW_DEPAREN(arg) REW_DEPAREN_IMPL(REW_UATE arg)
+#define REW_UATE(...) REW_UATE __VA_ARGS__
+#define REW_DEPAREN_IMPL(...) REW_DEPAREN_IMPL_(__VA_ARGS__)
+#define REW_DEPAREN_IMPL_(...) REW_EVAL ## __VA_ARGS__
+#define REW_EVALREW_UATE
 
-#define __REW_TO_STRING(...) __REW_TO_STRING_IMPL(__REW_DEPAREN(__VA_ARGS__))
-#define __REW_TO_STRING_IMPL(...) __REW_TO_STRING_IMPL_(__VA_ARGS__)
-#define __REW_TO_STRING_IMPL_(...) #__VA_ARGS__
+#define REW_TO_STRING(...) REW_TO_STRING_IMPL(REW_DEPAREN(__VA_ARGS__))
+#define REW_TO_STRING_IMPL(...) REW_TO_STRING_IMPL_(__VA_ARGS__)
+#define REW_TO_STRING_IMPL_(...) #__VA_ARGS__
 
 // .function<R, signature>(name, &R::func)
 #define NAMED_FUNCTION(name_str, name, ...)                                                             \
     {                                                                                                   \
-        using __access = typename rew::meta::access_traits<CleanR>::template function<__VA_ARGS__>;     \
-        auto __ptr = __access::of(&CleanR::__REW_DEPAREN(name));                                        \
-        auto __meta = rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);            \
-        injection.template function<CleanR, decltype(__ptr)>(*__meta);                                  \
+        using xxaccess = typename rew::meta::access_traits<CleanR>::template function<__VA_ARGS__>;     \
+        auto xxptr = xxaccess::of(&CleanR::REW_DEPAREN(name));                                          \
+        auto xxmeta = rew::find_or_add_function<__VA_ARGS__>(xxreflection, name_str, xxptr);            \
+        injection.template function<CleanR, decltype(xxptr)>(*xxmeta);                                  \
     }
 
-#define FUNCTION(name, ...) NAMED_FUNCTION(__REW_TO_STRING(name), name, __VA_ARGS__)
+#define FUNCTION(name, ...) NAMED_FUNCTION(REW_TO_STRING(name), name, __VA_ARGS__)
 
 // .function<signature>(name, &func)
 #define NAMED_FREE_FUNCTION(name_str, name, ...)                                                        \
     {                                                                                                   \
-        using __access = typename rew::meta::access_traits<>::template function<__VA_ARGS__>;           \
-        auto __ptr = __access::of(&__REW_DEPAREN(name));                                                \
-        auto __meta = rew::find_or_add_function<__VA_ARGS__>(__reflection, name_str, __ptr);            \
-        injection.template function<CleanR, decltype(__ptr)>(*__meta);                                  \
+        using xxaccess = typename rew::meta::access_traits<>::template function<__VA_ARGS__>;           \
+        auto xxptr = xxaccess::of(&REW_DEPAREN(name));                                                  \
+        auto xxmeta = rew::find_or_add_function<__VA_ARGS__>(xxreflection, name_str, xxptr);            \
+        injection.template function<CleanR, decltype(xxptr)>(*xxmeta);                                  \
     }
 
-#define FREE_FUNCTION(name, ...) NAMED_FREE_FUNCTION(__REW_TO_STRING(name), name, __VA_ARGS__)
+#define FREE_FUNCTION(name, ...) NAMED_FREE_FUNCTION(REW_TO_STRING(name), name, __VA_ARGS__)
 
 namespace rew
 {
@@ -880,9 +880,9 @@ auto handler_function_call(ReturnType (*function)(ArgumentTypes...))
 // .factory<signature>()
 #define FACTORY(...)                                                                                    \
     {                                                                                                   \
-        using __traits = rew::meta::function_traits<__VA_ARGS__>;                                       \
-        auto __meta = rew::find_or_add_factory<typename __traits::dirty_pointer>(__reflection);         \
-        injection.template factory<CleanR, typename __traits::pointer>(*__meta);                        \
+        using xxtraits = rew::meta::function_traits<__VA_ARGS__>;                                       \
+        auto xxmeta = rew::find_or_add_factory<typename xxtraits::dirty_pointer>(xxreflection);         \
+        injection.template factory<CleanR, typename xxtraits::pointer>(*xxmeta);                        \
     }
 
 namespace rew
@@ -934,24 +934,24 @@ auto handler_factory_call(ReflectableType (*)(ArgumentTypes...))
 // .property<R,type>(name, &R::get, &R::set)
 #define NAMED_PROPERTY(name_str, get, set, ...)                                                         \
     {                                                                                                   \
-        using __access = typename rew::meta::access_traits<CleanR>::template property<__VA_ARGS__>;     \
-        auto [__get, __set] = __access::of(&CleanR::__REW_DEPAREN(get), &CleanR::__REW_DEPAREN(set));   \
-        auto __meta = rew::find_or_add_property<__VA_ARGS__>(__reflection, name_str, __get, __set);     \
-        injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
+        using xxaccess = typename rew::meta::access_traits<CleanR>::template property<__VA_ARGS__>;     \
+        auto [xxget, xxset] = xxaccess::of(&CleanR::REW_DEPAREN(get), &CleanR::REW_DEPAREN(set));       \
+        auto xxmeta = rew::find_or_add_property<__VA_ARGS__>(xxreflection, name_str, xxget, xxset);     \
+        injection.template property<CleanR, decltype(xxget), decltype(xxset)>(*xxmeta);                 \
     }
 
-#define PROPERTY(name, ...) NAMED_PROPERTY(__REW_TO_STRING(name), name, name, __VA_ARGS__)
+#define PROPERTY(name, ...) NAMED_PROPERTY(REW_TO_STRING(name), name, name, __VA_ARGS__)
 
 // .property<type>(name, &get, &set)
 #define NAMED_FREE_PROPERTY(name_str, get, set, ...)                                                    \
     {                                                                                                   \
-        using __access = typename rew::meta::access_traits<>::template property<__VA_ARGS__>;           \
-        auto [__get, __set] = __access::of(&__REW_DEPAREN(get), &__REW_DEPAREN(set));                   \
-        auto __meta = rew::find_or_add_property<__VA_ARGS__>(__reflection, name_str, __get, __set);     \
-        injection.template property<CleanR, decltype(__get), decltype(__set)>(*__meta);                 \
+        using xxaccess = typename rew::meta::access_traits<>::template property<__VA_ARGS__>;           \
+        auto [xxget, xxset] = xxaccess::of(&REW_DEPAREN(get), &REW_DEPAREN(set));                       \
+        auto xxmeta = rew::find_or_add_property<__VA_ARGS__>(xxreflection, name_str, xxget, xxset);     \
+        injection.template property<CleanR, decltype(xxget), decltype(xxset)>(*xxmeta);                 \
     }
 
-#define FREE_PROPERTY(name, ...) NAMED_FREE_PROPERTY(__REW_TO_STRING(name), name, name, __VA_ARGS__)
+#define FREE_PROPERTY(name, ...) NAMED_FREE_PROPERTY(REW_TO_STRING(name), name, name, __VA_ARGS__)
 
 namespace rew
 {
@@ -1279,7 +1279,7 @@ constexpr auto property_pointer(PropertyType const* get, PropertyType const* set
 } // namespace rew
 
 template <typename ReflectableType, typename enable = void>
-struct __rew;
+struct xxrew;
 
 namespace rew
 {
@@ -1347,7 +1347,7 @@ auto handler_injection_call()
 {
     return [](injectable_t& injection)
     {
-        ::__rew<ReflectionType>::evaluate(static_cast<InjectionType&>(injection));
+        ::xxrew<ReflectionType>::evaluate(static_cast<InjectionType&>(injection));
     };
 }
 
@@ -1484,7 +1484,7 @@ inline registry_t global;
 
 #define CUSTOM_TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                   \
     namespace rew { namespace meta {                                                                    \
-        __REW_DEPAREN(template_header) struct reflectable_traits<__VA_ARGS__> {                         \
+        REW_DEPAREN(template_header) struct reflectable_traits<__VA_ARGS__> {                           \
             using R = typename rew::meta::reflectable_using<__VA_ARGS__>::R;
 
 #define CUSTOM_CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                 \
@@ -1521,35 +1521,35 @@ inline registry_t global;
         };                                                                                              \
     }}
 
-#define __REW_REFLECTABLE_BODY()                                                                        \
+#define REW_REFLECTABLE_BODY()                                                                          \
     template <class InjectionType>                                                                      \
     static void evaluate(InjectionType&& injection) {                                                   \
-        auto __type = rew::find_or_add_type<R>();                                                       \
-        auto __reflection = __type->reflection; (void)__reflection;                                     \
-        injection.template type<R>(*__type);
+        auto xxtype = rew::find_or_add_type<R>();                                                       \
+        auto xxreflection = xxtype->reflection; (void)xxreflection;                                     \
+        injection.template type<R>(*xxtype);
 
 #define TEMPLATE_REFLECTABLE(template_header, ...)                                                      \
-    __REW_DEPAREN(template_header) struct __rew<__VA_ARGS__> {                                          \
+    REW_DEPAREN(template_header) struct xxrew<__VA_ARGS__> {                                            \
         using R = __VA_ARGS__;                                                                          \
         using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
-        __REW_REFLECTABLE_BODY()
+        REW_REFLECTABLE_BODY()
 
 #define CONDITIONAL_REFLECTABLE(...)                                                                    \
-    template <typename R> struct __rew<R, std::enable_if_t<__VA_ARGS__>> {                              \
+    template <typename R> struct xxrew<R, std::enable_if_t<__VA_ARGS__>> {                              \
         using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
-        __REW_REFLECTABLE_BODY()
+        REW_REFLECTABLE_BODY()
 
 #define REFLECTABLE(...)                                                                                \
-    template <> struct __rew<__VA_ARGS__> {                                                             \
+    template <> struct xxrew<__VA_ARGS__> {                                                             \
         using R = __VA_ARGS__;                                                                          \
         using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
-        __REW_REFLECTABLE_BODY()
+        REW_REFLECTABLE_BODY()
 
 #define REFLECTABLE_INIT(...)                                                                           \
-            rew::add_default_injection_set<R>(__type);                                                  \
+            rew::add_default_injection_set<R>(xxtype);                                                  \
         }                                                                                               \
     private:                                                                                            \
-        inline static auto __autogenerated = (evaluate(rew::injectable_t{}), true);                     \
+        inline static auto xxautogenerated = (evaluate(rew::injectable_t{}), true);                     \
     };
 
 #define CUSTOM_REFLECTABLE_INJECTION_DECLARATION(injection_index, ...)                                  \
@@ -1564,7 +1564,7 @@ inline registry_t global;
 
 #define TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_clean, ...)                             \
    namespace rew { namespace meta {                                                                     \
-        __REW_DEPAREN(template_header) struct reflectable_using<__REW_DEPAREN(reflectable_clean)> {     \
+        REW_DEPAREN(template_header) struct reflectable_using<REW_DEPAREN(reflectable_clean)> {         \
             using R = __VA_ARGS__;                                                                      \
         };                                                                                              \
     }}
@@ -1577,7 +1577,7 @@ inline registry_t global;
     }}
 
 #define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, reflectable_using_full, ...)     \
-    __REW_DEPAREN(template_header)                                                                      \
+    REW_DEPAREN(template_header)                                                                        \
     struct reflectable_using : rew::meta::reflectable_using_base<__VA_ARGS__> {};                       \
     TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_using_full, __VA_ARGS__)
 
@@ -1585,7 +1585,7 @@ inline registry_t global;
     struct reflectable_using : rew::meta::reflectable_using_base<__VA_ARGS__> {};                       \
     REFLECTABLE_CLEAN(reflectable_using, __VA_ARGS__)
 
-#define REFLECTABLE_ACCESS(...) template <typename, typename> friend struct __rew;
+#define REFLECTABLE_ACCESS(...) template <typename, typename> friend struct xxrew;
 
 namespace rew
 {
@@ -1606,7 +1606,7 @@ void reflectable()
     if (!locked)
     {
         locked = true;
-        ::__rew<ReflectableType>::evaluate(injectable_t{});
+        ::xxrew<ReflectableType>::evaluate(injectable_t{});
     }
 }
 
@@ -1640,16 +1640,16 @@ type_t* find_or_add_type()
         reflectable<dirty_reflectable_type>();
     }
 
-    auto __name = reflectable_traits::name();
-    auto __registry = reflectable_traits::registry();
+    auto xxname = reflectable_traits::name();
+    auto xxregistry = reflectable_traits::registry();
 
-    auto __type = __registry->all[__name];
-    if (__type == nullptr)
+    auto xxtype = xxregistry->all[xxname];
+    if (xxtype == nullptr)
     {
-        __type = __registry->template add<reflectable_type, dirty_reflectable_type>(__name);
+        xxtype = xxregistry->template add<reflectable_type, dirty_reflectable_type>(xxname);
     }
 
-    return __type;
+    return xxtype;
 }
 
 template <typename ReflectableType, typename ParentReflectableType>
@@ -1659,20 +1659,20 @@ parent_t* find_or_add_parent(reflection_t* reflection)
 
     using reflectable_traits = meta::reflectable_traits<ParentReflectableType>;
 
-    auto __name = reflectable_traits::name();
+    auto xxname = reflectable_traits::name();
 
-    auto __meta = reflection->parent.find(__name);
-    if (__meta == nullptr) __meta = &reflection->parent.add
+    auto xxmeta = reflection->parent.find(xxname);
+    if (xxmeta == nullptr) xxmeta = &reflection->parent.add
     (
-        __name,
+        xxname,
         {
-            __name,
+            xxname,
             find_or_add_type<ParentReflectableType>(),
             handler_parent_cast<ReflectableType, ParentReflectableType>()
         }
     );
 
-    return __meta;
+    return xxmeta;
 }
 
 namespace detail
@@ -1700,21 +1700,21 @@ factory_t* find_or_add_factory(reflection_t* reflection)
     using dirty_pointer = typename function_traits::dirty_pointer;
     using pointer = typename function_traits::pointer;
 
-    auto __name = meta::reflectable_traits<dirty_type>::name();
+    auto xxname = meta::reflectable_traits<dirty_type>::name();
 
-    auto __meta = reflection->factory.find(__name);
-    if (__meta == nullptr) __meta = &reflection->factory.add
+    auto xxmeta = reflection->factory.find(xxname);
+    if (xxmeta == nullptr) xxmeta = &reflection->factory.add
     (
-        __name,
+        xxname,
         {
-            __name,
+            xxname,
             handler_factory_call(pointer{}),
             detail::function_argument_types(dirty_pointer{}),
             detail::function_return_type(dirty_pointer{})
         }
     );
 
-    return __meta;
+    return xxmeta;
 }
 
 template <typename DirtyFunctionType = void, typename FunctionType>
@@ -1728,17 +1728,17 @@ function_t* find_or_add_function(reflection_t* reflection, std::string const& na
     using dirty_type = typename function_traits::dirty_type;
     using dirty_pointer = typename function_traits::dirty_pointer;
 
-    auto __function = reflection->function.find(name);
-    if (__function == nullptr) __function = &reflection->function.add(name, {});
+    auto xxfunction = reflection->function.find(name);
+    if (xxfunction == nullptr) xxfunction = &reflection->function.add(name, {});
 
-    auto __overload = meta::reflectable_traits<dirty_type>::name();
+    auto xxoverload = meta::reflectable_traits<dirty_type>::name();
 
-    auto __meta = __function->find(__overload);
-    if (__meta == nullptr) __meta = &__function->add
+    auto xxmeta = xxfunction->find(xxoverload);
+    if (xxmeta == nullptr) xxmeta = &xxfunction->add
     (
-        __overload,
+        xxoverload,
         {
-            __overload,
+            xxoverload,
             handler_function_call(ptr),
             detail::function_argument_types(dirty_pointer{}),
             detail::function_return_type(dirty_pointer{}),
@@ -1746,7 +1746,7 @@ function_t* find_or_add_function(reflection_t* reflection, std::string const& na
         }
     );
 
-    return __meta;
+    return xxmeta;
 }
 
 template <typename DirtyPropertyType = void, typename GetterType, typename SetterType>
@@ -1760,8 +1760,8 @@ property_t* find_or_add_property(reflection_t* reflection, std::string const& na
 
     using type = typename property_traits::type;
 
-    auto __meta = reflection->property.find(name);
-    if (__meta == nullptr) __meta = &reflection->property.add
+    auto xxmeta = reflection->property.find(name);
+    if (xxmeta == nullptr) xxmeta = &reflection->property.add
     (
         name,
         {
@@ -1774,16 +1774,16 @@ property_t* find_or_add_property(reflection_t* reflection, std::string const& na
         }
     );
 
-    return __meta;
+    return xxmeta;
 }
 
 template <typename MetaType>
 std::any* find_or_add_meta(reflection_t* reflection, std::string const& name, const MetaType& data)
 {
-    auto __meta = reflection->meta.find(name);
-    if (__meta == nullptr) __meta = &reflection->meta.add(name, data);
+    auto xxmeta = reflection->meta.find(name);
+    if (xxmeta == nullptr) xxmeta = &reflection->meta.add(name, data);
 
-    return __meta;
+    return xxmeta;
 }
 
 template <typename ReflectableType, class InjectionType>
@@ -1793,19 +1793,19 @@ injection_t* find_or_add_injection(type_t* type)
 
     using reflectable_injection_traits = meta::reflectable_traits<InjectionType>;
 
-    auto __name = reflectable_injection_traits::name();
+    auto xxname = reflectable_injection_traits::name();
 
-    auto __meta = type->injection.find(__name);
-    if (__meta == nullptr) __meta = &type->injection.add
+    auto xxmeta = type->injection.find(xxname);
+    if (xxmeta == nullptr) xxmeta = &type->injection.add
     (
-        __name,
+        xxname,
         {
-            __name,
+            xxname,
             handler_injection_call<ReflectableType, InjectionType>()
         }
     );
 
-    return __meta;
+    return xxmeta;
 }
 
 template <typename ReflectableType, std::size_t CurrentKey = 0, std::size_t MaxKey = 4>
@@ -3417,15 +3417,15 @@ TEMPLATE_REFLECTABLE_DECLARATION
     )
 REFLECTABLE_DECLARATION_INIT()
 
-template <typename> struct __rew_is_any_std_ordered_set : std::false_type {};
+template <typename> struct xxrew_is_any_std_ordered_set : std::false_type {};
 
 template <typename KeyType, typename Comparator, typename AllocatorType>
-struct __rew_is_any_std_ordered_set<std::set<KeyType, Comparator, AllocatorType>> : std::true_type {};
+struct xxrew_is_any_std_ordered_set<std::set<KeyType, Comparator, AllocatorType>> : std::true_type {};
 
 template <typename KeyType, typename Comparator, typename AllocatorType>
-struct __rew_is_any_std_ordered_set<std::multiset<KeyType, Comparator, AllocatorType>> : std::true_type {};
+struct xxrew_is_any_std_ordered_set<std::multiset<KeyType, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_set<R>::value)
+CONDITIONAL_REFLECTABLE(xxrew_is_any_std_ordered_set<R>::value)
     FACTORY(R())
 
     #ifndef REW_CORE_MINIMAL
@@ -3608,15 +3608,15 @@ TEMPLATE_REFLECTABLE_DECLARATION
     )
 REFLECTABLE_DECLARATION_INIT()
 
-template <typename> struct __rew_is_any_std_unordered_set : std::false_type {};
+template <typename> struct xxrew_is_any_std_unordered_set : std::false_type {};
 
 template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
-struct __rew_is_any_std_unordered_set<std::unordered_set<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
+struct xxrew_is_any_std_unordered_set<std::unordered_set<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
 
 template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
-struct __rew_is_any_std_unordered_set<std::unordered_multiset<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
+struct xxrew_is_any_std_unordered_set<std::unordered_multiset<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_set<R>::value)
+CONDITIONAL_REFLECTABLE(xxrew_is_any_std_unordered_set<R>::value)
     FACTORY(R())
 
     #ifndef REW_CORE_MINIMAL
@@ -3929,15 +3929,15 @@ TEMPLATE_REFLECTABLE_DECLARATION
     )
 REFLECTABLE_DECLARATION_INIT()
 
-template <typename> struct __rew_is_any_std_ordered_map : std::false_type {};
+template <typename> struct xxrew_is_any_std_ordered_map : std::false_type {};
 
 template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
-struct __rew_is_any_std_ordered_map<std::map<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
+struct xxrew_is_any_std_ordered_map<std::map<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
 
 template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
-struct __rew_is_any_std_ordered_map<std::multimap<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
+struct xxrew_is_any_std_ordered_map<std::multimap<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_any_std_ordered_map<R>::value)
+CONDITIONAL_REFLECTABLE(xxrew_is_any_std_ordered_map<R>::value)
     FACTORY(R())
 
     #ifndef REW_CORE_MINIMAL
@@ -4133,15 +4133,15 @@ TEMPLATE_REFLECTABLE_DECLARATION
     )
 REFLECTABLE_DECLARATION_INIT()
 
-template <typename> struct __rew_is_any_std_unordered_map : std::false_type {};
+template <typename> struct xxrew_is_any_std_unordered_map : std::false_type {};
 
 template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
-struct __rew_is_any_std_unordered_map<std::unordered_map<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
+struct xxrew_is_any_std_unordered_map<std::unordered_map<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
 
 template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
-struct __rew_is_any_std_unordered_map<std::unordered_multimap<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
+struct xxrew_is_any_std_unordered_map<std::unordered_multimap<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_map<R>::value)
+CONDITIONAL_REFLECTABLE(xxrew_is_any_std_unordered_map<R>::value)
     FACTORY(R())
 
     #ifndef REW_CORE_MINIMAL
@@ -4535,17 +4535,17 @@ REFLECTABLE_INIT()
 
 #include <complex> // complex
 
-template <typename> struct __rew_std_complex_pass_value;
+template <typename> struct xxrew_std_complex_pass_value;
 
 template <typename ValueType>
-struct __rew_std_complex_pass_value<std::complex<ValueType>>
+struct xxrew_std_complex_pass_value<std::complex<ValueType>>
 {
     using type = ValueType const&;
 };
 
-template <> struct __rew_std_complex_pass_value<std::complex<float>> { using type = float; };
-template <> struct __rew_std_complex_pass_value<std::complex<double>> { using type = double; };
-template <> struct __rew_std_complex_pass_value<std::complex<long double>> { using type = long double; };
+template <> struct xxrew_std_complex_pass_value<std::complex<float>> { using type = float; };
+template <> struct xxrew_std_complex_pass_value<std::complex<double>> { using type = double; };
+template <> struct xxrew_std_complex_pass_value<std::complex<long double>> { using type = long double; };
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -4560,30 +4560,30 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename ValueType>, std::complex<ValueType>)
     FACTORY(R())
-    FACTORY(R(typename __rew_std_complex_pass_value<R>::type, typename __rew_std_complex_pass_value<R>::type))
+    FACTORY(R(typename xxrew_std_complex_pass_value<R>::type, typename xxrew_std_complex_pass_value<R>::type))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
 
     #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator+=, R&(typename __rew_std_complex_pass_value<R>::type))
+    FUNCTION(operator+=, R&(typename xxrew_std_complex_pass_value<R>::type))
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(operator+=, R&(R const&))
 
     #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator-=, R&(typename __rew_std_complex_pass_value<R>::type))
+    FUNCTION(operator-=, R&(typename xxrew_std_complex_pass_value<R>::type))
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(operator-=, R&(R const&))
 
     #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator*=, R&(typename __rew_std_complex_pass_value<R>::type))
+    FUNCTION(operator*=, R&(typename xxrew_std_complex_pass_value<R>::type))
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(operator*=, R&(R const&))
 
     #ifndef REW_CORE_MINIMAL
-    FUNCTION(operator/=, R&(typename __rew_std_complex_pass_value<R>::type))
+    FUNCTION(operator/=, R&(typename xxrew_std_complex_pass_value<R>::type))
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(operator/=, R&(R const&))

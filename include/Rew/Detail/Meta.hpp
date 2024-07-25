@@ -201,53 +201,53 @@ namespace detail
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
 constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
 {
-    struct __inner : protected ReflectableType
+    struct xxinner : protected ReflectableType
     {
         static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const)
         {
             return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) const>(function);
         }
     };
-    return __inner::get(function);
+    return xxinner::get(function);
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
 constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const&)
 {
-    struct __inner : protected ReflectableType
+    struct xxinner : protected ReflectableType
     {
         static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...) const&)
         {
             return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...) const&>(function);
         }
     };
-    return __inner::get(function);
+    return xxinner::get(function);
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
 constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
 {
-    struct __inner : protected ReflectableType
+    struct xxinner : protected ReflectableType
     {
         static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...))
         {
             return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...)>(function);
         }
     };
-    return __inner::get(function);
+    return xxinner::get(function);
 }
 
 template <typename ReflectableType, typename ParentReflectableType, typename ReturnType, typename... ArgumentTypes>
 constexpr auto function_ptr_impl(ReturnType (ParentReflectableType::* function)(ArgumentTypes...)&)
 {
-    struct __inner : protected ReflectableType
+    struct xxinner : protected ReflectableType
     {
         static constexpr auto get(ReturnType (ParentReflectableType::* function)(ArgumentTypes...)&)
         {
             return static_cast<ReturnType (ReflectableType::*)(ArgumentTypes...)&>(function);
         }
     };
-    return __inner::get(function);
+    return xxinner::get(function);
 }
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
@@ -259,14 +259,14 @@ constexpr auto function_ptr_impl(ReturnType (*function)(ArgumentTypes...))
 template <typename ReflectableType, typename ParentReflectableType, typename ValueType>
 constexpr auto property_ptr_impl(ValueType ParentReflectableType::* property)
 {
-    struct __inner : protected ReflectableType
+    struct xxinner : protected ReflectableType
     {
         static constexpr auto get(ValueType ParentReflectableType::* property)
         {
             return static_cast<ValueType ReflectableType::*>(property);
         }
     };
-    return __inner::get(property);
+    return xxinner::get(property);
 }
 
 } // namespace detail

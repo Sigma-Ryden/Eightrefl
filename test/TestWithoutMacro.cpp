@@ -47,7 +47,7 @@ struct reflectable_traits<TestWithoutMacroBaseStruct>
 } // namespace rew::meta
 
 template <>
-struct __rew<TestWithoutMacroBaseStruct>
+struct xxrew<TestWithoutMacroBaseStruct>
 {
     template <typename InjectionType>
     void evaluate(InjectionType& injection)
@@ -69,7 +69,7 @@ struct reflectable_traits<TestWithoutMacroStruct>
 } // namespace rew::meta
 
 template <>
-struct __rew<TestWithoutMacroStruct>
+struct xxrew<TestWithoutMacroStruct>
 {
     using R = TestWithoutMacroStruct; // not required by library
 

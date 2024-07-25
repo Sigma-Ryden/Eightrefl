@@ -12,8 +12,8 @@
 // .parent<R, type>()
 #define PARENT(...)                                                                                     \
     {                                                                                                   \
-        auto __meta = rew::find_or_add_parent<CleanR, __VA_ARGS__>(__reflection);                       \
-        injection.template parent<CleanR, __VA_ARGS__>(*__meta);                                        \
+        auto xxmeta = rew::find_or_add_parent<CleanR, __VA_ARGS__>(xxreflection);                       \
+        injection.template parent<CleanR, __VA_ARGS__>(*xxmeta);                                        \
     }
 
 namespace rew

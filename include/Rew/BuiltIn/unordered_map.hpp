@@ -118,15 +118,15 @@ TEMPLATE_REFLECTABLE_DECLARATION
 REFLECTABLE_DECLARATION_INIT()
 
 
-template <typename> struct __rew_is_any_std_unordered_map : std::false_type {};
+template <typename> struct xxrew_is_any_std_unordered_map : std::false_type {};
 
 template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
-struct __rew_is_any_std_unordered_map<std::unordered_map<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
+struct xxrew_is_any_std_unordered_map<std::unordered_map<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
 
 template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
-struct __rew_is_any_std_unordered_map<std::unordered_multimap<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
+struct xxrew_is_any_std_unordered_map<std::unordered_multimap<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
 
-CONDITIONAL_REFLECTABLE(__rew_is_any_std_unordered_map<R>::value)
+CONDITIONAL_REFLECTABLE(xxrew_is_any_std_unordered_map<R>::value)
     FACTORY(R())
 
     #ifndef REW_CORE_MINIMAL

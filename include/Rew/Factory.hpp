@@ -15,9 +15,9 @@
 // .factory<signature>()
 #define FACTORY(...)                                                                                    \
     {                                                                                                   \
-        using __traits = rew::meta::function_traits<__VA_ARGS__>;                                       \
-        auto __meta = rew::find_or_add_factory<typename __traits::dirty_pointer>(__reflection);         \
-        injection.template factory<CleanR, typename __traits::pointer>(*__meta);                        \
+        using xxtraits = rew::meta::function_traits<__VA_ARGS__>;                                       \
+        auto xxmeta = rew::find_or_add_factory<typename xxtraits::dirty_pointer>(xxreflection);         \
+        injection.template factory<CleanR, typename xxtraits::pointer>(*xxmeta);                        \
     }
 
 namespace rew
