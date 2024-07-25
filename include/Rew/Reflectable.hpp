@@ -125,7 +125,7 @@ std::string nameof()
 }
 
 template <typename ReflectableType>
-using cleanof = meta::clean<ReflectableType>;
+using cleanof = meta::reflectable_using_t<ReflectableType>;
 
 template <typename ReflectableType>
 void reflectable()

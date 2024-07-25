@@ -23,7 +23,7 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::reference_wrapper<Value
     FUNCTION(operator=, R&(R const&))
 
     #ifndef REW_CORE_MINIMAL
-    NAMED_FUNCTION("operator " + rew::nameof<ValueType&>(), operator rew::cleanof<ValueType>&)
+    NAMED_FUNCTION(("operator " + rew::nameof<ValueType&>()), operator rew::cleanof<ValueType>&)
     #endif // REW_CORE_MINIMAL
 
     FUNCTION(get)
