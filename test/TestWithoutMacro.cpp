@@ -16,35 +16,25 @@ TEST_SPACE()
 
 } // TEST_SPACE
 
-namespace rew::meta
-{
-
 // need only for default injections
 // template <>
-// struct injection_traits<1>
+// struct xxrew_traits<1>
 // {
 //     using type = TestWithoutMacroInjection;
 // };
 
 template <>
-struct reflectable_traits<TestWithoutMacroInjection>
+struct xxrew_traits<TestWithoutMacroInjection>
 {
     static auto name() { return "TestWithoutMacroInjection"; }
 };
 
-} // namespace rew::meta
-
-namespace rew::meta
-{
-
 template <>
-struct reflectable_traits<TestWithoutMacroBaseStruct>
+struct xxrew_traits<TestWithoutMacroBaseStruct>
 {
     static auto registry() { return &rew::global; }
     static auto name() { return "TestWithoutMacroBaseStruct"; }
 };
-
-} // namespace rew::meta
 
 template <>
 struct xxrew<TestWithoutMacroBaseStruct>
@@ -56,17 +46,12 @@ struct xxrew<TestWithoutMacroBaseStruct>
     }
 };
 
-namespace rew::meta
-{
-
 template <>
-struct reflectable_traits<TestWithoutMacroStruct>
+struct xxrew_traits<TestWithoutMacroStruct>
 {
     static auto registry() { return &rew::global; }
     static auto name() { return "TestWithoutMacroStruct"; }
 };
-
-} // namespace rew::meta
 
 template <>
 struct xxrew<TestWithoutMacroStruct>
@@ -86,6 +71,7 @@ struct xxrew<TestWithoutMacroStruct>
     }
 };
 
+// TODO: add xxrew_alias
 TEST(TestLibrary, TestWithoutMacro)
 {
     rew::reflectable<TestWithoutMacroStruct>();

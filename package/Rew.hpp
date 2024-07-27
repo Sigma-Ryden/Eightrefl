@@ -85,31 +85,23 @@ auto handler_parent_cast()
 
 #include <utility> // pair
 
+template <typename ReflectableType, typename enable = void>
+struct xxrew_alias { using R = ReflectableType; };
+
+template <typename ReflectableType, typename enable = void>
+struct xxrew_traits;
+
 namespace rew
 {
 
 namespace meta
 {
 
-template <typename T> struct type_identity { using type = T; };
+template <typename T>
+struct type_identity { using type = T; };
 
 template <typename T>
-using type_identity_t = typename type_identity<T>::type;
-
-template <typename T, typename enable = void>
-struct reflectable_traits;
-
-template <typename T, typename enable = void>
-struct reflectable_using
-{
-    using R = T;
-};
-
-template <typename T>
-using reflectable_using_t = typename reflectable_using<T>::R;
-
-template <typename T>
-struct reflectable_using_base : std::conditional_t
+struct inherits_t : std::conditional_t
 <
     std::conjunction_v< std::is_class<T>, std::negation<std::is_final<T>> >,
     T,
@@ -117,53 +109,25 @@ struct reflectable_using_base : std::conditional_t
 > {};
 
 template <typename T>
-struct to_reflectable_reference
-{
-    using type = std::remove_const_t<std::remove_reference_t<T>>*;
-};
+struct to_reflectable_reference { using type = std::remove_const_t<std::remove_reference_t<T>>*; };
 
 template <typename T>
-using to_reflectable_reference_t = typename to_reflectable_reference<T>::type;
+struct to_reflectable_pointer { using type = std::remove_const_t<std::remove_pointer_t<T>>*; };
 
 template <typename T>
-struct to_reflectable_pointer
-{
-    using type = std::remove_const_t<std::remove_pointer_t<T>>*;
-};
-
-template <typename T>
-using to_reflectable_pointer_t = typename to_reflectable_pointer<T>::type;
-
-template <typename T>
-struct to_reflectable_object
-{
-    using type = std::remove_const_t<T>;
-};
-
-template <typename T>
-using to_reflectable_object_t = typename to_reflectable_object<T>::type;
+struct to_reflectable_object { using type = std::remove_const_t<T>; };
 
 template <typename T, typename enable = void> struct is_complete : std::false_type {};
 template <typename T> struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
 
-namespace detail
-{
+template <typename T, typename enable = void> struct is_reflectable : std::false_type {};
+template <typename T> struct is_reflectable<T, std::void_t<decltype(&::xxrew_traits<T>::registry)>> : std::true_type {};
 
 template <typename T, typename enable = void> struct is_lazy : std::false_type {};
-template <typename T> struct is_lazy<T, std::void_t<decltype(&reflectable_traits<T>::lazy)>> : std::true_type {};
+template <typename T> struct is_lazy<T, std::void_t<decltype(&::xxrew_traits<T>::lazy)>> : std::true_type {};
 
 template <typename T, typename enable = void> struct is_builtin : std::false_type {};
-template <typename T> struct is_builtin<T, std::void_t<decltype(&reflectable_traits<T>::biiltin)>> : std::true_type {};
-
-} // namespace detail
-
-template <typename T, typename enable = void> struct is_reflectable : std::false_type {};
-template <typename T> struct is_reflectable<T, std::void_t<decltype(&reflectable_traits<T>::registry)>> : std::true_type {};
-
-template <typename T> struct is_lazy_reflectable : std::conjunction<is_reflectable<T>, detail::is_lazy<T>> {};
-
-template <typename T> struct is_builtin_reflectable : std::conjunction<is_reflectable<T>, detail::is_builtin<T>> {};
-template <typename T> struct is_custom_reflectable : std::conjunction<is_reflectable<T>, std::negation<detail::is_builtin<T>>> {};
+template <typename T> struct is_builtin<T, std::void_t<decltype(&::xxrew_traits<T>::biiltin)>> : std::true_type {};
 
 template <typename PropertyType>
 struct property_traits { using type = PropertyType; };
@@ -221,8 +185,8 @@ struct function_traits<ReturnType(ArgumentTypes...) const>
     using dirty_type = ReturnType(ArgumentTypes...) const;
     using dirty_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using type = reflectable_using_t<ReturnType>(reflectable_using_t<ArgumentTypes>...) const;
-    using pointer = reflectable_using_t<ReturnType>(*)(reflectable_using_t<ArgumentTypes>...);
+    using type = typename ::xxrew_alias<ReturnType>::R(typename ::xxrew_alias<ArgumentTypes>::R...) const;
+    using pointer = typename ::xxrew_alias<ReturnType>::R(*)(typename ::xxrew_alias<ArgumentTypes>::R...);
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
@@ -231,8 +195,8 @@ struct function_traits<ReturnType(ArgumentTypes...) const&>
     using dirty_type = ReturnType(ArgumentTypes...) const&;
     using dirty_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using type = reflectable_using_t<ReturnType>(reflectable_using_t<ArgumentTypes>...) const&;
-    using pointer = reflectable_using_t<ReturnType>(*)(reflectable_using_t<ArgumentTypes>...);
+    using type = typename ::xxrew_alias<ReturnType>::R(typename ::xxrew_alias<ArgumentTypes>::R...) const&;
+    using pointer = typename ::xxrew_alias<ReturnType>::R(*)(typename ::xxrew_alias<ArgumentTypes>::R...);
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
@@ -241,8 +205,8 @@ struct function_traits<ReturnType(ArgumentTypes...)>
     using dirty_type = ReturnType(ArgumentTypes...);
     using dirty_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using type = reflectable_using_t<ReturnType>(reflectable_using_t<ArgumentTypes>...);
-    using pointer = reflectable_using_t<ReturnType>(*)(reflectable_using_t<ArgumentTypes>...);
+    using type = typename ::xxrew_alias<ReturnType>::R(typename ::xxrew_alias<ArgumentTypes>::R...);
+    using pointer = typename ::xxrew_alias<ReturnType>::R(*)(typename ::xxrew_alias<ArgumentTypes>::R...);
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
@@ -251,8 +215,8 @@ struct function_traits<ReturnType(ArgumentTypes...)&>
     using dirty_type = ReturnType(ArgumentTypes...)&;
     using dirty_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using type = reflectable_using_t<ReturnType>(reflectable_using_t<ArgumentTypes>...)&;
-    using pointer = reflectable_using_t<ReturnType>(*)(reflectable_using_t<ArgumentTypes>...);
+    using type = typename ::xxrew_alias<ReturnType>::R(typename ::xxrew_alias<ArgumentTypes>::R...)&;
+    using pointer = typename ::xxrew_alias<ReturnType>::R(*)(typename ::xxrew_alias<ArgumentTypes>::R...);
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
@@ -376,7 +340,7 @@ struct access_traits<>
     template <typename PropertyType>
     struct property<PropertyType()>
     {
-        static constexpr auto of(reflectable_using_t<PropertyType> (*get)(void), void (*set)(reflectable_using_t<PropertyType>))
+        static constexpr auto of(typename ::xxrew_alias<PropertyType>::R (*get)(void), void (*set)(typename ::xxrew_alias<PropertyType>::R))
         {
             return std::make_pair(get, set);
         }
@@ -385,7 +349,7 @@ struct access_traits<>
     template <typename PropertyType>
     struct property<PropertyType>
     {
-        static constexpr auto of(reflectable_using_t<PropertyType>* get, reflectable_using_t<PropertyType>* set)
+        static constexpr auto of(typename ::xxrew_alias<PropertyType>::R* get, typename ::xxrew_alias<PropertyType>::R* set)
         {
             return std::make_pair(get, set);
         }
@@ -401,7 +365,7 @@ struct access_traits<>
     template <typename ReturnType, typename... ArgumentTypes>
     struct function<ReturnType(ArgumentTypes...)>
     {
-        static constexpr auto of(reflectable_using_t<ReturnType> (*function)(reflectable_using_t<ArgumentTypes>...)) { return function; }
+        static constexpr auto of(typename ::xxrew_alias<ReturnType>::R (*function)(typename ::xxrew_alias<ArgumentTypes>::R...)) { return function; }
 
         template <typename OtherReturnType, typename... OtherArgumentTypes>
         static constexpr auto of(OtherReturnType (*function)(OtherArgumentTypes...)) { return function; }
@@ -496,7 +460,7 @@ struct access_traits<ClassType>
     template <typename DirtyPropertyType>
     struct property<DirtyPropertyType() const>
     {
-        using PropertyType = reflectable_using_t<DirtyPropertyType>;
+        using PropertyType = typename ::xxrew_alias<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
         static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, void (ParentClassType::* set)(PropertyType))
@@ -511,7 +475,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, type_identity_t<PropertyType (ParentClassType::*)(void) const>)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const, typename type_identity<PropertyType (ParentClassType::*)(void) const>::type)
         {
             return function_data(get, get);
         }
@@ -520,7 +484,7 @@ struct access_traits<ClassType>
     template <typename DirtyPropertyType>
     struct property<DirtyPropertyType() const&>
     {
-        using PropertyType = reflectable_using_t<DirtyPropertyType>;
+        using PropertyType = typename ::xxrew_alias<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
         static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, void (ParentClassType::* set)(PropertyType))
@@ -535,7 +499,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, type_identity_t<PropertyType (ParentClassType::*)(void) const&>)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void) const&, typename type_identity<PropertyType (ParentClassType::*)(void) const&>::type)
         {
             return function_data(get, get);
         }
@@ -544,7 +508,7 @@ struct access_traits<ClassType>
     template <typename DirtyPropertyType>
     struct property<DirtyPropertyType()>
     {
-        using PropertyType = reflectable_using_t<DirtyPropertyType>;
+        using PropertyType = typename ::xxrew_alias<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
         static constexpr auto of(PropertyType (ParentClassType::* get)(void), void (ParentClassType::* set)(PropertyType))
@@ -559,7 +523,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void), type_identity_t<PropertyType (ParentClassType::*)(void)>)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void), typename type_identity<PropertyType (ParentClassType::*)(void)>::type)
         {
             return function_data(get, get);
         }
@@ -569,7 +533,7 @@ struct access_traits<ClassType>
             return std::make_pair(get, set);
         }
 
-        static constexpr auto of(PropertyType (*get)(void), type_identity_t<PropertyType (*)(void)>)
+        static constexpr auto of(PropertyType (*get)(void), typename type_identity<PropertyType (*)(void)>::type)
         {
             return std::make_pair(get, get);
         }
@@ -578,7 +542,7 @@ struct access_traits<ClassType>
     template <typename DirtyPropertyType>
     struct property<DirtyPropertyType()&>
     {
-        using PropertyType = reflectable_using_t<DirtyPropertyType>;
+        using PropertyType = typename ::xxrew_alias<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
         static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, void (ParentClassType::* set)(PropertyType))
@@ -593,7 +557,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, type_identity_t<PropertyType (ParentClassType::*)(void)&>)
+        static constexpr auto of(PropertyType (ParentClassType::* get)(void)&, typename type_identity<PropertyType (ParentClassType::*)(void)&>::type)
         {
             return function_data(get, get);
         }
@@ -602,7 +566,7 @@ struct access_traits<ClassType>
     template <typename DirtyPropertyType>
     struct property<DirtyPropertyType>
     {
-        using PropertyType = reflectable_using_t<DirtyPropertyType>;
+        using PropertyType = typename ::xxrew_alias<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
         static constexpr auto of(PropertyType ParentClassType::* get, PropertyType ParentClassType::* set)
@@ -643,10 +607,10 @@ struct access_traits<ClassType>
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
     struct function<DirtyReturnType(DirtyArgumentTypes...) const>
     {
-        static constexpr auto of(reflectable_using_t<DirtyReturnType> (ClassType::* function)(reflectable_using_t<DirtyArgumentTypes>...) const) { return function; }
+        static constexpr auto of(typename ::xxrew_alias<DirtyReturnType>::R (ClassType::* function)(typename ::xxrew_alias<DirtyArgumentTypes>::R...) const) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(reflectable_using_t<DirtyReturnType> (ParentClassType::* function)(reflectable_using_t<DirtyArgumentTypes>...) const)
+        static constexpr auto of(typename ::xxrew_alias<DirtyReturnType>::R (ParentClassType::* function)(typename ::xxrew_alias<DirtyArgumentTypes>::R...) const)
         {
             return function_data(function);
         }
@@ -655,10 +619,10 @@ struct access_traits<ClassType>
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
     struct function<DirtyReturnType(DirtyArgumentTypes...) const&>
     {
-        static constexpr auto of(reflectable_using_t<DirtyReturnType> (ClassType::* function)(reflectable_using_t<DirtyArgumentTypes>...) const&) { return function; }
+        static constexpr auto of(typename ::xxrew_alias<DirtyReturnType>::R (ClassType::* function)(typename ::xxrew_alias<DirtyArgumentTypes>::R...) const&) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(reflectable_using_t<DirtyReturnType> (ParentClassType::* function)(reflectable_using_t<DirtyArgumentTypes>...) const&)
+        static constexpr auto of(typename ::xxrew_alias<DirtyReturnType>::R (ParentClassType::* function)(typename ::xxrew_alias<DirtyArgumentTypes>::R...) const&)
         {
             return function_data(function);
         }
@@ -667,24 +631,24 @@ struct access_traits<ClassType>
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
     struct function<DirtyReturnType(DirtyArgumentTypes...)>
     {
-        static constexpr auto of(reflectable_using_t<DirtyReturnType> (ClassType::* function)(reflectable_using_t<DirtyArgumentTypes>...)) { return function; }
+        static constexpr auto of(typename ::xxrew_alias<DirtyReturnType>::R (ClassType::* function)(typename ::xxrew_alias<DirtyArgumentTypes>::R...)) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(reflectable_using_t<DirtyReturnType> (ParentClassType::* function)(reflectable_using_t<DirtyArgumentTypes>...))
+        static constexpr auto of(typename ::xxrew_alias<DirtyReturnType>::R (ParentClassType::* function)(typename ::xxrew_alias<DirtyArgumentTypes>::R...))
         {
             return function_data(function);
         }
 
-        static constexpr auto of(reflectable_using_t<DirtyReturnType> (*function)(reflectable_using_t<DirtyArgumentTypes>...)) { return function; }
+        static constexpr auto of(typename ::xxrew_alias<DirtyReturnType>::R (*function)(typename ::xxrew_alias<DirtyArgumentTypes>::R...)) { return function; }
     };
 
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
     struct function<DirtyReturnType(DirtyArgumentTypes...)&>
     {
-        static constexpr auto of(reflectable_using_t<DirtyReturnType> (ClassType::* function)(reflectable_using_t<DirtyArgumentTypes>...)&) { return function; }
+        static constexpr auto of(typename ::xxrew_alias<DirtyReturnType>::R (ClassType::* function)(typename ::xxrew_alias<DirtyArgumentTypes>::R...)&) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(reflectable_using_t<DirtyReturnType> (ParentClassType::* function)(reflectable_using_t<DirtyArgumentTypes>...)&)
+        static constexpr auto of(typename ::xxrew_alias<DirtyReturnType>::R (ParentClassType::* function)(typename ::xxrew_alias<DirtyArgumentTypes>::R...)&)
         {
             return function_data(function);
         }
@@ -706,15 +670,15 @@ ValueType forward(std::any const& object)
 {
     if constexpr (std::is_reference_v<ValueType>)
     {
-        return *std::any_cast<meta::to_reflectable_reference_t<ValueType>>(object);
+        return *std::any_cast<typename meta::to_reflectable_reference<ValueType>::type>(object);
     }
     else if constexpr (std::is_pointer_v<ValueType>)
     {
-        return std::any_cast<meta::to_reflectable_pointer_t<ValueType>>(object);
+        return std::any_cast<typename meta::to_reflectable_pointer<ValueType>::type>(object);
     }
     else
     {
-        return std::any_cast<meta::to_reflectable_object_t<ValueType>>(object);
+        return std::any_cast<typename meta::to_reflectable_object<ValueType>::type>(object);
     }
 }
 
@@ -723,11 +687,11 @@ std::any backward(ValueType&& result)
 {
     if constexpr (std::is_reference_v<ValueType>)
     {
-        return const_cast<meta::to_reflectable_reference_t<ValueType>>(std::addressof(result));
+        return const_cast<typename meta::to_reflectable_reference<ValueType>::type>(std::addressof(result));
     }
     else if constexpr (std::is_pointer_v<ValueType>)
     {
-        return const_cast<meta::to_reflectable_pointer_t<ValueType>>(result);
+        return const_cast<typename meta::to_reflectable_pointer<ValueType>::type>(result);
     }
     else
     {
@@ -1150,7 +1114,7 @@ auto handler_property_context_impl(GetterType getter)
     {
         return [getter](std::any const& outer_context) -> std::any
         {
-            return const_cast<meta::to_reflectable_reference_t<type>>
+            return const_cast<typename meta::to_reflectable_reference<type>::type>
             (
                 std::addressof((std::any_cast<ReflectableType*>(outer_context)->*getter)())
             );
@@ -1169,7 +1133,7 @@ auto handler_property_context(PropertyType ReflectableType::* property)
 {
     return [property](std::any const& outer_context) -> std::any
     {
-        return const_cast<meta::to_reflectable_object_t<PropertyType>*>
+        return const_cast<typename meta::to_reflectable_object<PropertyType>::type*>
         (
             std::addressof(std::any_cast<ReflectableType*>(outer_context)->*property)
         );
@@ -1205,7 +1169,7 @@ auto handler_property_context(PropertyType* property)
 {
     return [property](std::any const&) -> std::any
     {
-        return const_cast<meta::to_reflectable_object_t<PropertyType>*>(property);
+        return const_cast<typename meta::to_reflectable_object<PropertyType>::type*>(property);
     };
 }
 
@@ -1216,7 +1180,7 @@ auto handler_property_context(PropertyType (*getter)(void))
     {
         return [getter](std::any const&) -> std::any
         {
-            return const_cast<meta::to_reflectable_reference_t<PropertyType>>
+            return const_cast<typename meta::to_reflectable_reference<PropertyType>::type>
             (
                 std::addressof(getter())
             );
@@ -1297,6 +1261,9 @@ struct reflection_t
 
 } // namespace rew
 
+template <std::size_t InjectionIndex>
+struct xxrew_injection;
+
 namespace rew
 {
 
@@ -1328,13 +1295,6 @@ struct injectable_t
     template <typename ReflectableType, typename MetaType>
     void meta(std::string const& name, std::any& meta) {}
 };
-
-namespace meta
-{
-
-template <std::size_t InjectionIndex> struct injection_traits;
-
-} // namespace meta
 
 struct injection_t
 {
@@ -1411,7 +1371,7 @@ public:
     template <typename ReflectableType>
     type_t* find() const
     {
-        return find(meta::reflectable_traits<ReflectableType>::name());
+        return find(::xxrew_traits<ReflectableType>::name());
     }
 
 private:
@@ -1483,19 +1443,16 @@ inline registry_t global;
 } // namespace rew
 
 #define CUSTOM_TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                   \
-    namespace rew { namespace meta {                                                                    \
-        REW_DEPAREN(template_header) struct reflectable_traits<__VA_ARGS__> {                           \
-            using R = typename rew::meta::reflectable_using<__VA_ARGS__>::R;
+    REW_DEPAREN(template_header) struct xxrew_traits<__VA_ARGS__> {                                     \
+        using R = typename ::xxrew_alias<__VA_ARGS__>::R;
 
 #define CUSTOM_CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                 \
-    namespace rew { namespace meta {                                                                    \
-        template <typename DirtyR> struct reflectable_traits<DirtyR, std::enable_if_t<__VA_ARGS__>> {   \
-            using R = typename rew::meta::reflectable_using<DirtyR>::R;                                 \
+    template <typename DirtyR> struct xxrew_traits<DirtyR, std::enable_if_t<__VA_ARGS__>> {             \
+        using R = typename ::xxrew_alias<DirtyR>::R;
 
 #define CUSTOM_REFLECTABLE_DECLARATION(...)                                                             \
-    namespace rew { namespace meta {                                                                    \
-        template <> struct reflectable_traits<__VA_ARGS__> {                                            \
-            using R = typename rew::meta::reflectable_using<__VA_ARGS__>::R;
+    template <> struct xxrew_traits<__VA_ARGS__> {                                                      \
+        using R = typename ::xxrew_alias<__VA_ARGS__>::R;
 
 #define TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                          \
     CUSTOM_TEMPLATE_REFLECTABLE_DECLARATION(template_header, __VA_ARGS__)                               \
@@ -1518,72 +1475,65 @@ inline registry_t global;
 #define BUILTIN_REFLECTABLE(...) static auto builtin() { __VA_ARGS__ }
 
 #define REFLECTABLE_DECLARATION_INIT(...)                                                               \
-        };                                                                                              \
-    }}
-
-#define REW_REFLECTABLE_BODY()                                                                          \
-    template <class InjectionType>                                                                      \
-    static void evaluate(InjectionType&& injection) {                                                   \
-        auto xxtype = rew::find_or_add_type<R>();                                                       \
-        auto xxreflection = xxtype->reflection; (void)xxreflection;                                     \
-        injection.template type<R>(*xxtype);
+        };
 
 #define TEMPLATE_REFLECTABLE(template_header, ...)                                                      \
     REW_DEPAREN(template_header) struct xxrew<__VA_ARGS__> {                                            \
         using R = __VA_ARGS__;                                                                          \
-        using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
+        using CleanR = typename ::xxrew_alias<R>::R;                                                    \
         REW_REFLECTABLE_BODY()
 
 #define CONDITIONAL_REFLECTABLE(...)                                                                    \
     template <typename R> struct xxrew<R, std::enable_if_t<__VA_ARGS__>> {                              \
-        using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
+        using CleanR = typename ::xxrew_traits<R>::R;                                                   \
         REW_REFLECTABLE_BODY()
 
 #define REFLECTABLE(...)                                                                                \
     template <> struct xxrew<__VA_ARGS__> {                                                             \
         using R = __VA_ARGS__;                                                                          \
-        using CleanR = typename rew::meta::reflectable_traits<R>::R;                                    \
+        using CleanR = typename ::xxrew_traits<R>::R;                                                   \
         REW_REFLECTABLE_BODY()
 
-#define REFLECTABLE_INIT(...)                                                                           \
-            rew::add_default_injection_set<R>(xxtype);                                                  \
-        }                                                                                               \
-    private:                                                                                            \
-        inline static auto xxautogenerated = (evaluate(rew::injectable_t{}), true);                     \
-    };
+#define REW_REFLECTABLE_BODY()                                                                          \
+    template <class InjectionType> static void evaluate(InjectionType&& injection) {                    \
+        auto xxtype = rew::find_or_add_type<R>();                                                       \
+        rew::add_default_injection_set<R>(xxtype);                                                      \
+        auto xxreflection = xxtype->reflection; (void)xxreflection;                                     \
+        injection.template type<R>(*xxtype);
+
+#ifdef REW_DISABLE_AUTOGENERATION
+    #define REFLECTABLE_INIT(...)                                                                       \
+            }                                                                                           \
+            inline static auto xxautogenerated = false;                                                 \
+        };
+#else
+    #define REFLECTABLE_INIT(...)                                                                       \
+            }                                                                                           \
+            inline static auto xxautogenerated = (evaluate(rew::injectable_t{}), true);                 \
+        };
+#endif // REW_DISABLE_AUTOGENERATION
 
 #define CUSTOM_REFLECTABLE_INJECTION_DECLARATION(injection_index, ...)                                  \
-    namespace rew { namespace meta {                                                                    \
-        template <> struct injection_traits<injection_index> { using type = __VA_ARGS__; };             \
-    }}                                                                                                  \
-    CUSTOM_REFLECTABLE_DECLARATION(__VA_ARGS__)                                                         \
+    template <> struct xxrew_injection<injection_index> { using R = __VA_ARGS__; };                     \
+    CUSTOM_REFLECTABLE_DECLARATION(__VA_ARGS__)
 
 #define REFLECTABLE_INJECTION_DECLARATION(injection_index, ...)                                         \
     CUSTOM_REFLECTABLE_INJECTION_DECLARATION(injection_index, __VA_ARGS__)                              \
         REFLECTABLE_NAME(#__VA_ARGS__)
 
-#define TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_clean, ...)                             \
-   namespace rew { namespace meta {                                                                     \
-        REW_DEPAREN(template_header) struct reflectable_using<REW_DEPAREN(reflectable_clean)> {         \
-            using R = __VA_ARGS__;                                                                      \
-        };                                                                                              \
-    }}
+#define TEMPLATE_REFLECTABLE_CLEAN(template_header, type, ...)                                          \
+    REW_DEPAREN(template_header) struct xxrew_alias<REW_DEPAREN(type)> { using R = __VA_ARGS__; };
 
-#define REFLECTABLE_CLEAN(reflectable_clean, ...)                                                       \
-    namespace rew { namespace meta {                                                                    \
-        template <> struct reflectable_using<reflectable_clean> {                                       \
-            using R = __VA_ARGS__;                                                                      \
-        };                                                                                              \
-    }}
+#define REFLECTABLE_CLEAN(type, ...)                                                                    \
+    template <> struct xxrew_alias<type> { using R = __VA_ARGS__; };
 
-#define TEMPLATE_REFLECTABLE_USING(template_header, reflectable_using, reflectable_using_full, ...)     \
-    REW_DEPAREN(template_header)                                                                        \
-    struct reflectable_using : rew::meta::reflectable_using_base<__VA_ARGS__> {};                       \
-    TEMPLATE_REFLECTABLE_CLEAN(template_header, reflectable_using_full, __VA_ARGS__)
+#define TEMPLATE_REFLECTABLE_USING(template_header, alias, alias_full, ...)                             \
+    REW_DEPAREN(template_header) struct alias : rew::meta::inherits_t<__VA_ARGS__> {};                  \
+    TEMPLATE_REFLECTABLE_CLEAN(template_header, alias_full, __VA_ARGS__)
 
-#define REFLECTABLE_USING(reflectable_using, ...)                                                       \
-    struct reflectable_using : rew::meta::reflectable_using_base<__VA_ARGS__> {};                       \
-    REFLECTABLE_CLEAN(reflectable_using, __VA_ARGS__)
+#define REFLECTABLE_USING(alias, ...)                                                                   \
+    struct alias : rew::meta::inherits_t<__VA_ARGS__> {};                                               \
+    REFLECTABLE_CLEAN(alias, __VA_ARGS__)
 
 #define REFLECTABLE_ACCESS(...) template <typename, typename> friend struct xxrew;
 
@@ -1593,11 +1543,11 @@ namespace rew
 template <typename ReflectableType>
 std::string nameof()
 {
-    return meta::reflectable_traits<ReflectableType>::name();
+    return ::xxrew_traits<ReflectableType>::name();
 }
 
 template <typename ReflectableType>
-using cleanof = meta::reflectable_using_t<ReflectableType>;
+using cleanof = typename ::xxrew_alias<ReflectableType>::R;
 
 template <typename ReflectableType>
 void reflectable()
@@ -1632,8 +1582,8 @@ type_t* find_or_add_type()
         >
     >::type;
 
-    using reflectable_type = typename meta::reflectable_using<dirty_reflectable_type>::R;
-    using reflectable_traits = meta::reflectable_traits<dirty_reflectable_type>;
+    using reflectable_type = typename ::xxrew_alias<dirty_reflectable_type>::R;
+    using reflectable_traits = ::xxrew_traits<dirty_reflectable_type>;
 
     if constexpr (meta::is_lazy_reflectable<dirty_reflectable_type>::value)
     {
@@ -1657,9 +1607,7 @@ parent_t* find_or_add_parent(reflection_t* reflection)
 {
     static_assert(std::is_base_of_v<ParentReflectableType, ReflectableType>);
 
-    using reflectable_traits = meta::reflectable_traits<ParentReflectableType>;
-
-    auto xxname = reflectable_traits::name();
+    auto xxname = ::xxrew_traits<ParentReflectableType>::name();
 
     auto xxmeta = reflection->parent.find(xxname);
     if (xxmeta == nullptr) xxmeta = &reflection->parent.add
@@ -1700,7 +1648,7 @@ factory_t* find_or_add_factory(reflection_t* reflection)
     using dirty_pointer = typename function_traits::dirty_pointer;
     using pointer = typename function_traits::pointer;
 
-    auto xxname = meta::reflectable_traits<dirty_type>::name();
+    auto xxname = ::xxrew_traits<dirty_type>::name();
 
     auto xxmeta = reflection->factory.find(xxname);
     if (xxmeta == nullptr) xxmeta = &reflection->factory.add
@@ -1731,7 +1679,7 @@ function_t* find_or_add_function(reflection_t* reflection, std::string const& na
     auto xxfunction = reflection->function.find(name);
     if (xxfunction == nullptr) xxfunction = &reflection->function.add(name, {});
 
-    auto xxoverload = meta::reflectable_traits<dirty_type>::name();
+    auto xxoverload = ::xxrew_traits<dirty_type>::name();
 
     auto xxmeta = xxfunction->find(xxoverload);
     if (xxmeta == nullptr) xxmeta = &xxfunction->add
@@ -1791,9 +1739,7 @@ injection_t* find_or_add_injection(type_t* type)
 {
     static_assert(std::is_base_of_v<injectable_t, InjectionType>);
 
-    using reflectable_injection_traits = meta::reflectable_traits<InjectionType>;
-
-    auto xxname = reflectable_injection_traits::name();
+    auto xxname = ::xxrew_traits<InjectionType>::name();
 
     auto xxmeta = type->injection.find(xxname);
     if (xxmeta == nullptr) xxmeta = &type->injection.add
@@ -1811,11 +1757,10 @@ injection_t* find_or_add_injection(type_t* type)
 template <typename ReflectableType, std::size_t CurrentKey = 0, std::size_t MaxKey = 4>
 void add_default_injection_set(type_t* type)
 {
-    if constexpr (meta::is_complete<meta::injection_traits<CurrentKey>>::value)
+    using reflectable_traits = ::xxrew_injection<CurrentKey>;
+    if constexpr (meta::is_complete<reflectable_traits>::value)
     {
-        using injection_traits = meta::injection_traits<CurrentKey>;
-
-        find_or_add_injection<ReflectableType, typename injection_traits::type>(type);
+        find_or_add_injection<ReflectableType, typename reflectable_traits::R>(type);
         if constexpr (CurrentKey < MaxKey)
         {
             add_default_injection_set<ReflectableType, CurrentKey + 1>(type);

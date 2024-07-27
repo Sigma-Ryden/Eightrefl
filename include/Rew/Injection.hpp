@@ -8,6 +8,9 @@
 
 #include <Rew/Reflection.hpp>
 
+template <std::size_t InjectionIndex>
+struct xxrew_injection;
+
 namespace rew
 {
 
@@ -39,13 +42,6 @@ struct injectable_t
     template <typename ReflectableType, typename MetaType>
     void meta(std::string const& name, std::any& meta) {}
 };
-
-namespace meta
-{
-
-template <std::size_t InjectionIndex> struct injection_traits;
-
-} // namespace meta
 
 struct injection_t
 {

@@ -28,7 +28,7 @@ REFLECTABLE(TestReflectableStruct)
     FUNCTION(Foo) // will implicitly add TestReflectableDeclaratonOnlyWithUsingStruct to registry
 REFLECTABLE_INIT()
 
-// will not compile, since rrquires REFLECTABLE_DECLARATION(...), that contains reflectable_traits
+// will not compile, since rrquires REFLECTABLE_DECLARATION(...), that contains xxrew_traits
 //REFLECTABLE(TestReflectableWithoutDeclarationStruct)
 //REFLECTABLE_INIT()
 
@@ -229,7 +229,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestCustomRegistry)
 {
-    auto registry = rew::meta::reflectable_traits<TestCustomRegistryStruct>::registry();
+    auto registry = ::xxrew_traits<TestCustomRegistryStruct>::registry();
 
     ASSERT("registry", registry == &CustomRegistry);
 

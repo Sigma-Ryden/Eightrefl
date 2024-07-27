@@ -236,7 +236,7 @@ auto handler_property_context_impl(GetterType getter)
     {
         return [getter](std::any const& outer_context) -> std::any
         {
-            return const_cast<meta::to_reflectable_reference_t<type>>
+            return const_cast<typename meta::to_reflectable_reference<type>::type>
             (
                 std::addressof((std::any_cast<ReflectableType*>(outer_context)->*getter)())
             );
@@ -255,7 +255,7 @@ auto handler_property_context(PropertyType ReflectableType::* property)
 {
     return [property](std::any const& outer_context) -> std::any
     {
-        return const_cast<meta::to_reflectable_object_t<PropertyType>*>
+        return const_cast<typename meta::to_reflectable_object<PropertyType>::type*>
         (
             std::addressof(std::any_cast<ReflectableType*>(outer_context)->*property)
         );
@@ -291,7 +291,7 @@ auto handler_property_context(PropertyType* property)
 {
     return [property](std::any const&) -> std::any
     {
-        return const_cast<meta::to_reflectable_object_t<PropertyType>*>(property);
+        return const_cast<typename meta::to_reflectable_object<PropertyType>::type*>(property);
     };
 }
 
@@ -302,7 +302,7 @@ auto handler_property_context(PropertyType (*getter)(void))
     {
         return [getter](std::any const&) -> std::any
         {
-            return const_cast<meta::to_reflectable_reference_t<PropertyType>>
+            return const_cast<typename meta::to_reflectable_reference<PropertyType>::type>
             (
                 std::addressof(getter())
             );

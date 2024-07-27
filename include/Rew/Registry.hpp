@@ -50,7 +50,7 @@ public:
     template <typename ReflectableType>
     type_t* find() const
     {
-        return find(meta::reflectable_traits<ReflectableType>::name());
+        return find(::xxrew_traits<ReflectableType>::name());
     }
 
 private:
