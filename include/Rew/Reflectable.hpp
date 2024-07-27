@@ -53,13 +53,13 @@
 
 #define CONDITIONAL_REFLECTABLE(...)                                                                    \
     template <typename R> struct xxrew<R, std::enable_if_t<__VA_ARGS__>> {                              \
-        using CleanR = typename ::xxrew_traits<R>::R;                                                   \
+        using CleanR = typename ::xxrew_alias<R>::R;                                                    \
         REW_REFLECTABLE_BODY()
 
 #define REFLECTABLE(...)                                                                                \
     template <> struct xxrew<__VA_ARGS__> {                                                             \
         using R = __VA_ARGS__;                                                                          \
-        using CleanR = typename ::xxrew_traits<R>::R;                                                   \
+        using CleanR = typename ::xxrew_alias<R>::R;                                                    \
         REW_REFLECTABLE_BODY()
 
 #define REW_REFLECTABLE_BODY()                                                                          \
@@ -156,7 +156,7 @@ type_t* find_or_add_type()
     using reflectable_type = typename ::xxrew_alias<dirty_reflectable_type>::R;
     using reflectable_traits = ::xxrew_traits<dirty_reflectable_type>;
 
-    if constexpr (meta::is_lazy_reflectable<dirty_reflectable_type>::value)
+    if constexpr (meta::is_lazy<dirty_reflectable_type>::value)
     {
         reflectable<dirty_reflectable_type>();
     }

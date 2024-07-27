@@ -89,6 +89,7 @@ add_executable(${PROJECT_NAME}
     test/TestRegistryProperty.cpp
     test/TestFactory.cpp
     test/TestInjection.cpp
+    test/TestUsing.cpp
     test/TestLibrary.cpp
     test/TestWithoutMacro.cpp
 

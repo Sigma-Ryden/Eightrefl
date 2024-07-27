@@ -3,16 +3,16 @@
 TEST_SPACE()
 {
 
-    struct TestWithoutMacroBaseStruct {};
+struct TestWithoutMacroBaseStruct {};
 
-    struct TestWithoutMacroStruct : TestWithoutMacroBaseStruct
-    {
-        void Function() {}
+struct TestWithoutMacroStruct : TestWithoutMacroBaseStruct
+{
+    void Function() {}
 
-        int Property = 0;
-    };
+    int Property = 0;
+};
 
-    struct TestWithoutMacroInjection : rew::injectable_t {};
+struct TestWithoutMacroInjection : rew::injectable_t {};
 
 } // TEST_SPACE
 
@@ -20,12 +20,13 @@ TEST_SPACE()
 // template <>
 // struct xxrew_traits<1>
 // {
-//     using type = TestWithoutMacroInjection;
+//     using R = TestWithoutMacroInjection;
 // };
 
 template <>
 struct xxrew_traits<TestWithoutMacroInjection>
 {
+    using R = TestWithoutMacroInjection; // not required by library
     static auto name() { return "TestWithoutMacroInjection"; }
 };
 
@@ -71,7 +72,15 @@ struct xxrew<TestWithoutMacroStruct>
     }
 };
 
-// TODO: add xxrew_alias
+// need only for reflectable using
+// struct TestWithoutMacroStructAlias : TestWithoutMacroStruct {};
+
+// template <>
+// struct xxrew_alias<TestWithoutMacroStructAlias>
+// {
+//     using R = TestWithoutMacroStruct;
+// };
+
 TEST(TestLibrary, TestWithoutMacro)
 {
     rew::reflectable<TestWithoutMacroStruct>();

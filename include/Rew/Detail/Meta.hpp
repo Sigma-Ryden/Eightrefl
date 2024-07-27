@@ -52,16 +52,17 @@ template <typename T> struct is_builtin<T, std::void_t<decltype(&::xxrew_traits<
 template <typename PropertyType>
 struct property_traits { using type = PropertyType; };
 
-template <typename PropertyType>
-struct property_traits<PropertyType*>
-{
-    using type = typename std::conditional_t
-    <
-        std::is_pointer_v<PropertyType>,
-        type_identity<PropertyType>,
-        property_traits<PropertyType>
-    >::type;
-};
+// TODO: rework!
+// template <typename PropertyType>
+// struct property_traits<PropertyType*>
+// {
+//     using type = typename std::conditional_t
+//     <
+//         std::is_pointer_v<PropertyType>,
+//         type_identity<PropertyType>,
+//         property_traits<PropertyType>
+//     >::type;
+// };
 
 template <typename ReflectableType, typename PropertyType>
 struct property_traits<PropertyType (ReflectableType::*)(void) const> { using type = PropertyType; };
