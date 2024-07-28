@@ -98,11 +98,11 @@
     template <> struct xxrew_alias<type> { using R = __VA_ARGS__; };
 
 #define TEMPLATE_REFLECTABLE_USING(template_header, alias, alias_full, ...)                             \
-    REW_DEPAREN(template_header) struct alias : rew::meta::inherits_t<__VA_ARGS__> {};                  \
+    REW_DEPAREN(template_header) struct alias : rew::meta::inherits<__VA_ARGS__> {};                    \
     TEMPLATE_REFLECTABLE_CLEAN(template_header, alias_full, __VA_ARGS__)
 
 #define REFLECTABLE_USING(alias, ...)                                                                   \
-    struct alias : rew::meta::inherits_t<__VA_ARGS__> {};                                               \
+    struct alias : rew::meta::inherits<__VA_ARGS__> {};                                                 \
     REFLECTABLE_CLEAN(alias, __VA_ARGS__)
 
 
@@ -198,13 +198,13 @@ namespace detail
 {
 
 template <typename... ArgumentTypes, typename ReturnType>
-auto function_argument_types(ReturnType (*unused)(ArgumentTypes...))
+auto function_argument_types(ReturnType(*unused)(ArgumentTypes...))
 {
     return std::vector<type_t*>({ find_or_add_type<ArgumentTypes>()... });
 }
 
 template <typename... ArgumentTypes, typename ReturnType>
-auto function_return_type(ReturnType (*unused)(ArgumentTypes...))
+auto function_return_type(ReturnType(*unused)(ArgumentTypes...))
 {
     return find_or_add_type<ReturnType>();
 }
@@ -241,7 +241,12 @@ function_t* find_or_add_function(reflection_t* reflection, std::string const& na
 {
     using function_traits = meta::function_traits
     <
-        std::conditional_t<std::is_void_v<DirtyFunctionType>, FunctionType, DirtyFunctionType>
+        typename std::conditional_t
+        <
+            std::is_void_v<DirtyFunctionType>,
+            meta::type_identity<FunctionType>,
+            meta::mark_dirty<FunctionType, DirtyFunctionType>
+        >::type
     >;
 
     using dirty_type = typename function_traits::dirty_type;
@@ -274,10 +279,15 @@ property_t* find_or_add_property(reflection_t* reflection, std::string const& na
 {
     using property_traits = meta::property_traits
     <
-        std::conditional_t<std::is_void_v<DirtyPropertyType>, GetterType, DirtyPropertyType>
+        typename std::conditional_t
+        <
+            std::is_void_v<DirtyPropertyType>,
+            meta::type_identity<GetterType>,
+            meta::mark_dirty<GetterType, DirtyPropertyType>
+        >::type
     >;
 
-    using type = typename property_traits::type;
+    using dirty_type = typename property_traits::type;
 
     auto xxmeta = reflection->property.find(name);
     if (xxmeta == nullptr) xxmeta = &reflection->property.add
@@ -285,7 +295,7 @@ property_t* find_or_add_property(reflection_t* reflection, std::string const& na
         name,
         {
             name,
-            find_or_add_type<type>(),
+            find_or_add_type<dirty_type>(),
             handler_property_get(getter),
             handler_property_set(setter),
             handler_property_context(getter),

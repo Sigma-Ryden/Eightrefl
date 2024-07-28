@@ -56,7 +56,7 @@ auto handler_factory_call_impl(std::index_sequence<I...>)
 } // namespace detail
 
 template <typename ReflectableType, typename... ArgumentTypes>
-auto handler_factory_call(ReflectableType (*)(ArgumentTypes...))
+auto handler_factory_call(ReflectableType(*)(ArgumentTypes...))
 {
     return detail::handler_factory_call_impl<ReflectableType, ArgumentTypes...>
     (

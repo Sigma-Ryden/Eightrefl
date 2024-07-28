@@ -18,10 +18,11 @@ TEST(TestBuiltin::TestFunctional, TestHash)
     ASSERT("reflection", reflection != nullptr);
     EXPECT("reflection-name", reflection->name == "std::hash<int>");
 
+    #ifndef REW_CORE_MINIMAL
     EXPECT("factory-R()", reflection->factory.find("std::hash<int>()") != nullptr);
     EXPECT("factory-R(std::nullptr_t)", reflection->factory.find("std::hash<int>(std::hash<int> const&)") != nullptr);
-
     EXPECT("function-operator()", reflection->function.find("operator()") != nullptr);
+    #endif // REW_CORE_MINIMAL
 }
 
 TEST(TestBuiltin::TestFunctional, TestEqualTo)

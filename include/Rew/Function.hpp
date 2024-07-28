@@ -79,7 +79,7 @@ auto handler_member_function_call_impl(FunctionType function, std::index_sequenc
 }
 
 template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
-auto handler_free_function_call_impl(ReturnType (*function)(ArgumentTypes...), std::index_sequence<I...>)
+auto handler_free_function_call_impl(ReturnType(*function)(ArgumentTypes...), std::index_sequence<I...>)
 {
     return [function](std::any const&, std::vector<std::any> const& arguments) -> std::any
     {
@@ -101,7 +101,7 @@ auto handler_free_function_call_impl(ReturnType (*function)(ArgumentTypes...), s
 } // namespace detail
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto handler_function_call(ReturnType (ReflectableType::* function)(ArgumentTypes...) const)
+auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes...) const)
 {
     return detail::handler_member_function_call_impl<ReflectableType, ReturnType, ArgumentTypes...>
     (
@@ -110,7 +110,7 @@ auto handler_function_call(ReturnType (ReflectableType::* function)(ArgumentType
 }
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto handler_function_call(ReturnType (ReflectableType::* function)(ArgumentTypes...) const&)
+auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes...) const&)
 {
     return detail::handler_member_function_call_impl<ReflectableType, ReturnType, ArgumentTypes...>
     (
@@ -119,7 +119,7 @@ auto handler_function_call(ReturnType (ReflectableType::* function)(ArgumentType
 }
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto handler_function_call(ReturnType (ReflectableType::* function)(ArgumentTypes...))
+auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes...))
 {
     return detail::handler_member_function_call_impl<ReflectableType, ReturnType, ArgumentTypes...>
     (
@@ -128,7 +128,7 @@ auto handler_function_call(ReturnType (ReflectableType::* function)(ArgumentType
 }
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
-auto handler_function_call(ReturnType (ReflectableType::* function)(ArgumentTypes...)&)
+auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes...)&)
 {
     return detail::handler_member_function_call_impl<ReflectableType, ReturnType, ArgumentTypes...>
     (
@@ -137,7 +137,7 @@ auto handler_function_call(ReturnType (ReflectableType::* function)(ArgumentType
 }
 
 template <typename ReturnType, typename... ArgumentTypes>
-auto handler_function_call(ReturnType (*function)(ArgumentTypes...))
+auto handler_function_call(ReturnType(*function)(ArgumentTypes...))
 {
     return detail::handler_free_function_call_impl(function, std::index_sequence_for<ArgumentTypes...>{});
 }

@@ -87,25 +87,25 @@ auto handler_property_get(PropertyType ReflectableType::* property)
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_get(PropertyType (ReflectableType::* getter)(void) const)
+auto handler_property_get(PropertyType(ReflectableType::* getter)(void) const)
 {
     return detail::handler_property_get_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_get(PropertyType (ReflectableType::* getter)(void) const&)
+auto handler_property_get(PropertyType(ReflectableType::* getter)(void) const&)
 {
     return detail::handler_property_get_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_get(PropertyType (ReflectableType::* getter)(void))
+auto handler_property_get(PropertyType(ReflectableType::* getter)(void))
 {
     return detail::handler_property_get_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_get(PropertyType (ReflectableType::* getter)(void)&)
+auto handler_property_get(PropertyType(ReflectableType::* getter)(void)&)
 {
     return detail::handler_property_get_impl<ReflectableType>(getter);
 }
@@ -120,7 +120,7 @@ auto handler_property_get(PropertyType* property)
 }
 
 template <typename PropertyType>
-auto handler_property_get(PropertyType (*getter)(void))
+auto handler_property_get(PropertyType(*getter)(void))
 {
     return [getter](std::any const&, std::any& result)
     {
@@ -160,13 +160,13 @@ auto handler_property_set(PropertyType const ReflectableType::* property)
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(void (ReflectableType::* setter)(PropertyType))
+auto handler_property_set(void(ReflectableType::* setter)(PropertyType))
 {
     return detail::handler_property_set_impl<ReflectableType>(setter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(void (ReflectableType::* setter)(PropertyType)&)
+auto handler_property_set(void(ReflectableType::* setter)(PropertyType)&)
 {
     return detail::handler_property_set_impl<ReflectableType>(setter);
 }
@@ -187,7 +187,7 @@ auto handler_property_set(PropertyType const* property)
 }
 
 template <typename PropertyType>
-auto handler_property_set(void (*setter)(PropertyType))
+auto handler_property_set(void(*setter)(PropertyType))
 {
     return [setter](std::any const&, std::any const& value)
     {
@@ -196,31 +196,31 @@ auto handler_property_set(void (*setter)(PropertyType))
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(PropertyType (ReflectableType::* getter)(void) const)
+auto handler_property_set(PropertyType(ReflectableType::* getter)(void) const)
 {
     return nullptr;
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(PropertyType (ReflectableType::* getter)(void) const&)
+auto handler_property_set(PropertyType(ReflectableType::* getter)(void) const&)
 {
     return nullptr;
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(PropertyType (ReflectableType::* getter)(void))
+auto handler_property_set(PropertyType(ReflectableType::* getter)(void))
 {
     return nullptr;
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(PropertyType (ReflectableType::* getter)(void)&)
+auto handler_property_set(PropertyType(ReflectableType::* getter)(void)&)
 {
     return nullptr;
 }
 
 template <typename PropertyType>
-auto handler_property_set(PropertyType (*getter)(void))
+auto handler_property_set(PropertyType(*getter)(void))
 {
     return nullptr;
 }
@@ -263,25 +263,25 @@ auto handler_property_context(PropertyType ReflectableType::* property)
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_context(PropertyType (ReflectableType::* getter)(void) const)
+auto handler_property_context(PropertyType(ReflectableType::* getter)(void) const)
 {
     return detail::handler_property_context_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_context(PropertyType (ReflectableType::* getter)(void) const&)
+auto handler_property_context(PropertyType(ReflectableType::* getter)(void) const&)
 {
     return detail::handler_property_context_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_context(PropertyType (ReflectableType::* getter)(void))
+auto handler_property_context(PropertyType(ReflectableType::* getter)(void))
 {
     return detail::handler_property_context_impl<ReflectableType>(getter);
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_context(PropertyType (ReflectableType::* getter)(void)&)
+auto handler_property_context(PropertyType(ReflectableType::* getter)(void)&)
 {
     return detail::handler_property_context_impl<ReflectableType>(getter);
 }
@@ -296,7 +296,7 @@ auto handler_property_context(PropertyType* property)
 }
 
 template <typename PropertyType>
-auto handler_property_context(PropertyType (*getter)(void))
+auto handler_property_context(PropertyType(*getter)(void))
 {
     if constexpr (std::is_reference_v<PropertyType>)
     {
@@ -327,31 +327,31 @@ constexpr auto property_pointer(PropertyType const ReflectableType::* get, Prope
 }
 
 template <typename ReflectableType, typename PropertyType>
-constexpr auto property_pointer(PropertyType (ReflectableType::* get)(void) const, PropertyType (ReflectableType::* set)(void) const)
+constexpr auto property_pointer(PropertyType(ReflectableType::* get)(void) const, PropertyType(ReflectableType::* set)(void) const)
 {
     return std::make_pair(get, std::any{});
 }
 
 template <typename ReflectableType, typename PropertyType>
-constexpr auto property_pointer(PropertyType (ReflectableType::* get)(void) const&, PropertyType (ReflectableType::* set)(void) const&)
+constexpr auto property_pointer(PropertyType(ReflectableType::* get)(void) const&, PropertyType(ReflectableType::* set)(void) const&)
 {
     return std::make_pair(get, std::any{});
 }
 
 template <typename ReflectableType, typename PropertyType>
-constexpr auto property_pointer(PropertyType (ReflectableType::* get)(void), PropertyType (ReflectableType::* set)(void))
+constexpr auto property_pointer(PropertyType(ReflectableType::* get)(void), PropertyType(ReflectableType::* set)(void))
 {
     return std::make_pair(get, std::any{});
 }
 
 template <typename ReflectableType, typename PropertyType>
-constexpr auto property_pointer(PropertyType (ReflectableType::* get)(void)&, PropertyType (ReflectableType::* set)(void)&)
+constexpr auto property_pointer(PropertyType(ReflectableType::* get)(void)&, PropertyType(ReflectableType::* set)(void)&)
 {
     return std::make_pair(get, std::any{});
 }
 
 template <typename PropertyType>
-constexpr auto property_pointer(PropertyType (*get)(void), PropertyType (*set)(void))
+constexpr auto property_pointer(PropertyType(*get)(void), PropertyType(*set)(void))
 {
     return std::make_pair(get, std::any{});
 }

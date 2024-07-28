@@ -35,7 +35,7 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), std::list<ValueType, AllocatorType>)
     FACTORY(R())
 
-    #ifndef REW_CORE_MIMIMAL
+    #ifndef REW_CORE_MINIMAL
     FACTORY(R(typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::const_reference, typename R::allocator_type const&))
     FACTORY(R(typename R::size_type, typename R::const_reference))
