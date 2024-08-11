@@ -4398,8 +4398,6 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), std::
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
-// TODO: add priority_queue
-
 #include <queue> // queue
 
 // default container for queue

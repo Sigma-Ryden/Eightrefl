@@ -607,3 +607,5 @@ TEST(TestLibrary, TestImplicitRegistry)
     EXPECT("type-property0", rew::global.find("TestImplicitRegistryStruct***") != nullptr);
     EXPECT("type-property1", rew::global.find("TestImplicitRegistryStruct*") != nullptr);
 }
+
+// TODO: add tests for function & factory args

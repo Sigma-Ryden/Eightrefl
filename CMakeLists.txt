@@ -45,6 +45,7 @@ set(REW
     include/Rew/BuiltIn/deque.hpp
     include/Rew/BuiltIn/stack.hpp
     include/Rew/BuiltIn/queue.hpp
+    include/Rew/BuiltIn/priority_queue.hpp
     include/Rew/BuiltIn/bitset.hpp
     include/Rew/BuiltIn/complex.hpp
     include/Rew/BuiltIn/optional.hpp
@@ -108,6 +109,7 @@ add_executable(${PROJECT_NAME}
     test/TestOptional.cpp
     test/TestPair.cpp
     test/TestQueue.cpp
+    test/TestPriorityQueue.cpp
     test/TestReferenceWrapper.cpp
     test/TestSet.cpp
     test/TestSharedPtr.cpp
