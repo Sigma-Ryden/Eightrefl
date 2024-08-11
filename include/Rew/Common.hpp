@@ -53,23 +53,27 @@ REFLECTABLE_DECLARATION_INIT()
 // ~ qualified types
 
 // static array type
-TEMPLATE_REFLECTABLE_CLEAN((template <typename ElementType, std::size_t N>), ElementType[N], rew::cleanof<ElementType>[N])
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ElementType, std::size_t SizeValue>),
+    ElementType[SizeValue], rew::cleanof<ElementType>[SizeValue]
+)
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t N>), ElementType[N])
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t SizeValue>), ElementType[SizeValue])
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(rew::nameof<ElementType>() + "[" + std::to_string(N) + "]")
+    REFLECTABLE_NAME(rew::nameof<ElementType>() + "[" + std::to_string(SizeValue) + "]")
 REFLECTABLE_DECLARATION_INIT()
 
 // static array pointer type
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t N>), ElementType(*)[N])
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t SizeValue>), ElementType(*)[SizeValue])
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::type_identity_t<" + rew::nameof<ElementType[N]>() + ">*")
+    REFLECTABLE_NAME("std::type_identity_t<" + rew::nameof<ElementType[SizeValue]>() + ">*")
 REFLECTABLE_DECLARATION_INIT()
 
 // static array reference type
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t N>), ElementType(&)[N])
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t SizeValue>), ElementType(&)[SizeValue])
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::type_identity_t<" + rew::nameof<ElementType[N]>() + ">&")
+    REFLECTABLE_NAME("std::type_identity_t<" + rew::nameof<ElementType[SizeValue]>() + ">&")
 REFLECTABLE_DECLARATION_INIT()
 
 // function types

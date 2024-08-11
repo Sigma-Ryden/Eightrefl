@@ -14,16 +14,16 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename ValueType, std::size_t ArraySize>),
-    (std::array<ValueType, ArraySize>), std::array<rew::cleanof<ValueType>, ArraySize>
+    (template <typename ValueType, std::size_t SizeValue>),
+    (std::array<ValueType, SizeValue>), std::array<rew::cleanof<ValueType>, SizeValue>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, std::size_t ArraySize>), std::array<ValueType, ArraySize>)
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, std::size_t SizeValue>), std::array<ValueType, SizeValue>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::array<" + rew::nameof<ValueType>() + ", " + std::to_string(ArraySize) + ">")
+    REFLECTABLE_NAME("std::array<" + rew::nameof<ValueType>() + ", " + std::to_string(SizeValue) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t ArraySize>), std::array<ValueType, ArraySize>)
+TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t SizeValue>), std::array<ValueType, SizeValue>)
     FACTORY(R())
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))

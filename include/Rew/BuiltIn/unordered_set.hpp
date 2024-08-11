@@ -22,9 +22,9 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>),
-    (std::unordered_set<KeyType, Hasher, Comparator, AllocatorType>),
-    std::unordered_set<rew::cleanof<KeyType>, rew::cleanof<Hasher>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
+    (template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>),
+    (std::unordered_set<KeyType, HasherType, ComparatorType, AllocatorType>),
+    std::unordered_set<rew::cleanof<KeyType>, rew::cleanof<HasherType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::unordered_set<KeyType>)
@@ -34,44 +34,44 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Hasher>),
-    std::unordered_set<KeyType, Hasher>
+    (template <typename KeyType, typename HasherType>),
+    std::unordered_set<KeyType, HasherType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Hasher>() + ">")
+    REFLECTABLE_NAME("std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<HasherType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Hasher, typename Comparator>),
-    std::unordered_set<KeyType, Hasher, Comparator>
+    (template <typename KeyType, typename HasherType, typename ComparatorType>),
+    std::unordered_set<KeyType, HasherType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ", " + rew::nameof<Hasher>() + ">"
+        "std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ", " + rew::nameof<HasherType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>),
-    std::unordered_set<KeyType, Hasher, Comparator, AllocatorType>
+    (template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>),
+    std::unordered_set<KeyType, HasherType, ComparatorType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Hasher>() + ", "
-                              + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
+        "std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<HasherType>() + ", "
+                              + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>),
-    (std::unordered_multiset<KeyType, Hasher, Comparator, AllocatorType>),
-    std::unordered_multiset<rew::cleanof<KeyType>, rew::cleanof<Hasher>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
+    (template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>),
+    (std::unordered_multiset<KeyType, HasherType, ComparatorType, AllocatorType>),
+    std::unordered_multiset<rew::cleanof<KeyType>, rew::cleanof<HasherType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::unordered_multiset<KeyType>)
@@ -81,46 +81,46 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Hasher>),
-    std::unordered_multiset<KeyType, Hasher>
+    (template <typename KeyType, typename HasherType>),
+    std::unordered_multiset<KeyType, HasherType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Hasher>() + ">")
+    REFLECTABLE_NAME("std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<HasherType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Hasher, typename Comparator>),
-    std::unordered_multiset<KeyType, Hasher, Comparator>
+    (template <typename KeyType, typename HasherType, typename ComparatorType>),
+    std::unordered_multiset<KeyType, HasherType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ", " + rew::nameof<Hasher>() + ">"
+        "std::unordered_multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ", " + rew::nameof<HasherType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>),
-    std::unordered_multiset<KeyType, Hasher, Comparator, AllocatorType>
+    (template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>),
+    std::unordered_multiset<KeyType, HasherType, ComparatorType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<Hasher>() + ", "
-                                   + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
+        "std::unordered_multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<HasherType>() + ", "
+                                   + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 
 template <typename> struct xxrew_is_any_std_unordered_set : std::false_type {};
 
-template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
-struct xxrew_is_any_std_unordered_set<std::unordered_set<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
+template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>
+struct xxrew_is_any_std_unordered_set<std::unordered_set<KeyType, HasherType, ComparatorType, AllocatorType>> : std::true_type {};
 
-template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
-struct xxrew_is_any_std_unordered_set<std::unordered_multiset<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
+template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>
+struct xxrew_is_any_std_unordered_set<std::unordered_multiset<KeyType, HasherType, ComparatorType, AllocatorType>> : std::true_type {};
 
 CONDITIONAL_REFLECTABLE(xxrew_is_any_std_unordered_set<R>::value)
     FACTORY(R())

@@ -17,37 +17,40 @@ namespace rew
 namespace meta
 {
 
-template <typename T>
-struct type_identity { using type = T; };
+template <typename Type>
+struct type_identity { using type = Type; };
 
-template <typename T>
+template <typename Type>
 struct inherits : std::conditional_t
 <
-    std::conjunction_v< std::is_class<T>, std::negation<std::is_final<T>> >,
-    T,
-    type_identity<T>
+    std::conjunction_v< std::is_class<Type>, std::negation<std::is_final<Type>> >,
+    Type,
+    type_identity<Type>
 > {};
 
-template <typename T>
-struct to_reflectable_reference { using type = std::remove_const_t<std::remove_reference_t<T>>*; };
+template <typename ReferenceType>
+struct to_reflectable_reference { using type = std::remove_const_t<std::remove_reference_t<ReferenceType>>*; };
 
-template <typename T>
-struct to_reflectable_pointer { using type = std::remove_const_t<std::remove_pointer_t<T>>*; };
+template <typename PointerType>
+struct to_reflectable_pointer { using type = std::remove_const_t<std::remove_pointer_t<PointerType>>*; };
 
-template <typename T>
-struct to_reflectable_object { using type = std::remove_const_t<T>; };
+template <typename ObjectType>
+struct to_reflectable_object { using type = std::remove_const_t<ObjectType>; };
 
-template <typename T, typename enable = void> struct is_complete : std::false_type {};
-template <typename T> struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
+template <typename, typename enable = void> struct is_complete : std::false_type {};
+template <typename Type> struct is_complete<Type, std::void_t<decltype(sizeof(Type))>> : std::true_type {};
 
-template <typename T, typename enable = void> struct is_reflectable : std::false_type {};
-template <typename T> struct is_reflectable<T, std::void_t<decltype(&::xxrew_traits<T>::registry)>> : std::true_type {};
+template <typename, typename enable = void> struct is_reflectable : std::false_type {};
+template <typename ReflectableType>
+struct is_reflectable<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::registry)>> : std::true_type {};
 
-template <typename T, typename enable = void> struct is_lazy : std::false_type {};
-template <typename T> struct is_lazy<T, std::void_t<decltype(&::xxrew_traits<T>::lazy)>> : std::true_type {};
+template <typename, typename enable = void> struct is_lazy : std::false_type {};
+template <typename ReflectableType>
+struct is_lazy<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::lazy)>> : std::true_type {};
 
-template <typename T, typename enable = void> struct is_builtin : std::false_type {};
-template <typename T> struct is_builtin<T, std::void_t<decltype(&::xxrew_traits<T>::biiltin)>> : std::true_type {};
+template <typename, typename enable = void> struct is_builtin : std::false_type {};
+template <typename ReflectableType>
+struct is_builtin<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::biiltin)>> : std::true_type {};
 
 template <typename MemberPointerType, typename DirtyMemberPointerType>
 struct mark_dirty;

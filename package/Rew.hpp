@@ -97,37 +97,40 @@ namespace rew
 namespace meta
 {
 
-template <typename T>
-struct type_identity { using type = T; };
+template <typename Type>
+struct type_identity { using type = Type; };
 
-template <typename T>
+template <typename Type>
 struct inherits : std::conditional_t
 <
-    std::conjunction_v< std::is_class<T>, std::negation<std::is_final<T>> >,
-    T,
-    type_identity<T>
+    std::conjunction_v< std::is_class<Type>, std::negation<std::is_final<Type>> >,
+    Type,
+    type_identity<Type>
 > {};
 
-template <typename T>
-struct to_reflectable_reference { using type = std::remove_const_t<std::remove_reference_t<T>>*; };
+template <typename ReferenceType>
+struct to_reflectable_reference { using type = std::remove_const_t<std::remove_reference_t<ReferenceType>>*; };
 
-template <typename T>
-struct to_reflectable_pointer { using type = std::remove_const_t<std::remove_pointer_t<T>>*; };
+template <typename PointerType>
+struct to_reflectable_pointer { using type = std::remove_const_t<std::remove_pointer_t<PointerType>>*; };
 
-template <typename T>
-struct to_reflectable_object { using type = std::remove_const_t<T>; };
+template <typename ObjectType>
+struct to_reflectable_object { using type = std::remove_const_t<ObjectType>; };
 
-template <typename T, typename enable = void> struct is_complete : std::false_type {};
-template <typename T> struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
+template <typename, typename enable = void> struct is_complete : std::false_type {};
+template <typename Type> struct is_complete<Type, std::void_t<decltype(sizeof(Type))>> : std::true_type {};
 
-template <typename T, typename enable = void> struct is_reflectable : std::false_type {};
-template <typename T> struct is_reflectable<T, std::void_t<decltype(&::xxrew_traits<T>::registry)>> : std::true_type {};
+template <typename, typename enable = void> struct is_reflectable : std::false_type {};
+template <typename ReflectableType>
+struct is_reflectable<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::registry)>> : std::true_type {};
 
-template <typename T, typename enable = void> struct is_lazy : std::false_type {};
-template <typename T> struct is_lazy<T, std::void_t<decltype(&::xxrew_traits<T>::lazy)>> : std::true_type {};
+template <typename, typename enable = void> struct is_lazy : std::false_type {};
+template <typename ReflectableType>
+struct is_lazy<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::lazy)>> : std::true_type {};
 
-template <typename T, typename enable = void> struct is_builtin : std::false_type {};
-template <typename T> struct is_builtin<T, std::void_t<decltype(&::xxrew_traits<T>::biiltin)>> : std::true_type {};
+template <typename, typename enable = void> struct is_builtin : std::false_type {};
+template <typename ReflectableType>
+struct is_builtin<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::biiltin)>> : std::true_type {};
 
 template <typename MemberPointerType, typename DirtyMemberPointerType>
 struct mark_dirty;
@@ -796,42 +799,42 @@ namespace detail
 {
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes,
-          typename FunctionType, std::size_t... I>
-auto handler_member_function_call_impl(FunctionType function, std::index_sequence<I...>)
+          typename FunctionType, std::size_t... ArgumentIndexValues>
+auto handler_member_function_call_impl(FunctionType function, std::index_sequence<ArgumentIndexValues...>)
 {
     return [function](std::any const& context, std::vector<std::any> const& arguments) -> std::any
     {
         auto reflectable = std::any_cast<ReflectableType*>(context);
         if constexpr (std::is_void_v<ReturnType>)
         {
-            (reflectable->*function)(utility::forward<ArgumentTypes>(arguments[I])...);
+            (reflectable->*function)(utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])...);
             return {};
         }
         else
         {
             return utility::backward
             (
-                (reflectable->*function)(utility::forward<ArgumentTypes>(arguments[I])...)
+                (reflectable->*function)(utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])...)
             );
         }
     };
 }
 
-template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
-auto handler_free_function_call_impl(ReturnType(*function)(ArgumentTypes...), std::index_sequence<I...>)
+template <typename ReturnType, typename... ArgumentTypes, std::size_t... ArgumentIndexValues>
+auto handler_free_function_call_impl(ReturnType(*function)(ArgumentTypes...), std::index_sequence<ArgumentIndexValues...>)
 {
     return [function](std::any const&, std::vector<std::any> const& arguments) -> std::any
     {
         if constexpr (std::is_void_v<ReturnType>)
         {
-            function(utility::forward<ArgumentTypes>(arguments[I])...);
+            function(utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])...);
             return {};
         }
         else
         {
             return utility::backward
             (
-                function(utility::forward<ArgumentTypes>(arguments[I])...)
+                function(utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])...)
             );
         }
     };
@@ -908,18 +911,18 @@ struct factory_t
 namespace detail
 {
 
-template <typename ReflectableType, typename... ArgumentTypes, std::size_t... I>
-auto handler_factory_call_impl(std::index_sequence<I...>)
+template <typename ReflectableType, typename... ArgumentTypes, std::size_t... ArgumentIndexValues>
+auto handler_factory_call_impl(std::index_sequence<ArgumentIndexValues...>)
 {
     return [](std::vector<std::any> const& arguments) -> std::any
     {
         if constexpr (std::is_aggregate_v<ReflectableType>)
         {
-            return ReflectableType{ utility::forward<ArgumentTypes>(arguments[I])... };
+            return ReflectableType{ utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])... };
         }
         else
         {
-            return ReflectableType( utility::forward<ArgumentTypes>(arguments[I])... );
+            return ReflectableType( utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])... );
         }
     };
 }
@@ -1303,7 +1306,7 @@ struct reflection_t
 
 } // namespace rew
 
-template <std::size_t InjectionIndex>
+template <std::size_t InjectionIndexValue>
 struct xxrew_injection;
 
 namespace rew
@@ -1484,8 +1487,8 @@ inline registry_t global;
 
 } // namespace rew
 
-#define CUSTOM_TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                   \
-    REW_DEPAREN(template_header) struct xxrew_traits<__VA_ARGS__> {                                     \
+#define CUSTOM_TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, ...)                            \
+    REW_DEPAREN(object_template_header) struct xxrew_traits<__VA_ARGS__> {                              \
         using R = typename ::xxrew_alias<__VA_ARGS__>::R;
 
 #define CUSTOM_CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                 \
@@ -1496,8 +1499,8 @@ inline registry_t global;
     template <> struct xxrew_traits<__VA_ARGS__> {                                                      \
         using R = typename ::xxrew_alias<__VA_ARGS__>::R;
 
-#define TEMPLATE_REFLECTABLE_DECLARATION(template_header, ...)                                          \
-    CUSTOM_TEMPLATE_REFLECTABLE_DECLARATION(template_header, __VA_ARGS__)                               \
+#define TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, ...)                                   \
+    CUSTOM_TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, __VA_ARGS__)                        \
         LAZY_REFLECTABLE()                                                                              \
         REFLECTABLE_REGISTRY(&rew::global)
 
@@ -1519,8 +1522,8 @@ inline registry_t global;
 #define REFLECTABLE_DECLARATION_INIT(...)                                                               \
         };
 
-#define TEMPLATE_REFLECTABLE(template_header, ...)                                                      \
-    REW_DEPAREN(template_header) struct xxrew<__VA_ARGS__> {                                            \
+#define TEMPLATE_REFLECTABLE(object_template_header, ...)                                               \
+    REW_DEPAREN(object_template_header) struct xxrew<__VA_ARGS__> {                                     \
         using R = __VA_ARGS__;                                                                          \
         using CleanR = typename ::xxrew_alias<R>::R;                                                    \
         REW_REFLECTABLE_BODY()
@@ -1538,7 +1541,7 @@ inline registry_t global;
 
 #define REW_REFLECTABLE_BODY()                                                                          \
     template <class InjectionType> static void evaluate(InjectionType&& injection) {                    \
-        auto xxtype = rew::find_or_add_type<R>();                                                       \
+        auto xxtype = ::rew::find_or_add_type<R>();                                                     \
         rew::add_default_injection_set<R>(xxtype);                                                      \
         auto xxreflection = xxtype->reflection; (void)xxreflection;                                     \
         injection.template type<R>(*xxtype);
@@ -1551,7 +1554,7 @@ inline registry_t global;
 #else
     #define REFLECTABLE_INIT(...)                                                                       \
             }                                                                                           \
-            inline static auto xxautogenerated = (evaluate(rew::injectable_t{}), true);                 \
+            inline static auto xxfixture = (::rew::reflectable<R>(), true);                             \
         };
 #endif // REW_DISABLE_AUTOGENERATION
 
@@ -1563,19 +1566,21 @@ inline registry_t global;
     CUSTOM_REFLECTABLE_INJECTION_DECLARATION(injection_index, __VA_ARGS__)                              \
         REFLECTABLE_NAME(#__VA_ARGS__)
 
-#define TEMPLATE_REFLECTABLE_CLEAN(template_header, type, ...)                                          \
-    REW_DEPAREN(template_header) struct xxrew_alias<REW_DEPAREN(type)> { using R = __VA_ARGS__; };
+#define TEMPLATE_REFLECTABLE_CLEAN(object_template_header, object_type, ...)                            \
+    REW_DEPAREN(object_template_header) struct xxrew_alias<REW_DEPAREN(object_type)> {                  \
+        using R = __VA_ARGS__;                                                                      \
+    };
 
-#define REFLECTABLE_CLEAN(type, ...)                                                                    \
-    template <> struct xxrew_alias<type> { using R = __VA_ARGS__; };
+#define REFLECTABLE_CLEAN(object_type, ...)                                                             \
+    template <> struct xxrew_alias<object_type> { using R = __VA_ARGS__; };
 
-#define TEMPLATE_REFLECTABLE_USING(template_header, alias, alias_full, ...)                             \
-    REW_DEPAREN(template_header) struct alias : rew::meta::inherits<__VA_ARGS__> {};                    \
-    TEMPLATE_REFLECTABLE_CLEAN(template_header, alias_full, __VA_ARGS__)
+#define TEMPLATE_REFLECTABLE_USING(alias_object_template_header, alias_type, alias_object_type, ...)    \
+    REW_DEPAREN(alias_object_template_header) struct alias_type : ::rew::meta::inherits<__VA_ARGS__> {};\
+    TEMPLATE_REFLECTABLE_CLEAN(alias_object_template_header, alias_object_type, __VA_ARGS__)
 
-#define REFLECTABLE_USING(alias, ...)                                                                   \
-    struct alias : rew::meta::inherits<__VA_ARGS__> {};                                                 \
-    REFLECTABLE_CLEAN(alias, __VA_ARGS__)
+#define REFLECTABLE_USING(alias_type, ...)                                                              \
+    struct alias_type : ::rew::meta::inherits<__VA_ARGS__> {};                                          \
+    REFLECTABLE_CLEAN(alias_type, __VA_ARGS__)
 
 #define REFLECTABLE_ACCESS(...) template <typename, typename> friend struct xxrew;
 
@@ -1594,12 +1599,10 @@ using cleanof = typename ::xxrew_alias<ReflectableType>::R;
 template <typename ReflectableType>
 void reflectable()
 {
-    static auto locked = false;
-    if (!locked)
-    {
-        locked = true;
-        ::xxrew<ReflectableType>::evaluate(injectable_t{});
-    }
+    static auto lock = false; if (lock) return;
+    lock = true;
+
+    ::xxrew<ReflectableType>::evaluate(injectable_t{});
 }
 
 template <typename ReflectableType>
@@ -1806,16 +1809,17 @@ injection_t* find_or_add_injection(type_t* type)
     return xxmeta;
 }
 
-template <typename ReflectableType, std::size_t CurrentKey = 0, std::size_t MaxKey = 4>
+template <typename ReflectableType,
+          std::size_t CurrentInjectionIndexValue = 0, std::size_t MaxInjectionIndexValue = 4>
 void add_default_injection_set(type_t* type)
 {
-    using reflectable_traits = ::xxrew_injection<CurrentKey>;
+    using reflectable_traits = ::xxrew_injection<CurrentInjectionIndexValue>;
     if constexpr (meta::is_complete<reflectable_traits>::value)
     {
         find_or_add_injection<ReflectableType, typename reflectable_traits::R>(type);
-        if constexpr (CurrentKey < MaxKey)
+        if constexpr (CurrentInjectionIndexValue < MaxInjectionIndexValue)
         {
-            add_default_injection_set<ReflectableType, CurrentKey + 1>(type);
+            add_default_injection_set<ReflectableType, CurrentInjectionIndexValue + 1>(type);
         }
     }
 }
@@ -1868,23 +1872,27 @@ REFLECTABLE_DECLARATION_INIT()
 // ~ qualified types
 
 // static array type
-TEMPLATE_REFLECTABLE_CLEAN((template <typename ElementType, std::size_t N>), ElementType[N], rew::cleanof<ElementType>[N])
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ElementType, std::size_t SizeValue>),
+    ElementType[SizeValue], rew::cleanof<ElementType>[SizeValue]
+)
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t N>), ElementType[N])
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t SizeValue>), ElementType[SizeValue])
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(rew::nameof<ElementType>() + "[" + std::to_string(N) + "]")
+    REFLECTABLE_NAME(rew::nameof<ElementType>() + "[" + std::to_string(SizeValue) + "]")
 REFLECTABLE_DECLARATION_INIT()
 
 // static array pointer type
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t N>), ElementType(*)[N])
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t SizeValue>), ElementType(*)[SizeValue])
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::type_identity_t<" + rew::nameof<ElementType[N]>() + ">*")
+    REFLECTABLE_NAME("std::type_identity_t<" + rew::nameof<ElementType[SizeValue]>() + ">*")
 REFLECTABLE_DECLARATION_INIT()
 
 // static array reference type
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t N>), ElementType(&)[N])
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t SizeValue>), ElementType(&)[SizeValue])
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::type_identity_t<" + rew::nameof<ElementType[N]>() + ">&")
+    REFLECTABLE_NAME("std::type_identity_t<" + rew::nameof<ElementType[SizeValue]>() + ">&")
 REFLECTABLE_DECLARATION_INIT()
 
 // function types
@@ -2601,16 +2609,16 @@ REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename ValueType, std::size_t ArraySize>),
-    (std::array<ValueType, ArraySize>), std::array<rew::cleanof<ValueType>, ArraySize>
+    (template <typename ValueType, std::size_t SizeValue>),
+    (std::array<ValueType, SizeValue>), std::array<rew::cleanof<ValueType>, SizeValue>
 )
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, std::size_t ArraySize>), std::array<ValueType, ArraySize>)
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, std::size_t SizeValue>), std::array<ValueType, SizeValue>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::array<" + rew::nameof<ValueType>() + ", " + std::to_string(ArraySize) + ">")
+    REFLECTABLE_NAME("std::array<" + rew::nameof<ValueType>() + ", " + std::to_string(SizeValue) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t ArraySize>), std::array<ValueType, ArraySize>)
+TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t SizeValue>), std::array<ValueType, SizeValue>)
     FACTORY(R())
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
@@ -2700,9 +2708,9 @@ REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename CharType, typename Traits, typename AllocatorType>),
-    (std::basic_string<CharType, Traits, AllocatorType>),
-    std::basic_string<rew::cleanof<CharType>, rew::cleanof<Traits>, rew::cleanof<AllocatorType>>
+    (template <typename CharType, typename TraitsType, typename AllocatorType>),
+    (std::basic_string<CharType, TraitsType, AllocatorType>),
+    std::basic_string<rew::cleanof<CharType>, rew::cleanof<TraitsType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <>, std::string)
@@ -2737,24 +2745,24 @@ TEMPLATE_REFLECTABLE_DECLARATION(template <typename CharType>, std::basic_string
     REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename CharType, typename Traits>), std::basic_string<CharType, Traits>)
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename CharType, typename TraitsType>), std::basic_string<CharType, TraitsType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ", " + rew::nameof<Traits>() + ">")
+    REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ", " + rew::nameof<TraitsType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename CharType, typename Traits, typename AllocatorType>),
-    std::basic_string<CharType, Traits, AllocatorType>
+    (template <typename CharType, typename TraitsType, typename AllocatorType>),
+    std::basic_string<CharType, TraitsType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ", " + rew::nameof<Traits>() + ", " + rew::nameof<AllocatorType>() + ">")
+    REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ", " + rew::nameof<TraitsType>() + ", " + rew::nameof<AllocatorType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE
 (
-    (template <typename CharType, typename Traits, typename AllocatorType>),
-    std::basic_string<CharType, Traits, AllocatorType>
+    (template <typename CharType, typename TraitsType, typename AllocatorType>),
+    std::basic_string<CharType, TraitsType, AllocatorType>
 )
     FACTORY(R())
 
@@ -3351,8 +3359,9 @@ REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename KeyType, typename Comparator, typename AllocatorType>),
-    (std::set<KeyType, Comparator, AllocatorType>), std::set<rew::cleanof<KeyType>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
+    (template <typename KeyType, typename ComparatorType, typename AllocatorType>),
+    (std::set<KeyType, ComparatorType, AllocatorType>),
+    std::set<rew::cleanof<KeyType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::set<KeyType>)
@@ -3362,30 +3371,30 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Comparator>),
-    std::set<KeyType, Comparator>
+    (template <typename KeyType, typename ComparatorType>),
+    std::set<KeyType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ">")
+    REFLECTABLE_NAME("std::set<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Comparator, typename AllocatorType>),
-    std::set<KeyType, Comparator, AllocatorType>
+    (template <typename KeyType, typename ComparatorType, typename AllocatorType>),
+    std::set<KeyType, ComparatorType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
+        "std::set<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename KeyType, typename Comparator, typename AllocatorType>),
-    (std::multiset<KeyType, Comparator, AllocatorType>),
-    std::multiset<rew::cleanof<KeyType>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
+    (template <typename KeyType, typename ComparatorType, typename AllocatorType>),
+    (std::multiset<KeyType, ComparatorType, AllocatorType>),
+    std::multiset<rew::cleanof<KeyType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::multiset<KeyType>)
@@ -3395,32 +3404,32 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Comparator>),
-    std::multiset<KeyType, Comparator>
+    (template <typename KeyType, typename ComparatorType>),
+    std::multiset<KeyType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ">")
+    REFLECTABLE_NAME("std::multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Comparator, typename AllocatorType>),
-    std::multiset<KeyType, Comparator, AllocatorType>
+    (template <typename KeyType, typename ComparatorType, typename AllocatorType>),
+    std::multiset<KeyType, ComparatorType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
+        "std::multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 template <typename> struct xxrew_is_any_std_ordered_set : std::false_type {};
 
-template <typename KeyType, typename Comparator, typename AllocatorType>
-struct xxrew_is_any_std_ordered_set<std::set<KeyType, Comparator, AllocatorType>> : std::true_type {};
+template <typename KeyType, typename ComparatorType, typename AllocatorType>
+struct xxrew_is_any_std_ordered_set<std::set<KeyType, ComparatorType, AllocatorType>> : std::true_type {};
 
-template <typename KeyType, typename Comparator, typename AllocatorType>
-struct xxrew_is_any_std_ordered_set<std::multiset<KeyType, Comparator, AllocatorType>> : std::true_type {};
+template <typename KeyType, typename ComparatorType, typename AllocatorType>
+struct xxrew_is_any_std_ordered_set<std::multiset<KeyType, ComparatorType, AllocatorType>> : std::true_type {};
 
 CONDITIONAL_REFLECTABLE(xxrew_is_any_std_ordered_set<R>::value)
     FACTORY(R())
@@ -3515,9 +3524,9 @@ REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>),
-    (std::unordered_set<KeyType, Hasher, Comparator, AllocatorType>),
-    std::unordered_set<rew::cleanof<KeyType>, rew::cleanof<Hasher>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
+    (template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>),
+    (std::unordered_set<KeyType, HasherType, ComparatorType, AllocatorType>),
+    std::unordered_set<rew::cleanof<KeyType>, rew::cleanof<HasherType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::unordered_set<KeyType>)
@@ -3527,43 +3536,43 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Hasher>),
-    std::unordered_set<KeyType, Hasher>
+    (template <typename KeyType, typename HasherType>),
+    std::unordered_set<KeyType, HasherType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Hasher>() + ">")
+    REFLECTABLE_NAME("std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<HasherType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Hasher, typename Comparator>),
-    std::unordered_set<KeyType, Hasher, Comparator>
+    (template <typename KeyType, typename HasherType, typename ComparatorType>),
+    std::unordered_set<KeyType, HasherType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ", " + rew::nameof<Hasher>() + ">"
+        "std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ", " + rew::nameof<HasherType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>),
-    std::unordered_set<KeyType, Hasher, Comparator, AllocatorType>
+    (template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>),
+    std::unordered_set<KeyType, HasherType, ComparatorType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Hasher>() + ", "
-                              + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
+        "std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<HasherType>() + ", "
+                              + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>),
-    (std::unordered_multiset<KeyType, Hasher, Comparator, AllocatorType>),
-    std::unordered_multiset<rew::cleanof<KeyType>, rew::cleanof<Hasher>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
+    (template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>),
+    (std::unordered_multiset<KeyType, HasherType, ComparatorType, AllocatorType>),
+    std::unordered_multiset<rew::cleanof<KeyType>, rew::cleanof<HasherType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::unordered_multiset<KeyType>)
@@ -3573,45 +3582,45 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Hasher>),
-    std::unordered_multiset<KeyType, Hasher>
+    (template <typename KeyType, typename HasherType>),
+    std::unordered_multiset<KeyType, HasherType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Hasher>() + ">")
+    REFLECTABLE_NAME("std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<HasherType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Hasher, typename Comparator>),
-    std::unordered_multiset<KeyType, Hasher, Comparator>
+    (template <typename KeyType, typename HasherType, typename ComparatorType>),
+    std::unordered_multiset<KeyType, HasherType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ", " + rew::nameof<Hasher>() + ">"
+        "std::unordered_multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ", " + rew::nameof<HasherType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>),
-    std::unordered_multiset<KeyType, Hasher, Comparator, AllocatorType>
+    (template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>),
+    std::unordered_multiset<KeyType, HasherType, ComparatorType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<Hasher>() + ", "
-                                   + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
+        "std::unordered_multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<HasherType>() + ", "
+                                   + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 template <typename> struct xxrew_is_any_std_unordered_set : std::false_type {};
 
-template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
-struct xxrew_is_any_std_unordered_set<std::unordered_set<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
+template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>
+struct xxrew_is_any_std_unordered_set<std::unordered_set<KeyType, HasherType, ComparatorType, AllocatorType>> : std::true_type {};
 
-template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
-struct xxrew_is_any_std_unordered_set<std::unordered_multiset<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
+template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>
+struct xxrew_is_any_std_unordered_set<std::unordered_multiset<KeyType, HasherType, ComparatorType, AllocatorType>> : std::true_type {};
 
 CONDITIONAL_REFLECTABLE(xxrew_is_any_std_unordered_set<R>::value)
     FACTORY(R())
@@ -3854,9 +3863,9 @@ REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>),
-    (std::map<KeyType, ValueType, Comparator, AllocatorType>),
-    std::map<rew::cleanof<KeyType>, rew::cleanof<ValueType>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
+    (template <typename KeyType, typename ValueType, typename ComparatorType, typename AllocatorType>),
+    (std::map<KeyType, ValueType, ComparatorType, AllocatorType>),
+    std::map<rew::cleanof<KeyType>, rew::cleanof<ValueType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::map<KeyType, ValueType>)
@@ -3866,34 +3875,34 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename ValueType, typename Comparator>),
-    std::map<KeyType, ValueType, Comparator>
+    (template <typename KeyType, typename ValueType, typename ComparatorType>),
+    std::map<KeyType, ValueType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<Comparator>() + ">"
+        "std::map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<ComparatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>),
-    std::map<KeyType, ValueType, Comparator, AllocatorType>
+    (template <typename KeyType, typename ValueType, typename ComparatorType, typename AllocatorType>),
+    std::map<KeyType, ValueType, ComparatorType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
         "std::map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", "
-                    + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
+                    + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>),
-    (std::multimap<KeyType, ValueType, Comparator, AllocatorType>),
-    std::multimap<rew::cleanof<KeyType>, rew::cleanof<ValueType>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
+    (template <typename KeyType, typename ValueType, typename ComparatorType, typename AllocatorType>),
+    (std::multimap<KeyType, ValueType, ComparatorType, AllocatorType>),
+    std::multimap<rew::cleanof<KeyType>, rew::cleanof<ValueType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::multimap<KeyType, ValueType>)
@@ -3903,36 +3912,36 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename ValueType, typename Comparator>),
-    std::multimap<KeyType, ValueType, Comparator>
+    (template <typename KeyType, typename ValueType, typename ComparatorType>),
+    std::multimap<KeyType, ValueType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<Comparator>() + ">"
+        "std::multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<ComparatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>),
-    std::multimap<KeyType, ValueType, Comparator, AllocatorType>
+    (template <typename KeyType, typename ValueType, typename ComparatorType, typename AllocatorType>),
+    std::multimap<KeyType, ValueType, ComparatorType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
         "std::multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", "
-                         + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
+                         + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 template <typename> struct xxrew_is_any_std_ordered_map : std::false_type {};
 
-template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
-struct xxrew_is_any_std_ordered_map<std::map<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
+template <typename KeyType, typename ValueType, typename ComparatorType, typename AllocatorType>
+struct xxrew_is_any_std_ordered_map<std::map<KeyType, ValueType, ComparatorType, AllocatorType>> : std::true_type {};
 
-template <typename KeyType, typename ValueType, typename Comparator, typename AllocatorType>
-struct xxrew_is_any_std_ordered_map<std::multimap<KeyType, ValueType, Comparator, AllocatorType>> : std::true_type {};
+template <typename KeyType, typename ValueType, typename ComparatorType, typename AllocatorType>
+struct xxrew_is_any_std_ordered_map<std::multimap<KeyType, ValueType, ComparatorType, AllocatorType>> : std::true_type {};
 
 CONDITIONAL_REFLECTABLE(xxrew_is_any_std_ordered_map<R>::value)
     FACTORY(R())
@@ -4038,9 +4047,9 @@ REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename KeyType, typename ValueType, typename Hasher, typename Comparator, typename AllocatorType>),
-    (std::unordered_map<KeyType, ValueType, Hasher, Comparator, AllocatorType>),
-    std::unordered_map<rew::cleanof<KeyType>, rew::cleanof<ValueType>, rew::cleanof<Hasher>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
+    (template <typename KeyType, typename ValueType, typename HasherType, typename ComparatorType, typename AllocatorType>),
+    (std::unordered_map<KeyType, ValueType, HasherType, ComparatorType, AllocatorType>),
+    std::unordered_map<rew::cleanof<KeyType>, rew::cleanof<ValueType>, rew::cleanof<HasherType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::unordered_map<KeyType, ValueType>)
@@ -4050,44 +4059,44 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename ValueType, typename Hasher>),
-    std::unordered_map<KeyType, ValueType, Hasher>
+    (template <typename KeyType, typename ValueType, typename HasherType>),
+    std::unordered_map<KeyType, ValueType, HasherType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<Hasher>() + ">")
+    REFLECTABLE_NAME("std::unordered_map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<HasherType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename ValueType, typename Hasher, typename Comparator>),
-    std::unordered_map<KeyType, ValueType, Hasher, Comparator>
+    (template <typename KeyType, typename ValueType, typename HasherType, typename ComparatorType>),
+    std::unordered_map<KeyType, ValueType, HasherType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
         "std::unordered_map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", "
-                              + rew::nameof<Comparator>() + ", " + rew::nameof<Hasher>() + ">"
+                              + rew::nameof<ComparatorType>() + ", " + rew::nameof<HasherType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename ValueType, typename Hasher, typename Comparator, typename AllocatorType>),
-    std::unordered_map<KeyType, ValueType, Hasher, Comparator, AllocatorType>
+    (template <typename KeyType, typename ValueType, typename HasherType, typename ComparatorType, typename AllocatorType>),
+    std::unordered_map<KeyType, ValueType, HasherType, ComparatorType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<Hasher>() + ", "
-                              + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
+        "std::unordered_map<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<HasherType>() + ", "
+                              + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename KeyType, typename ValueType, typename Hasher, typename Comparator, typename AllocatorType>),
-    (std::unordered_multimap<KeyType, ValueType, Hasher, Comparator, AllocatorType>),
-    std::unordered_multimap<rew::cleanof<KeyType>, rew::cleanof<ValueType>, rew::cleanof<Hasher>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
+    (template <typename KeyType, typename ValueType, typename HasherType, typename ComparatorType, typename AllocatorType>),
+    (std::unordered_multimap<KeyType, ValueType, HasherType, ComparatorType, AllocatorType>),
+    std::unordered_multimap<rew::cleanof<KeyType>, rew::cleanof<ValueType>, rew::cleanof<HasherType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::unordered_multimap<KeyType, ValueType>)
@@ -4097,46 +4106,46 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename ValueType, typename Hasher>),
-    std::unordered_multimap<KeyType, ValueType, Hasher>
+    (template <typename KeyType, typename ValueType, typename HasherType>),
+    std::unordered_multimap<KeyType, ValueType, HasherType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<Hasher>() + ">")
+    REFLECTABLE_NAME("std::unordered_multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<HasherType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename ValueType, typename Hasher, typename Comparator>),
-    std::unordered_multimap<KeyType, ValueType, Hasher, Comparator>
+    (template <typename KeyType, typename ValueType, typename HasherType, typename ComparatorType>),
+    std::unordered_multimap<KeyType, ValueType, HasherType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
         "std::unordered_multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", "
-                                   + rew::nameof<Comparator>() + ", " + rew::nameof<Hasher>() + ">"
+                                   + rew::nameof<ComparatorType>() + ", " + rew::nameof<HasherType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename ValueType, typename Hasher, typename Comparator, typename AllocatorType>),
-    std::unordered_multimap<KeyType, ValueType, Hasher, Comparator, AllocatorType>
+    (template <typename KeyType, typename ValueType, typename HasherType, typename ComparatorType, typename AllocatorType>),
+    std::unordered_multimap<KeyType, ValueType, HasherType, ComparatorType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<Hasher>() + ", "
-                                   + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
+        "std::unordered_multimap<" + rew::nameof<KeyType>() + ", " + rew::nameof<ValueType>() + ", " + rew::nameof<HasherType>() + ", "
+                                   + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 template <typename> struct xxrew_is_any_std_unordered_map : std::false_type {};
 
-template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
-struct xxrew_is_any_std_unordered_map<std::unordered_map<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
+template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>
+struct xxrew_is_any_std_unordered_map<std::unordered_map<KeyType, HasherType, ComparatorType, AllocatorType>> : std::true_type {};
 
-template <typename KeyType, typename Hasher, typename Comparator, typename AllocatorType>
-struct xxrew_is_any_std_unordered_map<std::unordered_multimap<KeyType, Hasher, Comparator, AllocatorType>> : std::true_type {};
+template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>
+struct xxrew_is_any_std_unordered_map<std::unordered_multimap<KeyType, HasherType, ComparatorType, AllocatorType>> : std::true_type {};
 
 CONDITIONAL_REFLECTABLE(xxrew_is_any_std_unordered_map<R>::value)
     FACTORY(R())
@@ -4389,6 +4398,8 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), std::
     #endif // REW_CORE_MINIMAL
 REFLECTABLE_INIT()
 
+// TODO: add priority_queue
+
 #include <queue> // queue
 
 // default container for queue
@@ -4459,12 +4470,12 @@ TEMPLATE_REFLECTABLE(template <class StdBitsetType>, std_bitset_reference<StdBit
     FUNCTION(flip, R&())
 REFLECTABLE_INIT()
 
-TEMPLATE_REFLECTABLE_DECLARATION(template <std::size_t BitsetSize>, std::bitset<BitsetSize>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <std::size_t SizeValue>, std::bitset<SizeValue>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::bitset<" + std::to_string(BitsetSize) + ">")
+    REFLECTABLE_NAME("std::bitset<" + std::to_string(SizeValue) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE(template <std::size_t BitsetSize>, std::bitset<BitsetSize>)
+TEMPLATE_REFLECTABLE(template <std::size_t SizeValue>, std::bitset<SizeValue>)
     FACTORY(R())
     FACTORY(R(R const&))
 

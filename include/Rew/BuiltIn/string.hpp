@@ -20,9 +20,9 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename CharType, typename Traits, typename AllocatorType>),
-    (std::basic_string<CharType, Traits, AllocatorType>),
-    std::basic_string<rew::cleanof<CharType>, rew::cleanof<Traits>, rew::cleanof<AllocatorType>>
+    (template <typename CharType, typename TraitsType, typename AllocatorType>),
+    (std::basic_string<CharType, TraitsType, AllocatorType>),
+    std::basic_string<rew::cleanof<CharType>, rew::cleanof<TraitsType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <>, std::string)
@@ -57,24 +57,24 @@ TEMPLATE_REFLECTABLE_DECLARATION(template <typename CharType>, std::basic_string
     REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE_DECLARATION((template <typename CharType, typename Traits>), std::basic_string<CharType, Traits>)
+TEMPLATE_REFLECTABLE_DECLARATION((template <typename CharType, typename TraitsType>), std::basic_string<CharType, TraitsType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ", " + rew::nameof<Traits>() + ">")
+    REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ", " + rew::nameof<TraitsType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename CharType, typename Traits, typename AllocatorType>),
-    std::basic_string<CharType, Traits, AllocatorType>
+    (template <typename CharType, typename TraitsType, typename AllocatorType>),
+    std::basic_string<CharType, TraitsType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ", " + rew::nameof<Traits>() + ", " + rew::nameof<AllocatorType>() + ">")
+    REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ", " + rew::nameof<TraitsType>() + ", " + rew::nameof<AllocatorType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE
 (
-    (template <typename CharType, typename Traits, typename AllocatorType>),
-    std::basic_string<CharType, Traits, AllocatorType>
+    (template <typename CharType, typename TraitsType, typename AllocatorType>),
+    std::basic_string<CharType, TraitsType, AllocatorType>
 )
     FACTORY(R())
 

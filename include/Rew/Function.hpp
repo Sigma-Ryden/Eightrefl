@@ -57,42 +57,42 @@ namespace detail
 {
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes,
-          typename FunctionType, std::size_t... I>
-auto handler_member_function_call_impl(FunctionType function, std::index_sequence<I...>)
+          typename FunctionType, std::size_t... ArgumentIndexValues>
+auto handler_member_function_call_impl(FunctionType function, std::index_sequence<ArgumentIndexValues...>)
 {
     return [function](std::any const& context, std::vector<std::any> const& arguments) -> std::any
     {
         auto reflectable = std::any_cast<ReflectableType*>(context);
         if constexpr (std::is_void_v<ReturnType>)
         {
-            (reflectable->*function)(utility::forward<ArgumentTypes>(arguments[I])...);
+            (reflectable->*function)(utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])...);
             return {};
         }
         else
         {
             return utility::backward
             (
-                (reflectable->*function)(utility::forward<ArgumentTypes>(arguments[I])...)
+                (reflectable->*function)(utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])...)
             );
         }
     };
 }
 
-template <typename ReturnType, typename... ArgumentTypes, std::size_t... I>
-auto handler_free_function_call_impl(ReturnType(*function)(ArgumentTypes...), std::index_sequence<I...>)
+template <typename ReturnType, typename... ArgumentTypes, std::size_t... ArgumentIndexValues>
+auto handler_free_function_call_impl(ReturnType(*function)(ArgumentTypes...), std::index_sequence<ArgumentIndexValues...>)
 {
     return [function](std::any const&, std::vector<std::any> const& arguments) -> std::any
     {
         if constexpr (std::is_void_v<ReturnType>)
         {
-            function(utility::forward<ArgumentTypes>(arguments[I])...);
+            function(utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])...);
             return {};
         }
         else
         {
             return utility::backward
             (
-                function(utility::forward<ArgumentTypes>(arguments[I])...)
+                function(utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])...)
             );
         }
     };

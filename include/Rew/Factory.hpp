@@ -37,18 +37,18 @@ struct factory_t
 namespace detail
 {
 
-template <typename ReflectableType, typename... ArgumentTypes, std::size_t... I>
-auto handler_factory_call_impl(std::index_sequence<I...>)
+template <typename ReflectableType, typename... ArgumentTypes, std::size_t... ArgumentIndexValues>
+auto handler_factory_call_impl(std::index_sequence<ArgumentIndexValues...>)
 {
     return [](std::vector<std::any> const& arguments) -> std::any
     {
         if constexpr (std::is_aggregate_v<ReflectableType>)
         {
-            return ReflectableType{ utility::forward<ArgumentTypes>(arguments[I])... };
+            return ReflectableType{ utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])... };
         }
         else
         {
-            return ReflectableType( utility::forward<ArgumentTypes>(arguments[I])... );
+            return ReflectableType( utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])... );
         }
     };
 }

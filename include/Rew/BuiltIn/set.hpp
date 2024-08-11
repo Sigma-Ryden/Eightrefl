@@ -21,8 +21,9 @@
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename KeyType, typename Comparator, typename AllocatorType>),
-    (std::set<KeyType, Comparator, AllocatorType>), std::set<rew::cleanof<KeyType>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
+    (template <typename KeyType, typename ComparatorType, typename AllocatorType>),
+    (std::set<KeyType, ComparatorType, AllocatorType>),
+    std::set<rew::cleanof<KeyType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::set<KeyType>)
@@ -32,31 +33,31 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Comparator>),
-    std::set<KeyType, Comparator>
+    (template <typename KeyType, typename ComparatorType>),
+    std::set<KeyType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ">")
+    REFLECTABLE_NAME("std::set<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Comparator, typename AllocatorType>),
-    std::set<KeyType, Comparator, AllocatorType>
+    (template <typename KeyType, typename ComparatorType, typename AllocatorType>),
+    std::set<KeyType, ComparatorType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::set<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
+        "std::set<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
-    (template <typename KeyType, typename Comparator, typename AllocatorType>),
-    (std::multiset<KeyType, Comparator, AllocatorType>),
-    std::multiset<rew::cleanof<KeyType>, rew::cleanof<Comparator>, rew::cleanof<AllocatorType>>
+    (template <typename KeyType, typename ComparatorType, typename AllocatorType>),
+    (std::multiset<KeyType, ComparatorType, AllocatorType>),
+    std::multiset<rew::cleanof<KeyType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::multiset<KeyType>)
@@ -66,33 +67,33 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Comparator>),
-    std::multiset<KeyType, Comparator>
+    (template <typename KeyType, typename ComparatorType>),
+    std::multiset<KeyType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ">")
+    REFLECTABLE_NAME("std::multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename KeyType, typename Comparator, typename AllocatorType>),
-    std::multiset<KeyType, Comparator, AllocatorType>
+    (template <typename KeyType, typename ComparatorType, typename AllocatorType>),
+    std::multiset<KeyType, ComparatorType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<Comparator>() + ", " + rew::nameof<AllocatorType>() + ">"
+        "std::multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
 
 template <typename> struct xxrew_is_any_std_ordered_set : std::false_type {};
 
-template <typename KeyType, typename Comparator, typename AllocatorType>
-struct xxrew_is_any_std_ordered_set<std::set<KeyType, Comparator, AllocatorType>> : std::true_type {};
+template <typename KeyType, typename ComparatorType, typename AllocatorType>
+struct xxrew_is_any_std_ordered_set<std::set<KeyType, ComparatorType, AllocatorType>> : std::true_type {};
 
-template <typename KeyType, typename Comparator, typename AllocatorType>
-struct xxrew_is_any_std_ordered_set<std::multiset<KeyType, Comparator, AllocatorType>> : std::true_type {};
+template <typename KeyType, typename ComparatorType, typename AllocatorType>
+struct xxrew_is_any_std_ordered_set<std::multiset<KeyType, ComparatorType, AllocatorType>> : std::true_type {};
 
 CONDITIONAL_REFLECTABLE(xxrew_is_any_std_ordered_set<R>::value)
     FACTORY(R())

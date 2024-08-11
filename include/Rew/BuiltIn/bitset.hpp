@@ -39,12 +39,12 @@ TEMPLATE_REFLECTABLE(template <class StdBitsetType>, std_bitset_reference<StdBit
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_DECLARATION(template <std::size_t BitsetSize>, std::bitset<BitsetSize>)
+TEMPLATE_REFLECTABLE_DECLARATION(template <std::size_t SizeValue>, std::bitset<SizeValue>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::bitset<" + std::to_string(BitsetSize) + ">")
+    REFLECTABLE_NAME("std::bitset<" + std::to_string(SizeValue) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-TEMPLATE_REFLECTABLE(template <std::size_t BitsetSize>, std::bitset<BitsetSize>)
+TEMPLATE_REFLECTABLE(template <std::size_t SizeValue>, std::bitset<SizeValue>)
     FACTORY(R())
     FACTORY(R(R const&))
 

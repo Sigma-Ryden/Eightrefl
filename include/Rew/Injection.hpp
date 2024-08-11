@@ -8,7 +8,7 @@
 
 #include <Rew/Reflection.hpp>
 
-template <std::size_t InjectionIndex>
+template <std::size_t InjectionIndexValue>
 struct xxrew_injection;
 
 namespace rew
