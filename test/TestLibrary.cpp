@@ -608,4 +608,83 @@ TEST(TestLibrary, TestImplicitRegistry)
     EXPECT("type-property1", rew::global.find("TestImplicitRegistryStruct*") != nullptr);
 }
 
-// TODO: add tests for function & factory args
+// TODO: add tests for function & factory args, property
+// TODO: add tests for const and reference qualifiers in functions
+TEST_SPACE()
+{
+
+struct TestFunctionArgumentsAndResultStruct
+{
+    void WithoutArgumentsWithoutReturn() {}
+    char const* WithoutArgumentsWithReturn() { return nullptr; }
+    void WithArgumentsWithoutReturn(int, void(*)()) {}
+    bool WithArgumentsWithReturn(std::nullptr_t) {}
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestFunctionArgumentsAndResultStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestFunctionArgumentsAndResultStruct)
+    FUNCTION(WithoutArgumentsWithoutReturn)
+    FUNCTION(WithoutArgumentsWithReturn)
+    FUNCTION(WithArgumentsWithoutReturn)
+    FUNCTION(WithArgumentsWithReturn)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestFunctionArgumentsAndResult)
+{
+    auto type = rew::global.find("TestFunctionArgumentsAndResultStruct");
+
+    ASSERT("type", type != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+
+    {
+        auto without_arguments_without_return_overloads = reflection->function.find("WithoutArgumentsWithoutReturn");
+
+        ASSERT("function-without_arguments_without_return-result-overloads", without_arguments_without_return_overloads != nullptr);
+
+        auto without_arguments_without_return = without_arguments_without_return_overloads->find("void()");
+
+        ASSERT("function-without_arguments_without_return", without_arguments_without_return != nullptr);
+        EXPECT("function-without_arguments_without_return-result", without_arguments_without_return->result == rew::global.find("void"));
+        EXPECT("function-without_arguments_without_return-arguments", without_arguments_without_return->arguments.size() == 0);
+    }
+    {
+        auto without_arguments_with_return_overloads = reflection->function.find("WithoutArgumentsWithReturn");
+
+        ASSERT("function-without_arguments_with_return-result-overloads", without_arguments_with_return_overloads != nullptr);
+
+        auto without_arguments_with_return = without_arguments_with_return_overloads->find("char const*()");
+
+        ASSERT("function-without_arguments_with_return", without_arguments_with_return != nullptr);
+        EXPECT("function-without_arguments_with_return-result", without_arguments_with_return->result == rew::global.find("char*"));
+        EXPECT("function-without_arguments_with_return-arguments", without_arguments_with_return->arguments.size() == 0);
+    }
+    {
+        auto with_arguments_without_return_overloads = reflection->function.find("WithArgumentsWithoutReturn");
+
+        ASSERT("function-with_arguments_without_return-overloads", with_arguments_without_return_overloads != nullptr);
+
+        auto with_arguments_without_return = with_arguments_without_return_overloads->find("void(int, std::type_identity_t<void()>*)");
+
+        ASSERT("function-with_arguments_without_return", with_arguments_without_return != nullptr);
+        EXPECT("function-with_arguments_without_return-result", with_arguments_without_return->result == rew::global.find("void"));
+        EXPECT("function-with_arguments_without_return-arguments-type", with_arguments_without_return->arguments.size() == 2 && with_arguments_without_return->arguments[0] == rew::global.find("int") && with_arguments_without_return->arguments[1] == rew::global.find("std::type_identity_t<void()>*"));
+    }
+    {
+        auto with_arguments_with_return_overloads = reflection->function.find("WithArgumentsWithReturn");
+
+        ASSERT("function-with_arguments_with_return-overloads", with_arguments_with_return_overloads != nullptr);
+
+        auto with_arguments_with_return = with_arguments_with_return_overloads->find("bool(std::nullptr_t)");
+
+        ASSERT("function-with_arguments_with_return", with_arguments_with_return != nullptr);
+        EXPECT("function-with_arguments_with_return-result", with_arguments_with_return->result == rew::global.find("bool"));
+        EXPECT("function-with_arguments_with_return-arguments-type", with_arguments_with_return->arguments.size() == 1 && with_arguments_with_return->arguments[0] == rew::global.find("std::nullptr_t"));
+    }
+}
