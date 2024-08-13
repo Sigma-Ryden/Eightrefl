@@ -542,6 +542,78 @@ TEST(TestLibrary, TestIsParentOf)
 TEST_SPACE()
 {
 
+struct TestTypeDeductionStruct {};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestTypeDeductionStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestTypeDeductionStruct)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestTypeDeduction)
+{
+
+    auto type = rew::global.find("TestTypeDeductionStruct");
+
+    EXPECT("type", rew::find_or_add_type<TestTypeDeductionStruct>() == type);
+
+
+    auto const_type = rew::global.find("TestTypeDeductionStruct");
+
+    EXPECT("const_type", rew::find_or_add_type<TestTypeDeductionStruct const>() == const_type);
+
+
+    auto reference_type = rew::global.find("TestTypeDeductionStruct*");
+
+    EXPECT("reference_type", rew::find_or_add_type<TestTypeDeductionStruct&>() == reference_type);
+
+
+    auto const_reference_type = rew::global.find("TestTypeDeductionStruct*");
+
+    EXPECT("const_reference_type", rew::find_or_add_type<TestTypeDeductionStruct const&>() == const_reference_type);
+
+
+    auto pointer_type = rew::global.find("TestTypeDeductionStruct*");
+
+    EXPECT("pointer_type", rew::find_or_add_type<TestTypeDeductionStruct*>() == pointer_type);
+
+
+    auto pointer_to_const_type = rew::global.find("TestTypeDeductionStruct*");
+
+    EXPECT("pointer_to_const_type", rew::find_or_add_type<TestTypeDeductionStruct const*>() == pointer_to_const_type);
+
+
+    auto const_pointer_to_const_type = rew::global.find("TestTypeDeductionStruct*");
+
+    EXPECT("const_pointer_to_const_type", rew::find_or_add_type<TestTypeDeductionStruct const* const>() == const_pointer_to_const_type);
+
+
+    auto pointer_type_reference = rew::global.find("TestTypeDeductionStruct**");
+
+    EXPECT("pointer_type_reference", rew::find_or_add_type<TestTypeDeductionStruct*&>() == pointer_type_reference);
+
+
+    auto pointer_to_const_type_reference = rew::global.find("TestTypeDeductionStruct const**");
+
+    EXPECT("pointer_to_const_type_reference", rew::find_or_add_type<TestTypeDeductionStruct const*&>() == pointer_to_const_type_reference);
+
+
+    auto const_pointer_to_const_type_reference = rew::global.find("TestTypeDeductionStruct const**");
+
+    EXPECT("const_pointer_to_const_type_reference", rew::find_or_add_type<TestTypeDeductionStruct const* const&>() == const_pointer_to_const_type_reference);
+
+
+    auto mixed_type = rew::global.find("TestTypeDeductionStruct const***");
+
+    EXPECT("mixed_type", rew::find_or_add_type<TestTypeDeductionStruct const** const&>() == mixed_type);
+}
+
+
+TEST_SPACE()
+{
+
 struct TestRTTIRegistryStruct {};
 
 } // TEST_SPACE
@@ -563,7 +635,7 @@ TEST(TestLibrary, TestRTTIRegistry)
     auto const_pointer_to_const_type = rew::find_or_add_type<TestRTTIRegistryStruct const* const>(); // will break to TestRTTIRegistryStruct*
     auto pointer_type_reference = rew::find_or_add_type<TestRTTIRegistryStruct*&>();
     auto pointer_to_const_type_reference = rew::find_or_add_type<TestRTTIRegistryStruct const*&>(); // will break to TestRTTIRegistryStruct const**
-    auto const_pointer_to_const_type_reference = rew::find_or_add_type<TestRTTIRegistryStruct const* const&>(); // will break to TestRTTIRegistryStruct*
+    auto const_pointer_to_const_type_reference = rew::find_or_add_type<TestRTTIRegistryStruct const* const&>(); // will break to TestRTTIRegistryStruct const**
     auto mixed_type = rew::find_or_add_type<TestRTTIRegistryStruct const** const&>();
 
     EXPECT("type-typeid", rew::global.find(typeid(TestRTTIRegistryStruct)) == type);
@@ -608,8 +680,82 @@ TEST(TestLibrary, TestImplicitRegistry)
     EXPECT("type-property1", rew::global.find("TestImplicitRegistryStruct*") != nullptr);
 }
 
-// TODO: add tests for function & factory args, property
-// TODO: add tests for const and reference qualifiers in functions
+
+#include <Rew/BuiltIn/shared_ptr.hpp>
+
+TEST_SPACE()
+{
+
+struct TestFactorArgumentsAndResultStruct
+{
+    TestFactorArgumentsAndResultStruct() {}
+    TestFactorArgumentsAndResultStruct(float const*, unsigned) {}
+};
+
+struct TestFactorArgumentsAndResultProxy
+{
+    TestFactorArgumentsAndResultProxy(TestFactorArgumentsAndResultStruct const&) {}
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestFactorArgumentsAndResultStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestFactorArgumentsAndResultStruct)
+    FACTORY(TestFactorArgumentsAndResultStruct())
+    FACTORY(TestFactorArgumentsAndResultStruct(float const*, unsigned))
+    FACTORY(std::shared_ptr<TestFactorArgumentsAndResultStruct>())
+    FACTORY(TestFactorArgumentsAndResultProxy(TestFactorArgumentsAndResultStruct const&))
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(TestFactorArgumentsAndResultProxy)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestFactorArgumentsAndResultProxy)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestFactorArgumentsAndResult)
+{
+    auto type = rew::global.find("TestFactorArgumentsAndResultStruct");
+
+    ASSERT("type", type != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+
+    {
+        auto without_arguments_with_return = reflection->factory.find("TestFactorArgumentsAndResultStruct()");
+
+        ASSERT("factory-without_arguments_with_return", without_arguments_with_return != nullptr);
+        EXPECT("without_arguments_with_return-result", without_arguments_with_return->result == type);
+        EXPECT("without_arguments_with_return-argumens", without_arguments_with_return->arguments.size() == 0);
+    }
+    {
+        auto with_arguments_with_return = reflection->factory.find("TestFactorArgumentsAndResultStruct(float const*, unsigned int)");
+
+        ASSERT("with_arguments_with_return", with_arguments_with_return != nullptr);
+        EXPECT("with_arguments_with_return-result", with_arguments_with_return->result == type);
+        EXPECT("with_arguments_with_return-arguments", with_arguments_with_return->arguments.size() == 2 && with_arguments_with_return->arguments[0] == rew::global.find("float*") && with_arguments_with_return->arguments[1] == rew::global.find("unsigned int"));
+    }
+    {
+        auto without_arguments_withother_return = reflection->factory.find("std::shared_ptr<TestFactorArgumentsAndResultStruct>()");
+
+        ASSERT("without_arguments_withother_return", without_arguments_withother_return != nullptr);
+        EXPECT("without_arguments_withother_return-result", without_arguments_withother_return->result == rew::global.find("std::shared_ptr<TestFactorArgumentsAndResultStruct>"));
+        EXPECT("without_arguments_withother_return-arguments", without_arguments_withother_return->arguments.size() == 0);
+    }
+    {
+        auto with_arguments_withother_return = reflection->factory.find("TestFactorArgumentsAndResultProxy(TestFactorArgumentsAndResultStruct const&)");
+
+        ASSERT("with_arguments_withother_return", with_arguments_withother_return != nullptr);
+        EXPECT("with_arguments_withother_return-result", with_arguments_withother_return->result == rew::global.find("TestFactorArgumentsAndResultProxy"));
+        EXPECT("with_arguments_withother_return-arguments", with_arguments_withother_return->arguments.size() == 1 && with_arguments_withother_return->arguments[0] == rew::global.find("TestFactorArgumentsAndResultStruct*"));
+    }
+}
+
+
 TEST_SPACE()
 {
 
@@ -618,7 +764,7 @@ struct TestFunctionArgumentsAndResultStruct
     void WithoutArgumentsWithoutReturn() {}
     char const* WithoutArgumentsWithReturn() { return nullptr; }
     void WithArgumentsWithoutReturn(int, void(*)()) {}
-    bool WithArgumentsWithReturn(std::nullptr_t) {}
+    bool WithArgumentsWithReturn(std::nullptr_t) { return false; }
 };
 
 } // TEST_SPACE
@@ -688,3 +834,6 @@ TEST(TestLibrary, TestFunctionArgumentsAndResult)
         EXPECT("function-with_arguments_with_return-arguments-type", with_arguments_with_return->arguments.size() == 1 && with_arguments_with_return->arguments[0] == rew::global.find("std::nullptr_t"));
     }
 }
+
+
+// TODO: add tests for const and reference qualifiers in functions
