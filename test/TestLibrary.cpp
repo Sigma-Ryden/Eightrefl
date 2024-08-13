@@ -554,60 +554,61 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestTypeDeduction)
 {
+    {
+        auto type = rew::global.find("TestTypeDeductionStruct");
 
-    auto type = rew::global.find("TestTypeDeductionStruct");
+        EXPECT("type", rew::find_or_add_type<TestTypeDeductionStruct>() == type);
+    }
+    {
+        auto const_type = rew::global.find("TestTypeDeductionStruct");
 
-    EXPECT("type", rew::find_or_add_type<TestTypeDeductionStruct>() == type);
+        EXPECT("const_type", rew::find_or_add_type<TestTypeDeductionStruct const>() == const_type);
+    }
+    {
+        auto reference_type = rew::global.find("TestTypeDeductionStruct*");
 
+        EXPECT("reference_type", rew::find_or_add_type<TestTypeDeductionStruct&>() == reference_type);
+    }
+    {
+        auto const_reference_type = rew::global.find("TestTypeDeductionStruct*");
 
-    auto const_type = rew::global.find("TestTypeDeductionStruct");
+        EXPECT("const_reference_type", rew::find_or_add_type<TestTypeDeductionStruct const&>() == const_reference_type);
+    }
+    {
+        auto pointer_type = rew::global.find("TestTypeDeductionStruct*");
 
-    EXPECT("const_type", rew::find_or_add_type<TestTypeDeductionStruct const>() == const_type);
+        EXPECT("pointer_type", rew::find_or_add_type<TestTypeDeductionStruct*>() == pointer_type);
+    }
+    {
+        auto pointer_to_const_type = rew::global.find("TestTypeDeductionStruct*");
 
+        EXPECT("pointer_to_const_type", rew::find_or_add_type<TestTypeDeductionStruct const*>() == pointer_to_const_type);
+    }
+    {
+        auto const_pointer_to_const_type = rew::global.find("TestTypeDeductionStruct*");
 
-    auto reference_type = rew::global.find("TestTypeDeductionStruct*");
+        EXPECT("const_pointer_to_const_type", rew::find_or_add_type<TestTypeDeductionStruct const* const>() == const_pointer_to_const_type);
+    }
+    {
+        auto pointer_type_reference = rew::global.find("TestTypeDeductionStruct**");
 
-    EXPECT("reference_type", rew::find_or_add_type<TestTypeDeductionStruct&>() == reference_type);
+        EXPECT("pointer_type_reference", rew::find_or_add_type<TestTypeDeductionStruct*&>() == pointer_type_reference);
+    }
+    {
+        auto pointer_to_const_type_reference = rew::global.find("TestTypeDeductionStruct const**");
 
+        EXPECT("pointer_to_const_type_reference", rew::find_or_add_type<TestTypeDeductionStruct const*&>() == pointer_to_const_type_reference);
+    }
+    {
+        auto const_pointer_to_const_type_reference = rew::global.find("TestTypeDeductionStruct const**");
 
-    auto const_reference_type = rew::global.find("TestTypeDeductionStruct*");
+        EXPECT("const_pointer_to_const_type_reference", rew::find_or_add_type<TestTypeDeductionStruct const* const&>() == const_pointer_to_const_type_reference);
+    }
+    {
+        auto mixed_type = rew::global.find("TestTypeDeductionStruct const***");
 
-    EXPECT("const_reference_type", rew::find_or_add_type<TestTypeDeductionStruct const&>() == const_reference_type);
-
-
-    auto pointer_type = rew::global.find("TestTypeDeductionStruct*");
-
-    EXPECT("pointer_type", rew::find_or_add_type<TestTypeDeductionStruct*>() == pointer_type);
-
-
-    auto pointer_to_const_type = rew::global.find("TestTypeDeductionStruct*");
-
-    EXPECT("pointer_to_const_type", rew::find_or_add_type<TestTypeDeductionStruct const*>() == pointer_to_const_type);
-
-
-    auto const_pointer_to_const_type = rew::global.find("TestTypeDeductionStruct*");
-
-    EXPECT("const_pointer_to_const_type", rew::find_or_add_type<TestTypeDeductionStruct const* const>() == const_pointer_to_const_type);
-
-
-    auto pointer_type_reference = rew::global.find("TestTypeDeductionStruct**");
-
-    EXPECT("pointer_type_reference", rew::find_or_add_type<TestTypeDeductionStruct*&>() == pointer_type_reference);
-
-
-    auto pointer_to_const_type_reference = rew::global.find("TestTypeDeductionStruct const**");
-
-    EXPECT("pointer_to_const_type_reference", rew::find_or_add_type<TestTypeDeductionStruct const*&>() == pointer_to_const_type_reference);
-
-
-    auto const_pointer_to_const_type_reference = rew::global.find("TestTypeDeductionStruct const**");
-
-    EXPECT("const_pointer_to_const_type_reference", rew::find_or_add_type<TestTypeDeductionStruct const* const&>() == const_pointer_to_const_type_reference);
-
-
-    auto mixed_type = rew::global.find("TestTypeDeductionStruct const***");
-
-    EXPECT("mixed_type", rew::find_or_add_type<TestTypeDeductionStruct const** const&>() == mixed_type);
+        EXPECT("mixed_type", rew::find_or_add_type<TestTypeDeductionStruct const** const&>() == mixed_type);
+    }
 }
 
 
@@ -836,4 +837,58 @@ TEST(TestLibrary, TestFunctionArgumentsAndResult)
 }
 
 
-// TODO: add tests for const and reference qualifiers in functions
+TEST_SPACE()
+{
+
+// volatile and rvalue reference qualified functions - not supported by rew library
+struct TestConstReferenceQualifiedFunctionStruct
+{
+    void WithoutConstReferenceQualifier() {}
+    void WithReferenceQualifier()& {}
+    void WithConstQualifier() const {}
+    void WithConstReferenceQualifier() const& {}
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestConstReferenceQualifiedFunctionStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestConstReferenceQualifiedFunctionStruct)
+    FUNCTION(WithoutConstReferenceQualifier)
+    FUNCTION(WithReferenceQualifier)
+    FUNCTION(WithConstQualifier)
+    FUNCTION(WithConstReferenceQualifier)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestConstReferenceQualifiedFunction)
+{
+    auto type = rew::global.find("TestConstReferenceQualifiedFunctionStruct");
+
+    ASSERT("type", type != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+
+    {
+        auto without_const_reference_qualifier = reflection->function.find("WithoutConstReferenceQualifier");
+
+        EXPECT("function-without_const_reference_qualifier", without_const_reference_qualifier != nullptr && without_const_reference_qualifier->find("void()") != nullptr);
+    }
+    {
+        auto with_reference_qualifier = reflection->function.find("WithReferenceQualifier");
+
+        EXPECT("function-with_reference_qualifier", with_reference_qualifier != nullptr && with_reference_qualifier->find("void()&") != nullptr);
+    }
+    {
+        auto with_const_qualifier = reflection->function.find("WithConstQualifier");
+
+        EXPECT("function-with_const_qualifier", with_const_qualifier != nullptr && with_const_qualifier->find("void() const") != nullptr);
+    }
+    {
+        auto with_const_reference_qualifier = reflection->function.find("WithConstReferenceQualifier");
+
+        EXPECT("function-with_const_reference_qualifier", with_const_reference_qualifier != nullptr && with_const_reference_qualifier->find("void() const&") != nullptr);
+    }
+}
