@@ -31,19 +31,22 @@ TEST(TestLibrary::TestRegistryProperty, TestFieldProperty)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto property = reflection->property.find("Property");
+    {
+        auto property = reflection->property.find("Property");
 
-    ASSERT("property", property != nullptr);
-    EXPECT("property-get", property->get != nullptr);
-    EXPECT("property-set", property->set != nullptr);
-    EXPECT("property-context", property->context != nullptr);
+        ASSERT("property", property != nullptr);
+        EXPECT("property-get", property->get != nullptr);
+        EXPECT("property-set", property->set != nullptr);
+        EXPECT("property-context", property->context != nullptr);
+    }
+    {
+        auto readonly = reflection->property.find("Readonly");
 
-    auto readonly = reflection->property.find("Readonly");
-
-    ASSERT("property-readonly", readonly != nullptr);
-    EXPECT("property-readonly-get", readonly->get != nullptr);
-    EXPECT("property-readonly-set", readonly->set == nullptr);
-    EXPECT("property-readonly-context", readonly->context != nullptr);
+        ASSERT("property-readonly", readonly != nullptr);
+        EXPECT("property-readonly-get", readonly->get != nullptr);
+        EXPECT("property-readonly-set", readonly->set == nullptr);
+        EXPECT("property-readonly-context", readonly->context != nullptr);
+    }
 }
 
 
@@ -87,33 +90,38 @@ TEST(TestLibrary::TestRegistryProperty, TestStaticFieldProperty)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto property = reflection->property.find("Property");
+    {
+        auto property = reflection->property.find("Property");
 
-    ASSERT("property", property != nullptr);
-    EXPECT("property-get", property->get != nullptr);
-    EXPECT("property-set", property->set != nullptr);
-    EXPECT("property-context", property->context != nullptr);
+        ASSERT("property", property != nullptr);
+        EXPECT("property-get", property->get != nullptr);
+        EXPECT("property-set", property->set != nullptr);
+        EXPECT("property-context", property->context != nullptr);
+    }
+    {
+        auto readonly = reflection->property.find("Readonly");
 
-    auto readonly = reflection->property.find("Readonly");
+        ASSERT("property-readonly", readonly != nullptr);
+        EXPECT("property-readonly-get", readonly->get != nullptr);
+        EXPECT("property-readonly-set", readonly->set == nullptr);
+        EXPECT("property-readonly-context", readonly->context != nullptr);
+    }
+    {
+        auto template_with_arg = reflection->property.find("Template<int>");
 
-    ASSERT("property-readonly", readonly != nullptr);
-    EXPECT("property-readonly-get", readonly->get != nullptr);
-    EXPECT("property-readonly-set", readonly->set == nullptr);
-    EXPECT("property-readonly-context", readonly->context != nullptr);
+        ASSERT("property-template_with_arg", template_with_arg != nullptr);
+        EXPECT("property-template_with_arg-get", template_with_arg->get != nullptr);
+        EXPECT("property-template_with_arg-set", template_with_arg->set != nullptr);
+        EXPECT("property-template_with_arg-context", template_with_arg->context != nullptr);
+    }
+    {
+        auto template_with_args = reflection->property.find("Template<int, bool>");
 
-    auto template_with_arg = reflection->property.find("Template<int>");
-
-    ASSERT("property-template_with_arg", template_with_arg != nullptr);
-    EXPECT("property-template_with_arg-get", template_with_arg->get != nullptr);
-    EXPECT("property-template_with_arg-set", template_with_arg->set != nullptr);
-    EXPECT("property-template_with_arg-context", template_with_arg->context != nullptr);
-
-    auto template_with_args = reflection->property.find("Template<int, bool>");
-
-    ASSERT("property-template_with_args", template_with_args != nullptr);
-    EXPECT("property-template_with_args-get", template_with_args->get != nullptr);
-    EXPECT("property-template_with_args-set", template_with_args->set != nullptr);
-    EXPECT("property-template_with_args-context", template_with_args->context != nullptr);
+        ASSERT("property-template_with_args", template_with_args != nullptr);
+        EXPECT("property-template_with_args-get", template_with_args->get != nullptr);
+        EXPECT("property-template_with_args-set", template_with_args->set != nullptr);
+        EXPECT("property-template_with_args-context", template_with_args->context != nullptr);
+    }
 }
 
 
@@ -152,40 +160,46 @@ TEST(TestLibrary::TestRegistryProperty, TestFreeFieldProperty)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto property = reflection->property.find("Property");
+    {
+        auto property = reflection->property.find("Property");
 
-    ASSERT("property", property != nullptr);
-    EXPECT("property-get", property->get != nullptr);
-    EXPECT("property-set", property->set != nullptr);
-    EXPECT("property-context", property->context != nullptr);
+        ASSERT("property", property != nullptr);
+        EXPECT("property-get", property->get != nullptr);
+        EXPECT("property-set", property->set != nullptr);
+        EXPECT("property-context", property->context != nullptr);
+    }
+    {
+        auto readonly = reflection->property.find("Readonly");
 
-    auto readonly = reflection->property.find("Readonly");
+        ASSERT("property-readonly", readonly != nullptr);
+        EXPECT("property-readonly-get", readonly->get != nullptr);
+        EXPECT("property-readonly-set", readonly->set == nullptr);
+        EXPECT("property-readonly-context", readonly->context != nullptr);
+    }
+    {
+        auto reference = reflection->property.find("Reference");
 
-    ASSERT("property-readonly", readonly != nullptr);
-    EXPECT("property-readonly-get", readonly->get != nullptr);
-    EXPECT("property-readonly-set", readonly->set == nullptr);
-    EXPECT("property-readonly-context", readonly->context != nullptr);
+        ASSERT("property-reference", reference != nullptr);
+        EXPECT("property-reference-get", reference->get != nullptr);
+        EXPECT("property-reference-set", reference->set != nullptr);
+        EXPECT("property-reference-context", reference->context != nullptr);
+    }
+    {
+        auto template_with_arg = reflection->property.find("Template<int>");
 
-    auto reference = reflection->property.find("Reference");
+        ASSERT("property-template_with_arg", template_with_arg != nullptr);
+        EXPECT("property-template_with_arg-get", template_with_arg->get != nullptr);
+        EXPECT("property-template_with_arg-set", template_with_arg->set != nullptr);
+        EXPECT("property-template_with_arg-context", template_with_arg->context != nullptr);
+    }
+    {
+        auto template_with_args = reflection->property.find("Template<int, bool>");
 
-    ASSERT("property-reference", reference != nullptr);
-    EXPECT("property-reference-get", reference->get != nullptr);
-    EXPECT("property-reference-set", reference->set != nullptr);
-    EXPECT("property-reference-context", reference->context != nullptr);
-
-    auto template_with_arg = reflection->property.find("Template<int>");
-
-    ASSERT("property-template_with_arg", template_with_arg != nullptr);
-    EXPECT("property-template_with_arg-get", template_with_arg->get != nullptr);
-    EXPECT("property-template_with_arg-set", template_with_arg->set != nullptr);
-    EXPECT("property-template_with_arg-context", template_with_arg->context != nullptr);
-
-    auto template_with_args = reflection->property.find("Template<int, bool>");
-
-    ASSERT("property-template_with_args", template_with_args != nullptr);
-    EXPECT("property-template_with_args-get", template_with_args->get != nullptr);
-    EXPECT("property-template_with_args-set", template_with_args->set != nullptr);
-    EXPECT("property-template_with_args-context", template_with_args->context != nullptr);
+        ASSERT("property-template_with_args", template_with_args != nullptr);
+        EXPECT("property-template_with_args-get", template_with_args->get != nullptr);
+        EXPECT("property-template_with_args-set", template_with_args->set != nullptr);
+        EXPECT("property-template_with_args-context", template_with_args->context != nullptr);
+    }
 }
 
 
@@ -238,76 +252,87 @@ TEST(TestLibrary::TestRegistryProperty, TestFunctionProperty)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto with_context = reflection->property.find("WithContext");
+    {
+        auto with_context = reflection->property.find("WithContext");
 
-    ASSERT("property-with_context", with_context != nullptr);
-    EXPECT("property-with_context-get", with_context->get != nullptr);
-    EXPECT("property-with_context-set", with_context->set != nullptr);
-    EXPECT("property-with_context-context", with_context->context != nullptr);
+        ASSERT("property-with_context", with_context != nullptr);
+        EXPECT("property-with_context-get", with_context->get != nullptr);
+        EXPECT("property-with_context-set", with_context->set != nullptr);
+        EXPECT("property-with_context-context", with_context->context != nullptr);
+    }
+    {
+        auto with_const_context = reflection->property.find("WithConstContext");
 
-    auto with_const_context = reflection->property.find("WithConstContext");
+        ASSERT("property-with_const_context", with_const_context != nullptr);
+        EXPECT("property-with_const_context-get", with_const_context->get != nullptr);
+        EXPECT("property-with_const_context-set", with_const_context->set != nullptr);
+        EXPECT("property-with_const_context-context", with_const_context->context != nullptr);
+    }
+    {
+        auto const_with_const_context = reflection->property.find("ConstWithConstContext");
 
-    ASSERT("property-with_const_context", with_const_context != nullptr);
-    EXPECT("property-with_const_context-get", with_const_context->get != nullptr);
-    EXPECT("property-with_const_context-set", with_const_context->set != nullptr);
-    EXPECT("property-with_const_context-context", with_const_context->context != nullptr);
+        ASSERT("property-const_with_const_context", const_with_const_context != nullptr);
+        EXPECT("property-const_with_const_context-get", const_with_const_context->get != nullptr);
+        EXPECT("property-const_with_const_context-set", const_with_const_context->set != nullptr);
+        EXPECT("property-const_with_const_context-context", const_with_const_context->context != nullptr);
+    }
+    {
+        auto no_context = reflection->property.find("NoContext");
 
-    auto const_with_const_context = reflection->property.find("ConstWithConstContext");
+        ASSERT("property-no_context", no_context != nullptr);
+        EXPECT("property-no_context-get", no_context->get != nullptr);
+        EXPECT("property-no_context-set", no_context->set != nullptr);
+        EXPECT("property-no_context-context", no_context->context == nullptr);
+    }
+    {
+        auto const_no_context = reflection->property.find("ConstNoContext");
 
-    ASSERT("property-const_with_const_context", const_with_const_context != nullptr);
-    EXPECT("property-const_with_const_context-get", const_with_const_context->get != nullptr);
-    EXPECT("property-const_with_const_context-set", const_with_const_context->set != nullptr);
-    EXPECT("property-const_with_const_context-context", const_with_const_context->context != nullptr);
+        ASSERT("property-const_no_context", const_no_context != nullptr);
+        EXPECT("property-const_no_context-get", const_no_context->get != nullptr);
+        EXPECT("property-const_no_context-set", const_no_context->set != nullptr);
+        EXPECT("property-const_no_context-context", const_no_context->context == nullptr);
+    }
 
-    auto no_context = reflection->property.find("NoContext");
+    {
+        auto readonly_with_context = reflection->property.find("ReadonlyWithContext");
 
-    ASSERT("property-no_context", no_context != nullptr);
-    EXPECT("property-no_context-get", no_context->get != nullptr);
-    EXPECT("property-no_context-set", no_context->set != nullptr);
-    EXPECT("property-no_context-context", no_context->context == nullptr);
+        ASSERT("property-readonly_with_context", readonly_with_context != nullptr);
+        EXPECT("property-readonly_with_context-get", readonly_with_context->get != nullptr);
+        EXPECT("property-readonly_with_context-set", readonly_with_context->set == nullptr);
+        EXPECT("property-readonly_with_context-context", readonly_with_context->context != nullptr);
+    }
+    {
+        auto readonly_with_const_context = reflection->property.find("ReadonlyWithConstContext");
 
-    auto const_no_context = reflection->property.find("ConstNoContext");
+        ASSERT("property-readonly_with_const_context", readonly_with_const_context != nullptr);
+        EXPECT("property-readonly_with_const_context-get", readonly_with_const_context->get != nullptr);
+        EXPECT("property-readonly_with_const_context-set", readonly_with_const_context->set == nullptr);
+        EXPECT("property-readonly_with_const_context-context", readonly_with_const_context->context != nullptr);
+    }
+    {
+        auto readonly_const_with_const_context = reflection->property.find("ReadonlyConstWithConstContext");
 
-    ASSERT("property-const_no_context", const_no_context != nullptr);
-    EXPECT("property-const_no_context-get", const_no_context->get != nullptr);
-    EXPECT("property-const_no_context-set", const_no_context->set != nullptr);
-    EXPECT("property-const_no_context-context", const_no_context->context == nullptr);
+        ASSERT("property-readonly_const_with_const_context", readonly_const_with_const_context != nullptr);
+        EXPECT("property-readonly_const_with_const_context-get", readonly_const_with_const_context->get != nullptr);
+        EXPECT("property-readonly_const_with_const_context-set", readonly_const_with_const_context->set == nullptr);
+        EXPECT("property-readonly_const_with_const_context-context", readonly_const_with_const_context->context != nullptr);
+    }
+    {
+        auto readonly_no_context = reflection->property.find("ReadonlyNoContext");
 
+        ASSERT("property-readonly_no_context", readonly_no_context != nullptr);
+        EXPECT("property-readonly_no_context-get", readonly_no_context->get != nullptr);
+        EXPECT("property-readonly_no_context-set", readonly_no_context->set == nullptr);
+        EXPECT("property-readonly_no_context-context", readonly_no_context->context == nullptr);
+    }
+    {
+        auto readonly_const_no_context = reflection->property.find("ReadonlyConstNoContext");
 
-    auto readonly_with_context = reflection->property.find("ReadonlyWithContext");
-
-    ASSERT("property-readonly_with_context", readonly_with_context != nullptr);
-    EXPECT("property-readonly_with_context-get", readonly_with_context->get != nullptr);
-    EXPECT("property-readonly_with_context-set", readonly_with_context->set == nullptr);
-    EXPECT("property-readonly_with_context-context", readonly_with_context->context != nullptr);
-
-    auto readonly_with_const_context = reflection->property.find("ReadonlyWithConstContext");
-
-    ASSERT("property-readonly_with_const_context", readonly_with_const_context != nullptr);
-    EXPECT("property-readonly_with_const_context-get", readonly_with_const_context->get != nullptr);
-    EXPECT("property-readonly_with_const_context-set", readonly_with_const_context->set == nullptr);
-    EXPECT("property-readonly_with_const_context-context", readonly_with_const_context->context != nullptr);
-
-    auto readonly_const_with_const_context = reflection->property.find("ReadonlyConstWithConstContext");
-
-    ASSERT("property-readonly_const_with_const_context", readonly_const_with_const_context != nullptr);
-    EXPECT("property-readonly_const_with_const_context-get", readonly_const_with_const_context->get != nullptr);
-    EXPECT("property-readonly_const_with_const_context-set", readonly_const_with_const_context->set == nullptr);
-    EXPECT("property-readonly_const_with_const_context-context", readonly_const_with_const_context->context != nullptr);
-
-    auto readonly_no_context = reflection->property.find("ReadonlyNoContext");
-
-    ASSERT("property-readonly_no_context", readonly_no_context != nullptr);
-    EXPECT("property-readonly_no_context-get", readonly_no_context->get != nullptr);
-    EXPECT("property-readonly_no_context-set", readonly_no_context->set == nullptr);
-    EXPECT("property-readonly_no_context-context", readonly_no_context->context == nullptr);
-
-    auto readonly_const_no_context = reflection->property.find("ReadonlyConstNoContext");
-
-    ASSERT("property-readonly_const_no_context", readonly_const_no_context != nullptr);
-    EXPECT("property-readonly_const_no_context-get", readonly_const_no_context->get != nullptr);
-    EXPECT("property-readonly_const_no_context-set", readonly_const_no_context->set == nullptr);
-    EXPECT("property-readonly_const_no_context-context", readonly_const_no_context->context == nullptr);
+        ASSERT("property-readonly_const_no_context", readonly_const_no_context != nullptr);
+        EXPECT("property-readonly_const_no_context-get", readonly_const_no_context->get != nullptr);
+        EXPECT("property-readonly_const_no_context-set", readonly_const_no_context->set == nullptr);
+        EXPECT("property-readonly_const_no_context-context", readonly_const_no_context->context == nullptr);
+    }
 }
 
 
@@ -350,48 +375,55 @@ TEST(TestLibrary::TestRegistryProperty, TestStaticFunctionProperty)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto with_context = reflection->property.find("WithContext");
+    {
+        auto with_context = reflection->property.find("WithContext");
 
-    ASSERT("property-with_context", with_context != nullptr);
-    EXPECT("property-with_context-get", with_context->get != nullptr);
-    EXPECT("property-with_context-set", with_context->set != nullptr);
-    EXPECT("property-with_context-context", with_context->context != nullptr);
+        ASSERT("property-with_context", with_context != nullptr);
+        EXPECT("property-with_context-get", with_context->get != nullptr);
+        EXPECT("property-with_context-set", with_context->set != nullptr);
+        EXPECT("property-with_context-context", with_context->context != nullptr);
+    }
+    {
+        auto with_const_context = reflection->property.find("WithConstContext");
 
-    auto with_const_context = reflection->property.find("WithConstContext");
+        ASSERT("property-with_const_context", with_const_context != nullptr);
+        EXPECT("property-with_const_context-get", with_const_context->get != nullptr);
+        EXPECT("property-with_const_context-set", with_const_context->set != nullptr);
+        EXPECT("property-with_const_context-context", with_const_context->context != nullptr);
+    }
+    {
+        auto no_context = reflection->property.find("NoContext");
 
-    ASSERT("property-with_const_context", with_const_context != nullptr);
-    EXPECT("property-with_const_context-get", with_const_context->get != nullptr);
-    EXPECT("property-with_const_context-set", with_const_context->set != nullptr);
-    EXPECT("property-with_const_context-context", with_const_context->context != nullptr);
+        ASSERT("property-no_context", no_context != nullptr);
+        EXPECT("property-no_context-get", no_context->get != nullptr);
+        EXPECT("property-no_context-set", no_context->set != nullptr);
+        EXPECT("property-no_context-context", no_context->context == nullptr);
+    }
 
-    auto no_context = reflection->property.find("NoContext");
+    {
+        auto readonly_with_context = reflection->property.find("ReadonlyWithContext");
 
-    ASSERT("property-no_context", no_context != nullptr);
-    EXPECT("property-no_context-get", no_context->get != nullptr);
-    EXPECT("property-no_context-set", no_context->set != nullptr);
-    EXPECT("property-no_context-context", no_context->context == nullptr);
+        ASSERT("property-readonly_with_context", readonly_with_context != nullptr);
+        EXPECT("property-readonly_with_context-get", readonly_with_context->get != nullptr);
+        EXPECT("property-readonly_with_context-set", readonly_with_context->set == nullptr);
+        EXPECT("property-readonly_with_context-context", readonly_with_context->context != nullptr);
+    }
+    {
+        auto readonly_with_const_context = reflection->property.find("ReadonlyWithConstContext");
 
+        ASSERT("property-readonly_with_const_context", readonly_with_const_context != nullptr);
+        EXPECT("property-readonly_with_const_context-get", readonly_with_const_context->get != nullptr);
+        EXPECT("property-readonly_with_const_context-set", readonly_with_const_context->set == nullptr);
+        EXPECT("property-readonly_with_const_context-context", readonly_with_const_context->context != nullptr);
+    }
+    {
+        auto readonly_no_context = reflection->property.find("ReadonlyNoContext");
 
-    auto readonly_with_context = reflection->property.find("ReadonlyWithContext");
-
-    ASSERT("property-readonly_with_context", readonly_with_context != nullptr);
-    EXPECT("property-readonly_with_context-get", readonly_with_context->get != nullptr);
-    EXPECT("property-readonly_with_context-set", readonly_with_context->set == nullptr);
-    EXPECT("property-readonly_with_context-context", readonly_with_context->context != nullptr);
-
-    auto readonly_with_const_context = reflection->property.find("ReadonlyWithConstContext");
-
-    ASSERT("property-readonly_with_const_context", readonly_with_const_context != nullptr);
-    EXPECT("property-readonly_with_const_context-get", readonly_with_const_context->get != nullptr);
-    EXPECT("property-readonly_with_const_context-set", readonly_with_const_context->set == nullptr);
-    EXPECT("property-readonly_with_const_context-context", readonly_with_const_context->context != nullptr);
-
-    auto readonly_no_context = reflection->property.find("ReadonlyNoContext");
-
-    ASSERT("property-readonly_no_context", readonly_no_context != nullptr);
-    EXPECT("property-readonly_no_context-get", readonly_no_context->get != nullptr);
-    EXPECT("property-readonly_no_context-set", readonly_no_context->set == nullptr);
-    EXPECT("property-readonly_no_context-context", readonly_no_context->context == nullptr);
+        ASSERT("property-readonly_no_context", readonly_no_context != nullptr);
+        EXPECT("property-readonly_no_context-get", readonly_no_context->get != nullptr);
+        EXPECT("property-readonly_no_context-set", readonly_no_context->set == nullptr);
+        EXPECT("property-readonly_no_context-context", readonly_no_context->context == nullptr);
+    }
 }
 
 
@@ -433,46 +465,53 @@ TEST(TestLibrary::TestRegistryProperty, TestFreeFunctionProperty)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto with_context = reflection->property.find("WithContext");
+    {
+        auto with_context = reflection->property.find("WithContext");
 
-    ASSERT("property-with_context", with_context != nullptr);
-    EXPECT("property-with_context-get", with_context->get != nullptr);
-    EXPECT("property-with_context-set", with_context->set != nullptr);
-    EXPECT("property-with_context-context", with_context->context != nullptr);
+        ASSERT("property-with_context", with_context != nullptr);
+        EXPECT("property-with_context-get", with_context->get != nullptr);
+        EXPECT("property-with_context-set", with_context->set != nullptr);
+        EXPECT("property-with_context-context", with_context->context != nullptr);
+    }
+    {
+        auto with_const_context = reflection->property.find("WithConstContext");
 
-    auto with_const_context = reflection->property.find("WithConstContext");
+        ASSERT("property-with_const_context", with_const_context != nullptr);
+        EXPECT("property-with_const_context-get", with_const_context->get != nullptr);
+        EXPECT("property-with_const_context-set", with_const_context->set != nullptr);
+        EXPECT("property-with_const_context-context", with_const_context->context != nullptr);
+    }
+    {
+        auto no_context = reflection->property.find("NoContext");
 
-    ASSERT("property-with_const_context", with_const_context != nullptr);
-    EXPECT("property-with_const_context-get", with_const_context->get != nullptr);
-    EXPECT("property-with_const_context-set", with_const_context->set != nullptr);
-    EXPECT("property-with_const_context-context", with_const_context->context != nullptr);
+        ASSERT("property-no_context", no_context != nullptr);
+        EXPECT("property-no_context-get", no_context->get != nullptr);
+        EXPECT("property-no_context-set", no_context->set != nullptr);
+        EXPECT("property-no_context-context", no_context->context == nullptr);
+    }
 
-    auto no_context = reflection->property.find("NoContext");
+    {
+        auto readonly_with_context = reflection->property.find("ReadonlyWithContext");
 
-    ASSERT("property-no_context", no_context != nullptr);
-    EXPECT("property-no_context-get", no_context->get != nullptr);
-    EXPECT("property-no_context-set", no_context->set != nullptr);
-    EXPECT("property-no_context-context", no_context->context == nullptr);
+        ASSERT("property-readonly_with_context", readonly_with_context != nullptr);
+        EXPECT("property-readonly_with_context-get", readonly_with_context->get != nullptr);
+        EXPECT("property-readonly_with_context-set", readonly_with_context->set == nullptr);
+        EXPECT("property-readonly_with_context-context", readonly_with_context->context != nullptr);
+    }
+    {
+        auto readonly_with_const_context = reflection->property.find("ReadonlyWithConstContext");
 
+        ASSERT("property-readonly_with_const_context", readonly_with_const_context != nullptr);
+        EXPECT("property-readonly_with_const_context-get", readonly_with_const_context->get != nullptr);
+        EXPECT("property-readonly_with_const_context-set", readonly_with_const_context->set == nullptr);
+        EXPECT("property-readonly_with_const_context-context", readonly_with_const_context->context != nullptr);
+    }
+    {
+        auto readonly_no_context = reflection->property.find("ReadonlyNoContext");
 
-    auto readonly_with_context = reflection->property.find("ReadonlyWithContext");
-
-    ASSERT("property-readonly_with_context", readonly_with_context != nullptr);
-    EXPECT("property-readonly_with_context-get", readonly_with_context->get != nullptr);
-    EXPECT("property-readonly_with_context-set", readonly_with_context->set == nullptr);
-    EXPECT("property-readonly_with_context-context", readonly_with_context->context != nullptr);
-
-    auto readonly_with_const_context = reflection->property.find("ReadonlyWithConstContext");
-
-    ASSERT("property-readonly_with_const_context", readonly_with_const_context != nullptr);
-    EXPECT("property-readonly_with_const_context-get", readonly_with_const_context->get != nullptr);
-    EXPECT("property-readonly_with_const_context-set", readonly_with_const_context->set == nullptr);
-    EXPECT("property-readonly_with_const_context-context", readonly_with_const_context->context != nullptr);
-
-    auto readonly_no_context = reflection->property.find("ReadonlyNoContext");
-
-    ASSERT("property-readonly_no_context", readonly_no_context != nullptr);
-    EXPECT("property-readonly_no_context-get", readonly_no_context->get != nullptr);
-    EXPECT("property-readonly_no_context-set", readonly_no_context->set == nullptr);
-    EXPECT("property-readonly_no_context-context", readonly_no_context->context == nullptr);
+        ASSERT("property-readonly_no_context", readonly_no_context != nullptr);
+        EXPECT("property-readonly_no_context-get", readonly_no_context->get != nullptr);
+        EXPECT("property-readonly_no_context-set", readonly_no_context->set == nullptr);
+        EXPECT("property-readonly_no_context-context", readonly_no_context->context == nullptr);
+    }
 }

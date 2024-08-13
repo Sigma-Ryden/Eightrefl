@@ -52,28 +52,34 @@ TEST(TestLibrary::TestRegistryFunction, TestFunction)
 
     ASSERT("reflection", reflection != nullptr);
 
-    EXPECT("function", reflection->function.find("Function") != nullptr);
-    EXPECT("function-reference", reflection->function.find("Reference") != nullptr);
-    EXPECT("function-const", reflection->function.find("Const") != nullptr);
-    EXPECT("function-const_reference", reflection->function.find("ConstReference") != nullptr);
+    {
+        EXPECT("function", reflection->function.find("Function") != nullptr);
+        EXPECT("function-reference", reflection->function.find("Reference") != nullptr);
+        EXPECT("function-const", reflection->function.find("Const") != nullptr);
+        EXPECT("function-const_reference", reflection->function.find("ConstReference") != nullptr);
+    }
+    {
+        auto overload = reflection->function.find("Overload");
 
-    auto overload = reflection->function.find("Overload");
+        ASSERT("function-overload", overload != nullptr);
+        EXPECT("function-overload-1", overload->find("void()&") != nullptr);
+        EXPECT("function-overload-2", overload->find("void() const&") != nullptr);
+        EXPECT("function-overload-3", overload->find("void(int)") != nullptr);
+        EXPECT("function-overload-4", overload->find("void(int) const") != nullptr);
+    }
+    {
+        EXPECT("function-template", reflection->function.find("Template") != nullptr);
+    }
+    {
+        auto template_with_arg = reflection->function.find("Template<int>");
 
-    ASSERT("function-overload", overload != nullptr);
-    EXPECT("function-overload-1", overload->find("void()&") != nullptr);
-    EXPECT("function-overload-2", overload->find("void() const&") != nullptr);
-    EXPECT("function-overload-3", overload->find("void(int)") != nullptr);
-    EXPECT("function-overload-4", overload->find("void(int) const") != nullptr);
-
-    EXPECT("function-template", reflection->function.find("Template") != nullptr);
-
-    auto template_with_arg = reflection->function.find("Template<int>");
-
-    ASSERT("function-template_with_arg",template_with_arg != nullptr);
-    EXPECT("function-template_with_arg-overload-1", template_with_arg->find("void()") != nullptr);
-    EXPECT("function-template_with_arg-overload-2", template_with_arg->find("void(float)") != nullptr);
-
-    EXPECT("function-template_with_args", reflection->function.find("Template<int, bool>") != nullptr);
+        ASSERT("function-template_with_arg",template_with_arg != nullptr);
+        EXPECT("function-template_with_arg-overload-1", template_with_arg->find("void()") != nullptr);
+        EXPECT("function-template_with_arg-overload-2", template_with_arg->find("void(float)") != nullptr);
+    }
+    {
+        EXPECT("function-template_with_args", reflection->function.find("Template<int, bool>") != nullptr);
+    }
 }
 
 
@@ -118,23 +124,29 @@ TEST(TestLibrary::TestRegistryFunction, TestStaticFunction)
 
     ASSERT("reflection", reflection != nullptr);
 
-    EXPECT("function", reflection->function.find("Function") != nullptr);
+    {
+        EXPECT("function", reflection->function.find("Function") != nullptr);
+    }
+    {
+        auto overload = reflection->function.find("Overload");
 
-    auto overload = reflection->function.find("Overload");
+        ASSERT("function-overload", overload != nullptr);
+        EXPECT("function-overload-1", overload->find("void()") != nullptr);
+        EXPECT("function-overload-2", overload->find("void(int)") != nullptr);
+    }
+    {
+        EXPECT("function-template", reflection->function.find("Template") != nullptr);
+    }
+    {
+        auto template_with_arg = reflection->function.find("Template<int>");
 
-    ASSERT("function-overload", overload != nullptr);
-    EXPECT("function-overload-1", overload->find("void()") != nullptr);
-    EXPECT("function-overload-2", overload->find("void(int)") != nullptr);
-
-    EXPECT("function-template", reflection->function.find("Template") != nullptr);
-
-    auto template_with_arg = reflection->function.find("Template<int>");
-
-    ASSERT("function-template_with_arg",template_with_arg != nullptr);
-    EXPECT("function-template_with_arg-overload-1", template_with_arg->find("void()") != nullptr);
-    EXPECT("function-template_with_arg-overload-2", template_with_arg->find("void(float)") != nullptr);
-
-    EXPECT("function-template_with_args", reflection->function.find("Template<int, bool>") != nullptr);
+        ASSERT("function-template_with_arg",template_with_arg != nullptr);
+        EXPECT("function-template_with_arg-overload-1", template_with_arg->find("void()") != nullptr);
+        EXPECT("function-template_with_arg-overload-2", template_with_arg->find("void(float)") != nullptr);
+    }
+    {
+        EXPECT("function-template_with_args", reflection->function.find("Template<int, bool>") != nullptr);
+    }
 }
 
 
@@ -180,19 +192,24 @@ TEST(TestLibrary::TestRegistryFunction, TestFreeFunction)
 
     EXPECT("function", reflection->function.find("Function") != nullptr);
 
-    auto overload = reflection->function.find("Overload");
+    {
+        auto overload = reflection->function.find("Overload");
 
-    ASSERT("function-overload", overload != nullptr);
-    EXPECT("function-overload-1", overload->find("void()") != nullptr);
-    EXPECT("function-overload-2", overload->find("void(int)") != nullptr);
+        ASSERT("function-overload", overload != nullptr);
+        EXPECT("function-overload-1", overload->find("void()") != nullptr);
+        EXPECT("function-overload-2", overload->find("void(int)") != nullptr);
+    {
+    }
+        EXPECT("function-template", reflection->function.find("Template") != nullptr);
+    }
+    {
+        auto template_with_arg = reflection->function.find("Template<int>");
 
-    EXPECT("function-template", reflection->function.find("Template") != nullptr);
-
-    auto template_with_arg = reflection->function.find("Template<int>");
-
-    ASSERT("function-template_with_arg",template_with_arg != nullptr);
-    EXPECT("function-template_with_arg-overload-1", template_with_arg->find("void()") != nullptr);
-    EXPECT("function-template_with_arg-overload-2", template_with_arg->find("void(float)") != nullptr);
-
-    EXPECT("function-template_with_args", reflection->function.find("Template<int, bool>") != nullptr);
+        ASSERT("function-template_with_arg",template_with_arg != nullptr);
+        EXPECT("function-template_with_arg-overload-1", template_with_arg->find("void()") != nullptr);
+        EXPECT("function-template_with_arg-overload-2", template_with_arg->find("void(float)") != nullptr);
+    }
+    {
+        EXPECT("function-template_with_args", reflection->function.find("Template<int, bool>") != nullptr);
+    }
 }
