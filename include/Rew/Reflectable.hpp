@@ -24,16 +24,13 @@
 #define TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, ...)                                   \
     CUSTOM_TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, __VA_ARGS__)                        \
         LAZY_REFLECTABLE()                                                                              \
-        REFLECTABLE_REGISTRY(&rew::global)
 
 #define CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                        \
     CUSTOM_CONDITIONAL_REFLECTABLE_DECLARATION(__VA_ARGS__)                                             \
         LAZY_REFLECTABLE()                                                                              \
-        REFLECTABLE_REGISTRY(&rew::global)
 
 #define REFLECTABLE_DECLARATION(...)                                                                    \
     CUSTOM_REFLECTABLE_DECLARATION(__VA_ARGS__)                                                         \
-        REFLECTABLE_REGISTRY(&rew::global)                                                              \
         REFLECTABLE_NAME(#__VA_ARGS__)
 
 #define REFLECTABLE_REGISTRY(...)  static auto registry() { return __VA_ARGS__; }
@@ -92,7 +89,7 @@
 
 #define TEMPLATE_REFLECTABLE_CLEAN(object_template_header, object_type, ...)                            \
     REW_DEPAREN(object_template_header) struct xxrew_alias<REW_DEPAREN(object_type)> {                  \
-        using R = __VA_ARGS__;                                                                      \
+        using R = __VA_ARGS__;                                                                          \
     };
 
 #define REFLECTABLE_CLEAN(object_type, ...)                                                             \
@@ -161,7 +158,12 @@ type_t* find_or_add_type()
     }
 
     auto xxname = reflectable_traits::name();
-    auto xxregistry = reflectable_traits::registry();
+    auto xxregistry = &global;
+
+    if constexpr (meta::is_custom<dirty_reflectable_type>::value)
+    {
+        xxregistry = reflectable_traits::registry();
+    }
 
     auto xxtype = xxregistry->all[xxname];
     if (xxtype == nullptr)

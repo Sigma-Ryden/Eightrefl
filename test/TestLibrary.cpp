@@ -1,3 +1,4 @@
+// TODO: add registry check
 #include <RewTestingBase.hpp>
 
 TEST_SPACE()
@@ -216,12 +217,9 @@ rew::registry_t CustomRegistry;
 
 } // TEST_SPACE
 
-// REFLECTABLE_DECLARATION use CUSTOM_REFLECTABLE_DECLARATION with
-// REFLECTABLE_REGISTRY(&rew::global)
-// REFLECTABLE_NAME(typename)
-CUSTOM_REFLECTABLE_DECLARATION(TestCustomRegistryStruct)
+// REFLECTABLE_DECLARATION use CUSTOM_REFLECTABLE_DECLARATION with REFLECTABLE_NAME(typename)
+REFLECTABLE_DECLARATION(TestCustomRegistryStruct)
     REFLECTABLE_REGISTRY(&CustomRegistry)
-    REFLECTABLE_NAME("TestCustomRegistryStruct")
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestCustomRegistryStruct)

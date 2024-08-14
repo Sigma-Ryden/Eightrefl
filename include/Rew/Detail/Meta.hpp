@@ -40,9 +40,9 @@ struct to_reflectable_object { using type = std::remove_const_t<ObjectType>; };
 template <typename, typename enable = void> struct is_complete : std::false_type {};
 template <typename Type> struct is_complete<Type, std::void_t<decltype(sizeof(Type))>> : std::true_type {};
 
-template <typename, typename enable = void> struct is_reflectable : std::false_type {};
+template <typename, typename enable = void> struct is_custom : std::false_type {};
 template <typename ReflectableType>
-struct is_reflectable<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::registry)>> : std::true_type {};
+struct is_custom<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::registry)>> : std::true_type {};
 
 template <typename, typename enable = void> struct is_lazy : std::false_type {};
 template <typename ReflectableType>

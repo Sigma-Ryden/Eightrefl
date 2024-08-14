@@ -120,9 +120,9 @@ struct to_reflectable_object { using type = std::remove_const_t<ObjectType>; };
 template <typename, typename enable = void> struct is_complete : std::false_type {};
 template <typename Type> struct is_complete<Type, std::void_t<decltype(sizeof(Type))>> : std::true_type {};
 
-template <typename, typename enable = void> struct is_reflectable : std::false_type {};
+template <typename, typename enable = void> struct is_custom : std::false_type {};
 template <typename ReflectableType>
-struct is_reflectable<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::registry)>> : std::true_type {};
+struct is_custom<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::registry)>> : std::true_type {};
 
 template <typename, typename enable = void> struct is_lazy : std::false_type {};
 template <typename ReflectableType>
@@ -1502,16 +1502,13 @@ inline registry_t global;
 #define TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, ...)                                   \
     CUSTOM_TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, __VA_ARGS__)                        \
         LAZY_REFLECTABLE()                                                                              \
-        REFLECTABLE_REGISTRY(&rew::global)
 
 #define CONDITIONAL_REFLECTABLE_DECLARATION(...)                                                        \
     CUSTOM_CONDITIONAL_REFLECTABLE_DECLARATION(__VA_ARGS__)                                             \
         LAZY_REFLECTABLE()                                                                              \
-        REFLECTABLE_REGISTRY(&rew::global)
 
 #define REFLECTABLE_DECLARATION(...)                                                                    \
     CUSTOM_REFLECTABLE_DECLARATION(__VA_ARGS__)                                                         \
-        REFLECTABLE_REGISTRY(&rew::global)                                                              \
         REFLECTABLE_NAME(#__VA_ARGS__)
 
 #define REFLECTABLE_REGISTRY(...)  static auto registry() { return __VA_ARGS__; }
@@ -1567,7 +1564,7 @@ inline registry_t global;
 
 #define TEMPLATE_REFLECTABLE_CLEAN(object_template_header, object_type, ...)                            \
     REW_DEPAREN(object_template_header) struct xxrew_alias<REW_DEPAREN(object_type)> {                  \
-        using R = __VA_ARGS__;                                                                      \
+        using R = __VA_ARGS__;                                                                          \
     };
 
 #define REFLECTABLE_CLEAN(object_type, ...)                                                             \
@@ -1635,7 +1632,12 @@ type_t* find_or_add_type()
     }
 
     auto xxname = reflectable_traits::name();
-    auto xxregistry = reflectable_traits::registry();
+    auto xxregistry = &global;
+
+    if constexpr (meta::is_custom<dirty_reflectable_type>::value)
+    {
+        xxregistry = reflectable_traits::registry();
+    }
 
     auto xxtype = xxregistry->all[xxname];
     if (xxtype == nullptr)
@@ -1983,7 +1985,6 @@ REFLECTABLE_DECLARATION_INIT()
 REFLECTABLE_USING(std_size_t, std::size_t)
 
 CUSTOM_REFLECTABLE_DECLARATION(std_size_t)
-    REFLECTABLE_REGISTRY(&rew::global)
     REFLECTABLE_NAME("std::size_t")
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
@@ -1996,7 +1997,6 @@ REFLECTABLE_INIT()
 REFLECTABLE_USING(std_ptrdiff_t, std::ptrdiff_t)
 
 CUSTOM_REFLECTABLE_DECLARATION(std_ptrdiff_t)
-    REFLECTABLE_REGISTRY(&rew::global)
     REFLECTABLE_NAME("std::ptrdiff_t")
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
