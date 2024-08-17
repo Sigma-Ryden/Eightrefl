@@ -7,7 +7,7 @@ Use macros for code generation or read the documentation and write your own code
 
 Is a header-only library implemented purely in C++17. 
 
-See last stable library version [here](https://github.com/Sigma-Ryden/SerializationFixture/tree/master/package). 
+See last stable library version [here](https://github.com/Sigma-Ryden/Rew/tree/master/package). 
 
 ## Functional: 
 
