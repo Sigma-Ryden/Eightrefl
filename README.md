@@ -27,15 +27,16 @@ See last stable library version [here](https://github.com/Sigma-Ryden/Serializat
 
 ### Reflection of standard library types:
 - C++11:
-Containers: vector, array, basic_string, list, forward_list, set, unorganized_set, map, unordered_map, deque, initializer_list
-Adapters: stack, queue, priority_queue
-Smart pointers: unique_ptr, shared_ptr, weak_ptr
-Other: pair, tuple, allocator, bitset, complex, reference_wrapper, char_traits
-Functional: function, typeinfo, typeindex hash, equal_to, less, greater
-Iterators: const_iterator, iterator, const_reverse_iterator, reverse_iterator, const_local_iterator, local_iterator
+  - Containers: vector, array, basic_string, list, forward_list, set, unorganized_set, map, unordered_map, deque, initializer_list
+  - Adapters: stack, queue, priority_queue
+  - Smart pointers: unique_ptr, shared_ptr, weak_ptr
+  - Other: pair, tuple, allocator, bitset, complex, reference_wrapper, char_traits
+  - Functional: function, typeinfo, typeindex hash, equal_to, less, greater
+  - Iterators: const_iterator, iterator, const_reverse_iterator, reverse_iterator, const_local_iterator, local_iterator
 - C++17:
-Functional: any, optional, variant
-Compare: partial_ordering, weak_ordering, strong_ordering 
+  - Functional: any, optional, variant
+- C++20:
+  - Compare: partial_ordering, weak_ordering, strong_ordering 
 
 See full list [here](https://github.com/Sigma-Ryden/Rew/tree/master/include/Rew/BuiltIn). 
 
