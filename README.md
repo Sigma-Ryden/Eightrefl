@@ -31,8 +31,7 @@ Containers: vector, array, basic_string, list, forward_list, set, unorganized_se
 Adapters: stack, queue, priority_queue
 Smart pointers: unique_ptr, shared_ptr, weak_ptr
 Other: pair, tuple, allocator, bitset, complex, reference_wrapper, char_traits
-RTTI: typeinfo, typeindex
-Functional: hash, equal_to, less, greater, function
+Functional: function, typeinfo, typeindex hash, equal_to, less, greater
 Iterators: const_iterator, iterator, const_reverse_iterator, reverse_iterator, const_local_iterator, local_iterator
 - C++17:
 Functional: any, optional, variant
