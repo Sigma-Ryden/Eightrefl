@@ -58,7 +58,7 @@ See full list [here](https://github.com/Sigma-Ryden/Rew/tree/master/include/Rew/
   - [Reflectable using](https://github.com/Sigma-Ryden/Rew/blob/master/test/TestUsing.cpp)
 - Builtin:
   - [Template reflection](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/Common.hpp)
-  - [Conditional reflection](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/Common.hpp)
+  - [Conditional reflection](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/BuiltIn/set.hpp)
   - [Reflection splitting](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/Common.hpp)
   - [Reflectable naming](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/Common.hpp)
   - [Simple without macro](https://github.com/Sigma-Ryden/Rew/blob/master/test/TestWithoutMacro.cpp)
