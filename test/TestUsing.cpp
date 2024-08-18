@@ -10,11 +10,23 @@ struct TestContainerWithIteratorUsing
 
     TestContainerWithIteratorUsing(Iterator, Iterator) {}
     void Insert(Iterator, T) {}
+    std::int32_t Size() const { return 0; }
 
     Iterator* Head = nullptr;
 };
 
 } // TEST_SPACE
+
+REFLECTABLE_USING(Test_std_int32_t, std::int32_t)
+
+CUSTOM_REFLECTABLE_DECLARATION(Test_std_int32_t)
+    REFLECTABLE_NAME("std::int32_t")
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(Test_std_int32_t)
+    FACTORY(Test_std_int32_t())
+    FACTORY(R(R)) // same as Test_std_int32_t(Test_std_int32_t)
+REFLECTABLE_INIT()
 
 // will not compile!
 // TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, TestContainerWithIteratorUsing<T>::Iterator)
@@ -45,6 +57,7 @@ TEMPLATE_REFLECTABLE(template <typename T>, TestContainerWithIteratorUsing<T>)
     FUNCTION(Insert, void(TestContainerWithIteratorUsing_Iterator<T>, T))
     PROPERTY(Head, TestContainerWithIteratorUsing_Iterator<T>*)
     FACTORY(R(TestContainerWithIteratorUsing_Iterator<T>, TestContainerWithIteratorUsing_Iterator<T>))
+    FUNCTION(Size, Test_std_int32_t() const)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestUsing)
@@ -59,20 +72,26 @@ TEST(TestLibrary, TestUsing)
 
     ASSERT("reflection", reflection != nullptr);
 
-    auto function = reflection->function.find("Insert");
+    auto function0 = reflection->function.find("Insert");
 
-    ASSERT("function",
-        function != nullptr &&
-        function->find("void(TestContainerWithIteratorUsing<int>::Iterator, int)") != nullptr);
+    EXPECT("function0",
+        function0 != nullptr &&
+        function0->find("void(TestContainerWithIteratorUsing<int>::Iterator, int)") != nullptr);
+
+    auto function1 = reflection->function.find("Size");
+
+    EXPECT("function1",
+        function1 != nullptr &&
+        function1->find("std::int32_t") != nullptr);
 
     auto property = reflection->property.find("Head");
 
-    ASSERT("property",
+    EXPECT("property",
         property != nullptr &&
         property->type != nullptr &&
         property->type->name == "TestContainerWithIteratorUsing<int>::Iterator*");
 
     auto factory = reflection->factory.find("TestContainerWithIteratorUsing<int>(TestContainerWithIteratorUsing<int>::Iterator, TestContainerWithIteratorUsing<int>::Iterator)");
 
-    ASSERT("factory", factory != nullptr);
+    EXPECT("factory", factory != nullptr);
 }

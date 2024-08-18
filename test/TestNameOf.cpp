@@ -14,7 +14,8 @@ TEST(TestLibrary, TestNameOf)
     EXPECT("array-type", rew::nameof<int[8]>() == "int[8]");
     EXPECT("array-pointer-type", rew::nameof<int(*)[8]>() == "std::type_identity_t<int[8]>*");
     EXPECT("array-reference-type", rew::nameof<int(&)[8]>() == "std::type_identity_t<int[8]>&");
-    EXPECT("mixed-type", rew::nameof<char(*(* const*&)[8])(void)>() == "std::type_identity_t<std::type_identity_t<char()>*[8]>* const*&");
+    EXPECT("mixed-type0", rew::nameof<char(*(* const*&)[8])(void)>() == "std::type_identity_t<std::type_identity_t<char()>*[8]>* const*&");
+    EXPECT("mixed-type1", rew::nameof<bool*(** const* (* const&)(void*, long))[3]>() == "std::type_identity_t<std::type_identity_t<bool*[3]>** const*(void*, long)>* const&");
 }
 
 // Patterns:
