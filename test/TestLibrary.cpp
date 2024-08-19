@@ -1,4 +1,3 @@
-// TODO: add registry check
 #include <RewTestingBase.hpp>
 
 TEST_SPACE()
