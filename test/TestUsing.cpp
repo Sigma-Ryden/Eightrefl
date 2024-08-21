@@ -82,7 +82,7 @@ TEST(TestLibrary, TestUsing)
 
     EXPECT("function1",
         function1 != nullptr &&
-        function1->find("std::int32_t") != nullptr);
+        function1->find("std::int32_t() const") != nullptr);
 
     auto property = reflection->property.find("Head");
 

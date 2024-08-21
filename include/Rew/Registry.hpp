@@ -47,12 +47,6 @@ public:
         return it != rtti_all.end() ? it->second : nullptr;
     }
 
-    template <typename ReflectableType>
-    type_t* find() const
-    {
-        return find(::xxrew_traits<ReflectableType>::name());
-    }
-
 private:
     template <typename ReflectableType>
     static auto context()

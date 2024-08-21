@@ -21,8 +21,9 @@
     {                                                                                                   \
         using xxaccess = typename rew::meta::access_traits<CleanR>::template function<__VA_ARGS__>;     \
         auto xxptr = xxaccess::of(&CleanR::REW_DEPAREN(name));                                          \
-        auto xxmeta = rew::find_or_add_function<__VA_ARGS__>(xxreflection, name_str, xxptr);            \
-        injection.template function<CleanR, decltype(xxptr)>(*xxmeta);                                  \
+        auto xxfunction = rew::find_or_add_function<__VA_ARGS__>(xxreflection, name_str, xxptr);        \
+        injection.template function<CleanR, decltype(xxptr)>(*xxfunction);                              \
+        xxmeta = &xxfunction->meta;                                                                     \
     }
 
 #define FUNCTION(name, ...) NAMED_FUNCTION(REW_TO_STRING(name), name, __VA_ARGS__)
@@ -32,8 +33,9 @@
     {                                                                                                   \
         using xxaccess = typename rew::meta::access_traits<>::template function<__VA_ARGS__>;           \
         auto xxptr = xxaccess::of(&REW_DEPAREN(name));                                                  \
-        auto xxmeta = rew::find_or_add_function<__VA_ARGS__>(xxreflection, name_str, xxptr);            \
-        injection.template function<CleanR, decltype(xxptr)>(*xxmeta);                                  \
+        auto xxfunction = rew::find_or_add_function<__VA_ARGS__>(xxreflection, name_str, xxptr);        \
+        injection.template function<CleanR, decltype(xxptr)>(*xxfunction);                              \
+        xxmeta = &xxfunction->meta;                                                                     \
     }
 
 #define FREE_FUNCTION(name, ...) NAMED_FREE_FUNCTION(REW_TO_STRING(name), name, __VA_ARGS__)

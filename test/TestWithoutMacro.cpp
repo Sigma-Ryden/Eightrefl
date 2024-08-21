@@ -67,7 +67,7 @@ struct xxrew<TestWithoutMacroStruct>
         rew::find_or_add_factory<R()>(type->reflection);
         rew::find_or_add_function(type->reflection, "Function", &R::Function);
         rew::find_or_add_property(type->reflection, "Property", &R::Property, &R::Property);
-        rew::find_or_add_meta(type->reflection, "Meta", 123);
+        type->reflection->meta.add("Meta", 123);
         rew::find_or_add_injection<R, TestWithoutMacroInjection>(type);
     }
 };
@@ -98,6 +98,6 @@ TEST(TestLibrary, TestWithoutMacro)
     EXPECT("factory", reflection->factory.find("TestWithoutMacroStruct()") != nullptr);
     EXPECT("function", reflection->function.find("Function") != nullptr);
     EXPECT("property", reflection->property.find("Property") != nullptr);
-    EXPECT("mta", reflection->meta.find("Meta") != nullptr);
+    EXPECT("meta", reflection->meta.find("Meta") != nullptr);
     EXPECT("injection", type->injection.find("TestWithoutMacroInjection") != nullptr);
 }

@@ -62,9 +62,10 @@
 #define REW_REFLECTABLE_BODY()                                                                          \
     template <class InjectionType> static void evaluate(InjectionType&& injection) {                    \
         auto xxtype = ::rew::find_or_add_type<R>();                                                     \
-        rew::add_default_injection_set<R>(xxtype);                                                      \
         auto xxreflection = xxtype->reflection; (void)xxreflection;                                     \
-        injection.template type<R>(*xxtype);
+        auto xxmeta = &xxreflection->meta; (void)xxmeta;                                                \
+        rew::add_default_injection_set<R>(xxtype);                                                      \
+        injection.template type<R>(*xxtype);                                                            \
 
 #ifdef REW_DISABLE_REFLECTION_FIXTURE
     #define REFLECTABLE_INIT(...)                                                                       \
@@ -106,13 +107,14 @@
 
 #define REFLECTABLE_ACCESS(...) template <typename, typename> friend struct xxrew;
 
+
 namespace rew
 {
 
 template <typename ReflectableType>
-std::string nameof()
+std::string const& nameof()
 {
-    return ::xxrew_traits<ReflectableType>::name();
+    static std::string cache = ::xxrew_traits<ReflectableType>::name(); return cache;
 }
 
 template <typename ReflectableType>
@@ -157,7 +159,7 @@ type_t* find_or_add_type()
         reflectable<dirty_reflectable_type>();
     }
 
-    auto xxname = reflectable_traits::name();
+    decltype(auto) xxname = nameof<dirty_reflectable_type>();
     auto xxregistry = &global;
 
     if constexpr (meta::is_custom<dirty_reflectable_type>::value)
@@ -169,6 +171,7 @@ type_t* find_or_add_type()
     if (xxtype == nullptr)
     {
         xxtype = xxregistry->template add<reflectable_type, dirty_reflectable_type>(xxname);
+        ::xxrew_type<dirty_reflectable_type> = xxtype;
     }
 
     return xxtype;
@@ -179,7 +182,7 @@ parent_t* find_or_add_parent(reflection_t* reflection)
 {
     static_assert(std::is_base_of_v<ParentReflectableType, ReflectableType>);
 
-    auto xxname = ::xxrew_traits<ParentReflectableType>::name();
+    decltype(auto) xxname = nameof<ParentReflectableType>();
 
     auto xxmeta = reflection->parent.find(xxname);
     if (xxmeta == nullptr) xxmeta = &reflection->parent.add
@@ -220,7 +223,7 @@ factory_t* find_or_add_factory(reflection_t* reflection)
     using dirty_pointer = typename function_traits::dirty_pointer;
     using pointer = typename function_traits::pointer;
 
-    auto xxname = ::xxrew_traits<dirty_type>::name();
+    decltype(auto) xxname = nameof<dirty_type>();
 
     auto xxmeta = reflection->factory.find(xxname);
     if (xxmeta == nullptr) xxmeta = &reflection->factory.add
@@ -256,7 +259,7 @@ function_t* find_or_add_function(reflection_t* reflection, std::string const& na
     auto xxfunction = reflection->function.find(name);
     if (xxfunction == nullptr) xxfunction = &reflection->function.add(name, {});
 
-    auto xxoverload = ::xxrew_traits<dirty_type>::name();
+    decltype(auto) xxoverload = nameof<dirty_type>();
 
     auto xxmeta = xxfunction->find(xxoverload);
     if (xxmeta == nullptr) xxmeta = &xxfunction->add
@@ -307,21 +310,12 @@ property_t* find_or_add_property(reflection_t* reflection, std::string const& na
     return xxmeta;
 }
 
-template <typename MetaType>
-std::any* find_or_add_meta(reflection_t* reflection, std::string const& name, const MetaType& data)
-{
-    auto xxmeta = reflection->meta.find(name);
-    if (xxmeta == nullptr) xxmeta = &reflection->meta.add(name, data);
-
-    return xxmeta;
-}
-
 template <typename ReflectableType, class InjectionType>
 injection_t* find_or_add_injection(type_t* type)
 {
     static_assert(std::is_base_of_v<injectable_t, InjectionType>);
 
-    auto xxname = ::xxrew_traits<InjectionType>::name();
+    decltype(auto) xxname = nameof<InjectionType>();
 
     auto xxmeta = type->injection.find(xxname);
     if (xxmeta == nullptr) xxmeta = &type->injection.add

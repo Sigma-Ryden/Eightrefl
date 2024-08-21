@@ -28,4 +28,7 @@ struct type_t
 
 } // namespace rew
 
+template <typename ReflectableType>
+inline ::rew::type_t* xxrew_type = nullptr;
+
 #endif // REW_TYPE_HPP

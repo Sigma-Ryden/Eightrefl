@@ -1,10 +1,12 @@
 #include <RewTestingBase.hpp>
 
 #include <Rew/BuiltIn/pair.hpp>
-
+enum TestEnumType { Blue, Green, Red, Alpha };
 TEST(TestBuiltin, TestPair)
 {
     rew::reflectable<std::pair<int, float>>();
+
+    EXPECT("", (::xxrew_type<TestEnumType>)==rew::global.find("TestEnumType"));
 
     auto type = rew::global.find("std::pair<int, float>");
 
