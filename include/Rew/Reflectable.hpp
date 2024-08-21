@@ -111,10 +111,11 @@
 namespace rew
 {
 
+// use for name generation only
 template <typename ReflectableType>
-std::string const& nameof()
+std::string nameof()
 {
-    static std::string cache = ::xxrew_traits<ReflectableType>::name(); return cache;
+    return ::xxrew_traits<ReflectableType>::name();
 }
 
 template <typename ReflectableType>

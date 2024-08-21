@@ -1,11 +1,11 @@
 #include <RewTestingBase.hpp>
 
-//TEST_SPACE()
-//{
+TEST_SPACE()
+{
 
 enum TestEnumType { Blue, Green, Red, Alpha };
 
-//} // TEST_SPACE
+} // TEST_SPACE
 
 REFLECTABLE_DECLARATION(TestEnumType)
 REFLECTABLE_DECLARATION_INIT()

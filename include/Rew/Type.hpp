@@ -28,6 +28,7 @@ struct type_t
 
 } // namespace rew
 
+// quick type access, use after all registrations only
 template <typename ReflectableType>
 inline ::rew::type_t* xxrew_type = nullptr;
 
