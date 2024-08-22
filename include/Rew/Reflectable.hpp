@@ -160,7 +160,7 @@ type_t* find_or_add_type()
         reflectable<dirty_reflectable_type>();
     }
 
-    decltype(auto) xxname = nameof<dirty_reflectable_type>();
+    auto xxname = nameof<dirty_reflectable_type>();
     auto xxregistry = &global;
 
     if constexpr (meta::is_custom<dirty_reflectable_type>::value)
@@ -183,7 +183,7 @@ parent_t* find_or_add_parent(reflection_t* reflection)
 {
     static_assert(std::is_base_of_v<ParentReflectableType, ReflectableType>);
 
-    decltype(auto) xxname = nameof<ParentReflectableType>();
+    auto xxname = nameof<ParentReflectableType>();
 
     auto xxmeta = reflection->parent.find(xxname);
     if (xxmeta == nullptr) xxmeta = &reflection->parent.add
@@ -224,7 +224,7 @@ factory_t* find_or_add_factory(reflection_t* reflection)
     using dirty_pointer = typename function_traits::dirty_pointer;
     using pointer = typename function_traits::pointer;
 
-    decltype(auto) xxname = nameof<dirty_type>();
+    auto xxname = nameof<dirty_type>();
 
     auto xxmeta = reflection->factory.find(xxname);
     if (xxmeta == nullptr) xxmeta = &reflection->factory.add
@@ -260,7 +260,7 @@ function_t* find_or_add_function(reflection_t* reflection, std::string const& na
     auto xxfunction = reflection->function.find(name);
     if (xxfunction == nullptr) xxfunction = &reflection->function.add(name, {});
 
-    decltype(auto) xxoverload = nameof<dirty_type>();
+    auto xxoverload = nameof<dirty_type>();
 
     auto xxmeta = xxfunction->find(xxoverload);
     if (xxmeta == nullptr) xxmeta = &xxfunction->add
@@ -316,7 +316,7 @@ injection_t* find_or_add_injection(type_t* type)
 {
     static_assert(std::is_base_of_v<injectable_t, InjectionType>);
 
-    decltype(auto) xxname = nameof<InjectionType>();
+    auto xxname = nameof<InjectionType>();
 
     auto xxmeta = type->injection.find(xxname);
     if (xxmeta == nullptr) xxmeta = &type->injection.add

@@ -185,31 +185,6 @@ TEST(TestLibrary, TestParent)
 TEST_SPACE()
 {
 
-struct TestMetaStruct {};
-
-} // TEST_SPACE
-
-REFLECTABLE_DECLARATION(TestMetaStruct)
-REFLECTABLE_DECLARATION_INIT()
-
-REFLECTABLE(TestMetaStruct)
-REFLECTABLE_INIT()
-
-TEST(TestLibrary, TestMeta)
-{
-    auto type = rew::global.find("TestMetaStruct");
-
-    ASSERT("type", type != nullptr);
-
-    auto reflection = type->reflection;
-
-    ASSERT("reflection", reflection != nullptr);
-}
-
-
-TEST_SPACE()
-{
-
 struct TestCustomRegistryStruct {};
 
 rew::registry_t CustomRegistry;

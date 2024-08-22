@@ -80,8 +80,8 @@ add_executable(${PROJECT_NAME}
     test/RewTestingBase.hpp
     test/main.cpp
 
-    # test/TestReflectionImpl.cpp
-    # test/TestReflectionImpl.hpp
+    test/TestReflectionImpl.cpp
+    test/TestReflectionImpl.hpp
 
     test/TestCommon.cpp
     test/TestEnum.cpp
@@ -89,6 +89,7 @@ add_executable(${PROJECT_NAME}
     test/TestRegistryFunction.cpp
     test/TestRegistryProperty.cpp
     test/TestFactory.cpp
+    test/TestMeta.cpp
     test/TestInjection.cpp
     test/TestUsing.cpp
     test/TestLibrary.cpp
