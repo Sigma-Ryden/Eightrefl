@@ -37,6 +37,7 @@ struct TestMetaStructConfigs
 
 std::string sMetaName = "Descriptors";
 void* TestDescriptorReadOnly = nullptr;
+char const* sToolTip = "Don't use manually.";
 
 struct FunctionHandlerStruct
 {
@@ -60,8 +61,9 @@ REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestMetaStruct)
     META("DisplayName", "Meta Struct")
-    META("Configs", TestMetaStructConfigs{ true, 100.f })
-    META(sMetaName, std::vector<void*>{ &R::TestDescriptor, &TestDescriptorReadOnly })
+    // you can add SUBMETA(...) after any META(...) or SUBMETA(...), but for test - we will ommit all cases
+    META("Configs", TestMetaStructConfigs{ true, 100.f }) SUBMETA("Hash", int(0x0101))
+    META(sMetaName, std::vector<void*>{ &R::TestDescriptor, &TestDescriptorReadOnly }) SUBMETA("ToolTip", sToolTip)
 
     PARENT(TestParentMetaStruct) META("Hidden", true)
 
@@ -73,7 +75,7 @@ REFLECTABLE(TestMetaStruct)
     PROPERTY(Property) META("Cast", &TestMetaStructPropertyCast)
     META("Flags", TestMetaStructFlags::Serializable | TestMetaStructFlags::Internal)
 
-    PROPERTY(Constant) META("Mutable", true)
+    PROPERTY(Constant) META("Mutable", true) SUBMETA("Status", -1) SUBMETA("Info", nullptr)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestMeta)
@@ -87,23 +89,51 @@ TEST(TestLibrary, TestMeta)
     ASSERT("reflection", reflection != nullptr);
 
     {
-        auto meta0 = std::any_cast<char const*>(reflection->meta.find("DisplayName"));
+        auto meta0 = reflection->meta.find("DisplayName");
 
         ASSERT("reflection-meta0", meta0 != nullptr);
-        EXPECT("reflection-meta0-value", std::string(*meta0) == "Meta Struct");
+
+        auto value = std::any_cast<char const*>(&meta0->value);
+
+        EXPECT("reflection-meta0-value", value != nullptr && std::string(*value) == "Meta Struct");
     }
     {
-        auto meta1 = std::any_cast<TestMetaStructConfigs>(reflection->meta.find("Configs"));
+        auto meta1 = reflection->meta.find("Configs");
 
         ASSERT("reflection-meta1", meta1 != nullptr);
-        EXPECT("reflection-meta1-value", meta1->IsVisible == true && meta1->LifeTime == 100.f);
+
+        auto value = std::any_cast<TestMetaStructConfigs>(&meta1->value);
+
+        EXPECT("reflection-meta1-value", value != nullptr && value->IsVisible == true && value->LifeTime == 100.f);
+
+        {
+            auto submeta0 = meta1->meta.find("Hash");
+
+            ASSERT("reflection-meta1-submenta0", submeta0 != nullptr);
+
+            auto value = std::any_cast<int>(submeta0);
+
+            EXPECT("reflection-meta1-submenta0", value != nullptr && *value == int(0x0101));
+        }
     }
     {
-        auto meta2 = std::any_cast<std::vector<void*>>(reflection->meta.find(sMetaName));
+        auto meta2 = reflection->meta.find(sMetaName);
 
         ASSERT("reflection-meta2", meta2 != nullptr);
-        EXPECT("reflection-meta2-value",
-            meta2->size() == 2 && (*meta2)[0] == &TestMetaStruct::TestDescriptor && (*meta2)[1] == &TestDescriptorReadOnly);
+
+        auto value = std::any_cast<std::vector<void*>>(&meta2->value);
+
+        EXPECT("reflection-meta2-value", value != nullptr && value->size() == 2 && (*value)[0] == &TestMetaStruct::TestDescriptor && (*value)[1] == &TestDescriptorReadOnly);
+
+        {
+            auto submeta0 = meta2->meta.find("ToolTip");
+
+            ASSERT("reflection-meta2-submenta0", submeta0 != nullptr);
+
+            auto value = std::any_cast<char const*>(submeta0);
+
+            EXPECT("reflection-meta2-submenta0", value != nullptr && std::string(*value) == sToolTip);
+        }
     }
 
     auto parent = reflection->parent.find("TestParentMetaStruct");
@@ -111,10 +141,13 @@ TEST(TestLibrary, TestMeta)
     ASSERT("parent", parent != nullptr);
 
     {
-        auto meta0 = std::any_cast<bool>(parent->meta.find("Hidden"));
+        auto meta0 = parent->meta.find("Hidden");
 
         ASSERT("parent-meta0", meta0 != nullptr);
-        EXPECT("parent-meta0-value", *meta0 == true);
+
+        auto value = std::any_cast<bool>(&meta0->value);
+
+        EXPECT("parent-meta0-value-init", value != nullptr && *value == true);
     }
 
     auto factory = reflection->factory.find("TestMetaStruct()");
@@ -122,10 +155,13 @@ TEST(TestLibrary, TestMeta)
     ASSERT("factory", factory != nullptr);
 
     {
-        auto meta0 = std::any_cast<std::string>(factory->meta.find("ConstructionType"));
+        auto meta0 = factory->meta.find("ConstructionType");
 
         ASSERT("factory-meta0", meta0 != nullptr);
-        EXPECT("factory-meta0-value", *meta0 == "PostLoad");
+
+        auto value = std::any_cast<std::string>(&meta0->value);
+
+        EXPECT("factory-meta0-value", value != nullptr && *value == "PostLoad");
     }
 
     auto overloads = reflection->function.find("Function");
@@ -137,22 +173,31 @@ TEST(TestLibrary, TestMeta)
     ASSERT("function0", function0 != nullptr);
 
     {
-        auto meta0 = std::any_cast<int>(function0->meta.find("MinValue"));
+        auto meta0 = function0->meta.find("MinValue");
 
         ASSERT("function0-meta0", meta0 != nullptr);
-        EXPECT("function0-meta0-value", *meta0 == -1);
+
+        auto value = std::any_cast<int>(&meta0->value);
+
+        EXPECT("function0-meta0-value", value != nullptr && *value == -1);
     }
     {
-        auto meta1 = std::any_cast<int>(function0->meta.find("MaxValue"));
+        auto meta1 = function0->meta.find("MaxValue");
 
         ASSERT("function0-meta1", meta1 != nullptr);
-        EXPECT("function0-meta1-value", *meta1 == 10);
+
+        auto value = std::any_cast<int>(&meta1->value);
+
+        EXPECT("function0-meta1-value", value != nullptr && *value == 10);
     }
     {
-        auto meta2 = std::any_cast<bool>(function0->meta.find("static"));
+        auto meta2 = function0->meta.find("static");
 
         ASSERT("function0-meta2", meta2 != nullptr);
-        EXPECT("function0-meta2-value", *meta2 == true);
+
+        auto value = std::any_cast<bool>(&meta2->value);
+
+        EXPECT("function0-meta2-value", value != nullptr && *value == true);
     }
 
     auto function1 = overloads->find("void(double)");
@@ -160,10 +205,13 @@ TEST(TestLibrary, TestMeta)
     ASSERT("function1", function1 != nullptr);
 
     {
-        auto meta0 = std::any_cast<FunctionHandlerStruct>(function1->meta.find("Handler"));
+        auto meta0 = function1->meta.find("Handler");
 
         ASSERT("function1-meta0", meta0 != nullptr);
-        EXPECT("function1-meta0-value", meta0->IsAsync == FunctionHandler.IsAsync);
+
+        auto value = std::any_cast<FunctionHandlerStruct>(&meta0->value);
+
+        EXPECT("function1-meta0-value", value != nullptr && value->IsAsync == FunctionHandler.IsAsync);
     }
 
     auto property0 = reflection->property.find("Property");
@@ -173,16 +221,22 @@ TEST(TestLibrary, TestMeta)
     {
         using meta0_type = decltype(&TestMetaStructPropertyCast);
 
-        auto meta0 = std::any_cast<meta0_type>(property0->meta.find("Cast"));
+        auto meta0 = property0->meta.find("Cast");
 
         ASSERT("property0-meta0", meta0 != nullptr);
-        EXPECT("property0-meta0-value", *meta0 == &TestMetaStructPropertyCast);
+
+        auto value = std::any_cast<meta0_type>(&meta0->value);
+
+        EXPECT("property0-meta0-value", value != nullptr && *value == &TestMetaStructPropertyCast);
     }
     {
-        auto meta1 = std::any_cast<long>(property0->meta.find("Flags"));
+        auto meta1 = property0->meta.find("Flags");
 
         ASSERT("property0-meta1", meta1 != nullptr);
-        EXPECT("property0-meta1-value", *meta1 == TestMetaStructFlags::Serializable | TestMetaStructFlags::Internal);
+
+        auto value = std::any_cast<long>(&meta1->value);
+
+        EXPECT("property0-meta1-value", value != nullptr && *value == (TestMetaStructFlags::Serializable | TestMetaStructFlags::Internal));
     }
 
     auto property1 = reflection->property.find("Constant");
@@ -190,9 +244,31 @@ TEST(TestLibrary, TestMeta)
     ASSERT("property1", property1 != nullptr);
 
     {
-        auto meta0 = std::any_cast<bool>(property1->meta.find("Mutable"));
+        auto meta0 = property1->meta.find("Mutable");
 
         ASSERT("meta0", meta0 != nullptr);
-        EXPECT("Mutable", *meta0 == true);
+
+        auto value = std::any_cast<bool>(&meta0->value);
+
+        EXPECT("Mutable", value != nullptr && *value == true);
+
+        {
+            auto submeta0 = meta0->meta.find("Status");
+
+            ASSERT("property1-meta0-submenta0", submeta0 != nullptr);
+
+            auto value = std::any_cast<int>(submeta0);
+
+            EXPECT("property1-meta0-submenta0", value != nullptr && *value == -1);
+        }
+        {
+            auto submeta1 = meta0->meta.find("Info");
+
+            ASSERT("property1-meta0-submenta1", submeta1 != nullptr);
+
+            auto value = std::any_cast<std::nullptr_t>(submeta1);
+
+            EXPECT("property1-meta0-submenta1", value != nullptr && *value == nullptr);
+        }
     }
 }

@@ -7,6 +7,12 @@
 #include <Rew/BuiltIn/vector.hpp>
 #include <Rew/BuiltIn/typeindex.hpp>
 
+REFLECTABLE(rew::meta_t)
+    PROPERTY(name)
+    PROPERTY(value)
+    PROPERTY(meta)
+REFLECTABLE_INIT()
+
 REFLECTABLE(rew::parent_t)
     PROPERTY(name)
     PROPERTY(type)

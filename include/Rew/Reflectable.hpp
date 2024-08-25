@@ -64,6 +64,7 @@
         auto xxtype = ::rew::find_or_add_type<R>();                                                     \
         auto xxreflection = xxtype->reflection; (void)xxreflection;                                     \
         auto xxmeta = &xxreflection->meta; (void)xxmeta;                                                \
+        decltype(::rew::meta_t::meta)* xxsubmeta = nullptr; (void)xxsubmeta;                            \
         rew::add_default_injection_set<R>(xxtype);                                                      \
         injection.template type<R>(*xxtype);                                                            \
 
@@ -242,7 +243,7 @@ factory_t* find_or_add_factory(reflection_t* reflection)
 }
 
 template <typename DirtyFunctionType = void, typename FunctionType>
-function_t* find_or_add_function(reflection_t* reflection, std::string const& name, FunctionType ptr)
+function_t* find_or_add_function(reflection_t* reflection, std::string const& name, FunctionType pointer)
 {
     using function_traits = meta::function_traits
     <
@@ -268,27 +269,27 @@ function_t* find_or_add_function(reflection_t* reflection, std::string const& na
         xxoverload,
         {
             xxoverload,
-            handler_function_call(ptr),
+            handler_function_call(pointer),
             detail::function_argument_types(dirty_pointer{}),
             detail::function_return_type(dirty_pointer{}),
-            ptr
+            pointer
         }
     );
 
     return xxmeta;
 }
 
-template <typename DirtyPropertyType = void, typename GetterType, typename SetterType>
+template <typename DirtyPropertyType = void, typename InputPropertyType, typename OutputPropertyType>
 property_t* find_or_add_property(reflection_t* reflection, std::string const& name,
-                                 GetterType getter, SetterType setter)
+                                 InputPropertyType ipointer, OutputPropertyType opointer)
 {
     using property_traits = meta::property_traits
     <
         typename std::conditional_t
         <
             std::is_void_v<DirtyPropertyType>,
-            meta::type_identity<GetterType>,
-            meta::mark_dirty<GetterType, DirtyPropertyType>
+            meta::type_identity<InputPropertyType>,
+            meta::mark_dirty<InputPropertyType, DirtyPropertyType>
         >::type
     >;
 
@@ -301,10 +302,10 @@ property_t* find_or_add_property(reflection_t* reflection, std::string const& na
         {
             name,
             find_or_add_type<dirty_type>(),
-            handler_property_get(getter),
-            handler_property_set(setter),
-            handler_property_context(getter),
-            property_pointer(getter, setter)
+            handler_property_get(ipointer),
+            handler_property_set(opointer),
+            handler_property_context(ipointer),
+            property_pointer(ipointer, opointer)
         }
     );
 

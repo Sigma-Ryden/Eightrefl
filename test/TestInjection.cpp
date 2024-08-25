@@ -28,7 +28,10 @@ struct TestToStringInjection : rew::injectable_t
     template <typename ReflectableType>
     void type(rew::type_t& type)
     {
-        type.reflection->meta.add("ToString", ToString<ReflectableType>());
+        type.reflection->meta.add("ToString", rew::meta_t
+        {
+            "ToStringInjection", ToString<ReflectableType>()
+        });
     }
 };
 
@@ -55,9 +58,12 @@ TEST(TestLibrary, TestDefaultInjection)
     TestToStringInjection to_string;
     injection->call(to_string);
 
-    auto meta = std::any_cast<ToString<TestInjectionStruct>>(reflection->meta.find("ToString"));
+    auto meta = reflection->meta.find("ToString");
 
-    EXPECT("after_injection", meta != nullptr && meta->Call() == "name: TestInjectionStruct");
+    ASSERT("after_injection0", meta != nullptr);
+
+    auto value = std::any_cast<ToString<TestInjectionStruct>>(&meta->value);
+    EXPECT("after_injection1", value != nullptr && value->Call() == "name: TestInjectionStruct");
 }
 
 
@@ -66,7 +72,10 @@ struct TestVirusInjection : rew::injectable_t
     template <typename ReflectableType, typename FunctionType>
     void factory(rew::factory_t& factory)
     {
-        factory.meta.add("IsDefaultConstructible", factory.arguments.size() == 0);
+        factory.meta.add("IsDefaultConstructible", rew::meta_t
+        {
+            "IsDefaultConstructibleInjection", factory.arguments.size() == 0
+        });
     }
 };
 
@@ -83,7 +92,6 @@ TEST(TestLibrary, TestDynamicInjection)
 
     ASSERT("reflection", reflection != nullptr);
 
-    //EXPECT("default-injection", type->injection.find("TestToStringInjection") != nullptr);
     ASSERT("before_add-injection", type->injection.find("TestVirusInjection") == nullptr);
     
     rew::find_or_add_injection<int, TestVirusInjection>(type);
@@ -106,13 +114,11 @@ TEST(TestLibrary, TestDynamicInjection)
         auto default_constructible = reflection->factory.find("int()")->meta.find("IsDefaultConstructible");
         auto no_default_constructible = reflection->factory.find("int(int)")->meta.find("IsDefaultConstructible");
 
-        EXPECT
-        (
-            "after_injection",
-            default_constructible != nullptr &&
-            no_default_constructible != nullptr &&
-            std::any_cast<bool>(*default_constructible) == true &&
-            std::any_cast<bool>(*no_default_constructible) == false
-        );
+        EXPECT("after_injection0", default_constructible != nullptr && no_default_constructible != nullptr);
+
+        auto value0 = std::any_cast<bool>(&default_constructible->value);
+        auto value1 = std::any_cast<bool>(&no_default_constructible->value);
+
+        EXPECT("after_injection1", value0 != nullptr && *value0 == true && value1 != nullptr && *value1 == false);
     }
 }

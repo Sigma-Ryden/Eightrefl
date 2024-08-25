@@ -40,7 +40,10 @@ struct injectable_t
     void property(rew::property_t& property) {}
 
     template <typename ReflectableType, typename MetaType>
-    void meta(std::string const& name, std::any& meta) {}
+    void meta(rew::meta_t& meta) {}
+
+    template <typename ReflectableType, typename MetaType>
+    void submeta(std::string const& name, std::any& meta) {}
 };
 
 struct injection_t

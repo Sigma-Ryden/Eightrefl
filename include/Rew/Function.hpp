@@ -16,28 +16,25 @@
 
 #include <Rew/Detail/Macro.hpp>
 
-// .function<R, signature>(name, &R::func)
-#define NAMED_FUNCTION(name_str, name, ...)                                                             \
+
+// .function<R, signature>(external_name, &scope::internal_name)
+#define CUSTOM_FUNCTION(scope, external_name, internal_name, ...)                                       \
     {                                                                                                   \
-        using xxaccess = typename rew::meta::access_traits<CleanR>::template function<__VA_ARGS__>;     \
-        auto xxptr = xxaccess::of(&CleanR::REW_DEPAREN(name));                                          \
-        auto xxfunction = rew::find_or_add_function<__VA_ARGS__>(xxreflection, name_str, xxptr);        \
-        injection.template function<CleanR, decltype(xxptr)>(*xxfunction);                              \
+        using xxaccess = typename rew::meta::access_traits<scope>::template function<__VA_ARGS__>;      \
+        auto xxpointer = xxaccess::of(&scope::REW_DEPAREN(internal_name));                              \
+        auto xxfunction = rew::find_or_add_function<__VA_ARGS__>                                        \
+        (xxreflection, external_name, xxpointer);                                                       \
+        injection.template function<CleanR, decltype(xxpointer)>(*xxfunction);                          \
         xxmeta = &xxfunction->meta;                                                                     \
     }
+
+#define NAMED_FUNCTION(external_name, internal_name, ...)                                               \
+    CUSTOM_FUNCTION(CleanR, external_name, internal_name, __VA_ARGS__)
+
+#define NAMED_FREE_FUNCTION(external_name, internal_name, ...)                                          \
+    CUSTOM_FUNCTION(, external_name, internal_name, __VA_ARGS__)
 
 #define FUNCTION(name, ...) NAMED_FUNCTION(REW_TO_STRING(name), name, __VA_ARGS__)
-
-// .function<signature>(name, &func)
-#define NAMED_FREE_FUNCTION(name_str, name, ...)                                                        \
-    {                                                                                                   \
-        using xxaccess = typename rew::meta::access_traits<>::template function<__VA_ARGS__>;           \
-        auto xxptr = xxaccess::of(&REW_DEPAREN(name));                                                  \
-        auto xxfunction = rew::find_or_add_function<__VA_ARGS__>(xxreflection, name_str, xxptr);        \
-        injection.template function<CleanR, decltype(xxptr)>(*xxfunction);                              \
-        xxmeta = &xxfunction->meta;                                                                     \
-    }
-
 #define FREE_FUNCTION(name, ...) NAMED_FREE_FUNCTION(REW_TO_STRING(name), name, __VA_ARGS__)
 
 namespace rew
@@ -52,7 +49,7 @@ struct function_t
     std::vector<type_t*> const arguments;
     type_t *const result = nullptr;
     std::any const pointer;
-    attribute_t<std::any> meta;
+    attribute_t<meta_t> meta;
 };
 
 namespace detail

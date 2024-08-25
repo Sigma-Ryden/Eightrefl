@@ -74,7 +74,8 @@ struct TestEnumAsStringInjection : rew::injectable_t
     
     ~TestEnumAsStringInjection()
     {
-        xxtype->reflection->meta.add("EnumAsString", xxenum_as_string);
+        std::string const meta_name = "EnumAsString";
+        xxtype->reflection->meta.add(meta_name, rew::meta_t{ meta_name, xxenum_as_string });
     }
 
     template <typename ReflectableType>
@@ -84,12 +85,12 @@ struct TestEnumAsStringInjection : rew::injectable_t
     }
 
     template <typename ReflectableType, typename MetaType>
-    void meta(std::string const& name, std::any& meta)
+    void meta(rew::meta_t& meta)
     {
-        auto enumerator = (std::size_t)std::any_cast<MetaType&>(meta);
+        auto enumerator = (std::size_t)std::any_cast<MetaType&>(meta.value);
         if (enumerator < (std::size_t)ReflectableType::Size)
         {
-            xxenum_as_string[enumerator] = name;
+            xxenum_as_string[enumerator] = meta.name;
         }
     }
 };
@@ -121,10 +122,11 @@ TEST(TestCommon, TestEnumAsString)
         injection->call(enum_as_string);
     }
 
-    auto& enum_as_string = std::any_cast<std::vector<std::string>&>
-    (
-        *type->reflection->meta.find("EnumAsString")
-    );
+    auto meta = type->reflection->meta.find("EnumAsString");
 
-    EXPECT("enum_as_string", enum_as_string[(std::size_t)TestScopedEnumType::Down] == "Down");
+    ASSERT("enum_as_string", meta != nullptr);
+
+    auto enum_as_string = std::any_cast<std::vector<std::string>>(&meta->value);
+
+    EXPECT("enum_as_string-value", enum_as_string != nullptr && (*enum_as_string)[(std::size_t)TestScopedEnumType::Down] == "Down");
 }

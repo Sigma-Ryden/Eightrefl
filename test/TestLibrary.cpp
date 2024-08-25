@@ -527,59 +527,59 @@ REFLECTABLE_INIT()
 TEST(TestLibrary, TestTypeDeduction)
 {
     {
-        auto type = rew::global.find("TestTypeDeductionStruct");
+        auto type = rew::find_or_add_type<TestTypeDeductionStruct>();
 
-        EXPECT("type", rew::find_or_add_type<TestTypeDeductionStruct>() == type);
+        EXPECT("type", rew::global.find("TestTypeDeductionStruct") == type);
     }
     {
-        auto const_type = rew::global.find("TestTypeDeductionStruct");
+        auto const_type = rew::find_or_add_type<TestTypeDeductionStruct const>();
 
-        EXPECT("const_type", rew::find_or_add_type<TestTypeDeductionStruct const>() == const_type);
+        EXPECT("const_type", rew::global.find("TestTypeDeductionStruct") == const_type);
     }
     {
-        auto reference_type = rew::global.find("TestTypeDeductionStruct*");
+        auto reference_type = rew::find_or_add_type<TestTypeDeductionStruct&>();
 
-        EXPECT("reference_type", rew::find_or_add_type<TestTypeDeductionStruct&>() == reference_type);
+        EXPECT("reference_type", rew::global.find("TestTypeDeductionStruct*") == reference_type);
     }
     {
-        auto const_reference_type = rew::global.find("TestTypeDeductionStruct*");
+        auto const_reference_type = rew::find_or_add_type<TestTypeDeductionStruct const&>();
 
-        EXPECT("const_reference_type", rew::find_or_add_type<TestTypeDeductionStruct const&>() == const_reference_type);
+        EXPECT("const_reference_type", rew::global.find("TestTypeDeductionStruct*") == const_reference_type);
     }
     {
-        auto pointer_type = rew::global.find("TestTypeDeductionStruct*");
+        auto pointer_type = rew::find_or_add_type<TestTypeDeductionStruct*>();
 
-        EXPECT("pointer_type", rew::find_or_add_type<TestTypeDeductionStruct*>() == pointer_type);
+        EXPECT("pointer_type", rew::global.find("TestTypeDeductionStruct*") == pointer_type);
     }
     {
-        auto pointer_to_const_type = rew::global.find("TestTypeDeductionStruct*");
+        auto pointer_to_const_type = rew::find_or_add_type<TestTypeDeductionStruct const*>();
 
-        EXPECT("pointer_to_const_type", rew::find_or_add_type<TestTypeDeductionStruct const*>() == pointer_to_const_type);
+        EXPECT("pointer_to_const_type", rew::global.find("TestTypeDeductionStruct*") == pointer_to_const_type);
     }
     {
-        auto const_pointer_to_const_type = rew::global.find("TestTypeDeductionStruct*");
+        auto const_pointer_to_const_type = rew::find_or_add_type<TestTypeDeductionStruct const* const>();
 
-        EXPECT("const_pointer_to_const_type", rew::find_or_add_type<TestTypeDeductionStruct const* const>() == const_pointer_to_const_type);
+        EXPECT("const_pointer_to_const_type", rew::global.find("TestTypeDeductionStruct*") == const_pointer_to_const_type);
     }
     {
-        auto pointer_type_reference = rew::global.find("TestTypeDeductionStruct**");
+        auto pointer_type_reference = rew::find_or_add_type<TestTypeDeductionStruct*&>();
 
-        EXPECT("pointer_type_reference", rew::find_or_add_type<TestTypeDeductionStruct*&>() == pointer_type_reference);
+        EXPECT("pointer_type_reference", rew::global.find("TestTypeDeductionStruct**") == pointer_type_reference);
     }
     {
-        auto pointer_to_const_type_reference = rew::global.find("TestTypeDeductionStruct const**");
+        auto pointer_to_const_type_reference = rew::find_or_add_type<TestTypeDeductionStruct const*&>();
 
-        EXPECT("pointer_to_const_type_reference", rew::find_or_add_type<TestTypeDeductionStruct const*&>() == pointer_to_const_type_reference);
+        EXPECT("pointer_to_const_type_reference", rew::global.find("TestTypeDeductionStruct const**") == pointer_to_const_type_reference);
     }
     {
-        auto const_pointer_to_const_type_reference = rew::global.find("TestTypeDeductionStruct const**");
+        auto const_pointer_to_const_type_reference = rew::find_or_add_type<TestTypeDeductionStruct const* const&>();
 
-        EXPECT("const_pointer_to_const_type_reference", rew::find_or_add_type<TestTypeDeductionStruct const* const&>() == const_pointer_to_const_type_reference);
+        EXPECT("const_pointer_to_const_type_reference", rew::global.find("TestTypeDeductionStruct const**") == const_pointer_to_const_type_reference);
     }
     {
-        auto mixed_type = rew::global.find("TestTypeDeductionStruct const***");
+        auto mixed_type = rew::find_or_add_type<TestTypeDeductionStruct const** const&>();
 
-        EXPECT("mixed_type", rew::find_or_add_type<TestTypeDeductionStruct const** const&>() == mixed_type);
+        EXPECT("mixed_type", rew::global.find("TestTypeDeductionStruct const***") == mixed_type);
     }
 }
 
