@@ -135,9 +135,9 @@ auto handler_property_set_impl(PropertyType property)
 {
     return [property](std::any const& context, std::any const& value)
     {
-        using type = typename meta::property_traits<PropertyType>::type;
+        using property_type = typename meta::property_traits<PropertyType>::type;
 
-        (std::any_cast<ReflectableType*>(context)->*property)(utility::forward<type>(value));
+        (std::any_cast<ReflectableType*>(context)->*property)(utility::forward<property_type>(value));
     };
 }
 
