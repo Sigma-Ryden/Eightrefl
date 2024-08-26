@@ -10,7 +10,6 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE((template <typename MetaType>), rew::attribute_t<MetaType>)
     FUNCTION(find)
     FUNCTION(add)
-    FUNCTION(remove)
     PROPERTY(all)
 REFLECTABLE_INIT()
 
