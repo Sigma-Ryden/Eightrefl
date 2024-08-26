@@ -28,10 +28,7 @@ struct TestToStringInjection : rew::injectable_t
     template <typename ReflectableType>
     void type(rew::type_t& type)
     {
-        type.reflection->meta.add("ToString", rew::meta_t
-        {
-            "ToStringInjection", ToString<ReflectableType>()
-        });
+        rew::find_or_add_meta(type.reflection->meta, "ToString", ToString<ReflectableType>());
     }
 };
 
@@ -72,10 +69,7 @@ struct TestVirusInjection : rew::injectable_t
     template <typename ReflectableType, typename FunctionType>
     void factory(rew::factory_t& factory)
     {
-        factory.meta.add("IsDefaultConstructible", rew::meta_t
-        {
-            "IsDefaultConstructibleInjection", factory.arguments.size() == 0
-        });
+        rew::find_or_add_meta(factory.meta, "IsDefaultConstructible", factory.arguments.size() == 0);
     }
 };
 
