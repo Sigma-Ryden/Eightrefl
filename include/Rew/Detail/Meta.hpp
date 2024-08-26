@@ -290,33 +290,33 @@ struct access_traits<>
     struct property
     {
         template <typename PropertyType>
-        static constexpr auto of(PropertyType(*get)(void), void(*set)(PropertyType))
+        static constexpr auto of(PropertyType(*iproperty)(void), void(*oproperty)(PropertyType))
         {
-            return std::make_pair(get, set);
+            return std::make_pair(iproperty, oproperty);
         }
 
         template <typename PropertyType>
-        static constexpr auto of(PropertyType* get, PropertyType* set)
+        static constexpr auto of(PropertyType* iproperty, PropertyType* oproperty)
         {
-            return std::make_pair(get, set);
+            return std::make_pair(iproperty, oproperty);
         }
     };
 
     template <typename PropertyType>
     struct property<PropertyType()>
     {
-        static constexpr auto of(typename ::xxrew_alias<PropertyType>::R(*get)(void), void(*set)(typename ::xxrew_alias<PropertyType>::R))
+        static constexpr auto of(typename ::xxrew_alias<PropertyType>::R(*iproperty)(void), void(*oproperty)(typename ::xxrew_alias<PropertyType>::R))
         {
-            return std::make_pair(get, set);
+            return std::make_pair(iproperty, oproperty);
         }
     };
 
     template <typename PropertyType>
     struct property<PropertyType>
     {
-        static constexpr auto of(typename ::xxrew_alias<PropertyType>::R* get, typename ::xxrew_alias<PropertyType>::R* set)
+        static constexpr auto of(typename ::xxrew_alias<PropertyType>::R* iproperty, typename ::xxrew_alias<PropertyType>::R* oproperty)
         {
-            return std::make_pair(get, set);
+            return std::make_pair(iproperty, oproperty);
         }
     };
 
@@ -340,16 +340,16 @@ struct access_traits<>
 template <class ClassType>
 struct access_traits<ClassType>
 {
-    template <typename PropertyGetterType, typename PropertySetterType>
-    static constexpr auto property_data(PropertyGetterType get, PropertySetterType set)
+    template <typename GetterType, typename SetterType>
+    static constexpr auto property_data(GetterType iproperty, SetterType oproperty)
     {
-        return std::make_pair(detail::property_ptr_impl<ClassType>(get), detail::property_ptr_impl<ClassType>(set));
+        return std::make_pair(detail::property_ptr_impl<ClassType>(iproperty), detail::property_ptr_impl<ClassType>(oproperty));
     }
 
-    template <typename PropertyGetterType, typename PropertySetterType>
-    static constexpr auto function_data(PropertyGetterType get, PropertySetterType set)
+    template <typename GetterType, typename SetterType>
+    static constexpr auto function_data(GetterType iproperty, SetterType oproperty)
     {
-        return std::make_pair(detail::function_ptr_impl<ClassType>(get), detail::function_ptr_impl<ClassType>(set));
+        return std::make_pair(detail::function_ptr_impl<ClassType>(iproperty), detail::function_ptr_impl<ClassType>(oproperty));
     }
 
     template <typename FunctionType>
@@ -362,64 +362,64 @@ struct access_traits<ClassType>
     struct property
     {
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType ParentClassType::* get, PropertyType ParentClassType::* set)
+        static constexpr auto of(PropertyType ParentClassType::* iproperty, PropertyType ParentClassType::* oproperty)
         {
-            return property_data(get, set);
+            return property_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void) const, void(ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const, void(ParentClassType::* oproperty)(PropertyType))
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void) const, void(ParentClassType::* set)(PropertyType)&)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const, void(ParentClassType::* oproperty)(PropertyType)&)
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void) const&, void(ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const&, void(ParentClassType::* oproperty)(PropertyType))
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void) const&, void(ParentClassType::* set)(PropertyType)&)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const&, void(ParentClassType::* oproperty)(PropertyType)&)
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void), void(ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void), void(ParentClassType::* oproperty)(PropertyType))
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void), void(ParentClassType::* set)(PropertyType)&)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void), void(ParentClassType::* oproperty)(PropertyType)&)
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void)&, void(ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void)&, void(ParentClassType::* oproperty)(PropertyType))
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType, typename PropertyType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void)&, void(ParentClassType::* set)(PropertyType)&)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void)&, void(ParentClassType::* oproperty)(PropertyType)&)
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename PropertyType>
-        static constexpr auto of(PropertyType(*get)(void), void(*set)(PropertyType)) { return std::make_pair(get, set); }
+        static constexpr auto of(PropertyType(*iproperty)(void), void(*oproperty)(PropertyType)) { return std::make_pair(iproperty, oproperty); }
 
         template <typename PropertyType>
-        static constexpr auto of(PropertyType* get, PropertyType* set) { return std::make_pair(get, set); }
+        static constexpr auto of(PropertyType* iproperty, PropertyType* oproperty) { return std::make_pair(iproperty, oproperty); }
     };
 
     template <typename DirtyPropertyType>
@@ -428,21 +428,21 @@ struct access_traits<ClassType>
         using PropertyType = typename ::xxrew_alias<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void) const, void(ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const, void(ParentClassType::* oproperty)(PropertyType))
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void) const, void(ParentClassType::* set)(PropertyType)&)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const, void(ParentClassType::* oproperty)(PropertyType)&)
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void) const, typename type_identity<PropertyType(ParentClassType::*)(void) const>::type)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const, typename type_identity<PropertyType(ParentClassType::*)(void) const>::type)
         {
-            return function_data(get, get);
+            return function_data(iproperty, iproperty);
         }
     };
 
@@ -452,21 +452,21 @@ struct access_traits<ClassType>
         using PropertyType = typename ::xxrew_alias<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void) const&, void(ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const&, void(ParentClassType::* oproperty)(PropertyType))
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void) const&, void(ParentClassType::* set)(PropertyType)&)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const&, void(ParentClassType::* oproperty)(PropertyType)&)
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void) const&, typename type_identity<PropertyType(ParentClassType::*)(void) const&>::type)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const&, typename type_identity<PropertyType(ParentClassType::*)(void) const&>::type)
         {
-            return function_data(get, get);
+            return function_data(iproperty, iproperty);
         }
     };
 
@@ -476,31 +476,31 @@ struct access_traits<ClassType>
         using PropertyType = typename ::xxrew_alias<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void), void(ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void), void(ParentClassType::* oproperty)(PropertyType))
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void), void(ParentClassType::* set)(PropertyType)&)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void), void(ParentClassType::* oproperty)(PropertyType)&)
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void), typename type_identity<PropertyType(ParentClassType::*)(void)>::type)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void), typename type_identity<PropertyType(ParentClassType::*)(void)>::type)
         {
-            return function_data(get, get);
+            return function_data(iproperty, iproperty);
         }
 
-        static constexpr auto of(PropertyType(*get)(void), void(*set)(PropertyType))
+        static constexpr auto of(PropertyType(*iproperty)(void), void(*oproperty)(PropertyType))
         {
-            return std::make_pair(get, set);
+            return std::make_pair(iproperty, oproperty);
         }
 
-        static constexpr auto of(PropertyType(*get)(void), typename type_identity<PropertyType(*)(void)>::type)
+        static constexpr auto of(PropertyType(*iproperty)(void), typename type_identity<PropertyType(*)(void)>::type)
         {
-            return std::make_pair(get, get);
+            return std::make_pair(iproperty, iproperty);
         }
     };
 
@@ -510,21 +510,21 @@ struct access_traits<ClassType>
         using PropertyType = typename ::xxrew_alias<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void)&, void(ParentClassType::* set)(PropertyType))
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void)&, void(ParentClassType::* oproperty)(PropertyType))
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void)&, void(ParentClassType::* set)(PropertyType)&)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void)&, void(ParentClassType::* oproperty)(PropertyType)&)
         {
-            return function_data(get, set);
+            return function_data(iproperty, oproperty);
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* get)(void)&, typename type_identity<PropertyType(ParentClassType::*)(void)&>::type)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void)&, typename type_identity<PropertyType(ParentClassType::*)(void)&>::type)
         {
-            return function_data(get, get);
+            return function_data(iproperty, iproperty);
         }
     };
 
@@ -534,12 +534,12 @@ struct access_traits<ClassType>
         using PropertyType = typename ::xxrew_alias<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType ParentClassType::* get, PropertyType ParentClassType::* set)
+        static constexpr auto of(PropertyType ParentClassType::* iproperty, PropertyType ParentClassType::* oproperty)
         {
-            return property_data(get, set);
+            return property_data(iproperty, oproperty);
         }
 
-        static constexpr auto of(PropertyType* get, PropertyType* set) { return std::make_pair(get, set); }
+        static constexpr auto of(PropertyType* iproperty, PropertyType* oproperty) { return std::make_pair(iproperty, oproperty); }
     };
 
     template <typename...>
