@@ -41,9 +41,6 @@ struct injectable_t
 
     template <typename ReflectableType, typename MetaType>
     void meta(rew::meta_t& meta) {}
-
-    template <typename ReflectableType, typename MetaType>
-    void submeta(std::string const& name, std::any& meta) {}
 };
 
 struct injection_t

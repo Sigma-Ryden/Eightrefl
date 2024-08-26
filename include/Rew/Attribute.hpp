@@ -10,23 +10,25 @@ namespace rew
 template <class MetaType>
 struct attribute_t
 {
-    MetaType* find(std::string const& name)
+    ~attribute_t()
+    {
+        for (auto const& [key, item] : all) delete item;
+    }
+
+    MetaType* find(std::string const& name) const
     {
         auto it = all.find(name);
-        return it != all.end() ? &it->second : nullptr;
+        return it != all.end() ? it->second : nullptr;
     }
 
-    MetaType& add(std::string const& name, MetaType const& meta)
+    MetaType* add(std::string const& name, MetaType const& meta)
     {
-        return all.emplace(name, meta).first->second;
+        auto item = new MetaType(meta);
+        all.emplace(name, item);
+        return item;
     }
 
-    bool remove(std::string const& name)
-    {
-        return all.erase(name)>0;
-    }
-
-    std::unordered_map<std::string, MetaType> all;
+    std::unordered_map<std::string, MetaType*> all;
 };
 
 } // namespace rew

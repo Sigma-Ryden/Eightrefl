@@ -61,10 +61,10 @@
 
 #define REW_REFLECTABLE_BODY()                                                                          \
     template <class InjectionType> static void evaluate(InjectionType&& injection) {                    \
-        auto xxtype = ::rew::find_or_add_type<R>();                                                     \
+        auto xxtype = rew::find_or_add_type<R>();                                                       \
         auto xxreflection = xxtype->reflection; (void)xxreflection;                                     \
         auto xxmeta = &xxreflection->meta; (void)xxmeta;                                                \
-        decltype(::rew::meta_t::meta)* xxsubmeta = nullptr; (void)xxsubmeta;                            \
+        rew::attribute_t<rew::meta_t>* xxsubmeta = nullptr; (void)xxsubmeta;                            \
         rew::add_default_injection_set<R>(xxtype);                                                      \
         injection.template type<R>(*xxtype);                                                            \
 
@@ -75,7 +75,7 @@
 #else
     #define REFLECTABLE_INIT(...)                                                                       \
             }                                                                                           \
-            inline static auto xxfixture = (::rew::reflectable<R>(), true);                             \
+            inline static auto xxfixture = (rew::reflectable<R>(), true);                               \
         };
 #endif // REW_DISABLE_REFLECTION_FIXTURE
 
@@ -98,11 +98,11 @@
     template <> struct xxrew_alias<object_type> { using R = __VA_ARGS__; };
 
 #define TEMPLATE_REFLECTABLE_USING(alias_object_template_header, alias_type, alias_object_type, ...)    \
-    REW_DEPAREN(alias_object_template_header) struct alias_type : ::rew::meta::inherits<__VA_ARGS__> {};\
+    REW_DEPAREN(alias_object_template_header) struct alias_type : rew::meta::inherits<__VA_ARGS__> {};  \
     TEMPLATE_REFLECTABLE_CLEAN(alias_object_template_header, alias_object_type, __VA_ARGS__)
 
 #define REFLECTABLE_USING(alias_type, ...)                                                              \
-    struct alias_type : ::rew::meta::inherits<__VA_ARGS__> {};                                          \
+    struct alias_type : rew::meta::inherits<__VA_ARGS__> {};                                            \
     REFLECTABLE_CLEAN(alias_type, __VA_ARGS__)
 
 
@@ -187,7 +187,7 @@ parent_t* find_or_add_parent(reflection_t* reflection)
     auto xxname = nameof<ParentReflectableType>();
 
     auto xxmeta = reflection->parent.find(xxname);
-    if (xxmeta == nullptr) xxmeta = &reflection->parent.add
+    if (xxmeta == nullptr) xxmeta = reflection->parent.add
     (
         xxname,
         {
@@ -228,7 +228,7 @@ factory_t* find_or_add_factory(reflection_t* reflection)
     auto xxname = nameof<dirty_type>();
 
     auto xxmeta = reflection->factory.find(xxname);
-    if (xxmeta == nullptr) xxmeta = &reflection->factory.add
+    if (xxmeta == nullptr) xxmeta = reflection->factory.add
     (
         xxname,
         {
@@ -259,12 +259,12 @@ function_t* find_or_add_function(reflection_t* reflection, std::string const& na
     using dirty_pointer = typename function_traits::dirty_pointer;
 
     auto xxfunction = reflection->function.find(name);
-    if (xxfunction == nullptr) xxfunction = &reflection->function.add(name, {});
+    if (xxfunction == nullptr) xxfunction = reflection->function.add(name, {});
 
     auto xxoverload = nameof<dirty_type>();
 
     auto xxmeta = xxfunction->find(xxoverload);
-    if (xxmeta == nullptr) xxmeta = &xxfunction->add
+    if (xxmeta == nullptr) xxmeta = xxfunction->add
     (
         xxoverload,
         {
@@ -279,24 +279,24 @@ function_t* find_or_add_function(reflection_t* reflection, std::string const& na
     return xxmeta;
 }
 
-template <typename DirtyPropertyType = void, typename InputPropertyType, typename OutputPropertyType>
+template <typename DirtyPropertyType = void, typename GetterType, typename SetterType>
 property_t* find_or_add_property(reflection_t* reflection, std::string const& name,
-                                 InputPropertyType ipointer, OutputPropertyType opointer)
+                                 GetterType ipointer, SetterType opointer)
 {
     using property_traits = meta::property_traits
     <
         typename std::conditional_t
         <
             std::is_void_v<DirtyPropertyType>,
-            meta::type_identity<InputPropertyType>,
-            meta::mark_dirty<InputPropertyType, DirtyPropertyType>
+            meta::type_identity<GetterType>,
+            meta::mark_dirty<GetterType, DirtyPropertyType>
         >::type
     >;
 
     using dirty_type = typename property_traits::type;
 
     auto xxmeta = reflection->property.find(name);
-    if (xxmeta == nullptr) xxmeta = &reflection->property.add
+    if (xxmeta == nullptr) xxmeta = reflection->property.add
     (
         name,
         {
@@ -312,6 +312,14 @@ property_t* find_or_add_property(reflection_t* reflection, std::string const& na
     return xxmeta;
 }
 
+template <typename MetaType>
+meta_t* find_or_add_meta(attribute_t<meta_t>& meta, std::string const& name, MetaType&& value)
+{
+    auto xxmeta = meta.find(name);
+    if (xxmeta == nullptr) xxmeta = meta.add(name, { name, value });
+    return xxmeta;
+}
+
 template <typename ReflectableType, class InjectionType>
 injection_t* find_or_add_injection(type_t* type)
 {
@@ -320,7 +328,7 @@ injection_t* find_or_add_injection(type_t* type)
     auto xxname = nameof<InjectionType>();
 
     auto xxmeta = type->injection.find(xxname);
-    if (xxmeta == nullptr) xxmeta = &type->injection.add
+    if (xxmeta == nullptr) xxmeta = type->injection.add
     (
         xxname,
         {

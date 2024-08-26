@@ -57,12 +57,12 @@ struct property_t
 namespace detail
 {
 
-template <typename ReflectableType, typename InputPropertyType>
-auto handler_property_get_impl(InputPropertyType property)
+template <typename ReflectableType, typename GetterType>
+auto handler_property_get_impl(GetterType property)
 {
     return [property](std::any const& context, std::any& value)
     {
-        using property_type = typename meta::property_traits<InputPropertyType>::type;
+        using property_type = typename meta::property_traits<GetterType>::type;
 
         value = utility::backward<property_type>
         (
@@ -130,12 +130,12 @@ auto handler_property_get(PropertyType(*property)(void))
 namespace detail
 {
 
-template <typename ReflectableType, typename PropertyType>
-auto handler_property_set_impl(PropertyType property)
+template <typename ReflectableType, typename SetterType>
+auto handler_property_set_impl(SetterType property)
 {
     return [property](std::any const& context, std::any const& value)
     {
-        using property_type = typename meta::property_traits<PropertyType>::type;
+        using property_type = typename meta::property_traits<SetterType>::type;
 
         (std::any_cast<ReflectableType*>(context)->*property)(utility::forward<property_type>(value));
     };
@@ -227,10 +227,10 @@ auto handler_property_set(PropertyType(*property)(void))
 namespace detail
 {
 
-template <typename ReflectableType, typename InputPropertyType>
-auto handler_property_context_impl(InputPropertyType property)
+template <typename ReflectableType, typename GetterType>
+auto handler_property_context_impl(GetterType property)
 {
-    using property_type = typename meta::property_traits<InputPropertyType>::type;
+    using property_type = typename meta::property_traits<GetterType>::type;
     if constexpr (std::is_reference_v<property_type>)
     {
         return [property](std::any const& outer_context) -> std::any
@@ -313,8 +313,8 @@ auto handler_property_context(PropertyType(*property)(void))
     }
 }
 
-template <typename InputPropertyType, typename OutputPropertyType>
-constexpr auto property_pointer(InputPropertyType get, OutputPropertyType set)
+template <typename GetterType, typename SetterType>
+constexpr auto property_pointer(GetterType get, SetterType set)
 {
     return std::make_pair(get, set);
 }

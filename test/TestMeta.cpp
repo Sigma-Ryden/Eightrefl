@@ -111,7 +111,7 @@ TEST(TestLibrary, TestMeta)
 
             ASSERT("reflection-meta1-submenta0", submeta0 != nullptr);
 
-            auto value = std::any_cast<int>(submeta0);
+            auto value = std::any_cast<int>(&submeta0->value);
 
             EXPECT("reflection-meta1-submenta0", value != nullptr && *value == int(0x0101));
         }
@@ -130,7 +130,7 @@ TEST(TestLibrary, TestMeta)
 
             ASSERT("reflection-meta2-submenta0", submeta0 != nullptr);
 
-            auto value = std::any_cast<char const*>(submeta0);
+            auto value = std::any_cast<char const*>(&submeta0->value);
 
             EXPECT("reflection-meta2-submenta0", value != nullptr && std::string(*value) == sToolTip);
         }
@@ -257,7 +257,7 @@ TEST(TestLibrary, TestMeta)
 
             ASSERT("property1-meta0-submenta0", submeta0 != nullptr);
 
-            auto value = std::any_cast<int>(submeta0);
+            auto value = std::any_cast<int>(&submeta0->value);
 
             EXPECT("property1-meta0-submenta0", value != nullptr && *value == -1);
         }
@@ -266,7 +266,7 @@ TEST(TestLibrary, TestMeta)
 
             ASSERT("property1-meta0-submenta1", submeta1 != nullptr);
 
-            auto value = std::any_cast<std::nullptr_t>(submeta1);
+            auto value = std::any_cast<std::nullptr_t>(&submeta1->value);
 
             EXPECT("property1-meta0-submenta1", value != nullptr && *value == nullptr);
         }

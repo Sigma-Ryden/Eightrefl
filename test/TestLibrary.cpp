@@ -392,7 +392,7 @@ bool is_parent_of(rew::type_t const* type, rew::type_t const* child)
     }
     for (auto& [name, parent] : child->reflection->parent.all)
     {
-        if (is_parent_of(type, parent.type))
+        if (is_parent_of(type, parent->type))
         {
             return true;
         }
