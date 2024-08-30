@@ -1,5 +1,7 @@
 #include <RewTestingBase.hpp>
 
+#include <cstdint>
+
 TEST_SPACE()
 {
 
