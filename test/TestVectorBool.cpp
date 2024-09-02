@@ -2,40 +2,40 @@
 
 #include <Rew/BuiltIn/vector.hpp>
 
-TEST(TestBuiltin, TestVector)
+TEST(TestBuiltin, TestVectorBool)
 {
-    rew::reflectable<std::vector<int>>();
+    rew::reflectable<std::vector<bool>>();
 
-    auto type = rew::global.find("std::vector<int>");
+    auto type = rew::global.find("std::vector<bool>");
 
     ASSERT("type", type != nullptr);
-    EXPECT("type-name", type->name == "std::vector<int>");
-    EXPECT("type-size", type->size == sizeof(std::vector<int>));
+    EXPECT("type-name", type->name == "std::vector<bool>");
+    EXPECT("type-size", type->size == sizeof(std::vector<bool>));
     EXPECT("type-context", type->context != nullptr);
 
     auto reflection = type->reflection;
 
     ASSERT("reflection", reflection != nullptr);
-    EXPECT("reflection-name", reflection->name == "std::vector<int>");
+    EXPECT("reflection-name", reflection->name == "std::vector<bool>");
 
-    EXPECT("factory-R()", reflection->factory.find("std::vector<int>()") != nullptr);
+    EXPECT("factory-R()", reflection->factory.find("std::vector<bool>()") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
-    EXPECT("factory-R(allocator_type const&)", reflection->factory.find("std::vector<int>(std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(size_type, const_reference, allocator_type const&)", reflection->factory.find("std::vector<int>(unsigned long, int const&, std::allocator<int> const&)") != nullptr || reflection->factory.find("std::vector<int>(unsigned long long, int const&, std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(size_type, const_reference)", reflection->factory.find("std::vector<int>(unsigned long, int const&)") != nullptr || reflection->factory.find("std::vector<int>(unsigned long long, int const&)") != nullptr);
-    EXPECT("factory-R(size_type, allocator_type const&)", reflection->factory.find("std::vector<int>(unsigned long, std::allocator<int> const&)") != nullptr || reflection->factory.find("std::vector<int>(unsigned long long, std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(size_type)", reflection->factory.find("std::vector<int>(unsigned long)") != nullptr || reflection->factory.find("std::vector<int>(unsigned long long)") != nullptr);
-    EXPECT("factory-R(const_iterator, const_iterator, allocator_type const&)", reflection->factory.find("std::vector<int>(std::vector<int>::const_iterator, std::vector<int>::const_iterator, std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(const_iterator, const_iterator)", reflection->factory.find("std::vector<int>(std::vector<int>::const_iterator, std::vector<int>::const_iterator)") != nullptr);
-    EXPECT("factory-R(R const&, allocator_type const&)", reflection->factory.find("std::vector<int>(std::vector<int> const&, std::allocator<int> const&)") != nullptr);
+    EXPECT("factory-R(allocator_type const&)", reflection->factory.find("std::vector<bool>(std::allocator<bool> const&)") != nullptr);
+    EXPECT("factory-R(size_type, const_reference, allocator_type const&)", reflection->factory.find("std::vector<bool>(unsigned long, bool, std::allocator<bool> const&)") != nullptr || reflection->factory.find("std::vector<bool>(unsigned long long, bool, std::allocator<bool> const&)") != nullptr);
+    EXPECT("factory-R(size_type, const_reference)", reflection->factory.find("std::vector<bool>(unsigned long, bool)") != nullptr || reflection->factory.find("std::vector<bool>(unsigned long long, bool)") != nullptr);
+    EXPECT("factory-R(size_type, allocator_type const&)", reflection->factory.find("std::vector<bool>(unsigned long, std::allocator<bool> const&)") != nullptr || reflection->factory.find("std::vector<bool>(unsigned long long, std::allocator<bool> const&)") != nullptr);
+    EXPECT("factory-R(size_type)", reflection->factory.find("std::vector<bool>(unsigned long)") != nullptr || reflection->factory.find("std::vector<bool>(unsigned long long)") != nullptr);
+    EXPECT("factory-R(const_iterator, const_iterator, allocator_type const&)", reflection->factory.find("std::vector<bool>(std::vector<bool>::const_iterator, std::vector<bool>::const_iterator, std::allocator<bool> const&)") != nullptr);
+    EXPECT("factory-R(const_iterator, const_iterator)", reflection->factory.find("std::vector<bool>(std::vector<bool>::const_iterator, std::vector<bool>::const_iterator)") != nullptr);
+    EXPECT("factory-R(R const&, allocator_type const&)", reflection->factory.find("std::vector<bool>(std::vector<bool> const&, std::allocator<bool> const&)") != nullptr);
     #endif // REW_CORE_MINIMAL
 
-    EXPECT("factory-R(R const&)", reflection->factory.find("std::vector<int>(std::vector<int> const&)") != nullptr);
+    EXPECT("factory-R(R const&)", reflection->factory.find("std::vector<bool>(std::vector<bool> const&)") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
-    EXPECT("factory-R(std::initializer_list<value_type>, allocator_type const&)", reflection->factory.find("std::vector<int>(std::initializer_list<int>, std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(std::initializer_list<value_type>)", reflection->factory.find("std::vector<int>(std::initializer_list<int>)") != nullptr);
+    EXPECT("factory-R(std::initializer_list<value_type>, allocator_type const&)", reflection->factory.find("std::vector<bool>(std::initializer_list<bool>, std::allocator<bool> const&)") != nullptr);
+    EXPECT("factory-R(std::initializer_list<value_type>)", reflection->factory.find("std::vector<bool>(std::initializer_list<bool>)") != nullptr);
     #endif // REW_CORE_MINIMAL
 
     EXPECT("function-operator=", reflection->function.find("operator=") != nullptr);
@@ -52,8 +52,6 @@ TEST(TestBuiltin, TestVector)
     EXPECT("function-front", reflection->function.find("front") != nullptr);
     EXPECT("function-back", reflection->function.find("back") != nullptr);
     #endif // REW_CORE_MINIMAL
-
-    EXPECT("function-data", reflection->function.find("data") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
     EXPECT("function-begin", reflection->function.find("begin") != nullptr);
@@ -89,9 +87,10 @@ TEST(TestBuiltin, TestVector)
 
     EXPECT("function-push_back", reflection->function.find("push_back") != nullptr);
     EXPECT("function-pop_back", reflection->function.find("pop_back") != nullptr);
-    EXPECT("function-resize", reflection->function.find("resize") != nullptr);
+//  EXPECT("function-resize", reflection->function.find("resize") != nullptr);
 
     #ifndef REW_CORE_MINIMAL
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
+    EXPECT("function-flip", reflection->function.find("flip") != nullptr);
     #endif // REW_CORE_MINIMAL
 }

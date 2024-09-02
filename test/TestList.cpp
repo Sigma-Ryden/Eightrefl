@@ -22,10 +22,10 @@ TEST(TestBuiltin, TestList)
 
     #ifndef REW_CORE_MINIMAL
     EXPECT("factory-R(allocator_type const&)", reflection->factory.find("std::list<int>(std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(size_type, const_reference, allocator_type const&)", reflection->factory.find("std::list<int>(unsigned long, int const&, std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(size_type, const_reference)", reflection->factory.find("std::list<int>(unsigned long, int const&)") != nullptr);
-    EXPECT("factory-R(size_type, allocator_type const&)", reflection->factory.find("std::list<int>(unsigned long, std::allocator<int> const&)") != nullptr);
-    EXPECT("factory-R(size_type)", reflection->factory.find("std::list<int>(unsigned long)") != nullptr);
+    EXPECT("factory-R(size_type, const_reference, allocator_type const&)", reflection->factory.find("std::list<int>(unsigned long, int const&, std::allocator<int> const&)") != nullptr || reflection->factory.find("std::list<int>(unsigned long long, int const&, std::allocator<int> const&)") != nullptr);
+    EXPECT("factory-R(size_type, const_reference)", reflection->factory.find("std::list<int>(unsigned long, int const&)") != nullptr || reflection->factory.find("std::list<int>(unsigned long long, int const&)") != nullptr);
+    EXPECT("factory-R(size_type, allocator_type const&)", reflection->factory.find("std::list<int>(unsigned long, std::allocator<int> const&)") != nullptr || reflection->factory.find("std::list<int>(unsigned long long, std::allocator<int> const&)") != nullptr);
+    EXPECT("factory-R(size_type)", reflection->factory.find("std::list<int>(unsigned long)") != nullptr || reflection->factory.find("std::list<int>(unsigned long long)") != nullptr);
     EXPECT("factory-R(const_iterator, const_iterator, allocator_type const&)", reflection->factory.find("std::list<int>(std::list<int>::const_iterator, std::list<int>::const_iterator, std::allocator<int> const&)") != nullptr);
     EXPECT("factory-R(const_iterator, const_iterator)", reflection->factory.find("std::list<int>(std::list<int>::const_iterator, std::list<int>::const_iterator)") != nullptr);
     EXPECT("factory-R(R const&, allocator_type const&)", reflection->factory.find("std::list<int>(std::list<int> const&, std::allocator<int> const&)") != nullptr);

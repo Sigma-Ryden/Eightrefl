@@ -69,8 +69,6 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t SizeValue>), std
     FUNCTION(fill)
     FUNCTION(swap)
     #endif // REW_CORE_MINIMAL
-
-    //FREE_FUNCTION(std::operator==, bool(R const&, R const&))
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_ARRAY_HPP

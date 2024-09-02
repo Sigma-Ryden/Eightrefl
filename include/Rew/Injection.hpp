@@ -2,7 +2,6 @@
 #define REW_INJECTION_HPP
 
 #include <string> // string
-#include <any> // any
 
 #include <functional> // function
 

@@ -22,12 +22,12 @@ TEST(TestBuiltin, TestString)
 
     #ifndef REW_CORE_MINIMAL
     EXPECT("factory-R(allocator_type const&)", reflection->factory.find("std::string(std::allocator<char> const&)") != nullptr);
-    EXPECT("factory-R(size_type, value_type, allocator_type const&)", reflection->factory.find("std::string(unsigned long, char, std::allocator<char> const&)") != nullptr);
-    EXPECT("factory-R(size_type, value_type)", reflection->factory.find("std::string(unsigned long, char)") != nullptr);
-    EXPECT("factory-R(R const&, size_type, size_type, allocator_type const&)", reflection->factory.find("std::string(std::string const&, unsigned long, unsigned long, std::allocator<char> const&)") != nullptr);
-    EXPECT("factory-R(R const&, size_type, size_type)", reflection->factory.find("std::string(std::string const&, unsigned long, unsigned long)") != nullptr);
-    EXPECT("factory-R(value_type const*, size_type, allocator_type const&)", reflection->factory.find("std::string(char const*, unsigned long, std::allocator<char> const&)") != nullptr);
-    EXPECT("factory-R(value_type const*, size_type)", reflection->factory.find("std::string(char const*, unsigned long)") != nullptr);
+    EXPECT("factory-R(size_type, value_type, allocator_type const&)", reflection->factory.find("std::string(unsigned long, char, std::allocator<char> const&)") != nullptr || reflection->factory.find("std::string(unsigned long long, char, std::allocator<char> const&)") != nullptr);
+    EXPECT("factory-R(size_type, value_type)", reflection->factory.find("std::string(unsigned long, char)") != nullptr || reflection->factory.find("std::string(unsigned long long, char)") != nullptr);
+    EXPECT("factory-R(R const&, size_type, size_type, allocator_type const&)", reflection->factory.find("std::string(std::string const&, unsigned long, unsigned long, std::allocator<char> const&)") != nullptr || reflection->factory.find("std::string(std::string const&, unsigned long long, unsigned long long, std::allocator<char> const&)") != nullptr);
+    EXPECT("factory-R(R const&, size_type, size_type)", reflection->factory.find("std::string(std::string const&, unsigned long, unsigned long)") != nullptr || reflection->factory.find("std::string(std::string const&, unsigned long long, unsigned long long)") != nullptr);
+    EXPECT("factory-R(value_type const*, size_type, allocator_type const&)", reflection->factory.find("std::string(char const*, unsigned long, std::allocator<char> const&)") != nullptr || reflection->factory.find("std::string(char const*, unsigned long long, std::allocator<char> const&)") != nullptr);
+    EXPECT("factory-R(value_type const*, size_type)", reflection->factory.find("std::string(char const*, unsigned long)") != nullptr || reflection->factory.find("std::string(char const*, unsigned long long)") != nullptr);
     EXPECT("factory-R(value_type const*, allocator_type const&)", reflection->factory.find("std::string(char const*, std::allocator<char> const&)") != nullptr);
     EXPECT("factory-R(value_type const*)", reflection->factory.find("std::string(char const*)") != nullptr);
     EXPECT("factory-R(const_iterator, const_iterator, allocator_type const&)", reflection->factory.find("std::string(std::string::const_iterator, std::string::const_iterator, std::allocator<char> const&)") != nullptr);

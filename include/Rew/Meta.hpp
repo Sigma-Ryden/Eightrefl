@@ -1,6 +1,11 @@
 #ifndef REW_META_HPP
 #define REW_META_HPP
 
+#include <string> // string
+#include <any> // any
+
+#include <Rew/Attribute.hpp>
+
 #include <Rew/Detail/Macro.hpp>
 
 // .meta(external_name, expression)

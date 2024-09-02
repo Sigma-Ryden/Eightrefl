@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(Rew LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(include)
@@ -80,8 +80,17 @@ add_executable(${PROJECT_NAME}
     test/RewTestingBase.hpp
     test/main.cpp
 
-    test/TestReflectionImpl.cpp
-    test/TestReflectionImpl.hpp
+    test/TestReflectionSelf/TestAttribute.hpp
+    test/TestReflectionSelf/TestParent.cpp
+    test/TestReflectionSelf/TestFactory.cpp
+    test/TestReflectionSelf/TestFunction.cpp
+    test/TestReflectionSelf/TestProperty.cpp
+    test/TestReflectionSelf/TestMeta.cpp
+    test/TestReflectionSelf/TestReflection.cpp
+    test/TestReflectionSelf/TestInjection.cpp
+    test/TestReflectionSelf/TestType.cpp
+    test/TestReflectionSelf/TestRegistry.cpp
+    test/TestReflectionSelf.cpp
 
     test/TestCommon.cpp
     test/TestEnum.cpp
@@ -124,5 +133,6 @@ add_executable(${PROJECT_NAME}
     test/TestUnorderedSet.cpp
     test/TestVariant.cpp
     test/TestVector.cpp
+    test/TestVectorBool.cpp
     test/TestWeakPtr.cpp
 )
