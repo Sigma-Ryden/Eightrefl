@@ -4,12 +4,9 @@
 #include <string> // string
 #include <vector> // vector
 #include <any> // any
-
 #include <functional> // function
 
 #include <Rew/Attribute.hpp>
-#include <Rew/Meta.hpp>
-
 #include <Rew/Utility.hpp>
 
 // .factory<signature>()
@@ -25,6 +22,7 @@ namespace rew
 {
 
 struct type_t;
+struct meta_t;
 
 struct factory_t
 {

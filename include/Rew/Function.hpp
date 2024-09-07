@@ -6,16 +6,12 @@
 #include <string> // string
 #include <vector> // vector
 #include <any> // any
-
 #include <functional> // function
 
 #include <Rew/Attribute.hpp>
-#include <Rew/Meta.hpp>
-
 #include <Rew/Utility.hpp>
 
-#include <Rew/Detail/Macro.hpp>
-
+#include <Rew/Detail/Macro.hpp> // REW_DEPAREN
 
 // .function<R, signature>(external_name, &scope::internal_name)
 #define CUSTOM_FUNCTION(scope, external_name, internal_name, ...)                                       \
@@ -41,6 +37,7 @@ namespace rew
 {
 
 struct type_t;
+struct meta_t;
 
 struct function_t
 {

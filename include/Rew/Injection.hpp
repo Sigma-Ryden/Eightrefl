@@ -2,7 +2,6 @@
 #define REW_INJECTION_HPP
 
 #include <string> // string
-
 #include <functional> // function
 
 #include <Rew/Reflection.hpp>
@@ -18,6 +17,7 @@ struct parent_t;
 struct factory_t;
 struct function_t;
 struct property_t;
+struct meta_t;
 
 struct injectable_t
 {

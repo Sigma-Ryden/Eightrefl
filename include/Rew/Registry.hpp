@@ -3,7 +3,6 @@
 
 #include <string> // string
 #include <unordered_map> // unordered_map
-
 #include <typeindex> // type_index
 
 #include <Rew/Type.hpp>
@@ -90,8 +89,7 @@ public:
     }
 };
 
-template <>
-inline auto registry_t::context<std::any>()
+template <> inline auto registry_t::context<std::any>()
 {
     return [](std::any& object)
     {
@@ -99,14 +97,12 @@ inline auto registry_t::context<std::any>()
     };
 }
 
-template <>
-inline auto registry_t::context<void>()
+template <> inline auto registry_t::context<void>()
 {
     return nullptr;
 }
 
-template <>
-inline auto registry_t::size<void>()
+template <> inline auto registry_t::size<void>()
 {
     return std::size_t(0);
 }

@@ -3,19 +3,15 @@
 
 #include <string> // string
 #include <any> // any
-
 #include <utility> // pair
 #include <functional> // function
 #include <memory> // addressof
-
 #include <type_traits> // is_reference_v
 
 #include <Rew/Attribute.hpp>
-#include <Rew/Meta.hpp>
-
 #include <Rew/Utility.hpp>
 
-#include <Rew/Detail/Macro.hpp>
+#include <Rew/Detail/Macro.hpp> // REW_DEPAREN
 
 // .property<R, type>(external_name, &scope::internal_iname, &scope::ìnternal_oname)
 #define CUSTOM_PROPERTY(scope, external_name, internal_iname, internal_oname, ...)                      \
@@ -42,6 +38,7 @@ namespace rew
 {
 
 struct type_t;
+struct meta_t;
 
 struct property_t
 {

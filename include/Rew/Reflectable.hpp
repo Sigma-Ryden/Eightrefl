@@ -5,6 +5,11 @@
 
 #include <Rew/Registry.hpp>
 #include <Rew/Injection.hpp>
+#include <Rew/Parent.hpp>
+#include <Rew/Factory.hpp>
+#include <Rew/Function.hpp>
+#include <Rew/Property.hpp>
+#include <Rew/Meta.hpp>
 
 #include <Rew/Detail/Meta.hpp>
 #include <Rew/Detail/Macro.hpp>

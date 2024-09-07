@@ -3,11 +3,9 @@
 
 #include <string> // string
 #include <any> // any
-
 #include <functional> // function
 
 #include <Rew/Attribute.hpp>
-#include <Rew/Meta.hpp>
 
 // .parent<R, type>()
 #define PARENT(...)                                                                                     \
@@ -21,6 +19,7 @@ namespace rew
 {
 
 struct type_t;
+struct meta_t;
 
 struct parent_t
 {

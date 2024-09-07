@@ -5,16 +5,15 @@
 
 #include <string> // string
 #include <any> // any
-
 #include <functional> // function
 
 #include <Rew/Attribute.hpp>
-#include <Rew/Injection.hpp>
 
 namespace rew
 {
 
 struct reflection_t;
+struct injection_t;
 
 struct type_t
 {

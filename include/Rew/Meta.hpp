@@ -6,7 +6,7 @@
 
 #include <Rew/Attribute.hpp>
 
-#include <Rew/Detail/Macro.hpp>
+#include <Rew/Detail/Macro.hpp> // REW_DEPAREN
 
 // .meta(external_name, expression)
 #define CUSTOM_META(touch_expression, meta_pointer, external_name, ...)                                 \

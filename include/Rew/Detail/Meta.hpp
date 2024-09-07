@@ -2,7 +2,6 @@
 #define REW_DETAIL_META_HPP
 
 #include <type_traits> // conjunction, disjunction, false_type, true_type, void_t
-
 #include <utility> // pair
 
 template <typename ReflectableType, typename enable = void>
