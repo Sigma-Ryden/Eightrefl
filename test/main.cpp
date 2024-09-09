@@ -1,4 +1,4 @@
-#include <RewTestingBase.hpp>
+#include <Automation/Core.hpp>
 
 int main()
 {
