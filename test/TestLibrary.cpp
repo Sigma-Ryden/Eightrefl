@@ -864,3 +864,354 @@ TEST(TestLibrary, TestConstReferenceQualifiedFunction)
         EXPECT("function-with_const_reference_qualifier", with_const_reference_qualifier != nullptr && with_const_reference_qualifier->find("void() const&") != nullptr);
     }
 }
+
+
+TEST_SPACE()
+{
+
+struct TestObjectContextStruct
+{
+    void Function0(TestObjectContextStruct*) {}
+    void Function0(TestObjectContextStruct const*) {}
+    void Function0(TestObjectContextStruct&) {}
+    void Function0(TestObjectContextStruct const& ) {}
+    void Function1(TestObjectContextStruct* const) {}
+    void Function2(TestObjectContextStruct const* const) {}
+    void Function3(TestObjectContextStruct) {}
+
+    TestObjectContextStruct* Function4() { return this; }
+    TestObjectContextStruct const* Function5() { return this; }
+    TestObjectContextStruct& Function6() { return *this; }
+    TestObjectContextStruct const& Function7() { return *this; }
+    TestObjectContextStruct* const Function8() { return this; }
+    TestObjectContextStruct const* const Function9() { return this; }
+    TestObjectContextStruct Function10() { return *this; }
+
+    static void StaticMemberFunction() {}
+};
+
+void NonMemberFunction() {}
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestObjectContextStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestObjectContextStruct)
+    FACTORY(R())
+
+    FUNCTION(Function0, void(R*))
+    FUNCTION(Function0, void(R const*))
+    FUNCTION(Function0, void(R&))
+    FUNCTION(Function0, void(R const&))
+    FUNCTION(Function1)
+    FUNCTION(Function2)
+    FUNCTION(Function3)
+
+    FUNCTION(Function4)
+    FUNCTION(Function5)
+    FUNCTION(Function6)
+    FUNCTION(Function7)
+    FUNCTION(Function8)
+    FUNCTION(Function9)
+    FUNCTION(Function10)
+
+    FUNCTION(StaticMemberFunction)
+    FREE_FUNCTION(NonMemberFunction)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestTypeContext)
+{
+    auto type = rew::global.find("TestObjectContextStruct");
+
+    ASSERT("type", type != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+
+    auto factory = reflection->factory.find("TestObjectContextStruct()");
+
+    ASSERT("factory", factory != nullptr);
+
+    auto object = factory->call({});
+
+    ASSERT("object", object.has_value());
+
+    std::any handle_object_context = &std::any_cast<TestObjectContextStruct&>(object);
+    std::any object_context = type->context(object); // same as std::addressof(std::any_cast<TestObjectContextStruct&>(object))
+
+    EXPECT("object-context", std::any_cast<TestObjectContextStruct*>(handle_object_context) == std::any_cast<TestObjectContextStruct*>(object_context));
+
+    auto other_object = factory->call({});
+    auto other_object_context = type->context(object);
+
+    {
+        auto function0 = reflection->function.find("Function0");
+
+        ASSERT("function0", function0 != nullptr);
+        {
+            auto function0_with_pointer_arg = function0->find("void(TestObjectContextStruct*)");
+
+            ASSERT("function0-with_pointer_arg", function0_with_pointer_arg != nullptr);
+
+            auto success = true;
+            try { function0_with_pointer_arg->call(object_context, {other_object_context}); }
+            catch(...) { success = false; }
+
+            EXPECT("function0-with_pointer_arg-call", success);
+        }
+        {
+            auto function0_with_pointer_to_const_arg = function0->find("void(TestObjectContextStruct const*)");
+
+            ASSERT("function0-with_pointer_to_const_arg", function0_with_pointer_to_const_arg != nullptr);
+
+            auto success = true;
+            try { function0_with_pointer_to_const_arg->call(object_context, {other_object_context}); }
+            catch(...) { success = false; }
+
+            EXPECT("function0-with_pointer_to_const_arg-call", success);
+        }
+        {
+            auto function0_with_reference_arg = function0->find("void(TestObjectContextStruct&)");
+
+            ASSERT("function0-with_reference_arg", function0_with_reference_arg != nullptr);
+
+            auto success = true;
+            try { function0_with_reference_arg->call(object_context, {other_object_context}); }
+            catch(...) { success = false; }
+
+            EXPECT("function0-with_reference_arg-call", success);
+        }
+        {
+            auto function0_with_reference_to_const_arg = function0->find("void(TestObjectContextStruct const&)");
+
+            ASSERT("function0-with_reference_to_const_arg", function0_with_reference_to_const_arg != nullptr);
+
+            auto success = true;
+            try { function0_with_reference_to_const_arg->call(object_context, {other_object_context}); }
+            catch(...) { success = false; }
+
+            EXPECT("function0-with_reference_to_const_arg-call", success);
+        }
+    }
+    {
+        auto function1 = reflection->function.find("Function1");
+
+        ASSERT("function1", function1 != nullptr);
+        {
+            // TestObjectContextStruct* const == TestObjectContextStruct*
+            auto function1_with_const_pointer_arg = function1->find("void(TestObjectContextStruct*)");
+
+            ASSERT("function1-with_const_pointer_arg", function1_with_const_pointer_arg != nullptr);
+
+            auto success = true;
+            try { function1_with_const_pointer_arg->call(object_context, {other_object_context}); }
+            catch(...) { success = false; }
+
+            EXPECT("function1-with_const_pointer_arg-call", success);
+        }
+    }
+    {
+        auto function2 = reflection->function.find("Function2");
+
+        ASSERT("function2", function2 != nullptr);
+        {
+            // TestObjectContextStruct const* const == TestObjectContextStruct const*
+            auto function2_with_const_pointer_to_const_arg = function2->find("void(TestObjectContextStruct const*)");
+
+            ASSERT("function2-with_const_pointer_to_const_arg", function2_with_const_pointer_to_const_arg != nullptr);
+
+            auto success = true;
+            try { function2_with_const_pointer_to_const_arg->call(object_context, {other_object_context}); }
+            catch(...) { success = false; }
+
+            EXPECT("function0-with_const_pointer_to_const_arg-call", success);
+        }
+    }
+    {
+        auto function3 = reflection->function.find("Function3");
+
+        ASSERT("function3", function3 != nullptr);
+        {
+            auto function3_with_value_arg = function3->find("void(TestObjectContextStruct)");
+
+            ASSERT("function3-with_value_arg", function3_with_value_arg != nullptr);
+
+            auto success = true;
+            try { function3_with_value_arg->call(object_context, {other_object}); }
+            catch(...) { success = false; }
+
+            EXPECT("function3-with_value_arg-call", success);
+        }
+    }
+
+    {
+        auto function4 = reflection->function.find("Function4");
+
+        ASSERT("function4", function4 != nullptr);
+        {
+            auto function4_with_return_pointer = function4->find("TestObjectContextStruct*()");
+
+            ASSERT("function4-with_return_pointer", function4_with_return_pointer != nullptr);
+
+            std::any result;
+
+            auto success = true;
+            try { result = function4_with_return_pointer->call(object_context, {}); }
+            catch(...) { success = false; }
+
+            ASSERT("function4-with_return_pointer-call", success);
+            EXPECT("function4-with_return_pointer-result", std::any_cast<TestObjectContextStruct*>(object_context) == std::any_cast<TestObjectContextStruct*>(result));
+        }
+    }
+    {
+        auto function5 = reflection->function.find("Function5");
+
+        ASSERT("function5", function5 != nullptr);
+        {
+            auto function5_with_return_pointer_to_const = function5->find("TestObjectContextStruct const*()");
+
+            ASSERT("function5-with_return_pointer_to_const", function5_with_return_pointer_to_const != nullptr);
+
+            std::any result;
+
+            auto success = true;
+            try { result = function5_with_return_pointer_to_const->call(object_context, {}); }
+            catch(...) { success = false; }
+
+            ASSERT("function5-with_return_pointer_to_const-call", success);
+            EXPECT("function5-with_return_pointer_to_const-result", std::any_cast<TestObjectContextStruct*>(object_context) == std::any_cast<TestObjectContextStruct*>(result));
+        }
+    }
+    {
+        auto function6 = reflection->function.find("Function6");
+
+        ASSERT("function6", function6 != nullptr);
+        {
+            auto function6_with_return_reference = function6->find("TestObjectContextStruct&()");
+
+            ASSERT("function6-with_return_reference", function6_with_return_reference != nullptr);
+
+            std::any result;
+
+            auto success = true;
+            try { result = function6_with_return_reference->call(object_context, {}); }
+            catch(...) { success = false; }
+
+            ASSERT("function6-with_return_reference-call", success);
+            EXPECT("function6-with_return_reference-result", std::any_cast<TestObjectContextStruct*>(object_context) == std::any_cast<TestObjectContextStruct*>(result));
+        }
+    }
+    {
+        auto function7 = reflection->function.find("Function7");
+
+        ASSERT("function7", function7 != nullptr);
+        {
+            auto function7_with_return_reference_to_const = function7->find("TestObjectContextStruct const&()");
+
+            ASSERT("function7-with_return_reference_to_const", function7_with_return_reference_to_const != nullptr);
+
+            std::any result;
+
+            auto success = true;
+            try { result = function7_with_return_reference_to_const->call(object_context, {}); }
+            catch(...) { success = false; }
+
+            ASSERT("function7-with_return_reference_to_const-call", success);
+            EXPECT("function7-with_return_reference_to_const-result", std::any_cast<TestObjectContextStruct*>(object_context) == std::any_cast<TestObjectContextStruct*>(result));
+        }
+    }
+    {
+        auto function8 = reflection->function.find("Function8");
+
+        ASSERT("function8", function8 != nullptr);
+        {
+            auto function8_with_return_const_pointer = function8->find("TestObjectContextStruct* const()");
+
+            ASSERT("function8-with_return_const_pointer", function8_with_return_const_pointer != nullptr);
+
+            std::any result;
+
+            auto success = true;
+            try { result = function8_with_return_const_pointer->call(object_context, {}); }
+            catch(...) { success = false; }
+
+            ASSERT("function8-with_return_const_pointer-call", success);
+            EXPECT("function6-with_return_const_pointer-result", std::any_cast<TestObjectContextStruct*>(object_context) == std::any_cast<TestObjectContextStruct*>(result));
+        }
+    }
+    {
+        auto function9 = reflection->function.find("Function9");
+
+        ASSERT("function9", function9 != nullptr);
+        {
+            auto function9_with_return_const_pointer_to_const = function9->find("TestObjectContextStruct const* const()");
+
+            ASSERT("function9-with_return_const_pointer_to_const", function9_with_return_const_pointer_to_const != nullptr);
+
+            std::any result;
+
+            auto success = true;
+            try { result = function9_with_return_const_pointer_to_const->call(object_context, {}); }
+            catch(...) { success = false; }
+
+            ASSERT("function9-with_return_const_pointer_to_const-call", success);
+            EXPECT("function9-with_return_const_pointer_to_const-result", std::any_cast<TestObjectContextStruct*>(object_context) == std::any_cast<TestObjectContextStruct*>(result));
+        }
+    }
+    {
+        auto function10 = reflection->function.find("Function10");
+
+        ASSERT("function10", function10 != nullptr);
+        {
+            auto function10_with_return_value = function10->find("TestObjectContextStruct()");
+
+            ASSERT("function10-with_return_value", function10_with_return_value != nullptr);
+
+            std::any result;
+
+            auto success = true;
+            try { result = function10_with_return_value->call(object_context, {}); }
+            catch(...) { success = false; }
+
+            ASSERT("function10-with_return_value-call", success);
+            EXPECT("function10-with_return_value-result", std::any_cast<TestObjectContextStruct*>(object_context) != &std::any_cast<TestObjectContextStruct&>(result));
+        }
+    }
+
+    {
+        auto static_member_function = reflection->function.find("StaticMemberFunction");
+
+        ASSERT("static_member_function", static_member_function != nullptr);
+        {
+            auto static_member_function_without_args = static_member_function->find("void()");
+
+            ASSERT("static_member_function-without_args", static_member_function_without_args != nullptr);
+
+            std::any no_context;
+            auto success = true;
+            try { static_member_function_without_args->call(no_context, {}); }
+            catch(...) { success = false; }
+
+            EXPECT("static_member_function-without_args-call", success);
+        }
+    }
+    {
+        auto non_member_function = reflection->function.find("StaticMemberFunction");
+
+        ASSERT("non_member_function", non_member_function != nullptr);
+        {
+            auto non_member_function_without_args = non_member_function->find("void()");
+
+            ASSERT("non_member_function-without_args", non_member_function_without_args != nullptr);
+
+            std::any no_context;
+            auto success = true;
+            try { non_member_function_without_args->call(no_context, {}); }
+            catch(...) { success = false; }
+
+            EXPECT("non_member_function-without_args-call", success);
+        }
+    }
+}
