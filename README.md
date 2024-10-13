@@ -7,6 +7,8 @@ Use macros for code generation or read the documentation and write your own code
 
 A library implemented purely in C++17.
 
+See last stable library version [here](https://github.com/Sigma-Ryden/Rew/releases).
+
 ## Functional: 
 
 ### Reflection of common types:
