@@ -28,18 +28,18 @@ TEMPLATE_REFLECTABLE(template <typename ElementType>, std::weak_ptr<ElementType>
     FUNCTION(operator=, R&(std::shared_ptr<typename R::element_type> const&))
     FUNCTION(reset)
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
 //  FUNCTION(swap)
     FUNCTION(use_count)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(expired)
     FUNCTION(lock)
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
 //  FUNCTION(owner_before, bool(R const&) const)
 //  FUNCTION(owner_before, bool(std::shared_ptr<typename R::element_type> const&) const)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_WEAK_PTR_HPP

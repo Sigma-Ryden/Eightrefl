@@ -35,27 +35,27 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::complex<ValueType>)
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(operator+=, R&(typename xxrew_std_complex_pass_value<R>::type))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(operator+=, R&(R const&))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(operator-=, R&(typename xxrew_std_complex_pass_value<R>::type))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(operator-=, R&(R const&))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(operator*=, R&(typename xxrew_std_complex_pass_value<R>::type))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(operator*=, R&(R const&))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(operator/=, R&(typename xxrew_std_complex_pass_value<R>::type))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(operator/=, R&(R const&))
     PROPERTY(real)

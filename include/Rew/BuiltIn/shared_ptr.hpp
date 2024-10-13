@@ -12,6 +12,10 @@ TEMPLATE_REFLECTABLE_CLEAN
     std::shared_ptr<ElementType>, std::shared_ptr<rew::cleanof<ElementType>>
 )
 
+REFLECTABLE_DECLARATION(std::shared_ptr<void>)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ElementType>, std::shared_ptr<ElementType>)
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME("std::shared_ptr<" + rew::nameof<ElementType>() + ">")
@@ -20,27 +24,27 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE(template <typename ElementType>, std::shared_ptr<ElementType>)
     FACTORY(R())
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FACTORY(R(std::nullptr_t))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FACTORY(R(typename R::element_type*))
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(reset, void())
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(reset, void(typename R::element_type*))
 //  FUNCTION(swap, void(R&))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(get)
     FUNCTION(operator*)
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(operator->)
     FUNCTION(use_count)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(operator bool)
 REFLECTABLE_INIT()

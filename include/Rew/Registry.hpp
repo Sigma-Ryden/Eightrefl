@@ -8,61 +8,24 @@
 #include <Rew/Type.hpp>
 #include <Rew/Reflection.hpp>
 
-#define REW_REGISTRY_RESERVE_SIZE std::size_t(1024)
+#ifndef REW_REGISTRY_RESERVE_SIZE
+    #define REW_REGISTRY_RESERVE_SIZE std::size_t(1024)
+#endif // REW_REGISTRY_RESERVE_SIZE
 
 namespace rew
 {
 
-class registry_t
+struct registry_t
 {
-public:
     std::unordered_map<std::string, type_t*> all;
     std::unordered_map<std::type_index, type_t*> rtti_all;
 
-public:
-    registry_t()
-    {
-        all.reserve(REW_REGISTRY_RESERVE_SIZE);
-    }
+    registry_t();
+    ~registry_t();
 
-    ~registry_t()
-    {
-        for (auto& [name, meta] : all)
-        {
-            delete meta->reflection;
-            delete meta;
-        }
-    }
+    type_t* find(std::string const& name) const;
+    type_t* find(std::type_index typeindex) const;
 
-    type_t* find(std::string const& name) const
-    {
-        auto it = all.find(name);
-        return it != all.end() ? it->second : nullptr;
-    }
-
-    type_t* find(std::type_index typeindex) const
-    {
-        auto it = rtti_all.find(typeindex);
-        return it != rtti_all.end() ? it->second : nullptr;
-    }
-
-private:
-    template <typename ReflectableType>
-    static auto context()
-    {
-        return [](std::any& object)
-        {
-            return std::addressof(std::any_cast<ReflectableType&>(object));
-        };
-    }
-
-    template <typename ReflectableType>
-    static auto size()
-    {
-        return sizeof(ReflectableType);
-    }
-
-public:
     template <typename ReflectableType, typename DirtyReflectableType = ReflectableType>
     type_t* add(std::string const& name)
     {
@@ -73,8 +36,9 @@ public:
         {
             name,
             new reflection_t { name },
-            size<ReflectableType>(),
-            context<ReflectableType>()
+            this,
+            type_size<ReflectableType>(),
+            handler_type_context<ReflectableType>()
         };
 
         auto& rtti_type = rtti_all[typeid(ReflectableType)];
@@ -85,29 +49,13 @@ public:
             rtti_all.emplace(typeid(DirtyReflectableType), type);
         }
 
+        ::xxrew_type<DirtyReflectableType> = type;
+
         return type;
     }
 };
 
-template <> inline auto registry_t::context<std::any>()
-{
-    return [](std::any& object)
-    {
-        return std::addressof(object);
-    };
-}
-
-template <> inline auto registry_t::context<void>()
-{
-    return nullptr;
-}
-
-template <> inline auto registry_t::size<void>()
-{
-    return std::size_t(0);
-}
-
-inline registry_t global;
+extern registry_t global;
 
 } // namespace rew
 

@@ -40,19 +40,19 @@ TEST(TestBuiltin, TestOptional)
 
     EXPECT("function-operator=", reflection->function.find("operator=") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     EXPECT("function-operator->", reflection->function.find("operator->") != nullptr);
     EXPECT("function-operator*", reflection->function.find("operator*") != nullptr);
     EXPECT("function-operator bool", reflection->function.find("operator bool") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 
     EXPECT("function-has_value", reflection->function.find("has_value") != nullptr);
     EXPECT("function-value", reflection->function.find("value") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     EXPECT("function-value_or", reflection->function.find("value_or") != nullptr);
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 
     EXPECT("function-reset", reflection->function.find("reset") != nullptr);
     EXPECT("function-emplace", reflection->function.find("emplace") != nullptr);

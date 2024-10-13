@@ -22,9 +22,9 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::reference_wrapper<Value
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     NAMED_FUNCTION(("operator " + rew::nameof<ValueType&>()), operator rew::cleanof<ValueType>&)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(get)
 REFLECTABLE_INIT()

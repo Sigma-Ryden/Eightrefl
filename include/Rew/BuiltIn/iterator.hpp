@@ -3,6 +3,7 @@
 
 #include <Rew/Reflectable.hpp>
 
+#ifdef REW_FULLY_ENABLE
 TEMPLATE_REFLECTABLE_USING
 (
     template <class StdContainerType>, std_const_iterator,
@@ -91,5 +92,6 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_local_iterator<StdContainerType>)
 REFLECTABLE_INIT()
+#endif // REW_FULLY_ENABLE
 
 #endif // REW_BUILTIN_ITERATOR_HPP

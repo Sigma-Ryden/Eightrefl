@@ -25,15 +25,15 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE(template <class StdBitsetType>, std_bitset_reference<StdBitsetType>)
     FUNCTION(operator=, R&(bool))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(operator=, R&(R const&))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(operator bool)
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(operator~)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(flip, R&())
 REFLECTABLE_INIT()
@@ -48,29 +48,29 @@ TEMPLATE_REFLECTABLE(template <std::size_t SizeValue>, std::bitset<SizeValue>)
     FACTORY(R())
     FACTORY(R(R const&))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FACTORY(R(unsigned long))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FACTORY(R(unsigned long long))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FACTORY(R(std::string const&, std_size_t))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FACTORY(R(std::string const&))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FACTORY(R(char const*, std_size_t))
     FACTORY(R(char const*))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(operator=, R&(R const&))
     FUNCTION(operator==)
     FUNCTION(operator[], bool(std_size_t) const)
     FUNCTION(operator[], std_bitset_reference<R>(std_size_t))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(test)
     FUNCTION(all)
     FUNCTION(any)
@@ -86,26 +86,26 @@ TEMPLATE_REFLECTABLE(template <std::size_t SizeValue>, std::bitset<SizeValue>)
     FUNCTION(operator>>)
     FUNCTION(operator>>=)
     FUNCTION(set, R&())
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(set, R&(std_size_t, bool))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(reset, R&())
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(reset, R&(std_size_t))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(flip, R&())
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(flip, R&(std_size_t))
     FUNCTION(to_string, std::string(char, char) const)
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(to_ulong)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(to_ullong)
 REFLECTABLE_INIT()

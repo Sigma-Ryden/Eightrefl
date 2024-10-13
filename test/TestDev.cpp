@@ -1,12 +1,13 @@
 #include <RewTestingBase.hpp>
 
-#include <TestReflectionSelf/TestAttribute.hpp>
+#ifdef REW_DEV_ENABLE
+#include <Rew/Dev.hpp>
 
-TEST(TestReflectionSelf, TestAttribute)
+TEST(TestDev, TestAttribute)
 {
     rew::reflectable<rew::attribute_t<int>>();
 
-    auto type = rew::global.find("rew::attribute_t<int>");
+    auto type = rew::dev.find("rew::attribute_t<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "rew::attribute_t<int>");
@@ -23,9 +24,9 @@ TEST(TestReflectionSelf, TestAttribute)
     EXPECT("property-all", reflection->property.find("all") != nullptr);
 }
 
-TEST(TestReflectionSelf, TestParent)
+TEST(TestDev, TestParent)
 {
-    auto type = rew::global.find("rew::parent_t");
+    auto type = rew::dev.find("rew::parent_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "rew::parent_t");
@@ -43,9 +44,9 @@ TEST(TestReflectionSelf, TestParent)
     EXPECT("property-meta", reflection->property.find("meta") != nullptr);
 }
 
-TEST(TestReflectionSelf, TestFactory)
+TEST(TestDev, TestFactory)
 {
-    auto type = rew::global.find("rew::factory_t");
+    auto type = rew::dev.find("rew::factory_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "rew::factory_t");
@@ -63,9 +64,9 @@ TEST(TestReflectionSelf, TestFactory)
     EXPECT("property-meta", reflection->property.find("meta") != nullptr);
 }
 
-TEST(TestReflectionSelf, TestFunction)
+TEST(TestDev, TestFunction)
 {
-    auto type = rew::global.find("rew::function_t");
+    auto type = rew::dev.find("rew::function_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "rew::function_t");
@@ -85,9 +86,9 @@ TEST(TestReflectionSelf, TestFunction)
     EXPECT("property-meta", reflection->property.find("meta") != nullptr);
 }
 
-TEST(TestReflectionSelf, TestProperty)
+TEST(TestDev, TestProperty)
 {
-    auto type = rew::global.find("rew::property_t");
+    auto type = rew::dev.find("rew::property_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "rew::property_t");
@@ -107,9 +108,9 @@ TEST(TestReflectionSelf, TestProperty)
     EXPECT("property-meta", reflection->property.find("meta") != nullptr);
 }
 
-TEST(TestReflectionSelf, TestMeta)
+TEST(TestDev, TestMeta)
 {
-    auto type = rew::global.find("rew::meta_t");
+    auto type = rew::dev.find("rew::meta_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "rew::meta_t");
@@ -126,9 +127,9 @@ TEST(TestReflectionSelf, TestMeta)
     EXPECT("property-meta", reflection->property.find("meta") != nullptr);
 }
 
-TEST(TestReflectionSelf, TestReflection)
+TEST(TestDev, TestReflection)
 {
-    auto type = rew::global.find("rew::reflection_t");
+    auto type = rew::dev.find("rew::reflection_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "rew::reflection_t");
@@ -148,9 +149,9 @@ TEST(TestReflectionSelf, TestReflection)
     EXPECT("property-meta", reflection->property.find("meta") != nullptr);
 }
 
-TEST(TestReflectionSelf, TestInjection)
+TEST(TestDev, TestInjection)
 {
-    auto type = rew::global.find("rew::injection_t");
+    auto type = rew::dev.find("rew::injection_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "rew::injection_t");
@@ -166,9 +167,9 @@ TEST(TestReflectionSelf, TestInjection)
     EXPECT("property-call", reflection->property.find("call") != nullptr);
 }
 
-TEST(TestReflectionSelf, TestType)
+TEST(TestDev, TestType)
 {
-    auto type = rew::global.find("rew::type_t");
+    auto type = rew::dev.find("rew::type_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "rew::type_t");
@@ -182,14 +183,15 @@ TEST(TestReflectionSelf, TestType)
 
     EXPECT("property-name", reflection->property.find("name") != nullptr);
     EXPECT("property-reflection", reflection->property.find("reflection") != nullptr);
+    EXPECT("property-registry", reflection->property.find("registry") != nullptr);
     EXPECT("property-size", reflection->property.find("size") != nullptr);
     EXPECT("property-context", reflection->property.find("context") != nullptr);
     EXPECT("property-injection", reflection->property.find("injection") != nullptr);
 }
 
-TEST(TestReflectionSelf, TestRegistry)
+TEST(TestDev, TestRegistry)
 {
-    auto type = rew::global.find("rew::registry_t");
+    auto type = rew::dev.find("rew::registry_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "rew::registry_t");
@@ -206,3 +208,4 @@ TEST(TestReflectionSelf, TestRegistry)
     EXPECT("property-all", reflection->property.find("all") != nullptr);
     EXPECT("property-rtti_all", reflection->property.find("rtti_all") != nullptr);
 }
+#endif // REW_DEV_ENABLE

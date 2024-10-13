@@ -10,9 +10,6 @@ REFLECTABLE_DECLARATION(std::nullopt_t)
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
-REFLECTABLE(std::nullopt_t)
-REFLECTABLE_INIT()
-
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -33,22 +30,22 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::optional<ValueType>)
     FUNCTION(operator=, R&(std::nullopt_t))
     FUNCTION(operator=, R&(R const&))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(operator->, typename R::value_type const*() const)
     FUNCTION(operator->, typename R::value_type*())
     FUNCTION(operator*, typename R::value_type const&() const&)
     FUNCTION(operator*, typename R::value_type&()&)
     FUNCTION(operator bool)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(has_value)
     FUNCTION(value, typename R::value_type&()&)
     FUNCTION(value, typename R::value_type const&() const&)
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(value_or, typename R::value_type(typename R::value_type const&) const&)
     FUNCTION(swap)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(reset)
     FUNCTION(emplace, typename R::value_type&(typename R::value_type const&))

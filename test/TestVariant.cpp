@@ -24,8 +24,8 @@ TEST(TestBuiltin, TestVariant)
     EXPECT("function-operator=", reflection->function.find("operator=") != nullptr);
     EXPECT("function-index", reflection->function.find("index") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     EXPECT("function-valueless_by_exception", reflection->function.find("valueless_by_exception") != nullptr);
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 }

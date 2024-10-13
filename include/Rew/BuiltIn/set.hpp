@@ -9,12 +9,12 @@
 // default allocator for set, multiset
 #include <Rew/BuiltIn/allocator.hpp>
 
-#ifndef REW_CORE_MINIMAL
+#ifdef REW_FULLY_ENABLE
 // as function argument/result type
 #include <Rew/BuiltIn/initializer_list.hpp>
 #include <Rew/BuiltIn/iterator.hpp>
 #include <Rew/BuiltIn/pair.hpp>
-#endif // REW_CORE_MINIMAL
+#endif // REW_FULLY_ENABLE
 
 //less - as comparator
 #include <Rew/BuiltIn/functional.hpp>
@@ -98,25 +98,25 @@ struct xxrew_is_any_std_ordered_set<std::multiset<KeyType, ComparatorType, Alloc
 CONDITIONAL_REFLECTABLE(xxrew_is_any_std_ordered_set<R>::value)
     FACTORY(R())
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FACTORY(R(typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(typename R::key_compare const&))
     FACTORY(R(typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::allocator_type const&))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FACTORY(R(R const&))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FACTORY(R(R const&, typename R::allocator_type const&))
     FACTORY(R(std::initializer_list<typename R::value_type>, typename R::key_compare const&, typename R::allocator_type const&))
     FACTORY(R(std::initializer_list<typename R::value_type>))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(operator=, R&(R const&))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
     FUNCTION(get_allocator)
     FUNCTION(begin, std_const_iterator<R>() const)
@@ -127,18 +127,18 @@ CONDITIONAL_REFLECTABLE(xxrew_is_any_std_ordered_set<R>::value)
     FUNCTION(crbegin, std_const_reverse_iterator<R>() const)
     FUNCTION(rend, std_const_reverse_iterator<R>() const)
     FUNCTION(crend, std_const_reverse_iterator<R>() const)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(empty)
     FUNCTION(size)
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(max_size)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(clear)
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(insert, std::pair<std_iterator<R>, bool>(typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_iterator<R>, typename R::const_reference))
     FUNCTION(insert, void(std_const_iterator<R>, std_const_iterator<R>))
@@ -149,21 +149,21 @@ CONDITIONAL_REFLECTABLE(xxrew_is_any_std_ordered_set<R>::value)
     FUNCTION(swap)
 //  FUNCTION(extract, typename R::node_type(std_const_iterator<R>))
 //  FUNCTION(extract, typename R::node_type(typename R::key_type const&))
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(merge, void(R&))
     FUNCTION(count, typename R::size_type(typename R::key_type const&) const)
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(find, std_iterator<R>(typename R::key_type const&))
     FUNCTION(find, std_const_iterator<R>(typename R::key_type const&) const)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
 #if __cplusplus >= 202002L
     FUNCTION(contains, bool(typename R::key_type const&) const)
 #endif // if
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(equal_range, std::pair<std_iterator<R>, std_iterator<R>>(typename R::key_type const&))
     FUNCTION(equal_range, std::pair<std_const_iterator<R>, std_const_iterator<R>>(typename R::key_type const&) const)
     FUNCTION(lower_bound, std_iterator<R>(typename R::key_type const&))
@@ -172,7 +172,7 @@ CONDITIONAL_REFLECTABLE(xxrew_is_any_std_ordered_set<R>::value)
     FUNCTION(upper_bound, std_const_iterator<R>(typename R::key_type const&) const)
     FUNCTION(key_comp)
 //  FUNCTION(value_comp)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_SET_HPP

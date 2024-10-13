@@ -6,16 +6,20 @@
 #include <Rew/Reflectable.hpp>
 #include <Rew/Common.hpp>
 
-#ifndef REW_CORE_MINIMAL
+#ifdef REW_FULLY_ENABLE
 // as function return type
 #include <Rew/BuiltIn/typeinfo.hpp>
-#endif // REW_CORE_MINIMAL
+#endif // REW_FULLY_ENABLE
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
     (std::function<ReturnType(ArgumentTypes...)>), std::function<rew::cleanof<ReturnType(ArgumentTypes...)>>
 )
+
+REFLECTABLE_DECLARATION(std::function<void()>)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
@@ -37,16 +41,16 @@ TEMPLATE_REFLECTABLE
     FUNCTION(operator=, R&(R const&))
     FUNCTION(operator=, R&(std::nullptr_t))
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(swap)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 
     FUNCTION(operator bool)
     FUNCTION(operator())
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(target_type)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_FUNCTION_HPP

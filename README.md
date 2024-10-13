@@ -5,7 +5,7 @@ The library has a small code base, but enough to use it.
 
 Use macros for code generation or read the documentation and write your own code. 
 
-Is a header-only library implemented purely in C++17. 
+A library implemented purely in C++17.
 
 See last stable library version [here](https://github.com/Sigma-Ryden/Rew/tree/master/package). 
 

@@ -11,6 +11,8 @@ REFLECTABLE_DECLARATION(TestInjectionStruct)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestInjectionStruct)
+    FACTORY(R())
+    FACTORY(R(R))
 REFLECTABLE_INIT()
 
 
@@ -78,7 +80,7 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEST(TestLibrary, TestDynamicInjection)
 {
-    auto type = rew::global.find("int");
+    auto type = rew::global.find("TestInjectionStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -88,15 +90,15 @@ TEST(TestLibrary, TestDynamicInjection)
 
     ASSERT("before_add-injection", type->injection.find("TestVirusInjection") == nullptr);
     
-    rew::find_or_add_injection<int, TestVirusInjection>(type);
+    rew::find_or_add_injection<TestInjectionStruct, TestVirusInjection>(type);
  
     auto injection = type->injection.find("TestVirusInjection");
 
     ASSERT("after_add-injection", injection != nullptr);
 
     {
-        auto default_constructible = reflection->factory.find("int()")->meta.find("IsDefaultConstructible");
-        auto no_default_constructible = reflection->factory.find("int(int)")->meta.find("IsDefaultConstructible");
+        auto default_constructible = reflection->factory.find("TestInjectionStruct()")->meta.find("IsDefaultConstructible");
+        auto no_default_constructible = reflection->factory.find("TestInjectionStruct(TestInjectionStruct)")->meta.find("IsDefaultConstructible");
 
         EXPECT("before_injection", default_constructible == nullptr && no_default_constructible == nullptr);
     }
@@ -105,8 +107,8 @@ TEST(TestLibrary, TestDynamicInjection)
     injection->call(virus);
 
     {
-        auto default_constructible = reflection->factory.find("int()")->meta.find("IsDefaultConstructible");
-        auto no_default_constructible = reflection->factory.find("int(int)")->meta.find("IsDefaultConstructible");
+        auto default_constructible = reflection->factory.find("TestInjectionStruct()")->meta.find("IsDefaultConstructible");
+        auto no_default_constructible = reflection->factory.find("TestInjectionStruct(TestInjectionStruct)")->meta.find("IsDefaultConstructible");
 
         EXPECT("after_injection0", default_constructible != nullptr && no_default_constructible != nullptr);
 

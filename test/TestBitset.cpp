@@ -21,28 +21,28 @@ TEST(TestBuiltin, TestBitset)
     EXPECT("factory-R()", reflection->factory.find("std::bitset<128>()") != nullptr);
     EXPECT("factory-R(R const&)", reflection->factory.find("std::bitset<128>(std::bitset<128> const&)") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     EXPECT("factory-R(unsigned long)", reflection->factory.find("std::bitset<128>(unsigned long)") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 
     EXPECT("factory-R(unsigned long long)", reflection->factory.find("std::bitset<128>(unsigned long long)") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     EXPECT("factory-R(std::string const&, std::size_t)", reflection->factory.find("std::bitset<128>(std::string const&, std::size_t)") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 
     EXPECT("factory-R(std::string const&)", reflection->factory.find("std::bitset<128>(std::string const&)") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     EXPECT("factory-R(char const*, std::size_t)", reflection->factory.find("std::bitset<128>(char const*, std::size_t)") != nullptr);
     EXPECT("factory-R(char const*)", reflection->factory.find("std::bitset<128>(char const*)") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 
     ASSERT("function-operator=", reflection->function.find("operator=") != nullptr);
     ASSERT("function-operator==", reflection->function.find("operator==") != nullptr);
     ASSERT("function-operator[]", reflection->function.find("operator[]") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     EXPECT("function-test", reflection->function.find("test") != nullptr);
     EXPECT("function-all", reflection->function.find("all") != nullptr);
     EXPECT("function-any", reflection->function.find("any") != nullptr);
@@ -57,16 +57,16 @@ TEST(TestBuiltin, TestBitset)
     EXPECT("function-operator<<=", reflection->function.find("operator<<=") != nullptr);
     EXPECT("function-operator>>", reflection->function.find("operator>>") != nullptr);
     EXPECT("function-operator>>=", reflection->function.find("operator>>=") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 
     EXPECT("function-set", reflection->function.find("set") != nullptr);
     EXPECT("function-reset", reflection->function.find("reset") != nullptr);
     EXPECT("function-flip", reflection->function.find("flip") != nullptr);
     EXPECT("function-to_string", reflection->function.find("to_string") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     EXPECT("function-to_ulong", reflection->function.find("to_ulong") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 
     EXPECT("function-to_ullong", reflection->function.find("to_ullong") != nullptr);
 }

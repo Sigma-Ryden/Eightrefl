@@ -24,7 +24,7 @@ TEST(TestBuiltin, TestTuple)
 
     EXPECT("function-operator=", reflection->function.find("operator=") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 }

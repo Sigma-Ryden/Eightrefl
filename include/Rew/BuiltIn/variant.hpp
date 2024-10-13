@@ -9,9 +9,6 @@
 REFLECTABLE_DECLARATION(std::monostate)
 REFLECTABLE_DECLARATION_INIT()
 
-REFLECTABLE(std::monostate)
-REFLECTABLE_INIT()
-
 
 TEMPLATE_REFLECTABLE_CLEAN
 (
@@ -38,10 +35,10 @@ TEMPLATE_REFLECTABLE
     FUNCTION(operator=, R&(R const&))
     FUNCTION(index)
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(valueless_by_exception)
     FUNCTION(swap)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_VARIANT_HPP

@@ -18,11 +18,11 @@ TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::hash<KeyType>
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename KeyType>, std::hash<KeyType>)
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FACTORY(R())
     FACTORY(R(R const&))
     FUNCTION(operator())
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 REFLECTABLE_INIT()
 
 

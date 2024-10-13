@@ -55,9 +55,9 @@ TEMPLATE_REFLECTABLE
     FUNCTION(push, void(typename R::const_reference))
     FUNCTION(pop)
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(swap)
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_FULLY_ENABLE
 REFLECTABLE_INIT()
 
 #endif // REW_BUILTIN_PRIORITY_QUEUE_HPP

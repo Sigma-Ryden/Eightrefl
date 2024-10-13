@@ -29,7 +29,7 @@ TEST(TestBuiltin, TestStack)
     EXPECT("function-push", reflection->function.find("push") != nullptr);
     EXPECT("function-pop", reflection->function.find("pop") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 }

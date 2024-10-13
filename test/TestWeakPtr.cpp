@@ -25,15 +25,15 @@ TEST(TestBuiltin, TestWseakPtr)
     EXPECT("function-operator=", reflection->function.find("operator=") != nullptr);
     EXPECT("function-reset", reflection->function.find("reset") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
 //  EXPECT("function-swap", reflection->function.find("swap") != nullptr);
     EXPECT("function-use_count", reflection->function.find("use_count") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 
     EXPECT("function-expired", reflection->function.find("expired") != nullptr);
     EXPECT("function-lock", reflection->function.find("lock") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
 //  EXPECT("function-owner_before", reflection->function.find("owner_before") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 }

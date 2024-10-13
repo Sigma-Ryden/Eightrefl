@@ -178,7 +178,6 @@ type_t* find_or_add_type()
     if (xxtype == nullptr)
     {
         xxtype = xxregistry->template add<reflectable_type, dirty_reflectable_type>(xxname);
-        ::xxrew_type<dirty_reflectable_type> = xxtype;
     }
 
     return xxtype;

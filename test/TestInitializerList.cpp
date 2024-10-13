@@ -23,10 +23,10 @@ TEST(TestBuiltin, TestInitializerList)
 
     EXPECT("function-operator=", reflection->function.find("operator=") != nullptr);
 
-    #ifndef REW_CORE_MINIMAL
+    #ifdef REW_FULLY_ENABLE
     EXPECT("function-begin", reflection->function.find("begin") != nullptr);
     EXPECT("function-end", reflection->function.find("end") != nullptr);
-    #endif // REW_CORE_MINIMAL
+    #endif // REW_CORE_MINIMAL_DISABLE
 
     EXPECT("function-size", reflection->function.find("size") != nullptr);
 }
