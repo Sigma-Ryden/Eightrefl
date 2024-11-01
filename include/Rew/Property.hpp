@@ -14,23 +14,17 @@
 #include <Rew/Detail/Macro.hpp> // REW_DEPAREN
 
 // .property<R, type>(external_name, &scope::internal_iname, &scope::ìnternal_oname)
-#define CUSTOM_PROPERTY(scope, external_name, internal_iname, internal_oname, ...)                      \
-    {                                                                                                   \
-        using xxaccess = typename rew::meta::access_traits<scope>::template property<__VA_ARGS__>;      \
-        auto [xxipointer, xxopointer] = xxaccess::of                                                    \
-        (&scope::REW_DEPAREN(internal_iname), &scope::REW_DEPAREN(internal_oname));                     \
-        auto xxproperty = rew::find_or_add_property<__VA_ARGS__>                                        \
-        (xxreflection, external_name, xxipointer, xxopointer);                                          \
-        injection.template property<CleanR, decltype(xxipointer), decltype(xxopointer)>(*xxproperty);   \
-        xxmeta = &xxproperty->meta;                                                                     \
+#define CUSTOM_PROPERTY(scope, external_name, internal_iname, internal_oname, ...) \
+    { \
+        using xxaccess = typename rew::meta::access_traits<scope>::template property<__VA_ARGS__>; \
+        auto [xxipointer, xxopointer] = xxaccess::of(&scope::REW_DEPAREN(internal_iname), &scope::REW_DEPAREN(internal_oname)); \
+        auto xxproperty = rew::find_or_add_property<__VA_ARGS__>(xxreflection, external_name, xxipointer, xxopointer); \
+        injection.template property<CleanR, decltype(xxipointer), decltype(xxopointer)>(*xxproperty); \
+        xxmeta = &xxproperty->meta; \
     }
 
-#define NAMED_PROPERTY(external_name, internal_iname, internal_oname, ...)                              \
-    CUSTOM_PROPERTY(CleanR, external_name, internal_iname, internal_oname, __VA_ARGS__)
-
-#define NAMED_FREE_PROPERTY(external_name, internal_iname, internal_oname, ...)                         \
-    CUSTOM_PROPERTY(, external_name, internal_iname, internal_oname, __VA_ARGS__)
-
+#define NAMED_PROPERTY(external_name, internal_iname, internal_oname, ...) CUSTOM_PROPERTY(CleanR, external_name, internal_iname, internal_oname, __VA_ARGS__)
+#define NAMED_FREE_PROPERTY(external_name, internal_iname, internal_oname, ...) CUSTOM_PROPERTY(, external_name, internal_iname, internal_oname, __VA_ARGS__)
 #define PROPERTY(name, ...) NAMED_PROPERTY(REW_TO_STRING(name), name, name, __VA_ARGS__)
 #define FREE_PROPERTY(name, ...) NAMED_FREE_PROPERTY(REW_TO_STRING(name), name, name, __VA_ARGS__)
 

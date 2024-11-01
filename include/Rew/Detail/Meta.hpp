@@ -16,6 +16,9 @@ namespace rew
 namespace meta
 {
 
+template <typename T> T&& decltype_value(T&&); // not impl
+void decltype_value(); // not impl
+
 template <typename Type>
 struct type_identity { using type = Type; };
 

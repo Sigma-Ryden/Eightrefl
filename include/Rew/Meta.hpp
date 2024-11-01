@@ -6,15 +6,16 @@
 
 #include <Rew/Attribute.hpp>
 
+#include <Rew/Detail/Meta.hpp>
 #include <Rew/Detail/Macro.hpp> // REW_DEPAREN
 
 // .meta(external_name, expression)
-#define CUSTOM_META(touch_expression, meta_pointer, external_name, ...)                                 \
-    {                                                                                                   \
-        auto xxitem = meta_pointer->find(external_name);                                                \
-        if (xxitem == nullptr) xxitem = meta_pointer->add(external_name, {external_name, __VA_ARGS__}); \
-        injection.template meta<CleanR, decltype(__VA_ARGS__)>(*xxitem);                                \
-        REW_DEPAREN(touch_expression);                                                                  \
+#define CUSTOM_META(touch_expression, meta_pointer, external_name, ...) \
+    { \
+        auto xxitem = meta_pointer->find(external_name); \
+        if (xxitem == nullptr) xxitem = meta_pointer->add(external_name, { external_name, std::any(__VA_ARGS__) }); \
+        injection.template meta<CleanR, decltype(::rew::meta::decltype_value(__VA_ARGS__))>(*xxitem); \
+        REW_DEPAREN(touch_expression); \
     }
 
 #define META(external_name, ...) CUSTOM_META((xxsubmeta = &xxitem->meta), xxmeta, external_name, __VA_ARGS__)

@@ -10,12 +10,12 @@
 #include <Rew/Utility.hpp>
 
 // .factory<signature>()
-#define FACTORY(...)                                                                                    \
-    {                                                                                                   \
-        using xxtraits = rew::meta::function_traits<__VA_ARGS__>;                                       \
-        auto xxfactory = rew::find_or_add_factory<typename xxtraits::dirty_pointer>(xxreflection);      \
-        injection.template factory<CleanR, typename xxtraits::pointer>(*xxfactory);                     \
-        xxmeta = &xxfactory->meta;                                                                      \
+#define FACTORY(...) \
+    { \
+        using xxtraits = rew::meta::function_traits<__VA_ARGS__>; \
+        auto xxfactory = rew::find_or_add_factory<typename xxtraits::dirty_pointer>(xxreflection); \
+        injection.template factory<CleanR, typename xxtraits::pointer>(*xxfactory); \
+        xxmeta = &xxfactory->meta; \
     }
 
 namespace rew

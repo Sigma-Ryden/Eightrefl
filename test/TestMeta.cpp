@@ -73,9 +73,11 @@ REFLECTABLE(TestMetaStruct)
     FUNCTION(Function, void(double)) META("Handler", FunctionHandler)
 
     PROPERTY(Property) META("Cast", &TestMetaStructPropertyCast)
+    META("Serializable") // meta without value
     META("Flags", TestMetaStructFlags::Serializable | TestMetaStructFlags::Internal)
 
     PROPERTY(Constant) META("Mutable", true) SUBMETA("Status", -1) SUBMETA("Info", nullptr)
+    SUBMETA("Readonly") // submeta without value
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestMeta)
@@ -230,13 +232,19 @@ TEST(TestLibrary, TestMeta)
         EXPECT("property0-meta0-value", value != nullptr && *value == &TestMetaStructPropertyCast);
     }
     {
-        auto meta1 = property0->meta.find("Flags");
+        auto meta1 = property0->meta.find("Serializable");
 
         ASSERT("property0-meta1", meta1 != nullptr);
+        EXPECT("property0-meta1-value", !meta1->value.has_value());
+    }
+    {
+        auto meta2 = property0->meta.find("Flags");
 
-        auto value = std::any_cast<long>(&meta1->value);
+        ASSERT("property0-meta2", meta2 != nullptr);
 
-        EXPECT("property0-meta1-value", value != nullptr && *value == (TestMetaStructFlags::Serializable | TestMetaStructFlags::Internal));
+        auto value = std::any_cast<long>(&meta2->value);
+
+        EXPECT("property0-meta2-value", value != nullptr && *value == (TestMetaStructFlags::Serializable | TestMetaStructFlags::Internal));
     }
 
     auto property1 = reflection->property.find("Constant");
@@ -269,6 +277,12 @@ TEST(TestLibrary, TestMeta)
             auto value = std::any_cast<std::nullptr_t>(&submeta1->value);
 
             EXPECT("property1-meta0-submenta1", value != nullptr && *value == nullptr);
+        }
+        {
+            auto submeta2 = meta0->meta.find("Readonly");
+
+            ASSERT("property1-meta0-submeta2", submeta2 != nullptr);
+            EXPECT("property1-meta0-submeta2", !submeta2->value.has_value());
         }
     }
 }

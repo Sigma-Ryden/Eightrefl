@@ -14,22 +14,17 @@
 #include <Rew/Detail/Macro.hpp> // REW_DEPAREN
 
 // .function<R, signature>(external_name, &scope::internal_name)
-#define CUSTOM_FUNCTION(scope, external_name, internal_name, ...)                                       \
-    {                                                                                                   \
-        using xxaccess = typename rew::meta::access_traits<scope>::template function<__VA_ARGS__>;      \
-        auto xxpointer = xxaccess::of(&scope::REW_DEPAREN(internal_name));                              \
-        auto xxfunction = rew::find_or_add_function<__VA_ARGS__>                                        \
-        (xxreflection, external_name, xxpointer);                                                       \
-        injection.template function<CleanR, decltype(xxpointer)>(*xxfunction);                          \
-        xxmeta = &xxfunction->meta;                                                                     \
+#define CUSTOM_FUNCTION(scope, external_name, internal_name, ...) \
+    { \
+        using xxaccess = typename rew::meta::access_traits<scope>::template function<__VA_ARGS__>; \
+        auto xxpointer = xxaccess::of(&scope::REW_DEPAREN(internal_name)); \
+        auto xxfunction = rew::find_or_add_function<__VA_ARGS__>(xxreflection, external_name, xxpointer); \
+        injection.template function<CleanR, decltype(xxpointer)>(*xxfunction); \
+        xxmeta = &xxfunction->meta; \
     }
 
-#define NAMED_FUNCTION(external_name, internal_name, ...)                                               \
-    CUSTOM_FUNCTION(CleanR, external_name, internal_name, __VA_ARGS__)
-
-#define NAMED_FREE_FUNCTION(external_name, internal_name, ...)                                          \
-    CUSTOM_FUNCTION(, external_name, internal_name, __VA_ARGS__)
-
+#define NAMED_FUNCTION(external_name, internal_name, ...) CUSTOM_FUNCTION(CleanR, external_name, internal_name, __VA_ARGS__)
+#define NAMED_FREE_FUNCTION(external_name, internal_name, ...) CUSTOM_FUNCTION(, external_name, internal_name, __VA_ARGS__)
 #define FUNCTION(name, ...) NAMED_FUNCTION(REW_TO_STRING(name), name, __VA_ARGS__)
 #define FREE_FUNCTION(name, ...) NAMED_FREE_FUNCTION(REW_TO_STRING(name), name, __VA_ARGS__)
 

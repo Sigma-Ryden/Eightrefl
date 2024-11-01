@@ -8,11 +8,11 @@
 #include <Rew/Attribute.hpp>
 
 // .parent<R, type>()
-#define PARENT(...)                                                                                     \
-    {                                                                                                   \
-        auto xxparent = rew::find_or_add_parent<CleanR, __VA_ARGS__>(xxreflection);                     \
-        injection.template parent<CleanR, __VA_ARGS__>(*xxparent);                                      \
-        xxmeta = &xxparent->meta;                                                                       \
+#define PARENT(...) \
+    { \
+        auto xxparent = rew::find_or_add_parent<CleanR, __VA_ARGS__>(xxreflection); \
+        injection.template parent<CleanR, __VA_ARGS__>(*xxparent); \
+        xxmeta = &xxparent->meta; \
     }
 
 namespace rew
