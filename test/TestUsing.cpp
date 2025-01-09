@@ -21,7 +21,7 @@ struct TestContainerWithIteratorUsing
 
 REFLECTABLE_USING(Test_std_int32_t, std::int32_t)
 
-CUSTOM_REFLECTABLE_DECLARATION(Test_std_int32_t)
+REFLECTABLE_DECLARATION(Test_std_int32_t)
     REFLECTABLE_NAME("std::int32_t")
 REFLECTABLE_DECLARATION_INIT()
 

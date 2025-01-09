@@ -14,34 +14,25 @@
 #include <Rew/Detail/Meta.hpp>
 #include <Rew/Detail/Macro.hpp>
 
-#define CUSTOM_TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, ...) \
-    REW_DEPAREN(object_template_header) struct xxrew_traits<__VA_ARGS__> { \
-        using R = typename ::xxrew_alias<__VA_ARGS__>::R;
-
-#define CUSTOM_CONDITIONAL_REFLECTABLE_DECLARATION(...) \
-    template <typename DirtyR> struct xxrew_traits<DirtyR, std::enable_if_t<__VA_ARGS__>> { \
-        using R = typename ::xxrew_alias<DirtyR>::R;
-
-#define CUSTOM_REFLECTABLE_DECLARATION(...) \
-    template <> struct xxrew_traits<__VA_ARGS__> { \
-        using R = typename ::xxrew_alias<__VA_ARGS__>::R;
-
 #define TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, ...) \
-    CUSTOM_TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, __VA_ARGS__) \
+    REW_DEPAREN(object_template_header) struct xxrew_traits<__VA_ARGS__> { \
+        using R = typename ::xxrew_alias<__VA_ARGS__>::R; \
         LAZY_REFLECTABLE()
 
 #define CONDITIONAL_REFLECTABLE_DECLARATION(...) \
-    CUSTOM_CONDITIONAL_REFLECTABLE_DECLARATION(__VA_ARGS__) \
+    template <typename DirtyR> struct xxrew_traits<DirtyR, std::enable_if_t<__VA_ARGS__>> { \
+        using R = typename ::xxrew_alias<DirtyR>::R; \
         LAZY_REFLECTABLE()
 
 #define REFLECTABLE_DECLARATION(...) \
-    CUSTOM_REFLECTABLE_DECLARATION(__VA_ARGS__) \
-        REFLECTABLE_NAME(#__VA_ARGS__)
+    template <> struct xxrew_traits<__VA_ARGS__> { \
+        using R = typename ::xxrew_alias<__VA_ARGS__>::R; \
+        static constexpr auto alias = #__VA_ARGS__;
 
 #define REFLECTABLE_REGISTRY(...)  static auto registry() { return __VA_ARGS__; }
 #define REFLECTABLE_NAME(...) static auto name() { return __VA_ARGS__; }
-#define LAZY_REFLECTABLE(...) static auto lazy() { __VA_ARGS__ }
-#define BUILTIN_REFLECTABLE(...) static auto builtin() { __VA_ARGS__ }
+#define LAZY_REFLECTABLE(...) struct lazy;
+#define BUILTIN_REFLECTABLE(...) struct builtin;
 
 #define REFLECTABLE_DECLARATION_INIT(...) \
     };
@@ -85,13 +76,9 @@
 #endif // REW_DISABLE_REFLECTION_FIXTURE
 
 
-#define CUSTOM_REFLECTABLE_INJECTION_DECLARATION(injection_index, ...) \
-    template <> struct xxrew_injection<injection_index> { using R = __VA_ARGS__; }; \
-    CUSTOM_REFLECTABLE_DECLARATION(__VA_ARGS__)
-
 #define REFLECTABLE_INJECTION_DECLARATION(injection_index, ...) \
-    CUSTOM_REFLECTABLE_INJECTION_DECLARATION(injection_index, __VA_ARGS__) \
-        REFLECTABLE_NAME(#__VA_ARGS__)
+    template <> struct xxrew_injection<injection_index> { using R = __VA_ARGS__; }; \
+        REFLECTABLE_DECLARATION(__VA_ARGS__)
 
 
 #define TEMPLATE_REFLECTABLE_CLEAN(object_template_header, object_type, ...) \
@@ -120,7 +107,15 @@ namespace rew
 template <typename ReflectableType>
 std::string nameof()
 {
-    return ::xxrew_traits<ReflectableType>::name();
+    using reflectable_traits = ::xxrew_traits<ReflectableType>;
+    if constexpr (meta::is_custom_name<ReflectableType>::value)
+    {
+        return reflectable_traits::name();
+    }
+    else
+    {
+        return reflectable_traits::alias;
+    }
 }
 
 template <typename ReflectableType>
@@ -168,7 +163,7 @@ type_t* find_or_add_type()
     auto xxname = nameof<dirty_reflectable_type>();
     auto xxregistry = &global;
 
-    if constexpr (meta::is_custom<dirty_reflectable_type>::value)
+    if constexpr (meta::is_custom_registry<dirty_reflectable_type>::value)
     {
         xxregistry = reflectable_traits::registry();
     }

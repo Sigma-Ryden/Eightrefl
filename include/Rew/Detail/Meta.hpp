@@ -42,17 +42,21 @@ struct to_reflectable_object { using type = std::remove_const_t<ObjectType>; };
 template <typename, typename enable = void> struct is_complete : std::false_type {};
 template <typename Type> struct is_complete<Type, std::void_t<decltype(sizeof(Type))>> : std::true_type {};
 
-template <typename, typename enable = void> struct is_custom : std::false_type {};
+template <typename, typename enable = void> struct is_custom_name : std::false_type {};
 template <typename ReflectableType>
-struct is_custom<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::registry)>> : std::true_type {};
+struct is_custom_name<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::name)>> : std::true_type {};
+
+template <typename, typename enable = void> struct is_custom_registry : std::false_type {};
+template <typename ReflectableType>
+struct is_custom_registry<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::registry)>> : std::true_type {};
 
 template <typename, typename enable = void> struct is_lazy : std::false_type {};
 template <typename ReflectableType>
-struct is_lazy<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::lazy)>> : std::true_type {};
+struct is_lazy<ReflectableType, std::void_t<typename ::xxrew_traits<ReflectableType>::lazy>> : std::true_type {};
 
 template <typename, typename enable = void> struct is_builtin : std::false_type {};
 template <typename ReflectableType>
-struct is_builtin<ReflectableType, std::void_t<decltype(&::xxrew_traits<ReflectableType>::biiltin)>> : std::true_type {};
+struct is_builtin<ReflectableType, std::void_t<typename ::xxrew_traits<ReflectableType>::biiltin>> : std::true_type {};
 
 template <typename MemberPointerType, typename DirtyMemberPointerType>
 struct mark_dirty;
@@ -107,6 +111,9 @@ struct mark_dirty<PropertyType*, DirtyPropertyType>
 template <typename PropertyType>
 struct property_traits;
 
+template <typename PropertyType>
+struct property_traits<PropertyType&&> : property_traits<PropertyType> {};
+
 template <typename ReflectableType, typename PropertyType>
 struct property_traits<PropertyType(ReflectableType::*)(void) const> { using type = PropertyType; };
 
@@ -145,6 +152,9 @@ struct property_traits<PropertyType*> { using type = PropertyType; };
 
 template <typename>
 struct function_traits;
+
+template <typename FunctionType>
+struct function_traits<FunctionType&&> : function_traits<FunctionType> {};
 
 template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(ArgumentTypes...) const>
