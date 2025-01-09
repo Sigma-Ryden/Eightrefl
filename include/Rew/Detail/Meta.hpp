@@ -111,9 +111,6 @@ struct mark_dirty<PropertyType*, DirtyPropertyType>
 template <typename PropertyType>
 struct property_traits;
 
-template <typename PropertyType>
-struct property_traits<PropertyType&&> : property_traits<PropertyType> {};
-
 template <typename ReflectableType, typename PropertyType>
 struct property_traits<PropertyType(ReflectableType::*)(void) const> { using type = PropertyType; };
 
@@ -152,9 +149,6 @@ struct property_traits<PropertyType*> { using type = PropertyType; };
 
 template <typename>
 struct function_traits;
-
-template <typename FunctionType>
-struct function_traits<FunctionType&&> : function_traits<FunctionType> {};
 
 template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(ArgumentTypes...) const>

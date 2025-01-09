@@ -17,9 +17,9 @@
 #define CUSTOM_PROPERTY(scope, external_name, internal_iname, internal_oname, ...) \
     { \
         using xxaccess = typename rew::meta::access_traits<scope>::template property<__VA_ARGS__>; \
-        auto [xxipointer, xxopointer] = xxaccess::of(&scope::REW_DEPAREN(internal_iname), &scope::REW_DEPAREN(internal_oname)); \
-        auto xxproperty = rew::find_or_add_property<__VA_ARGS__>(xxreflection, external_name, xxipointer, xxopointer); \
-        injection.template property<CleanR, decltype(xxipointer), decltype(xxopointer)>(*xxproperty); \
+        auto xxpointer = xxaccess::of(&scope::REW_DEPAREN(internal_iname), &scope::REW_DEPAREN(internal_oname)); \
+        auto xxproperty = rew::find_or_add_property<__VA_ARGS__>(xxreflection, external_name, xxpointer.first, xxpointer.second); \
+        injection.template property<CleanR, decltype(xxpointer.first), decltype(xxpointer.second)>(*xxproperty); \
         xxmeta = &xxproperty->meta; \
     }
 
