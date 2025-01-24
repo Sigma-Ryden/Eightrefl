@@ -318,7 +318,7 @@ property_t* find_or_add_property(reflection_t* reflection, std::string const& na
     return xxmeta;
 }
 
-template <typename ReflectableType, typename DirtyDeleterType>
+template <typename DirtyDeleterType>
 deleter_t* find_or_add_deleter(reflection_t* reflection)
 {
     using deleter_traits = meta::deleter_traits<DirtyDeleterType>;

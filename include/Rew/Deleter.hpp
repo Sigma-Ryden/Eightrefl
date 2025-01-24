@@ -12,7 +12,7 @@
 #define DELETER(...) \
     { \
         using xxtraits = rew::meta::deleter_traits<__VA_ARGS__>; \
-        auto xxdeleter = rew::find_or_add_deleter<CleanR, typename xxtraits::dirty_pointer>(xxreflection); \
+        auto xxdeleter = rew::find_or_add_deleter<typename xxtraits::dirty_pointer>(xxreflection); \
         injection.template deleter<CleanR, typename xxtraits::pointer>(*xxdeleter); \
         xxmeta = &xxdeleter->meta; \
     }
