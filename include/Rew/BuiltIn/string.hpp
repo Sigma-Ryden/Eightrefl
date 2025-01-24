@@ -24,7 +24,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename CharType, typename TraitsType, typename AllocatorType>),
     (std::basic_string<CharType, TraitsType, AllocatorType>),
-    std::basic_string<rew::cleanof<CharType>, rew::cleanof<TraitsType>, rew::cleanof<AllocatorType>>
+    std::basic_string<rew::clean_of<CharType>, rew::clean_of<TraitsType>, rew::clean_of<AllocatorType>>
 )
 
 REFLECTABLE_DECLARATION(std::string)
@@ -53,12 +53,12 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename CharType>, std::basic_string<CharType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ">")
+    REFLECTABLE_NAME("std::basic_string<" + rew::name_of<CharType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename CharType, typename TraitsType>), std::basic_string<CharType, TraitsType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ", " + rew::nameof<TraitsType>() + ">")
+    REFLECTABLE_NAME("std::basic_string<" + rew::name_of<CharType>() + ", " + rew::name_of<TraitsType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -67,7 +67,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::basic_string<CharType, TraitsType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::basic_string<" + rew::nameof<CharType>() + ", " + rew::nameof<TraitsType>() + ", " + rew::nameof<AllocatorType>() + ">")
+    REFLECTABLE_NAME("std::basic_string<" + rew::name_of<CharType>() + ", " + rew::name_of<TraitsType>() + ", " + rew::name_of<AllocatorType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE

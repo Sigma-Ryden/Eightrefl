@@ -210,6 +210,23 @@ template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(*)(ArgumentTypes...)>
     : function_traits<ReturnType(ArgumentTypes...)> {};
 
+template <typename>
+struct deleter_traits;
+
+template <typename ReturnType, typename ReflectableType>
+struct deleter_traits<ReturnType(ReflectableType)>
+{
+    using dirty_type = ReturnType(ReflectableType);
+    using dirty_pointer = ReturnType(*)(ReflectableType);
+
+    using type = typename ::xxrew_alias<ReturnType>::R(typename ::xxrew_alias<ReflectableType>::R);
+    using pointer = typename ::xxrew_alias<ReturnType>::R(*)(typename ::xxrew_alias<ReflectableType>::R);
+};
+
+template <typename ReturnType, typename ReflectableType>
+struct deleter_traits<ReturnType(*)(ReflectableType)>
+    : deleter_traits<ReturnType(ReflectableType)> {};
+
 namespace detail
 {
 

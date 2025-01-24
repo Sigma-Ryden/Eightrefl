@@ -9,7 +9,7 @@
 TEMPLATE_REFLECTABLE_CLEAN
 (
     template <typename CharType>,
-    std::char_traits<CharType>, std::char_traits<rew::cleanof<CharType>>
+    std::char_traits<CharType>, std::char_traits<rew::clean_of<CharType>>
 )
 
 REFLECTABLE_DECLARATION(std::char_traits<char>)
@@ -38,7 +38,7 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename CharType>, std::char_traits<CharType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::char_traits<" + rew::nameof<CharType>() + ">")
+    REFLECTABLE_NAME("std::char_traits<" + rew::name_of<CharType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename CharType>, std::char_traits<CharType>)

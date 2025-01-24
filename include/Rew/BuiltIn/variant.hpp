@@ -13,7 +13,7 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ArgumentType, typename... ArgumentTypes>),
-    (std::variant<ArgumentType, ArgumentTypes...>), std::variant<rew::cleanof<ArgumentType>, rew::cleanof<ArgumentTypes>...>
+    (std::variant<ArgumentType, ArgumentTypes...>), std::variant<rew::clean_of<ArgumentType>, rew::clean_of<ArgumentTypes>...>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -22,7 +22,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::variant<ArgumentType, ArgumentTypes...>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::variant<" + ( rew::nameof<ArgumentType>() + ... + (", " + rew::nameof<ArgumentTypes>()) ) + ">")
+    REFLECTABLE_NAME("std::variant<" + ( rew::name_of<ArgumentType>() + ... + (", " + rew::name_of<ArgumentTypes>()) ) + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE

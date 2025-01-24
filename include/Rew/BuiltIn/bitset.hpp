@@ -14,12 +14,12 @@
 TEMPLATE_REFLECTABLE_USING
 (
     template <class StdBitsetType>, std_bitset_reference,
-    std_bitset_reference<StdBitsetType>, typename rew::cleanof<StdBitsetType>::reference
+    std_bitset_reference<StdBitsetType>, typename rew::clean_of<StdBitsetType>::reference
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <class StdBitsetType>, std_bitset_reference<StdBitsetType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(rew::nameof<StdBitsetType>() + "::reference")
+    REFLECTABLE_NAME(rew::name_of<StdBitsetType>() + "::reference")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdBitsetType>, std_bitset_reference<StdBitsetType>)

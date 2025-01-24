@@ -20,12 +20,12 @@
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ValueType, typename AllocatorType>),
-    (std::vector<ValueType, AllocatorType>), std::vector<rew::cleanof<ValueType>, rew::cleanof<AllocatorType>>
+    (std::vector<ValueType, AllocatorType>), std::vector<rew::clean_of<ValueType>, rew::clean_of<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::vector<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::vector<" + rew::nameof<ValueType>() + ">")
+    REFLECTABLE_NAME("std::vector<" + rew::name_of<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -33,7 +33,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     (template <typename ValueType, typename AllocatorType>), std::vector<ValueType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::vector<" + rew::nameof<ValueType>() + ", " + rew::nameof<AllocatorType>() + ">")
+    REFLECTABLE_NAME("std::vector<" + rew::name_of<ValueType>() + ", " + rew::name_of<AllocatorType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE
@@ -139,12 +139,12 @@ REFLECTABLE_INIT()
 TEMPLATE_REFLECTABLE_USING
 (
     template <class StdContainer>, std_vectorbool_reference,
-    std_vectorbool_reference<StdContainer>, typename rew::cleanof<StdContainer>::reference
+    std_vectorbool_reference<StdContainer>, typename rew::clean_of<StdContainer>::reference
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <class StdContainer>, std_vectorbool_reference<StdContainer>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME(rew::nameof<StdContainer>() + "::reference")
+    REFLECTABLE_NAME(rew::name_of<StdContainer>() + "::reference")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdContainer>, std_vectorbool_reference<StdContainer>)

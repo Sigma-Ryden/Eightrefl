@@ -18,6 +18,7 @@ struct factory_t;
 struct function_t;
 struct property_t;
 struct meta_t;
+struct deleter_t;
 
 struct injectable_t
 {
@@ -40,6 +41,9 @@ struct injectable_t
 
     template <typename ReflectableType, typename MetaType>
     void meta(rew::meta_t& meta) {}
+
+    template <typename ReflectableType, typename FunctionType>
+    void deleter(rew::deleter_t& deleter) {}
 };
 
 struct injection_t

@@ -16,17 +16,17 @@ TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ValueType, class ContainerType, class ComparatorType>),
     (std::priority_queue<ValueType, ContainerType, ComparatorType>),
-    std::priority_queue<rew::cleanof<ValueType>, rew::cleanof<ContainerType>, rew::cleanof<ComparatorType>>
+    std::priority_queue<rew::clean_of<ValueType>, rew::clean_of<ContainerType>, rew::clean_of<ComparatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::priority_queue<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::priority_queue<" + rew::nameof<ValueType>() + ">")
+    REFLECTABLE_NAME("std::priority_queue<" + rew::name_of<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, class ContainerType>), std::priority_queue<ValueType, ContainerType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::priority_queue<" + rew::nameof<ValueType>() + ", " + rew::nameof<ContainerType>() + ">")
+    REFLECTABLE_NAME("std::priority_queue<" + rew::name_of<ValueType>() + ", " + rew::name_of<ContainerType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -35,8 +35,8 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::priority_queue<ValueType, ContainerType, ComparatorType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::priority_queue<" + rew::nameof<ValueType>() + ", " + rew::nameof<ContainerType>() + ", "
-                                            + rew::nameof<ComparatorType>() + ">")
+    REFLECTABLE_NAME("std::priority_queue<" + rew::name_of<ValueType>() + ", " + rew::name_of<ContainerType>() + ", "
+                                            + rew::name_of<ComparatorType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE

@@ -17,7 +17,7 @@ extern registry_t dev;
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename MetaType>), rew::attribute_t<MetaType>)
     REFLECTABLE_REGISTRY(&::rew::dev)
-    REFLECTABLE_NAME("rew::attribute_t<" + rew::nameof<MetaType>() + ">")
+    REFLECTABLE_NAME("rew::attribute_t<" + rew::name_of<MetaType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename MetaType>), rew::attribute_t<MetaType>)

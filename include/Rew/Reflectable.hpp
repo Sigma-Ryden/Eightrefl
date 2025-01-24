@@ -9,6 +9,7 @@
 #include <Rew/Factory.hpp>
 #include <Rew/Function.hpp>
 #include <Rew/Property.hpp>
+#include <Rew/Deleter.hpp>
 #include <Rew/Meta.hpp>
 
 #include <Rew/Detail/Meta.hpp>
@@ -103,9 +104,9 @@
 namespace rew
 {
 
-// use for name generation only
+// useful for name generation (reflectable declaration)
 template <typename ReflectableType>
-std::string nameof()
+std::string name_of()
 {
     using reflectable_traits = ::xxrew_traits<ReflectableType>;
     if constexpr (meta::is_custom_name<ReflectableType>::value)
@@ -119,7 +120,7 @@ std::string nameof()
 }
 
 template <typename ReflectableType>
-using cleanof = typename ::xxrew_alias<ReflectableType>::R;
+using clean_of = typename ::xxrew_alias<ReflectableType>::R;
 
 template <typename ReflectableType>
 void reflectable()
@@ -160,7 +161,7 @@ type_t* find_or_add_type()
         reflectable<dirty_reflectable_type>();
     }
 
-    auto xxname = nameof<dirty_reflectable_type>();
+    auto xxname = name_of<dirty_reflectable_type>();
     auto xxregistry = &global;
 
     if constexpr (meta::is_custom_registry<dirty_reflectable_type>::value)
@@ -177,12 +178,19 @@ type_t* find_or_add_type()
     return xxtype;
 }
 
+template <typename ReflectableType>
+type_t* type_of()
+{
+    static auto type = find_or_add_type<ReflectableType>();
+    return type;
+}
+
 template <typename ReflectableType, typename ParentReflectableType>
 parent_t* find_or_add_parent(reflection_t* reflection)
 {
     static_assert(std::is_base_of_v<ParentReflectableType, ReflectableType>);
 
-    auto xxname = nameof<ParentReflectableType>();
+    auto xxname = name_of<ParentReflectableType>();
 
     auto xxmeta = reflection->parent.find(xxname);
     if (xxmeta == nullptr) xxmeta = reflection->parent.add
@@ -223,7 +231,7 @@ factory_t* find_or_add_factory(reflection_t* reflection)
     using dirty_pointer = typename function_traits::dirty_pointer;
     using pointer = typename function_traits::pointer;
 
-    auto xxname = nameof<dirty_type>();
+    auto xxname = name_of<dirty_type>();
 
     auto xxmeta = reflection->factory.find(xxname);
     if (xxmeta == nullptr) xxmeta = reflection->factory.add
@@ -259,7 +267,7 @@ function_t* find_or_add_function(reflection_t* reflection, std::string const& na
     auto xxfunction = reflection->function.find(name);
     if (xxfunction == nullptr) xxfunction = reflection->function.add(name, {});
 
-    auto xxoverload = nameof<dirty_type>();
+    auto xxoverload = name_of<dirty_type>();
 
     auto xxmeta = xxfunction->find(xxoverload);
     if (xxmeta == nullptr) xxmeta = xxfunction->add
@@ -310,6 +318,28 @@ property_t* find_or_add_property(reflection_t* reflection, std::string const& na
     return xxmeta;
 }
 
+template <typename ReflectableType, typename DirtyDeleterType>
+deleter_t* find_or_add_deleter(reflection_t* reflection)
+{
+    using deleter_traits = meta::deleter_traits<DirtyDeleterType>;
+    using dirty_type = typename deleter_traits::dirty_type;
+    using pointer = typename deleter_traits::pointer;
+
+    auto xxname = name_of<dirty_type>();
+
+    auto xxmeta = reflection->deleter.find(xxname);
+    if (xxmeta == nullptr) xxmeta = reflection->deleter.add
+    (
+        xxname,
+        {
+            xxname,
+            handler_deleter_call(pointer{})
+        }
+    );
+
+    return xxmeta;
+}
+
 template <typename MetaType>
 meta_t* find_or_add_meta(attribute_t<meta_t>& meta, std::string const& name, MetaType&& value)
 {
@@ -323,7 +353,7 @@ injection_t* find_or_add_injection(type_t* type)
 {
     static_assert(std::is_base_of_v<injectable_t, InjectionType>);
 
-    auto xxname = nameof<InjectionType>();
+    auto xxname = name_of<InjectionType>();
 
     auto xxmeta = type->injection.find(xxname);
     if (xxmeta == nullptr) xxmeta = type->injection.add

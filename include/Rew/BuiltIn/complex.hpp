@@ -21,12 +21,12 @@ template <> struct xxrew_std_complex_pass_value<std::complex<long double>> { usi
 TEMPLATE_REFLECTABLE_CLEAN
 (
     template <typename ValueType>,
-    std::complex<ValueType>, std::complex<rew::cleanof<ValueType>>
+    std::complex<ValueType>, std::complex<rew::clean_of<ValueType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::complex<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::complex<" + rew::nameof<ValueType>() + ">")
+    REFLECTABLE_NAME("std::complex<" + rew::name_of<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename ValueType>, std::complex<ValueType>)

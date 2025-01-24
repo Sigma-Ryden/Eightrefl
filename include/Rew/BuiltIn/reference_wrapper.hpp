@@ -9,12 +9,12 @@
 TEMPLATE_REFLECTABLE_CLEAN
 (
     template <typename ValueType>,
-    std::reference_wrapper<ValueType>, std::reference_wrapper<rew::cleanof<ValueType>>
+    std::reference_wrapper<ValueType>, std::reference_wrapper<rew::clean_of<ValueType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::reference_wrapper<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::reference_wrapper<" + rew::nameof<ValueType>() + ">")
+    REFLECTABLE_NAME("std::reference_wrapper<" + rew::name_of<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename ValueType>, std::reference_wrapper<ValueType>)
@@ -23,7 +23,7 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::reference_wrapper<Value
     FUNCTION(operator=, R&(R const&))
 
     #ifdef REW_FULLY_ENABLE
-    NAMED_FUNCTION(("operator " + rew::nameof<ValueType&>()), operator rew::cleanof<ValueType>&)
+    NAMED_FUNCTION(("operator " + rew::name_of<ValueType&>()), operator rew::clean_of<ValueType>&)
     #endif // REW_FULLY_ENABLE
 
     FUNCTION(get)

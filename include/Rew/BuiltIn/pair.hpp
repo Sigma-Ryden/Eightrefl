@@ -9,12 +9,12 @@
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename FirstType, typename SecondType>),
-    (std::pair<FirstType, SecondType>), std::pair<rew::cleanof<FirstType>, rew::cleanof<SecondType>>
+    (std::pair<FirstType, SecondType>), std::pair<rew::clean_of<FirstType>, rew::clean_of<SecondType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename FirstType, typename SecondType>), std::pair<FirstType, SecondType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::pair<" + rew::nameof<FirstType>() + ", " + rew::nameof<SecondType>() + ">")
+    REFLECTABLE_NAME("std::pair<" + rew::name_of<FirstType>() + ", " + rew::name_of<SecondType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename FirstType, typename SecondType>), std::pair<FirstType, SecondType>)

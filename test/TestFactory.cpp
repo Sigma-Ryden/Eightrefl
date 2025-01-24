@@ -32,7 +32,7 @@ REFLECTABLE_DECLARATION(TestCustomFactoryStruct)
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, TestCustomFactoryStructTemplate<T>)
-    REFLECTABLE_NAME("TestCustomFactoryStructTemplate<" + rew::nameof<T>() + ">")
+    REFLECTABLE_NAME("TestCustomFactoryStructTemplate<" + rew::name_of<T>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename T>, TestCustomFactoryStructTemplate<T>)

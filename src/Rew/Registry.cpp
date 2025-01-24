@@ -5,6 +5,7 @@
 #include <Rew/Factory.hpp>
 #include <Rew/Function.hpp>
 #include <Rew/Property.hpp>
+#include <Rew/Deleter.hpp>
 #include <Rew/Meta.hpp>
 
 namespace rew

@@ -32,7 +32,7 @@ REFLECTABLE_INIT()
 
 // will not compile!
 // TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, TestContainerWithIteratorUsing<T>::Iterator)
-//     REFLECTABLE_NAME(rew::nameof<TestContainerWithIteratorUsing<T>>() + "::Iterator")
+//     REFLECTABLE_NAME(rew::name_of<TestContainerWithIteratorUsing<T>>() + "::Iterator")
 // REFLECTABLE_DECLARATION_INIT()
 
 // TEMPLATE_REFLECTABLE(template <typename T>, TestContainerWithIteratorUsing<T>::Iterator)
@@ -45,14 +45,14 @@ TEMPLATE_REFLECTABLE_USING
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, TestContainerWithIteratorUsing_Iterator<T>)
-    REFLECTABLE_NAME(rew::nameof<TestContainerWithIteratorUsing<T>>() + "::Iterator")
+    REFLECTABLE_NAME(rew::name_of<TestContainerWithIteratorUsing<T>>() + "::Iterator")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename T>, TestContainerWithIteratorUsing_Iterator<T>)
 REFLECTABLE_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, TestContainerWithIteratorUsing<T>)
-    REFLECTABLE_NAME("TestContainerWithIteratorUsing<" + rew::nameof<T>() + ">")
+    REFLECTABLE_NAME("TestContainerWithIteratorUsing<" + rew::name_of<T>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename T>, TestContainerWithIteratorUsing<T>)

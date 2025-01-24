@@ -9,7 +9,7 @@
 TEMPLATE_REFLECTABLE_CLEAN
 (
     template <typename ElementType>,
-    std::shared_ptr<ElementType>, std::shared_ptr<rew::cleanof<ElementType>>
+    std::shared_ptr<ElementType>, std::shared_ptr<rew::clean_of<ElementType>>
 )
 
 REFLECTABLE_DECLARATION(std::shared_ptr<void>)
@@ -18,7 +18,7 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ElementType>, std::shared_ptr<ElementType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::shared_ptr<" + rew::nameof<ElementType>() + ">")
+    REFLECTABLE_NAME("std::shared_ptr<" + rew::name_of<ElementType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename ElementType>, std::shared_ptr<ElementType>)

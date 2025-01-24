@@ -49,8 +49,6 @@ struct registry_t
             rtti_all.emplace(typeid(DirtyReflectableType), type);
         }
 
-        ::xxrew_type<DirtyReflectableType> = type;
-
         return type;
     }
 };

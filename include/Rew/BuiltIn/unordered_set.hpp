@@ -24,12 +24,12 @@ TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>),
     (std::unordered_set<KeyType, HasherType, ComparatorType, AllocatorType>),
-    std::unordered_set<rew::cleanof<KeyType>, rew::cleanof<HasherType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
+    std::unordered_set<rew::clean_of<KeyType>, rew::clean_of<HasherType>, rew::clean_of<ComparatorType>, rew::clean_of<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::unordered_set<KeyType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_set<" + rew::nameof<KeyType>() + ">")
+    REFLECTABLE_NAME("std::unordered_set<" + rew::name_of<KeyType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -38,7 +38,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::unordered_set<KeyType, HasherType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<HasherType>() + ">")
+    REFLECTABLE_NAME("std::unordered_set<" + rew::name_of<KeyType>() + ", " + rew::name_of<HasherType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -49,7 +49,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ", " + rew::nameof<HasherType>() + ">"
+        "std::unordered_set<" + rew::name_of<KeyType>() + ", " + rew::name_of<ComparatorType>() + ", " + rew::name_of<HasherType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
@@ -61,8 +61,8 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<HasherType>() + ", "
-                              + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
+        "std::unordered_set<" + rew::name_of<KeyType>() + ", " + rew::name_of<HasherType>() + ", "
+                              + rew::name_of<ComparatorType>() + ", " + rew::name_of<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
@@ -71,12 +71,12 @@ TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename KeyType, typename HasherType, typename ComparatorType, typename AllocatorType>),
     (std::unordered_multiset<KeyType, HasherType, ComparatorType, AllocatorType>),
-    std::unordered_multiset<rew::cleanof<KeyType>, rew::cleanof<HasherType>, rew::cleanof<ComparatorType>, rew::cleanof<AllocatorType>>
+    std::unordered_multiset<rew::clean_of<KeyType>, rew::clean_of<HasherType>, rew::clean_of<ComparatorType>, rew::clean_of<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::unordered_multiset<KeyType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_multiset<" + rew::nameof<KeyType>() + ">")
+    REFLECTABLE_NAME("std::unordered_multiset<" + rew::name_of<KeyType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -85,7 +85,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::unordered_multiset<KeyType, HasherType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::unordered_set<" + rew::nameof<KeyType>() + ", " + rew::nameof<HasherType>() + ">")
+    REFLECTABLE_NAME("std::unordered_set<" + rew::name_of<KeyType>() + ", " + rew::name_of<HasherType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -96,7 +96,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<ComparatorType>() + ", " + rew::nameof<HasherType>() + ">"
+        "std::unordered_multiset<" + rew::name_of<KeyType>() + ", " + rew::name_of<ComparatorType>() + ", " + rew::name_of<HasherType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 
@@ -108,8 +108,8 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
     REFLECTABLE_NAME
     (
-        "std::unordered_multiset<" + rew::nameof<KeyType>() + ", " + rew::nameof<HasherType>() + ", "
-                                   + rew::nameof<ComparatorType>() + ", " + rew::nameof<AllocatorType>() + ">"
+        "std::unordered_multiset<" + rew::name_of<KeyType>() + ", " + rew::name_of<HasherType>() + ", "
+                                   + rew::name_of<ComparatorType>() + ", " + rew::name_of<AllocatorType>() + ">"
     )
 REFLECTABLE_DECLARATION_INIT()
 

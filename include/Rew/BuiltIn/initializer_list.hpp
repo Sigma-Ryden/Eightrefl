@@ -9,12 +9,12 @@
 TEMPLATE_REFLECTABLE_CLEAN
 (
     template <typename ValueType>,
-    std::initializer_list<ValueType>, std::initializer_list<rew::cleanof<ValueType>>
+    std::initializer_list<ValueType>, std::initializer_list<rew::clean_of<ValueType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::initializer_list<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::initializer_list<" + rew::nameof<ValueType>() + ">")
+    REFLECTABLE_NAME("std::initializer_list<" + rew::name_of<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename ValueType>, std::initializer_list<ValueType>)

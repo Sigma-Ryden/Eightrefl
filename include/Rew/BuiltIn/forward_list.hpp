@@ -19,12 +19,12 @@
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ValueType, typename AllocatorType>),
-    (std::forward_list<ValueType, AllocatorType>), std::forward_list<rew::cleanof<ValueType>, rew::cleanof<AllocatorType>>
+    (std::forward_list<ValueType, AllocatorType>), std::forward_list<rew::clean_of<ValueType>, rew::clean_of<AllocatorType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::forward_list<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::forward_list<" + rew::nameof<ValueType>() + ">")
+    REFLECTABLE_NAME("std::forward_list<" + rew::name_of<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -32,7 +32,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     (template <typename ValueType, typename AllocatorType>), std::forward_list<ValueType, AllocatorType>
 )
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::forward_list<" + rew::nameof<ValueType>() + ", " + rew::nameof<AllocatorType>() + ">")
+    REFLECTABLE_NAME("std::forward_list<" + rew::name_of<ValueType>() + ", " + rew::name_of<AllocatorType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), std::forward_list<ValueType, AllocatorType>)

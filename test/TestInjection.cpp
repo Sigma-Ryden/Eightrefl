@@ -21,7 +21,7 @@ struct ToString
 {
     std::string Call()
     {
-        return "name: " + rew::nameof<T>();
+        return "name: " + rew::name_of<T>();
     }
 };
 

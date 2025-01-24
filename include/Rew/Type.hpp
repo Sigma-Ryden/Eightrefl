@@ -62,8 +62,4 @@ template <> inline auto type_size<void>()
 
 } // namespace rew
 
-// quick type access, use after all registrations only
-template <typename ReflectableType>
-inline rew::type_t* xxrew_type = nullptr;
-
 #endif // REW_TYPE_HPP

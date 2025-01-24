@@ -9,12 +9,12 @@
 TEMPLATE_REFLECTABLE_CLEAN
 (
     template <typename ValueType>,
-    std::allocator<ValueType>, std::allocator<rew::cleanof<ValueType>>
+    std::allocator<ValueType>, std::allocator<rew::clean_of<ValueType>>
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::allocator<ValueType>)
     BUILTIN_REFLECTABLE()
-    REFLECTABLE_NAME("std::allocator<" + rew::nameof<ValueType>() + ">")
+    REFLECTABLE_NAME("std::allocator<" + rew::name_of<ValueType>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename ValueType>, std::allocator<ValueType>)
