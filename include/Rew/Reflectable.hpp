@@ -369,7 +369,7 @@ injection_t* find_or_add_injection(type_t* type)
 }
 
 template <typename ReflectableType,
-          std::size_t CurrentInjectionIndexValue = 0, std::size_t MaxInjectionIndexValue = 4>
+          std::size_t CurrentInjectionIndexValue = 0, std::size_t MaxInjectionIndexValue = REW_INJECTION_MAX_KEY_SIZE>
 void add_default_injection_set(type_t* type)
 {
     using reflectable_traits = ::xxrew_injection<CurrentInjectionIndexValue>;

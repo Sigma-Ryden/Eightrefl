@@ -6,6 +6,10 @@
 
 #include <Rew/Reflection.hpp>
 
+#ifndef REW_INJECTION_MAX_KEY_SIZE
+    #define REW_INJECTION_MAX_KEY_SIZE 4
+#endif // REW_INJECTION_MAX_KEY_SIZE
+
 template <std::size_t InjectionIndexValue>
 struct xxrew_injection;
 
