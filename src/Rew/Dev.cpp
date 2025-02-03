@@ -48,6 +48,12 @@ REFLECTABLE(rew::property_t)
     PROPERTY(meta)
 REFLECTABLE_INIT()
 
+REFLECTABLE(rew::deleter_t)
+    PROPERTY(name)
+    PROPERTY(call)
+    PROPERTY(meta)
+REFLECTABLE_INIT()
+
 REFLECTABLE(rew::meta_t)
     PROPERTY(name)
     PROPERTY(value)
