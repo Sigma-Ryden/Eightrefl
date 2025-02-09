@@ -108,6 +108,25 @@ TEST(TestDev, TestProperty)
     EXPECT("property-meta", reflection->property.find("meta") != nullptr);
 }
 
+TEST(TestDev, TestDeleter)
+{
+    auto type = rew::dev.find("rew::deleter_t");
+
+    ASSERT("type", type != nullptr);
+    EXPECT("type-name", type->name == "rew::deleter_t");
+    EXPECT("type-size", type->size == sizeof(rew::deleter_t));
+    EXPECT("type-context", type->context != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+    EXPECT("reflection-name", reflection->name == "rew::deleter_t");
+
+    EXPECT("property-name", reflection->property.find("name") != nullptr);
+    EXPECT("property-type", reflection->property.find("call") != nullptr);
+    EXPECT("property-meta", reflection->property.find("meta") != nullptr);
+}
+
 TEST(TestDev, TestMeta)
 {
     auto type = rew::dev.find("rew::meta_t");
