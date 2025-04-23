@@ -43,11 +43,11 @@ auto handler_factory_call_impl(std::index_sequence<ArgumentIndexValues...>)
     {
         if constexpr (std::is_aggregate_v<ReflectableType>)
         {
-            return ReflectableType{ utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])... };
+            return std::any{ std::in_place_type<ReflectableType>, utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])... };
         }
         else
         {
-            return ReflectableType( utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])... );
+            return std::make_any<ReflectableType>( utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])... );
         }
     };
 }

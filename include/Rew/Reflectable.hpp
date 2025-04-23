@@ -353,14 +353,15 @@ injection_t* find_or_add_injection(type_t* type)
 {
     static_assert(std::is_base_of_v<injectable_t, InjectionType>);
 
-    auto xxname = name_of<InjectionType>();
+    auto xxtype = find_or_add_type<InjectionType>();
 
-    auto xxmeta = type->injection.find(xxname);
+    auto xxmeta = type->injection.find(xxtype->name);
     if (xxmeta == nullptr) xxmeta = type->injection.add
     (
-        xxname,
+        xxtype->name,
         {
-            xxname,
+            xxtype->name,
+            xxtype,
             handler_injection_call<ReflectableType, InjectionType>()
         }
     );
@@ -369,16 +370,17 @@ injection_t* find_or_add_injection(type_t* type)
 }
 
 template <typename ReflectableType,
-          std::size_t CurrentInjectionIndexValue = 0, std::size_t MaxInjectionIndexValue = REW_INJECTION_MAX_KEY_SIZE>
+          std::size_t InjectionIndexValue = 0,
+          std::size_t DefaultInjectionCountValue = REW_DEFAULT_INJECTION_COUNT>
 void add_default_injection_set(type_t* type)
 {
-    using reflectable_traits = ::xxrew_injection<CurrentInjectionIndexValue>;
+    using reflectable_traits = ::xxrew_injection<InjectionIndexValue>;
     if constexpr (meta::is_complete<reflectable_traits>::value)
     {
         find_or_add_injection<ReflectableType, typename reflectable_traits::R>(type);
-        if constexpr (CurrentInjectionIndexValue < MaxInjectionIndexValue)
+        if constexpr (InjectionIndexValue < DefaultInjectionCountValue)
         {
-            add_default_injection_set<ReflectableType, CurrentInjectionIndexValue + 1>(type);
+            add_default_injection_set<ReflectableType, InjectionIndexValue + 1>(type);
         }
     }
 }

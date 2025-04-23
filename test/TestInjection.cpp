@@ -54,8 +54,9 @@ TEST(TestLibrary, TestDefaultInjection)
 
     ASSERT("injection", injection != nullptr);
 
-    TestToStringInjection to_string;
-    injection->call(to_string);
+    // std::any to_string = TestToStringInjection(); // will destroy rvalue object after copying to any
+    auto to_string = std::make_any<TestToStringInjection>(); // will emplace to any
+    injection->call(injection->type->context(to_string));
 
     auto meta = reflection->meta.find("ToString");
 
@@ -103,8 +104,8 @@ TEST(TestLibrary, TestDynamicInjection)
         EXPECT("before_injection", default_constructible == nullptr && no_default_constructible == nullptr);
     }
 
-    TestVirusInjection virus;
-    injection->call(virus);
+    auto virus = std::make_any<TestVirusInjection>();
+    injection->call(injection->type->context(virus));
 
     {
         auto default_constructible = reflection->factory.find("TestInjectionStruct()")->meta.find("IsDefaultConstructible");

@@ -2,12 +2,14 @@
 #define REW_INJECTION_HPP
 
 #include <string> // string
+#include <any> // any
 #include <functional> // function
 
 #include <Rew/Reflection.hpp>
+#include <Rew/Utility.hpp>
 
-#ifndef REW_INJECTION_MAX_KEY_SIZE
-    #define REW_INJECTION_MAX_KEY_SIZE 4
+#ifndef REW_DEFAULT_INJECTION_COUNT
+    #define REW_DEFAULT_INJECTION_COUNT 4
 #endif // REW_INJECTION_MAX_KEY_SIZE
 
 template <std::size_t InjectionIndexValue>
@@ -26,8 +28,6 @@ struct deleter_t;
 
 struct injectable_t
 {
-    virtual ~injectable_t() = default;
-
     template <typename ReflectableType>
     void type(rew::type_t& type) {}
 
@@ -53,15 +53,16 @@ struct injectable_t
 struct injection_t
 {
     std::string const name;
-    std::function<void(injectable_t& injection)> const call = nullptr;
+    type_t *const type = nullptr;
+    std::function<void(std::any const& injectable)> const call = nullptr;
 };
 
 template <typename ReflectionType, class InjectionType>
 auto handler_injection_call()
 {
-    return [](injectable_t& injection)
+    return [](std::any const& injectable)
     {
-        ::xxrew<ReflectionType>::evaluate(static_cast<InjectionType&>(injection));
+        ::xxrew<ReflectionType>::evaluate(utility::forward<InjectionType&>(injectable));
     };
 }
 

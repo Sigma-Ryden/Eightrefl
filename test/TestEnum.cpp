@@ -118,8 +118,8 @@ TEST(TestCommon, TestEnumAsString)
     ASSERT("injection", injection != nullptr);
 
     {
-        auto enum_as_string = TestEnumAsStringInjection(type);
-        injection->call(enum_as_string);
+        auto enum_as_string = std::make_any<TestEnumAsStringInjection>(type);
+        injection->call(injection->type->context(enum_as_string));
     }
 
     auto meta = type->reflection->meta.find("EnumAsString");
