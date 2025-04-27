@@ -23,14 +23,14 @@ TEST(TestBuiltin, TestArray)
 
     #ifdef REW_FULLY_ENABLE
     ASSERT("function-at", reflection->function.find("at") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-operator[]", reflection->function.find("operator[]") != nullptr);
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-front", reflection->function.find("front") != nullptr);
     EXPECT("function-back", reflection->function.find("back") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-data", reflection->function.find("data") != nullptr);
 
@@ -43,7 +43,7 @@ TEST(TestBuiltin, TestArray)
     EXPECT("function-crbegin", reflection->function.find("crbegin") != nullptr);
     EXPECT("function-rend", reflection->function.find("rend") != nullptr);
     EXPECT("function-crend", reflection->function.find("crend") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-empty", reflection->function.find("empty") != nullptr);
     EXPECT("function-size", reflection->function.find("size") != nullptr);
@@ -52,5 +52,5 @@ TEST(TestBuiltin, TestArray)
     EXPECT("function-max_size", reflection->function.find("max_size") != nullptr);
     EXPECT("function-fill", reflection->function.find("fill") != nullptr);
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 }

@@ -35,10 +35,14 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::optional<ValueType>)
     FUNCTION(operator->, typename R::value_type*())
     FUNCTION(operator*, typename R::value_type const&() const&)
     FUNCTION(operator*, typename R::value_type&()&)
-    FUNCTION(operator bool)
     #endif // REW_FULLY_ENABLE
 
-    FUNCTION(has_value)
+    FUNCTION(operator bool)
+
+    #ifdef REW_FULLY_ENABLE
+//  FUNCTION(has_value)
+    #endif // REW_FULLY_ENABLE
+
     FUNCTION(value, typename R::value_type&()&)
     FUNCTION(value, typename R::value_type const&() const&)
 
@@ -47,7 +51,7 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::optional<ValueType>)
     FUNCTION(swap)
     #endif // REW_FULLY_ENABLE
 
-    FUNCTION(reset)
+//  FUNCTION(reset)
     FUNCTION(emplace, typename R::value_type&(typename R::value_type const&))
 REFLECTABLE_INIT()
 

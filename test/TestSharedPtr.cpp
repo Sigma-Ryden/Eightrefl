@@ -22,7 +22,7 @@ TEST(TestBuiltin, TestSharedPtr)
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("factory-R(std::nullptr_t)", reflection->factory.find("std::shared_ptr<int>(std::nullptr_t)") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("factory-R(element_type*)", reflection->factory.find("std::shared_ptr<int>(int*)") != nullptr);
     EXPECT("factory-R(R const&)", reflection->factory.find("std::shared_ptr<int>(std::shared_ptr<int> const&)") != nullptr);
@@ -32,7 +32,7 @@ TEST(TestBuiltin, TestSharedPtr)
 
     #ifdef REW_FULLY_ENABLE
 //  EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-get", reflection->function.find("get") != nullptr);
     EXPECT("function-operator*", reflection->function.find("operator*") != nullptr);
@@ -40,7 +40,7 @@ TEST(TestBuiltin, TestSharedPtr)
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-operator->", reflection->function.find("operator->") != nullptr);
     EXPECT("function-use_count", reflection->function.find("use_count") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-operator bool", reflection->function.find("operator bool") != nullptr);
 }

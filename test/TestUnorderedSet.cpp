@@ -38,7 +38,7 @@ TEST(TestBuiltin, TestUnorderedSet)
     EXPECT("R(std::initializer_list<value_type>, size_type, hasher const&)", reflection->factory.find("std::unordered_set<int>(std::initializer_list<int>, unsigned long, std::hash<int> const&)") != nullptr || reflection->factory.find("std::unordered_set<int>(std::initializer_list<int>, unsigned long long, std::hash<int> const&)") != nullptr);
     EXPECT("R(std::initializer_list<value_type>, size_type)", reflection->factory.find("std::unordered_set<int>(std::initializer_list<int>, unsigned long)") != nullptr || reflection->factory.find("std::unordered_set<int>(std::initializer_list<int>, unsigned long long)") != nullptr);
     EXPECT("R(std::initializer_list<value_type>, size_type, hasher const&, allocator_type const&)", reflection->factory.find("std::unordered_set<int>(std::initializer_list<int>, unsigned long, std::hash<int> const&, std::allocator<int> const&)") != nullptr || reflection->factory.find("std::unordered_set<int>(std::initializer_list<int>, unsigned long long, std::hash<int> const&, std::allocator<int> const&)") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("factory-R(R const&)", reflection->factory.find("std::unordered_set<int>(std::unordered_set<int> const&)") != nullptr);
     EXPECT("function-operator=", reflection->function.find("operator=") != nullptr);
@@ -49,14 +49,14 @@ TEST(TestBuiltin, TestUnorderedSet)
     EXPECT("function-cbegin", reflection->function.find("cbegin") != nullptr);
     EXPECT("function-end", reflection->function.find("end") != nullptr);
     EXPECT("function-cend", reflection->function.find("cend") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-empty", reflection->function.find("empty") != nullptr);
     EXPECT("function-size", reflection->function.find("size") != nullptr);
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-max_size", reflection->function.find("max_size") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-clear", reflection->function.find("clear") != nullptr);
 
@@ -65,13 +65,13 @@ TEST(TestBuiltin, TestUnorderedSet)
     EXPECT("function-erase", reflection->function.find("erase") != nullptr);
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
 //  EXPECT("function-extract", reflection->function.find("extract") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-merge", reflection->function.find("merge") != nullptr);
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-find", reflection->function.find("find") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
 #if __cplusplus >= 202002L
     EXPECT("function-contains", reflection->function.find("contains") != nullptr);
@@ -85,7 +85,7 @@ TEST(TestBuiltin, TestUnorderedSet)
     EXPECT("function-bucket", reflection->function.find("bucket") != nullptr);
     EXPECT("function-load_factor", reflection->function.find("load_factor") != nullptr);
     EXPECT("function-max_load_factor", reflection->function.find("max_load_factor") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-rehash", reflection->function.find("rehash") != nullptr);
     EXPECT("function-reserve", reflection->function.find("reserve") != nullptr);
@@ -93,5 +93,5 @@ TEST(TestBuiltin, TestUnorderedSet)
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-hash_function", reflection->function.find("hash_function") != nullptr);
     EXPECT("function-key_eq", reflection->function.find("key_eq") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 }

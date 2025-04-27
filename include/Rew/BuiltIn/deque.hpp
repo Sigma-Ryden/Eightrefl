@@ -57,7 +57,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     #ifdef REW_FULLY_ENABLE
     FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
     FUNCTION(assign, void(typename R::size_type, typename R::const_reference))
-    FUNCTION(assign, void(std_const_iterator<R>, std_const_iterator<R>))
+//  FUNCTION(assign, void(std_const_iterator<R>, std_const_iterator<R>))
     FUNCTION(assign, void(std::initializer_list<typename R::value_type>))
     FUNCTION(get_allocator)
     FUNCTION(at, typename R::const_reference(typename R::size_type) const)
@@ -99,7 +99,7 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     #ifdef REW_FULLY_ENABLE
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::const_reference))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, typename R::size_type, typename R::const_reference))
-    FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>, std_const_iterator<R>))
+//  FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>, std_const_iterator<R>))
     FUNCTION(insert, std_iterator<R>(std_const_iterator<R>, std::initializer_list<typename R::value_type>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>))
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))

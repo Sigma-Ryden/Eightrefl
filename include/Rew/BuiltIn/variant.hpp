@@ -37,7 +37,7 @@ TEMPLATE_REFLECTABLE
 
     #ifdef REW_FULLY_ENABLE
     FUNCTION(valueless_by_exception)
-    FUNCTION(swap)
+    FUNCTION(swap, void(R&))
     #endif // REW_FULLY_ENABLE
 REFLECTABLE_INIT()
 

@@ -159,13 +159,29 @@ TEMPLATE_REFLECTABLE(template <class StdContainer>, std_vectorbool_reference<Std
 REFLECTABLE_INIT()
 
 
+TEMPLATE_REFLECTABLE_USING
+(
+    template <class StdContainer>, std_vectorbool_const_reference,
+    std_vectorbool_const_reference<StdContainer>, typename rew::clean_of<StdContainer>::const_reference
+)
+
+TEMPLATE_REFLECTABLE_DECLARATION(template <class StdContainer>, std_vectorbool_const_reference<StdContainer>)
+    BUILTIN_REFLECTABLE()
+    REFLECTABLE_NAME(rew::name_of<StdContainer>() + "::const_reference")
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE(template <class StdContainer>, std_vectorbool_const_reference<StdContainer>)
+    FUNCTION(operator bool)
+REFLECTABLE_INIT()
+
+
 TEMPLATE_REFLECTABLE(template <typename AllocatorType>, std::vector<bool, AllocatorType>)
     FACTORY(R())
 
     #ifdef REW_FULLY_ENABLE
     FACTORY(R(typename R::allocator_type const&))
-    FACTORY(R(typename R::size_type, typename R::const_reference, typename R::allocator_type const&))
-    FACTORY(R(typename R::size_type, typename R::const_reference))
+    FACTORY(R(typename R::size_type, std_vectorbool_const_reference<R>, typename R::allocator_type const&))
+    FACTORY(R(typename R::size_type, std_vectorbool_const_reference<R>))
     FACTORY(R(typename R::size_type, typename R::allocator_type const&))
     FACTORY(R(typename R::size_type))
     FACTORY(R(std_const_iterator<R>, std_const_iterator<R>, typename R::allocator_type const&))
@@ -188,17 +204,17 @@ TEMPLATE_REFLECTABLE(template <typename AllocatorType>, std::vector<bool, Alloca
     FUNCTION(assign, void(std_const_iterator<R>, std_const_iterator<R>))
     FUNCTION(assign, void(std::initializer_list<typename R::value_type>))
     FUNCTION(get_allocator)
-    FUNCTION(at, typename R::const_reference(typename R::size_type) const)
+    FUNCTION(at, std_vectorbool_const_reference<R>(typename R::size_type) const)
     FUNCTION(at, std_vectorbool_reference<R>(typename R::size_type))
     #endif // REW_FULLY_ENABLE
 
-    FUNCTION(operator[], typename R::const_reference(typename R::size_type) const)
+    FUNCTION(operator[], std_vectorbool_const_reference<R>(typename R::size_type) const)
     FUNCTION(operator[], std_vectorbool_reference<R>(typename R::size_type))
 
     #ifdef REW_FULLY_ENABLE
-    FUNCTION(front, typename R::const_reference() const)
+    FUNCTION(front, std_vectorbool_const_reference<R>() const)
     FUNCTION(front, std_vectorbool_reference<R>())
-    FUNCTION(back, typename R::const_reference() const)
+    FUNCTION(back, std_vectorbool_const_reference<R>() const)
     FUNCTION(back, std_vectorbool_reference<R>())
     #endif // REW_FULLY_ENABLE
 
@@ -242,12 +258,12 @@ TEMPLATE_REFLECTABLE(template <typename AllocatorType>, std::vector<bool, Alloca
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
     #endif // REW_FULLY_ENABLE
 
-    FUNCTION(push_back, void(typename R::const_reference))
+    FUNCTION(push_back, void(typename R::value_type const&))
     FUNCTION(pop_back)
 //  FUNCTION(resize, void(typename R::size_type))
 
     #ifdef REW_FULLY_ENABLE
-    FUNCTION(resize, void(typename R::size_type, typename R::const_reference))
+    FUNCTION(resize, void(typename R::size_type, typename R::value_type))
     FUNCTION(swap, void(R&))
     FUNCTION(swap, void(std_vectorbool_reference<R>, std_vectorbool_reference<R>))
     FUNCTION(flip)

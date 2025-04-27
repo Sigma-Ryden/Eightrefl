@@ -26,7 +26,7 @@ TEST(TestBuiltin, TestSet)
     EXPECT("factory-R(allocator_type const&)", reflection->factory.find("std::set<int>(std::allocator<int> const&)") != nullptr);
     EXPECT("factory-R(const_iterator, const_iterator, key_compare const&, allocator_type const&)", reflection->factory.find("std::set<int>(std::set<int>::const_iterator, std::set<int>::const_iterator, std::less<int> const&, std::allocator<int> const&)") != nullptr);
     EXPECT("factory-R(const_iterator, const_iterator, allocator_type const&)", reflection->factory.find("std::set<int>(std::set<int>::const_iterator, std::set<int>::const_iterator, std::allocator<int> const&)") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("factory-R(R const&)", reflection->factory.find("std::set<int>(std::set<int> const&)") != nullptr);
 
@@ -34,13 +34,13 @@ TEST(TestBuiltin, TestSet)
     EXPECT("factory-R(R const&, allocator_type const&)", reflection->factory.find("std::set<int>(std::set<int> const&, std::allocator<int> const&)") != nullptr);
     EXPECT("factory-R(std::initializer_list<value_type>, key_compare const&, allocator_type const&)", reflection->factory.find("std::set<int>(std::initializer_list<int>, std::less<int> const&, std::allocator<int> const&)") != nullptr);
     EXPECT("factory-R(std::initializer_list<value_type>)", reflection->factory.find("std::set<int>(std::initializer_list<int>)") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-operator=", reflection->function.find("operator=") != nullptr);
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-get_allocator", reflection->function.find("get_allocator") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-begin", reflection->function.find("begin") != nullptr);
@@ -51,14 +51,14 @@ TEST(TestBuiltin, TestSet)
     EXPECT("function-crbegin", reflection->function.find("crbegin") != nullptr);
     EXPECT("function-rend", reflection->function.find("rend") != nullptr);
     EXPECT("function-crend", reflection->function.find("crend") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-empty", reflection->function.find("empty") != nullptr);
     EXPECT("function-size", reflection->function.find("size") != nullptr);
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-max_size", reflection->function.find("max_size") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-clear", reflection->function.find("clear") != nullptr);
 
@@ -67,14 +67,14 @@ TEST(TestBuiltin, TestSet)
     EXPECT("function-erase", reflection->function.find("erase") != nullptr);
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
 //  EXPECT("function-extract", reflection->function.find("extract") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-merge", reflection->function.find("merge") != nullptr);
     EXPECT("function-count", reflection->function.find("count") != nullptr);
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-find", reflection->function.find("find") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
 #if __cplusplus >= 202002L
     EXPECT("function-contains", reflection->function.find("contains") != nullptr);
@@ -86,5 +86,5 @@ TEST(TestBuiltin, TestSet)
     EXPECT("function-upper_bound", reflection->function.find("upper_bound") != nullptr);
     EXPECT("function-key_comp", reflection->function.find("key_comp") != nullptr);
 //  EXPECT("function-value_comp", reflection->function.find("value_comp") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 }

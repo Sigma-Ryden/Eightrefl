@@ -11,6 +11,7 @@
 // as function argument tye
 #include <Rew/BuiltIn/string.hpp>
 
+#ifdef REW_FULLY_ENABLE
 TEMPLATE_REFLECTABLE_USING
 (
     template <class StdBitsetType>, std_bitset_reference,
@@ -37,7 +38,7 @@ TEMPLATE_REFLECTABLE(template <class StdBitsetType>, std_bitset_reference<StdBit
 
     FUNCTION(flip, R&())
 REFLECTABLE_INIT()
-
+#endif // REW_FULLY_ENABLE
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <std::size_t SizeValue>, std::bitset<SizeValue>)
     BUILTIN_REFLECTABLE()
@@ -67,11 +68,15 @@ TEMPLATE_REFLECTABLE(template <std::size_t SizeValue>, std::bitset<SizeValue>)
 
     FUNCTION(operator=, R&(R const&))
     FUNCTION(operator==)
-    FUNCTION(operator[], bool(std_size_t) const)
-    FUNCTION(operator[], std_bitset_reference<R>(std_size_t))
 
     #ifdef REW_FULLY_ENABLE
+//  FUNCTION(operator[], bool(std_size_t) const)
+//  FUNCTION(operator[], std_bitset_reference<R>(std_size_t))
+    #endif // REW_FULLY_ENABLE
+
     FUNCTION(test)
+
+    #ifdef REW_FULLY_ENABLE
     FUNCTION(all)
     FUNCTION(any)
     FUNCTION(none)

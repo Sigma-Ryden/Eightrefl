@@ -25,7 +25,7 @@ TEST(TestBuiltin, TestReferenceWrapper)
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-operator value_type&", reflection->function.find("operator int&") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-get", reflection->function.find("get") != nullptr);
 }

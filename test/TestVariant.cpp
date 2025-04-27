@@ -27,5 +27,5 @@ TEST(TestBuiltin, TestVariant)
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-valueless_by_exception", reflection->function.find("valueless_by_exception") != nullptr);
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 }

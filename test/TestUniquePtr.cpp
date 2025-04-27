@@ -24,18 +24,18 @@ TEST(TestBuiltin, TestUniquePtr)
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-get", reflection->function.find("get") != nullptr);
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-get_deleter", reflection->function.find("get_deleter") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-operator bool", reflection->function.find("operator bool") != nullptr);
     EXPECT("function-operator*", reflection->function.find("operator*") != nullptr);
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-operator->", reflection->function.find("operator->") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 }

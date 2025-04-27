@@ -45,8 +45,12 @@ TEMPLATE_REFLECTABLE
     std::priority_queue<ValueType, ContainerType, ComparatorType>
 )
     FACTORY(R())
+
+    #ifdef REW_FULLY_ENABLE
     FACTORY(R(typename R::value_compare const&, typename R::container_type const&))
     FACTORY(R(typename R::value_compare const&))
+    #endif // REW_FULLY_ENABLE
+
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(top, typename R::const_reference() const)

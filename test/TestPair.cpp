@@ -25,7 +25,7 @@ TEST(TestBuiltin, TestPair)
     EXPECT("factory-R(R const&)", reflection->factory.find("std::pair<int, float>(std::pair<int, float> const&)") != nullptr);
     EXPECT("function-operator=", reflection->function.find("operator=") != nullptr);
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("property-first", reflection->property.find("first") != nullptr);
     EXPECT("property-second", reflection->property.find("second") != nullptr);

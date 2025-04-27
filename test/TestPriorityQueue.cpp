@@ -19,8 +19,12 @@ TEST(TestBuiltin, TestPriorityQueue)
     EXPECT("reflection-name", reflection->name == "std::priority_queue<int>");
 
     EXPECT("factory-R()", reflection->factory.find("std::priority_queue<int>()") != nullptr);
+
+    #ifdef REW_FULLY_ENABLE
     EXPECT("factory-R(value_compare const&, container_type const&)", reflection->factory.find("std::priority_queue<int>(std::less<int> const&, std::vector<int> const&)") != nullptr);
     EXPECT("factory-R(value_compare const&)", reflection->factory.find("std::priority_queue<int>(std::less<int> const&)") != nullptr);
+    #endif // REW_FULLY_ENABLE
+
     EXPECT("factory-R(R const&)", reflection->factory.find("std::priority_queue<int>(std::priority_queue<int> const&)") != nullptr);
 
     EXPECT("function-operator=", reflection->function.find("operator=") != nullptr);
@@ -32,5 +36,5 @@ TEST(TestBuiltin, TestPriorityQueue)
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 }

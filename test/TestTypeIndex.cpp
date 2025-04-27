@@ -29,7 +29,7 @@ TEST(TestBuiltin, TestTypeIndex)
     EXPECT("function-operator<=", reflection->function.find("operator<=") != nullptr);
     EXPECT("function-operator>", reflection->function.find("operator>") != nullptr);
     EXPECT("function-operator>=", reflection->function.find("operator>=") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 #endif // if
 
     EXPECT("function-hash_code", reflection->function.find("hash_code") != nullptr);

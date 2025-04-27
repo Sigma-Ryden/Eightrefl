@@ -25,7 +25,6 @@ TEMPLATE_REFLECTABLE(template <typename KeyType>, std::hash<KeyType>)
     #endif // REW_FULLY_ENABLE
 REFLECTABLE_INIT()
 
-
 TEMPLATE_REFLECTABLE_CLEAN(template <typename T>, std::equal_to<T>, std::equal_to<rew::clean_of<T>>)
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, std::equal_to<T>)

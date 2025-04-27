@@ -20,7 +20,7 @@ TEST(TestBuiltin, TestTypeInfo)
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-before", reflection->function.find("before") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-hash_code", reflection->function.find("hash_code") != nullptr);
     EXPECT("function-name", reflection->function.find("name") != nullptr);

@@ -22,7 +22,7 @@ file(GLOB_RECURSE ${PROJECT_NAME}_TEST_SOURCES test/*.cpp)
 file(GLOB_RECURSE ${PROJECT_NAME}_TEST_HEADERS test/*.hpp) # optionaly
 
 add_compile_definitions(REW_FULLY_ENABLE)
-add_compile_definitions(REW_DEV_ENABLE)
+# add_compile_definitions(REW_DEV_ENABLE)
 
 add_executable(${PROJECT_NAME}
     ${${PROJECT_NAME}_TEST_SOURCES}

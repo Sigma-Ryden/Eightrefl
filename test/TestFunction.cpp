@@ -26,12 +26,12 @@ TEST(TestBuiltin, TestFunction)
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-operator bool", reflection->function.find("operator bool") != nullptr);
     EXPECT("function-operator()", reflection->function.find("operator()") != nullptr);
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-target_type", reflection->function.find("target_type") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 }

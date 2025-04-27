@@ -27,7 +27,11 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), std::queue<ValueType, ContainerType>)
     FACTORY(R())
+
+    #ifdef REW_FULLY_ENABLE
     FACTORY(R(typename R::container_type const&))
+    #endif // REW_FULLY_ENABLE
+
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
     FUNCTION(front, typename R::reference())

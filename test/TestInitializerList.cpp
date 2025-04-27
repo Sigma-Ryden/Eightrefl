@@ -26,7 +26,7 @@ TEST(TestBuiltin, TestInitializerList)
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-begin", reflection->function.find("begin") != nullptr);
     EXPECT("function-end", reflection->function.find("end") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-size", reflection->function.find("size") != nullptr);
 }

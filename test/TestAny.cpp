@@ -24,7 +24,7 @@ TEST(TestBuiltin, TestAny)
 
     #ifdef REW_FULLY_ENABLE
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 
     EXPECT("function-has_value", reflection->function.find("has_value") != nullptr);
     EXPECT("function-type", reflection->function.find("type") != nullptr);

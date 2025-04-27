@@ -22,7 +22,7 @@ TEST(TestBuiltin::TestFunctional, TestHash)
     EXPECT("factory-R()", reflection->factory.find("std::hash<int>()") != nullptr);
     EXPECT("factory-R(std::nullptr_t)", reflection->factory.find("std::hash<int>(std::hash<int> const&)") != nullptr);
     EXPECT("function-operator()", reflection->function.find("operator()") != nullptr);
-    #endif // REW_CORE_MINIMAL_DISABLE
+    #endif // REW_FULLY_ENABLE
 }
 
 TEST(TestBuiltin::TestFunctional, TestEqualTo)
