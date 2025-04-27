@@ -54,15 +54,15 @@ struct injection_t
 {
     std::string const name;
     type_t *const type = nullptr;
-    std::function<void(std::any const& injectable)> const call = nullptr;
+    std::function<void(std::any const& injectable_context)> const call = nullptr;
 };
 
 template <typename ReflectionType, class InjectionType>
 auto handler_injection_call()
 {
-    return [](std::any const& injectable)
+    return [](std::any const& injectable_context)
     {
-        ::xxrew<ReflectionType>::evaluate(utility::forward<InjectionType&>(injectable));
+        ::xxrew<ReflectionType>::evaluate(utility::forward<InjectionType&>(injectable_context));
     };
 }
 
