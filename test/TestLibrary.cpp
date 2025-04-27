@@ -583,7 +583,7 @@ TEST(TestLibrary, TestTypeDeduction)
     }
 }
 
-
+#ifdef REW_RTTI_ALL_ENABLE
 TEST_SPACE()
 {
 
@@ -623,7 +623,7 @@ TEST(TestLibrary, TestRTTIRegistry)
     EXPECT("const_pointer_to_const_type_reference-typeid", rew::global.find(typeid(TestRTTIRegistryStruct const**)) == const_pointer_to_const_type_reference);
     EXPECT("mixed_type-typeid", rew::global.find(typeid(TestRTTIRegistryStruct const***)) == mixed_type);
 }
-
+#endif // REW_RTTI_ALL_ENABLE
 
 TEST_SPACE()
 {

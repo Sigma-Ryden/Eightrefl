@@ -31,11 +31,13 @@ type_t* registry_t::find(std::string const& name) const
     return it != all.end() ? it->second : nullptr;
 }
 
+#ifdef REW_RTTI_ALL_ENABLE
 type_t* registry_t::find(std::type_index typeindex) const
 {
     auto it = rtti_all.find(typeindex);
     return it != rtti_all.end() ? it->second : nullptr;
 }
+#endif // REW_RTTI_ALL_ENABLE
 
 registry_t global;
 
