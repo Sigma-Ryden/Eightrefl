@@ -9,8 +9,8 @@
 #include <Rew/Attribute.hpp>
 #include <Rew/Utility.hpp>
 
-// .factory<signature>()
-#define FACTORY(...) \
+// .factory<function_type>()
+#define FACTORY(... /*function_type*/) \
     { \
         using xxtraits = rew::meta::function_traits<__VA_ARGS__>; \
         auto xxfactory = rew::find_or_add_factory<typename xxtraits::dirty_pointer>(xxreflection); \

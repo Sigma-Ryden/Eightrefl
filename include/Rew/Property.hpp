@@ -13,8 +13,8 @@
 
 #include <Rew/Detail/Macro.hpp> // REW_DEPAREN
 
-// .property<R, type>(external_name, &scope::internal_iname, &scope::ìnternal_oname)
-#define CUSTOM_PROPERTY(scope, external_name, internal_iname, internal_oname, ...) \
+// .property<R, variable_type_or_function_type>(external_name, &scope::internal_iname, &scope::ìnternal_oname)
+#define CUSTOM_PROPERTY(scope, external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
     { \
         using xxaccess = typename rew::meta::access_traits<scope>::template property<__VA_ARGS__>; \
         auto xxpointer = xxaccess::of(&scope::REW_DEPAREN(internal_iname), &scope::REW_DEPAREN(internal_oname)); \
@@ -23,10 +23,14 @@
         xxmeta = &xxproperty->meta; \
     }
 
-#define NAMED_PROPERTY(external_name, internal_iname, internal_oname, ...) CUSTOM_PROPERTY(CleanR, external_name, internal_iname, internal_oname, __VA_ARGS__)
-#define NAMED_FREE_PROPERTY(external_name, internal_iname, internal_oname, ...) CUSTOM_PROPERTY(, external_name, internal_iname, internal_oname, __VA_ARGS__)
-#define PROPERTY(name, ...) NAMED_PROPERTY(REW_TO_STRING(name), name, name, __VA_ARGS__)
-#define FREE_PROPERTY(name, ...) NAMED_FREE_PROPERTY(REW_TO_STRING(name), name, name, __VA_ARGS__)
+#define NAMED_PROPERTY(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
+    CUSTOM_PROPERTY(CleanR, external_name, internal_iname, internal_oname, __VA_ARGS__)
+
+#define NAMED_FREE_PROPERTY(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
+    CUSTOM_PROPERTY(, external_name, internal_iname, internal_oname, __VA_ARGS__)
+
+#define PROPERTY(name, ... /*variable_type_or_function_type*/) NAMED_PROPERTY(REW_TO_STRING(name), name, name, __VA_ARGS__)
+#define FREE_PROPERTY(name, ... /*variable_type_or_function_type*/) NAMED_FREE_PROPERTY(REW_TO_STRING(name), name, name, __VA_ARGS__)
 
 namespace rew
 {

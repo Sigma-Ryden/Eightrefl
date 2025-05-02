@@ -15,42 +15,42 @@
 #include <Rew/Detail/Meta.hpp>
 #include <Rew/Detail/Macro.hpp>
 
-#define TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, ...) \
+#define TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, ... /*reflectable_type*/) \
     REW_DEPAREN(object_template_header) struct xxrew_traits<__VA_ARGS__> { \
         using R = typename ::xxrew_alias<__VA_ARGS__>::R; \
         LAZY_REFLECTABLE()
 
-#define CONDITIONAL_REFLECTABLE_DECLARATION(...) \
+#define CONDITIONAL_REFLECTABLE_DECLARATION(... /*reflectable_type_condition*/) \
     template <typename DirtyR> struct xxrew_traits<DirtyR, std::enable_if_t<__VA_ARGS__>> { \
         using R = typename ::xxrew_alias<DirtyR>::R; \
         LAZY_REFLECTABLE()
 
-#define REFLECTABLE_DECLARATION(...) \
+#define REFLECTABLE_DECLARATION(... /*reflectable_type*/) \
     template <> struct xxrew_traits<__VA_ARGS__> { \
         using R = typename ::xxrew_alias<__VA_ARGS__>::R; \
         static constexpr auto alias = #__VA_ARGS__;
 
-#define REFLECTABLE_REGISTRY(...)  static auto registry() { return __VA_ARGS__; }
-#define REFLECTABLE_NAME(...) static auto name() { return __VA_ARGS__; }
-#define LAZY_REFLECTABLE(...) struct lazy;
-#define BUILTIN_REFLECTABLE(...) struct builtin;
+#define REFLECTABLE_REGISTRY(... /*reflectable_registry_address*/)  static auto registry() { return __VA_ARGS__; }
+#define REFLECTABLE_NAME(... /*reflectable_name_string*/) static auto name() { return __VA_ARGS__; }
+#define LAZY_REFLECTABLE() struct lazy;
+#define BUILTIN_REFLECTABLE() struct builtin;
 
-#define REFLECTABLE_DECLARATION_INIT(...) \
+#define REFLECTABLE_DECLARATION_INIT() \
     };
 
 
-#define TEMPLATE_REFLECTABLE(object_template_header, ...) \
+#define TEMPLATE_REFLECTABLE(object_template_header, ... /*reflectable_type*/) \
     REW_DEPAREN(object_template_header) struct xxrew<__VA_ARGS__> { \
         using R = __VA_ARGS__; \
         using CleanR = typename ::xxrew_alias<R>::R; \
         REW_REFLECTABLE_BODY()
 
-#define CONDITIONAL_REFLECTABLE(...) \
+#define CONDITIONAL_REFLECTABLE(... /*reflectable_type_condition*/) \
     template <typename R> struct xxrew<R, std::enable_if_t<__VA_ARGS__>> { \
         using CleanR = typename ::xxrew_alias<R>::R; \
         REW_REFLECTABLE_BODY()
 
-#define REFLECTABLE(...) \
+#define REFLECTABLE(... /*reflectable_type*/) \
     template <> struct xxrew<__VA_ARGS__> { \
         using R = __VA_ARGS__; \
         using CleanR = typename ::xxrew_alias<R>::R; \
@@ -66,39 +66,38 @@
         injection.template type<R>(*xxtype); \
 
 #ifdef REW_DISABLE_REFLECTION_FIXTURE
-    #define REFLECTABLE_INIT(...) \
+    #define REFLECTABLE_INIT() \
             } \
         };
 #else
-    #define REFLECTABLE_INIT(...) \
+    #define REFLECTABLE_INIT() \
             } \
             inline static auto xxfixture = (rew::reflectable<R>(), true); \
         };
 #endif // REW_DISABLE_REFLECTION_FIXTURE
 
 
-#define REFLECTABLE_INJECTION_DECLARATION(injection_index, ...) \
+#define REFLECTABLE_INJECTION_DECLARATION(injection_index, ... /*reflectable_type*/) \
     template <> struct xxrew_injection<injection_index> { using R = __VA_ARGS__; }; \
         REFLECTABLE_DECLARATION(__VA_ARGS__)
 
 
-#define TEMPLATE_REFLECTABLE_CLEAN(object_template_header, object_type, ...) \
-    REW_DEPAREN(object_template_header) struct xxrew_alias<REW_DEPAREN(object_type)> { \
-        using R = __VA_ARGS__; \
-    };
+#define TEMPLATE_REFLECTABLE_CLEAN(object_template_header, object_type, ... /*clean_reflectable_type*/) \
+    REW_DEPAREN(object_template_header) struct xxrew_alias<REW_DEPAREN(object_type)> { using R = __VA_ARGS__; };
 
-#define REFLECTABLE_CLEAN(object_type, ...) template <> struct xxrew_alias<object_type> { using R = __VA_ARGS__; };
+#define REFLECTABLE_CLEAN(alias_type, ... /*clean_reflectable_type*/) \
+    template <> struct xxrew_alias<alias_type> { using R = __VA_ARGS__; };
 
-#define TEMPLATE_REFLECTABLE_USING(alias_object_template_header, alias_type, alias_object_type, ...) \
+#define TEMPLATE_REFLECTABLE_USING(alias_object_template_header, alias_type, alias_object_type, ... /*clean_reflectable_type*/) \
     REW_DEPAREN(alias_object_template_header) struct alias_type : rew::meta::inherits<__VA_ARGS__> {}; \
     TEMPLATE_REFLECTABLE_CLEAN(alias_object_template_header, alias_object_type, __VA_ARGS__)
 
-#define REFLECTABLE_USING(alias_type, ...) \
+#define REFLECTABLE_USING(alias_type, ... /*clean_reflectable_type*/) \
     struct alias_type : rew::meta::inherits<__VA_ARGS__> {}; \
     REFLECTABLE_CLEAN(alias_type, __VA_ARGS__)
 
 
-#define REFLECTABLE_ACCESS(...) template <typename, typename> friend struct xxrew;
+#define REFLECTABLE_ACCESS() template <typename, typename> friend struct xxrew;
 
 
 namespace rew

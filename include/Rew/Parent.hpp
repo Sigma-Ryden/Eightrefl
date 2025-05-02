@@ -7,8 +7,8 @@
 
 #include <Rew/Attribute.hpp>
 
-// .parent<R, type>()
-#define PARENT(...) \
+// .parent<R, reflectable_type>()
+#define PARENT(... /*reflectable_type*/) \
     { \
         auto xxparent = rew::find_or_add_parent<CleanR, __VA_ARGS__>(xxreflection); \
         injection.template parent<CleanR, __VA_ARGS__>(*xxparent); \

@@ -8,8 +8,8 @@
 #include <Rew/Attribute.hpp>
 #include <Rew/Utility.hpp>
 
-// .deleter<R, signature>()
-#define DELETER(...) \
+// .deleter<R, function_type>()
+#define DELETER(... /*function_type*/) \
     { \
         using xxtraits = rew::meta::deleter_traits<__VA_ARGS__>; \
         auto xxdeleter = rew::find_or_add_deleter<typename xxtraits::dirty_pointer>(xxreflection); \

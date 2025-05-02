@@ -9,8 +9,8 @@
 #include <Rew/Detail/Meta.hpp>
 #include <Rew/Detail/Macro.hpp> // REW_DEPAREN
 
-// .meta(external_name, expression)
-#define CUSTOM_META(touch_expression, meta_pointer, external_name, ...) \
+// .meta(external_name, meta_expression)
+#define CUSTOM_META(touch_expression, meta_pointer, external_name, ... /*meta_expression*/) \
     { \
         auto xxitem = meta_pointer->find(external_name); \
         if (xxitem == nullptr) xxitem = meta_pointer->add(external_name, { external_name, std::any(__VA_ARGS__) }); \
@@ -18,8 +18,8 @@
         REW_DEPAREN(touch_expression); \
     }
 
-#define META(external_name, ...) CUSTOM_META((xxsubmeta = &xxitem->meta), xxmeta, external_name, __VA_ARGS__)
-#define SUBMETA(external_name, ...) CUSTOM_META((), xxsubmeta, external_name, __VA_ARGS__)
+#define META(external_name, ... /*meta_expression*/) CUSTOM_META((xxsubmeta = &xxitem->meta), xxmeta, external_name, __VA_ARGS__)
+#define SUBMETA(external_name, ... /*meta_expression*/) CUSTOM_META((), xxsubmeta, external_name, __VA_ARGS__)
 
 namespace rew
 {
