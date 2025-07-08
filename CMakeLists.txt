@@ -1,34 +1,34 @@
-# base
+# [[Root]]
 cmake_minimum_required(VERSION 3.5)
 
-project(RewTesting LANGUAGES CXX)
+project(Rew)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# ~base
 
-# packages
-set(Automation_DIR ${CMAKE_CURRENT_LIST_DIR}/../Automation/cmake)
-find_package(Automation REQUIRED)
 
-set(Rew_DIR ${CMAKE_CURRENT_LIST_DIR}/cmake)
-find_package(Rew REQUIRED)
-# ~packages
+# [[Options]]
+option(REW_BUILD_SHARED_LIBS "Build shared libraies by Default" ON)
 
-# test
-include_directories(test)
 
-file(GLOB_RECURSE ${PROJECT_NAME}_TEST_SOURCES test/*.cpp)
-file(GLOB_RECURSE ${PROJECT_NAME}_TEST_HEADERS test/*.hpp) # optionaly
+# [[Binaries]]
+if(REW_BUILD_SHARED_LIBS)
+    set(PROJECT_LIBS_TYPE SHARED)
+else()
+    set(PROJECT_LIBS_TYPE STATIC) # not recommended, registration may be lost, use export all symbols to be sure
+endif()
 
-add_compile_definitions(REW_FULLY_ENABLE)
-add_compile_definitions(REW_RTTI_ALL_ENABLE)
-# add_compile_definitions(REW_DEV_ENABLE)
 
-add_executable(${PROJECT_NAME}
-    ${${PROJECT_NAME}_TEST_SOURCES}
-    ${${PROJECT_NAME}_TEST_HEADERS} # optionaly
-    ${Rew_HEADER_FILES} # optionaly
-)
-target_link_libraries(${PROJECT_NAME} Automation Rew)
-# ~test
+file(GLOB_RECURSE PROJECT_SOURCES_FILES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp" "${CMAKE_CURRENT_LIST_DIR}/include/*.hpp")
+add_library("${PROJECT_NAME}" ${PROJECT_LIBS_TYPE} ${PROJECT_SOURCES_FILES})
+target_include_directories("${PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include")
+
+if(REW_BUILD_SHARED_LIBS)
+    set_target_properties("${PROJECT_NAME}" PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
+
+
+# [[Tests]]
+if(PROJECT_IS_TOP_LEVEL)
+    add_subdirectory("test")
+endif()
