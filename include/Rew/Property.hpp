@@ -41,7 +41,7 @@ struct meta_t;
 struct property_t
 {
     std::string const name;
-    type_t *const type = nullptr;
+    type_t* const type = nullptr;
     std::function<void(std::any const& context, std::any& result)> const get = nullptr;
     std::function<void(std::any const& context, std::any const& value)> const set = nullptr;
     std::function<std::any(std::any const& outer_context)> const context = nullptr;

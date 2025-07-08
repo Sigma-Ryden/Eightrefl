@@ -4,6 +4,7 @@ TEST(TestLibrary, TestNameOf)
 {
     EXPECT("const-type", rew::name_of<const int>() == "int const");
     EXPECT("pointer-type", rew::name_of<int*>() == "int*");
+    EXPECT("const_pointer-type", rew::name_of<int* const>() == "int* const");
     EXPECT("reference-type", rew::name_of<int&>() == "int&");
     EXPECT("function-type", rew::name_of<void(int, float)>() == "void(int, float)");
     EXPECT("function-pointer-type", rew::name_of<void(*)(int, float)>() == "std::type_identity_t<void(int, float)>*");

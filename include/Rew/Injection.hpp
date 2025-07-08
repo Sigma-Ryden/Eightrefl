@@ -53,7 +53,7 @@ struct injectable_t
 struct injection_t
 {
     std::string const name;
-    type_t *const type = nullptr;
+    type_t* const type = nullptr;
     std::function<void(std::any const& injectable_context)> const call = nullptr;
 };
 

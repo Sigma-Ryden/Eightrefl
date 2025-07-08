@@ -19,8 +19,8 @@ struct injection_t;
 struct type_t
 {
     std::string const name;
-    reflection_t *const reflection = nullptr;
-    registry_t *const registry = nullptr;
+    reflection_t* const reflection = nullptr;
+    registry_t* const registry = nullptr;
     std::size_t const size = 0;
     std::function<std::any(std::any& object)> const context = nullptr;
 
