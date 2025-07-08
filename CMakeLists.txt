@@ -15,7 +15,8 @@ option(REW_BUILD_SHARED_LIBS "Build shared libraies by Default" ON)
 if(REW_BUILD_SHARED_LIBS)
     set(PROJECT_LIBS_TYPE SHARED)
 else()
-    set(PROJECT_LIBS_TYPE STATIC) # not recommended, registration may be lost, use export all symbols to be sure
+    set(PROJECT_LIBS_TYPE STATIC)
+    message(WARNING "Rew: build static library not recommended, registration may be lost, use export all symbols to be sure")
 endif()
 
 
