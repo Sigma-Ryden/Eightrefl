@@ -53,18 +53,18 @@ See full list [here](https://github.com/Sigma-Ryden/Rew/tree/master/include/Rew/
 
 ### Library features:
 - General:
-  - [Reflectable injection](https://github.com/Sigma-Ryden/Rew/blob/master/test/TestInjection.cpp)
-  - [Registry splitting](https://github.com/Sigma-Ryden/Rew/blob/master/test/TestLibrary.cpp)
-  - [Reflectable using](https://github.com/Sigma-Ryden/Rew/blob/master/test/TestUsing.cpp)
+  - [Reflectable injection](https://github.com/Sigma-Ryden/Rew/blob/master/test/src/TestInjection.cpp)
+  - [Registry splitting](https://github.com/Sigma-Ryden/Rew/blob/master/test/src/TestLibrary.cpp)
+  - [Reflectable using](https://github.com/Sigma-Ryden/Rew/blob/master/test/src/TestUsing.cpp)
 - Builtin:
   - [Template reflection](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/Common.hpp)
   - [Conditional reflection](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/BuiltIn/set.hpp)
   - [Reflection splitting](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/Common.hpp)
   - [Reflectable naming](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/Common.hpp)
-  - [Simple without macro](https://github.com/Sigma-Ryden/Rew/blob/master/test/TestWithoutMacro.cpp)
-  - [Reflection meta](https://github.com/Sigma-Ryden/Rew/blob/master/test/TestMeta.cpp)
+  - [Simple without macro](https://github.com/Sigma-Ryden/Rew/blob/master/test/src/TestWithoutMacro.cpp)
+  - [Reflection meta](https://github.com/Sigma-Ryden/Rew/blob/master/test/src/TestMeta.cpp)
 ## Auto Tests:
-See library testing [here](https://github.com/Sigma-Ryden/Rew/tree/master/test). 
+See library testing [here](https://github.com/Sigma-Ryden/Rew/tree/master/test/src). 
 
 ## License:
 This library is an open source project licensed under: [MIT](https://opensource.org/licenses/MIT).
