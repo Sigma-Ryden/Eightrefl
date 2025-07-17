@@ -22,12 +22,26 @@ jobs:
         gcc --version
         g++ --version
         ldd --version
+        ulimit -c unlimited
 
     - name: "Regenerate and Rebuild project"
       run: |
         cd ${Eightrefl}
         rm -rf Intermediate
-        cmake -S . -B Intermediate -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DEIGHTREFL_FULLY_ENABLE=ON -DEIGHTREFL_RTTI_ALL_ENABLE=ON -DEIGHTREFL_DEV_ENABLE=OFF -DEIGHTREFL_BUILD_TEST_LIBS=ON
+
+        export SANITIZER_FLAGS="-fsanitize=undefined -fsanitize=address -fno-omit-frame-pointer"
+
+        cmake -S . -B Intermediate -G Ninja \
+          -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+          -DCMAKE_C_COMPILER=gcc \
+          -DCMAKE_CXX_COMPILER=g++ \
+          -DEIGHTREFL_FULLY_ENABLE=ON \
+          -DEIGHTREFL_RTTI_ALL_ENABLE=ON \
+          -DEIGHTREFL_DEV_ENABLE=OFF \
+          -DEIGHTREFL_BUILD_TEST_LIBS=ON \
+          -DCMAKE_CXX_FLAGS="${SANITIZER_FLAGS}" \
+          -DCMAKE_EXE_LINKER_FLAGS="${SANITIZER_FLAGS}"
+
         cmake --build Intermediate --parallel
 
     - name: "Package and Upload project"
