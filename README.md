@@ -1,13 +1,13 @@
-# Rew - Simple reflection library 
+# Eightrefl - Simple reflection library 
 
-`Rew` is a flexible and extensible C++ library with many features, that will allow you to easily reflects your code.
+`Eightrefl` is a flexible and extensible C++ library with many features, that will allow you to easily reflects your code.
 The library has a small code base, but enough to use it. 
 
 Use macros for code generation or read the documentation and write your own code. 
 
 A library implemented purely in C++17.
 
-See last stable library version [here](https://github.com/Sigma-Ryden/Rew/releases).
+See last stable library version [here](https://github.com/Sigma-Ryden/Eightrefl/releases).
 
 ## Functional: 
 
@@ -38,7 +38,7 @@ See last stable library version [here](https://github.com/Sigma-Ryden/Rew/releas
 - C++20:
   - Compare: partial_ordering, weak_ordering, strong_ordering 
 
-See full list [here](https://github.com/Sigma-Ryden/Rew/tree/master/include/Rew/BuiltIn). 
+See full list [here](https://github.com/Sigma-Ryden/Eightrefl/tree/master/include/Eightrefl/BuiltIn). 
 
 ### Reflection of custom types:
 - struct, class, union
@@ -53,18 +53,18 @@ See full list [here](https://github.com/Sigma-Ryden/Rew/tree/master/include/Rew/
 
 ### Library features:
 - General:
-  - [Reflectable injection](https://github.com/Sigma-Ryden/Rew/blob/master/test/src/TestInjection.cpp)
-  - [Registry splitting](https://github.com/Sigma-Ryden/Rew/blob/master/test/src/TestLibrary.cpp)
-  - [Reflectable using](https://github.com/Sigma-Ryden/Rew/blob/master/test/src/TestUsing.cpp)
+  - [Reflectable injection](https://github.com/Sigma-Ryden/Eightrefl/blob/master/test/TestInjection.cpp)
+  - [Registry splitting](https://github.com/Sigma-Ryden/Eightrefl/blob/master/test/TestLibrary.cpp)
+  - [Reflectable using](https://github.com/Sigma-Ryden/Eightrefl/blob/master/test/TestUsing.cpp)
 - Builtin:
-  - [Template reflection](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/Common.hpp)
-  - [Conditional reflection](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/BuiltIn/set.hpp)
-  - [Reflection splitting](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/Common.hpp)
-  - [Reflectable naming](https://github.com/Sigma-Ryden/Rew/blob/master/include/Rew/Common.hpp)
-  - [Simple without macro](https://github.com/Sigma-Ryden/Rew/blob/master/test/src/TestWithoutMacro.cpp)
-  - [Reflection meta](https://github.com/Sigma-Ryden/Rew/blob/master/test/src/TestMeta.cpp)
+  - [Template reflection](https://github.com/Sigma-Ryden/Eightrefl/blob/master/include/Eightrefl/Common.hpp)
+  - [Conditional reflection](https://github.com/Sigma-Ryden/Eightrefl/blob/master/include/Eightrefl/BuiltIn/set.hpp)
+  - [Reflection splitting](https://github.com/Sigma-Ryden/Eightrefl/blob/master/include/Eightrefl/Common.hpp)
+  - [Reflectable naming](https://github.com/Sigma-Ryden/Eightrefl/blob/master/include/Eightrefl/Common.hpp)
+  - [Simple without macro](https://github.com/Sigma-Ryden/Eightrefl/blob/master/test/TestWithoutMacro.cpp)
+  - [Reflection meta](https://github.com/Sigma-Ryden/Eightrefl/blob/master/test/TestMeta.cpp)
 ## Auto Tests:
-See library testing [here](https://github.com/Sigma-Ryden/Rew/tree/master/test/src). 
+See library testing [here](https://github.com/Sigma-Ryden/Eightrefl/tree/master/test). 
 
 ## License:
 This library is an open source project licensed under: [MIT](https://opensource.org/licenses/MIT).
