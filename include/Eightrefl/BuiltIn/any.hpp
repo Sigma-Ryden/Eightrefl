@@ -1,0 +1,12 @@
+#ifndef EIGHTREFL_BUILTIN_ANY_HPP
+#define EIGHTREFL_BUILTIN_ANY_HPP
+
+#include <any> // any
+
+#include <Eightrefl/Reflectable.hpp>
+
+REFLECTABLE_DECLARATION(std::any)
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
+#endif // EIGHTREFL_BUILTIN_ANY_HPP
