@@ -258,7 +258,7 @@ TEMPLATE_REFLECTABLE(template <typename AllocatorType>, std::vector<bool, Alloca
     FUNCTION(erase, std_iterator<R>(std_const_iterator<R>, std_const_iterator<R>))
     #endif // EIGHTREFL_FULLY_ENABLE
 
-    FUNCTION(push_back, void(bool))
+//  FUNCTION(push_back, void(bool))
     FUNCTION(pop_back)
 //  FUNCTION(resize, void(typename R::size_type))
 

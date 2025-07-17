@@ -85,7 +85,7 @@ TEST(TestBuiltin, TestVectorBool)
     EXPECT("function-erase", reflection->function.find("erase") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 
-    EXPECT("function-push_back", reflection->function.find("push_back") != nullptr);
+//  EXPECT("function-push_back", reflection->function.find("push_back") != nullptr);
     EXPECT("function-pop_back", reflection->function.find("pop_back") != nullptr);
 //  EXPECT("function-resize", reflection->function.find("resize") != nullptr);
 
