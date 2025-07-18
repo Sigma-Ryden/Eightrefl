@@ -187,7 +187,7 @@ CONDITIONAL_REFLECTABLE(xxeightrefl_is_any_std_unordered_map<R>::value)
 //  FUNCTION(extract, typename R::node_type(typename R::key_type const&))
     #endif // EIGHTREFL_FULLY_ENABLE
 
-//  FUNCTION(merge, void(R&))
+    FUNCTION(merge, void(R&))
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     FUNCTION(at, typename R::mapped_type&(typename R::key_type const&))

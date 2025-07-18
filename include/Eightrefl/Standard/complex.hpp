@@ -39,30 +39,30 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::complex<ValueType>)
     FUNCTION(operator=, R&(R const&))
 
     #ifdef EIGHTREFL_FULLY_ENABLE
-//  FUNCTION(operator+=, R&(typename xxeightrefl_std_complex_pass_value<R>::type))
+    FUNCTION(operator+=, R&(typename xxeightrefl_std_complex_pass_value<R>::type))
     #endif // EIGHTREFL_FULLY_ENABLE
 
     FUNCTION(operator+=, R&(R const&))
 
     #ifdef EIGHTREFL_FULLY_ENABLE
-//  FUNCTION(operator-=, R&(typename xxeightrefl_std_complex_pass_value<R>::type))
+    FUNCTION(operator-=, R&(typename xxeightrefl_std_complex_pass_value<R>::type))
     #endif // EIGHTREFL_FULLY_ENABLE
 
     FUNCTION(operator-=, R&(R const&))
 
     #ifdef EIGHTREFL_FULLY_ENABLE
-//  FUNCTION(operator*=, R&(typename xxeightrefl_std_complex_pass_value<R>::type))
+    FUNCTION(operator*=, R&(typename xxeightrefl_std_complex_pass_value<R>::type))
     #endif // EIGHTREFL_FULLY_ENABLE
 
     FUNCTION(operator*=, R&(R const&))
 
     #ifdef EIGHTREFL_FULLY_ENABLE
-//  FUNCTION(operator/=, R&(typename xxeightrefl_std_complex_pass_value<R>::type))
+    FUNCTION(operator/=, R&(typename xxeightrefl_std_complex_pass_value<R>::type))
     #endif // EIGHTREFL_FULLY_ENABLE
 
     FUNCTION(operator/=, R&(R const&))
-//  PROPERTY(real)
-//  PROPERTY(imag)
+    PROPERTY(real)
+    PROPERTY(imag)
 REFLECTABLE_INIT()
 
 #endif // EIGHTREFL_STANDARD_COMPLEX_HPP

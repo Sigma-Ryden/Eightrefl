@@ -69,7 +69,7 @@ TEST(TestBuiltin, TestSet)
 //  EXPECT("function-extract", reflection->function.find("extract") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 
-//  EXPECT("function-merge", reflection->function.find("merge") != nullptr);
+    EXPECT("function-merge", reflection->function.find("merge") != nullptr);
     EXPECT("function-count", reflection->function.find("count") != nullptr);
 
     #ifdef EIGHTREFL_FULLY_ENABLE

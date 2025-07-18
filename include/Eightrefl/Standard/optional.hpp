@@ -36,8 +36,8 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::optional<ValueType>)
     #ifdef EIGHTREFL_FULLY_ENABLE
     FUNCTION(operator->, typename R::value_type const*() const)
     FUNCTION(operator->, typename R::value_type*())
-//  FUNCTION(operator*, typename R::value_type const&() const&)
-//  FUNCTION(operator*, typename R::value_type&()&)
+    FUNCTION(operator*, typename R::value_type const&() const&)
+    FUNCTION(operator*, typename R::value_type&()&)
     #endif // EIGHTREFL_FULLY_ENABLE
 
     FUNCTION(operator bool)

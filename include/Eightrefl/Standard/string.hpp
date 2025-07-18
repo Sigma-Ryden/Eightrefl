@@ -214,7 +214,7 @@ TEMPLATE_REFLECTABLE
     FUNCTION(copy)
     #endif // EIGHTREFL_FULLY_ENABLE
 
-//  FUNCTION(resize, void(typename R::size_type))
+    FUNCTION(resize, void(typename R::size_type))
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     FUNCTION(resize, void(typename R::size_type, typename R::value_type))

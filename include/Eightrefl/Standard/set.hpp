@@ -154,7 +154,7 @@ CONDITIONAL_REFLECTABLE(xxeightrefl_is_any_std_ordered_set<R>::value)
 //  FUNCTION(extract, typename R::node_type(typename R::key_type const&))
     #endif // EIGHTREFL_FULLY_ENABLE
 
-//  FUNCTION(merge, void(R&))
+    FUNCTION(merge, void(R&))
     FUNCTION(count, typename R::size_type(typename R::key_type const&) const)
 
     #ifdef EIGHTREFL_FULLY_ENABLE

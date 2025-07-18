@@ -22,10 +22,10 @@ TEST(TestBuiltin, TestVariant)
     EXPECT("factory-R(R const&)", reflection->factory.find("std::variant<int, float, bool>(std::variant<int, float, bool> const&)") != nullptr);
 
     EXPECT("function-operator=", reflection->function.find("operator=") != nullptr);
-//  EXPECT("function-index", reflection->function.find("index") != nullptr);
+    EXPECT("function-index", reflection->function.find("index") != nullptr);
 
     #ifdef EIGHTREFL_FULLY_ENABLE
-//  EXPECT("function-valueless_by_exception", reflection->function.find("valueless_by_exception") != nullptr);
+    EXPECT("function-valueless_by_exception", reflection->function.find("valueless_by_exception") != nullptr);
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 }

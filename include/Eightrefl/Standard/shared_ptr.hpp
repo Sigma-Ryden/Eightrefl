@@ -42,10 +42,10 @@ TEMPLATE_REFLECTABLE(template <typename ElementType>, std::shared_ptr<ElementTyp
     #endif // EIGHTREFL_FULLY_ENABLE
 
     FUNCTION(get)
-//  FUNCTION(operator*)
+    FUNCTION(operator*)
 
     #ifdef EIGHTREFL_FULLY_ENABLE
-//  FUNCTION(operator->)
+    FUNCTION(operator->)
     FUNCTION(use_count)
     #endif // EIGHTREFL_FULLY_ENABLE
 
