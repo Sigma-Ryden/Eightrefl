@@ -10,4 +10,4 @@ registry_t* standard()
     static registry_t self; return &self;
 }
 
-} // eightrefl
+} // namespace eightrefl

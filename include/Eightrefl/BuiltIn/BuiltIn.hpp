@@ -8,6 +8,6 @@ struct registry_t;
 
 extern registry_t* builtin();
 
-} // eightrefl
+} // namespace eightrefl
 
 #endif // EIGHTREFL_BUILTIN_BUILITIN_CPP
