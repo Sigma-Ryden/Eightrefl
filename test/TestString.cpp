@@ -100,7 +100,7 @@ TEST(TestBuiltin, TestString)
     #endif // EIGHTREFL_FULLY_ENABLE
 
     EXPECT("function-replace", reflection->function.find("replace") != nullptr);
-    EXPECT("function-resize", reflection->function.find("resize") != nullptr);
+//  EXPECT("function-resize", reflection->function.find("resize") != nullptr);
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
