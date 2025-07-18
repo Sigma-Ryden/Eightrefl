@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/vector.hpp>
+#include <Eightrefl/Standard/vector.hpp>
 
 TEST(TestBuiltin, TestVectorBool)
 {
     eightrefl::reflectable<std::vector<bool>>();
 
-    auto type = eightrefl::global.find("std::vector<bool>");
+    auto type = eightrefl::standard()->find("std::vector<bool>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::vector<bool>");

@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/shared_ptr.hpp>
+#include <Eightrefl/Standard/shared_ptr.hpp>
 
 TEST(TestBuiltin, TestSharedPtr)
 {
     eightrefl::reflectable<std::shared_ptr<int>>();
 
-    auto type = eightrefl::global.find("std::shared_ptr<int>");
+    auto type = eightrefl::standard()->find("std::shared_ptr<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::shared_ptr<int>");

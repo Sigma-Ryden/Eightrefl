@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/stack.hpp>
+#include <Eightrefl/Standard/stack.hpp>
 
 TEST(TestBuiltin, TestStack)
 {
     eightrefl::reflectable<std::stack<int>>();
 
-    auto type = eightrefl::global.find("std::stack<int>");
+    auto type = eightrefl::standard()->find("std::stack<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::stack<int>");

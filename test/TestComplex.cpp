@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/complex.hpp>
+#include <Eightrefl/Standard/complex.hpp>
 
 TEST(TestBuiltin, TestComplex)
 {
     eightrefl::reflectable<std::complex<float>>();
 
-    auto type = eightrefl::global.find("std::complex<float>");
+    auto type = eightrefl::standard()->find("std::complex<float>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::complex<float>");

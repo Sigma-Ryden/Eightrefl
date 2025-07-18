@@ -1,10 +1,10 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/any.hpp>
+#include <Eightrefl/Standard/any.hpp>
 
 TEST(TestBuiltin, TestAny)
 {
-    auto type = eightrefl::global.find("std::any");
+    auto type = eightrefl::standard()->find("std::any");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::any");

@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/priority_queue.hpp>
+#include <Eightrefl/Standard/priority_queue.hpp>
 
 TEST(TestBuiltin, TestPriorityQueue)
 {
     eightrefl::reflectable<std::priority_queue<int>>();
 
-    auto type = eightrefl::global.find("std::priority_queue<int>");
+    auto type = eightrefl::standard()->find("std::priority_queue<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::priority_queue<int>");

@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/forward_list.hpp>
+#include <Eightrefl/Standard/forward_list.hpp>
 
 TEST(TestBuiltin, TestForwardList)
 {
     eightrefl::reflectable<std::forward_list<int>>();
 
-    auto type = eightrefl::global.find("std::forward_list<int>");
+    auto type = eightrefl::standard()->find("std::forward_list<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::forward_list<int>");

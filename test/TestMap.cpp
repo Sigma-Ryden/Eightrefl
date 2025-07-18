@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/map.hpp>
+#include <Eightrefl/Standard/map.hpp>
 
 TEST(TestBuiltin, TestMap)
 {
     eightrefl::reflectable<std::map<int, float>>();
 
-    auto type = eightrefl::global.find("std::map<int, float>");
+    auto type = eightrefl::standard()->find("std::map<int, float>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::map<int, float>");

@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/queue.hpp>
+#include <Eightrefl/Standard/queue.hpp>
 
 TEST(TestBuiltin, TestQueue)
 {
     eightrefl::reflectable<std::queue<int>>();
 
-    auto type = eightrefl::global.find("std::queue<int>");
+    auto type = eightrefl::standard()->find("std::queue<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::queue<int>");

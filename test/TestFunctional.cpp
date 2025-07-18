@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/functional.hpp>
+#include <Eightrefl/Standard/functional.hpp>
 
 TEST(TestBuiltin::TestFunctional, TestHash)
 {
     eightrefl::reflectable<std::hash<int>>();
 
-    auto type = eightrefl::global.find("std::hash<int>");
+    auto type = eightrefl::standard()->find("std::hash<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::hash<int>");
@@ -29,7 +29,7 @@ TEST(TestBuiltin::TestFunctional, TestEqualTo)
 {
     eightrefl::reflectable<std::equal_to<int>>();
 
-    auto type = eightrefl::global.find("std::equal_to<int>");
+    auto type = eightrefl::standard()->find("std::equal_to<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::equal_to<int>");
@@ -46,7 +46,7 @@ TEST(TestBuiltin::TestFunctional, TestLess)
 {
     eightrefl::reflectable<std::less<int>>();
 
-    auto type = eightrefl::global.find("std::less<int>");
+    auto type = eightrefl::standard()->find("std::less<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::less<int>");
@@ -63,7 +63,7 @@ TEST(TestBuiltin::TestFunctional, TestGreater)
 {
     eightrefl::reflectable<std::greater<int>>();
 
-    auto type = eightrefl::global.find("std::greater<int>");
+    auto type = eightrefl::standard()->find("std::greater<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::greater<int>");

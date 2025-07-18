@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/unordered_set.hpp>
+#include <Eightrefl/Standard/unordered_set.hpp>
 
 TEST(TestBuiltin, TestUnorderedSet)
 {
     eightrefl::reflectable<std::unordered_set<int>>();
 
-    auto type = eightrefl::global.find("std::unordered_set<int>");
+    auto type = eightrefl::standard()->find("std::unordered_set<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::unordered_set<int>");

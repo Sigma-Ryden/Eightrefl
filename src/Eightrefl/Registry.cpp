@@ -39,6 +39,9 @@ type_t* registry_t::find(std::type_index typeindex) const
 }
 #endif // EIGHTREFL_RTTI_ALL_ENABLE
 
-registry_t global;
+registry_t* global()
+{
+    static registry_t self; return &self;
+}
 
 } // namespace eightrefl

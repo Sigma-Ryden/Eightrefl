@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/unordered_map.hpp>
+#include <Eightrefl/Standard/unordered_map.hpp>
 
 TEST(TestBuiltin, TestUnorderedMap)
 {
     eightrefl::reflectable<std::unordered_map<int, float>>();
 
-    auto type = eightrefl::global.find("std::unordered_map<int, float>");
+    auto type = eightrefl::standard()->find("std::unordered_map<int, float>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::unordered_map<int, float>");

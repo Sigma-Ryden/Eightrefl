@@ -49,7 +49,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestFactoryStruct)
 {
-    auto type = eightrefl::global.find("TestFactoryStruct");
+    auto type = eightrefl::global()->find("TestFactoryStruct");
 
     ASSERT("type", type != nullptr);
 

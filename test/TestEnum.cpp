@@ -17,9 +17,9 @@ REFLECTABLE(TestEnumType)
     META("Alpha", Alpha) // since TestEnumType is no scoped enum, we can ommit 'TestEnum::'
 REFLECTABLE_INIT()
 
-TEST(TestCommon, TestEnum)
+TEST(TestEnum, TestEnum)
 {
-    auto type = eightrefl::global.find("TestEnumType");
+    auto type = eightrefl::global()->find("TestEnumType");
 
     ASSERT("type", type != nullptr);
 
@@ -48,9 +48,9 @@ REFLECTABLE(TestScopedEnumType)
     META("Down", TestScopedEnumType::Down)
 REFLECTABLE_INIT()
 
-TEST(TestCommon, TestScopedEnum)
+TEST(TestEnum, TestScopedEnum)
 {
-    auto type = eightrefl::global.find("TestScopedEnumType");
+    auto type = eightrefl::global()->find("TestScopedEnumType");
 
     ASSERT("type", type != nullptr);
 
@@ -101,9 +101,9 @@ REFLECTABLE_DECLARATION_INIT()
 REFLECTABLE(TestEnumAsStringInjection)
 REFLECTABLE_INIT()
 
-TEST(TestCommon, TestEnumAsString)
+TEST(TestEnum, TestEnumAsString)
 {
-    auto type = eightrefl::global.find("TestScopedEnumType");
+    auto type = eightrefl::global()->find("TestScopedEnumType");
 
     ASSERT("type", type != nullptr);
 

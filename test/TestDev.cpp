@@ -1,13 +1,14 @@
+#ifdef EIGHTREFL_DEV_ENABLE
 #include <EightreflTestingBase.hpp>
 
-#ifdef EIGHTREFL_DEV_ENABLE
-#include <Eightrefl/Dev.hpp>
+#include <Eightrefl/Dev/Dev.hpp>
+#include <Eightrefl/Dev/Attribute.hpp>
 
 TEST(TestDev, TestAttribute)
 {
     eightrefl::reflectable<eightrefl::attribute_t<int>>();
 
-    auto type = eightrefl::dev.find("eightrefl::attribute_t<int>");
+    auto type = eightrefl::dev()->find("eightrefl::attribute_t<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "eightrefl::attribute_t<int>");
@@ -26,7 +27,7 @@ TEST(TestDev, TestAttribute)
 
 TEST(TestDev, TestParent)
 {
-    auto type = eightrefl::dev.find("eightrefl::parent_t");
+    auto type = eightrefl::dev()->find("eightrefl::parent_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "eightrefl::parent_t");
@@ -46,7 +47,7 @@ TEST(TestDev, TestParent)
 
 TEST(TestDev, TestFactory)
 {
-    auto type = eightrefl::dev.find("eightrefl::factory_t");
+    auto type = eightrefl::dev()->find("eightrefl::factory_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "eightrefl::factory_t");
@@ -66,7 +67,7 @@ TEST(TestDev, TestFactory)
 
 TEST(TestDev, TestFunction)
 {
-    auto type = eightrefl::dev.find("eightrefl::function_t");
+    auto type = eightrefl::dev()->find("eightrefl::function_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "eightrefl::function_t");
@@ -88,7 +89,7 @@ TEST(TestDev, TestFunction)
 
 TEST(TestDev, TestProperty)
 {
-    auto type = eightrefl::dev.find("eightrefl::property_t");
+    auto type = eightrefl::dev()->find("eightrefl::property_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "eightrefl::property_t");
@@ -110,7 +111,7 @@ TEST(TestDev, TestProperty)
 
 TEST(TestDev, TestDeleter)
 {
-    auto type = eightrefl::dev.find("eightrefl::deleter_t");
+    auto type = eightrefl::dev()->find("eightrefl::deleter_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "eightrefl::deleter_t");
@@ -129,7 +130,7 @@ TEST(TestDev, TestDeleter)
 
 TEST(TestDev, TestMeta)
 {
-    auto type = eightrefl::dev.find("eightrefl::meta_t");
+    auto type = eightrefl::dev()->find("eightrefl::meta_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "eightrefl::meta_t");
@@ -148,7 +149,7 @@ TEST(TestDev, TestMeta)
 
 TEST(TestDev, TestReflection)
 {
-    auto type = eightrefl::dev.find("eightrefl::reflection_t");
+    auto type = eightrefl::dev()->find("eightrefl::reflection_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "eightrefl::reflection_t");
@@ -170,7 +171,7 @@ TEST(TestDev, TestReflection)
 
 TEST(TestDev, TestInjection)
 {
-    auto type = eightrefl::dev.find("eightrefl::injection_t");
+    auto type = eightrefl::dev()->find("eightrefl::injection_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "eightrefl::injection_t");
@@ -188,7 +189,7 @@ TEST(TestDev, TestInjection)
 
 TEST(TestDev, TestType)
 {
-    auto type = eightrefl::dev.find("eightrefl::type_t");
+    auto type = eightrefl::dev()->find("eightrefl::type_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "eightrefl::type_t");
@@ -210,7 +211,7 @@ TEST(TestDev, TestType)
 
 TEST(TestDev, TestRegistry)
 {
-    auto type = eightrefl::dev.find("eightrefl::registry_t");
+    auto type = eightrefl::dev()->find("eightrefl::registry_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "eightrefl::registry_t");

@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/bitset.hpp>
+#include <Eightrefl/Standard/bitset.hpp>
 
 TEST(TestBuiltin, TestBitset)
 {
     eightrefl::reflectable<std::bitset<128>>();
 
-    auto type = eightrefl::global.find("std::bitset<128>");
+    auto type = eightrefl::standard()->find("std::bitset<128>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::bitset<128>");

@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/tuple.hpp>
+#include <Eightrefl/Standard/tuple.hpp>
 
 TEST(TestBuiltin, TestTuple)
 {
     eightrefl::reflectable<std::tuple<int, float, bool>>();
 
-    auto type = eightrefl::global.find("std::tuple<int, float, bool>");
+    auto type = eightrefl::standard()->find("std::tuple<int, float, bool>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::tuple<int, float, bool>");

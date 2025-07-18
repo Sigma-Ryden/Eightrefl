@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/initializer_list.hpp>
+#include <Eightrefl/Standard/initializer_list.hpp>
 
 TEST(TestBuiltin, TestInitializerList)
 {
     eightrefl::reflectable<std::initializer_list<int>>();
 
-    auto type = eightrefl::global.find("std::initializer_list<int>");
+    auto type = eightrefl::standard()->find("std::initializer_list<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::initializer_list<int>");

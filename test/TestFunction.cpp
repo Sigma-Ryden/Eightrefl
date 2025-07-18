@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/function.hpp>
+#include <Eightrefl/Standard/function.hpp>
 
 TEST(TestBuiltin, TestFunction)
 {
     eightrefl::reflectable<std::function<void(int, float)>>();
 
-    auto type = eightrefl::global.find("std::function<void(int, float)>");
+    auto type = eightrefl::standard()->find("std::function<void(int, float)>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::function<void(int, float)>");

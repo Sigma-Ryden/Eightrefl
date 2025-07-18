@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/deque.hpp>
+#include <Eightrefl/Standard/deque.hpp>
 
 TEST(TestBuiltin, TestDeque)
 {
     eightrefl::reflectable<std::deque<int>>();
 
-    auto type = eightrefl::global.find("std::deque<int>");
+    auto type = eightrefl::standard()->find("std::deque<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::deque<int>");

@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/set.hpp>
+#include <Eightrefl/Standard/set.hpp>
 
 TEST(TestBuiltin, TestSet)
 {
     eightrefl::reflectable<std::set<int>>();
 
-    auto type = eightrefl::global.find("std::set<int>");
+    auto type = eightrefl::standard()->find("std::set<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::set<int>");

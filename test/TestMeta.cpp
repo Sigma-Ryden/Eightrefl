@@ -82,7 +82,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestMeta)
 {
-    auto type = eightrefl::global.find("TestMetaStruct");
+    auto type = eightrefl::global()->find("TestMetaStruct");
 
     ASSERT("type", type != nullptr);
 

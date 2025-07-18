@@ -44,7 +44,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryFunction, TestFunction)
 {
-    auto type = eightrefl::global.find("TestFunctionStruct");
+    auto type = eightrefl::global()->find("TestFunctionStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -116,7 +116,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryFunction, TestStaticFunction)
 {
-    auto type = eightrefl::global.find("TestStaticFunctionStruct");
+    auto type = eightrefl::global()->find("TestStaticFunctionStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -182,7 +182,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryFunction, TestFreeFunction)
 {
-    auto type = eightrefl::global.find("TestFreeFunctionStruct");
+    auto type = eightrefl::global()->find("TestFreeFunctionStruct");
 
     ASSERT("type", type != nullptr);
 

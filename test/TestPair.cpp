@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/pair.hpp>
+#include <Eightrefl/Standard/pair.hpp>
 
 TEST(TestBuiltin, TestPair)
 {
     eightrefl::reflectable<std::pair<int, float>>();
 
-    auto type = eightrefl::global.find("std::pair<int, float>");
+    auto type = eightrefl::standard()->find("std::pair<int, float>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::pair<int, float>");

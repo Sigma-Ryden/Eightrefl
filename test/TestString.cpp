@@ -1,10 +1,10 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/string.hpp>
+#include <Eightrefl/Standard/string.hpp>
 
 TEST(TestBuiltin, TestString)
 {
-    auto type = eightrefl::global.find("std::string");
+    auto type = eightrefl::standard()->find("std::string");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::string");

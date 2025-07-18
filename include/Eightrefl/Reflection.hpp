@@ -12,8 +12,8 @@ namespace eightrefl
 {
 
 struct parent_t;
-struct function_t;
 struct factory_t;
+struct function_t;
 struct property_t;
 struct deleter_t;
 struct meta_t;

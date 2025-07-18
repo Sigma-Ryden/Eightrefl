@@ -57,7 +57,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestDeleter)
 {
-    auto type = eightrefl::global.find("TestDeleterStruct");
+    auto type = eightrefl::global()->find("TestDeleterStruct");
 
     ASSERT("type", type != nullptr);
 

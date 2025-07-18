@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/array.hpp>
+#include <Eightrefl/Standard/array.hpp>
 
 TEST(TestBuiltin, TestArray)
 {
     eightrefl::reflectable<std::array<int, 8>>();
 
-    auto type = eightrefl::global.find("std::array<int, 8>");
+    auto type = eightrefl::standard()->find("std::array<int, 8>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::array<int, 8>");

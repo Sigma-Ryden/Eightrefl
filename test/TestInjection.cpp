@@ -41,7 +41,7 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEST(TestLibrary, TestDefaultInjection)
 {
-    auto type = eightrefl::global.find("TestInjectionStruct");
+    auto type = eightrefl::global()->find("TestInjectionStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -81,7 +81,7 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEST(TestLibrary, TestDynamicInjection)
 {
-    auto type = eightrefl::global.find("TestInjectionStruct");
+    auto type = eightrefl::global()->find("TestInjectionStruct");
 
     ASSERT("type", type != nullptr);
 

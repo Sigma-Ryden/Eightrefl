@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/variant.hpp>
+#include <Eightrefl/Standard/variant.hpp>
 
 TEST(TestBuiltin, TestVariant)
 {
     eightrefl::reflectable<std::variant<int, float, bool>>();
 
-    auto type = eightrefl::global.find("std::variant<int, float, bool>");
+    auto type = eightrefl::standard()->find("std::variant<int, float, bool>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::variant<int, float, bool>");

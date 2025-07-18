@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/list.hpp>
+#include <Eightrefl/Standard/list.hpp>
 
 TEST(TestBuiltin, TestList)
 {
     eightrefl::reflectable<std::list<int>>();
 
-    auto type = eightrefl::global.find("std::list<int>");
+    auto type = eightrefl::standard()->find("std::list<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::list<int>");

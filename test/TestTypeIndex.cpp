@@ -1,10 +1,10 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/typeindex.hpp>
+#include <Eightrefl/Standard/typeindex.hpp>
 
 TEST(TestBuiltin, TestTypeIndex)
 {
-    auto type = eightrefl::global.find("std::type_index");
+    auto type = eightrefl::standard()->find("std::type_index");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::type_index");

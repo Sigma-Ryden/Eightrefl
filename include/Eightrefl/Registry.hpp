@@ -58,7 +58,7 @@ struct registry_t
     }
 };
 
-extern registry_t global;
+extern registry_t* global();
 
 } // namespace eightrefl
 

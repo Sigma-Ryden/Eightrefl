@@ -1,10 +1,10 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/optional.hpp>
+#include <Eightrefl/Standard/optional.hpp>
 
 TEST(TestBuiltin, TestNulloptT)
 {
-    auto type = eightrefl::global.find("std::nullopt_t");
+    auto type = eightrefl::standard()->find("std::nullopt_t");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::nullopt_t");
@@ -21,7 +21,7 @@ TEST(TestBuiltin, TestOptional)
 {
     eightrefl::reflectable<std::optional<int>>();
 
-    auto type = eightrefl::global.find("std::optional<int>");
+    auto type = eightrefl::standard()->find("std::optional<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::optional<int>");

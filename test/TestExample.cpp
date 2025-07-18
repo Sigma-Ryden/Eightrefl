@@ -1,5 +1,6 @@
 #include <EightreflTestingBase.hpp>
-#include <Eightrefl/BuiltIn/string.hpp>
+
+#include <Eightrefl/Standard/string.hpp>
 
 TEST_SPACE()
 {
@@ -25,7 +26,7 @@ REFLECTABLE_INIT()
 
 TEST(TestExample, TestSimple)
 {
-    eightrefl::type_t* type = eightrefl::global.find("TestExampleStruct");
+    eightrefl::type_t* type = eightrefl::global()->find("TestExampleStruct");
 
     ASSERT("type", type != nullptr);
 

@@ -38,7 +38,7 @@ TEST(TestLibrary, TestReflectableRegistry)
         // will not compile, since requires REFLECTABLE(...)
         //eightrefl::reflectable<TestReflectableDeclaratonOnlyStruct>();
 
-        auto type = eightrefl::global.find("TestReflectableDeclaratonOnlyStruct");
+        auto type = eightrefl::global()->find("TestReflectableDeclaratonOnlyStruct");
 
         ASSERT("type", type == nullptr);
     }
@@ -46,19 +46,19 @@ TEST(TestLibrary, TestReflectableRegistry)
         // will explicitly add type to registry, no requires REFLECTABLE(...), since can add incomplete types
         eightrefl::find_or_add_type<TestReflectableDeclaratonOnlyStruct>();
 
-        auto type = eightrefl::global.find("TestReflectableDeclaratonOnlyStruct");
+        auto type = eightrefl::global()->find("TestReflectableDeclaratonOnlyStruct");
 
         ASSERT("type", type != nullptr);
         EXPECT("reflection", type->reflection != nullptr);
     }
     {
-        auto type = eightrefl::global.find("TestReflectableDeclaratonOnlyWithUsingStruct");
+        auto type = eightrefl::global()->find("TestReflectableDeclaratonOnlyWithUsingStruct");
 
         ASSERT("type", type != nullptr);
         EXPECT("reflection", type->reflection != nullptr);
     }
     {
-        auto type = eightrefl::global.find("TestReflectableStruct");
+        auto type = eightrefl::global()->find("TestReflectableStruct");
 
         ASSERT("type", type != nullptr);
         EXPECT("reflection", type->reflection != nullptr);
@@ -92,7 +92,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestDeparen)
 {
-    auto type = eightrefl::global.find("TestDeparenStruct");
+    auto type = eightrefl::global()->find("TestDeparenStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -156,7 +156,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestParent)
 {
-    auto type = eightrefl::global.find("TestParentDerivedStruct");
+    auto type = eightrefl::global()->find("TestParentDerivedStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -167,18 +167,18 @@ TEST(TestLibrary, TestParent)
     auto base = reflection->parent.find("TestParentBaseStruct");
 
     ASSERT("base", base != nullptr);
-    EXPECT("base-type", base->type == eightrefl::global.find(base->name));
+    EXPECT("base-type", base->type == eightrefl::global()->find(base->name));
 
     auto base_base = base->type->reflection->parent.find("TestParentTopBaseStruct");
 
     ASSERT("base-base", base_base != nullptr);
-    EXPECT("base-base-type", base_base->type == eightrefl::global.find(base_base->name));
+    EXPECT("base-base-type", base_base->type == eightrefl::global()->find(base_base->name));
     EXPECT("non_directed_base", reflection->parent.find(base_base->name) == nullptr);
 
     auto interface = reflection->parent.find("TestParentInterface");
 
     ASSERT("interface", interface != nullptr);
-    EXPECT("interface-type", interface->type == eightrefl::global.find(interface->name));
+    EXPECT("interface-type", interface->type == eightrefl::global()->find(interface->name));
 }
 
 
@@ -248,7 +248,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestTypedProperty)
 {
-    auto type = eightrefl::global.find("TestTypedPropertyStruct");
+    auto type = eightrefl::global()->find("TestTypedPropertyStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -324,7 +324,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestNamedProperty)
 {
-    auto type = eightrefl::global.find("TestNamedPropertyStruct");
+    auto type = eightrefl::global()->find("TestNamedPropertyStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -450,7 +450,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestIsParentOf)
 {
-    auto base = eightrefl::global.find("TestBaseWithReflection");
+    auto base = eightrefl::global()->find("TestBaseWithReflection");
 
     ASSERT("base-type", base != nullptr);
 
@@ -459,7 +459,7 @@ TEST(TestLibrary, TestIsParentOf)
     ASSERT("base-reflection", reflection != nullptr);
 
     {
-        auto type = eightrefl::global.find("TestRightMediatorWithReflection");
+        auto type = eightrefl::global()->find("TestRightMediatorWithReflection");
 
         ASSERT("right-mediator-type", type != nullptr);
 
@@ -469,7 +469,7 @@ TEST(TestLibrary, TestIsParentOf)
         EXPECT("right-mediator-is_child_of", is_child_of(type, base));
     }
     {
-        auto type = eightrefl::global.find("TestWrongMediatorWithReflection");
+        auto type = eightrefl::global()->find("TestWrongMediatorWithReflection");
 
         ASSERT("wrong-mediator-type", type != nullptr);
 
@@ -479,7 +479,7 @@ TEST(TestLibrary, TestIsParentOf)
         EXPECT("wrong-mediator-is_child_of", !is_child_of(type, base));
     }
     {
-        auto type = eightrefl::global.find("TestWrongDerivedWithReflection");
+        auto type = eightrefl::global()->find("TestWrongDerivedWithReflection");
 
         ASSERT("wrong-derived-type", type != nullptr);
 
@@ -489,7 +489,7 @@ TEST(TestLibrary, TestIsParentOf)
         EXPECT("wrong-derived-is_child_of", !is_child_of(type, base));
     }
     {
-        auto type = eightrefl::global.find("TestRightDerivedWithReflection");
+        auto type = eightrefl::global()->find("TestRightDerivedWithReflection");
 
         ASSERT("right-derived-type", type != nullptr);
 
@@ -499,7 +499,7 @@ TEST(TestLibrary, TestIsParentOf)
         EXPECT("right-derived-is_child_of", is_child_of(type, base));
     }
     {
-        auto type = eightrefl::global.find("TestDerivedWithReflection");
+        auto type = eightrefl::global()->find("TestDerivedWithReflection");
 
         ASSERT("derived-type", type != nullptr);
 
@@ -529,57 +529,57 @@ TEST(TestLibrary, TestTypeDeduction)
     {
         auto type = eightrefl::find_or_add_type<TestTypeDeductionStruct>();
 
-        EXPECT("type", eightrefl::global.find("TestTypeDeductionStruct") == type);
+        EXPECT("type", eightrefl::global()->find("TestTypeDeductionStruct") == type);
     }
     {
         auto const_type = eightrefl::find_or_add_type<TestTypeDeductionStruct const>();
 
-        EXPECT("const_type", eightrefl::global.find("TestTypeDeductionStruct") == const_type);
+        EXPECT("const_type", eightrefl::global()->find("TestTypeDeductionStruct") == const_type);
     }
     {
         auto reference_type = eightrefl::find_or_add_type<TestTypeDeductionStruct&>();
 
-        EXPECT("reference_type", eightrefl::global.find("TestTypeDeductionStruct*") == reference_type);
+        EXPECT("reference_type", eightrefl::builtin()->find("TestTypeDeductionStruct*") == reference_type);
     }
     {
         auto const_reference_type = eightrefl::find_or_add_type<TestTypeDeductionStruct const&>();
 
-        EXPECT("const_reference_type", eightrefl::global.find("TestTypeDeductionStruct*") == const_reference_type);
+        EXPECT("const_reference_type", eightrefl::builtin()->find("TestTypeDeductionStruct*") == const_reference_type);
     }
     {
         auto pointer_type = eightrefl::find_or_add_type<TestTypeDeductionStruct*>();
 
-        EXPECT("pointer_type", eightrefl::global.find("TestTypeDeductionStruct*") == pointer_type);
+        EXPECT("pointer_type", eightrefl::builtin()->find("TestTypeDeductionStruct*") == pointer_type);
     }
     {
         auto pointer_to_const_type = eightrefl::find_or_add_type<TestTypeDeductionStruct const*>();
 
-        EXPECT("pointer_to_const_type", eightrefl::global.find("TestTypeDeductionStruct*") == pointer_to_const_type);
+        EXPECT("pointer_to_const_type", eightrefl::builtin()->find("TestTypeDeductionStruct*") == pointer_to_const_type);
     }
     {
         auto const_pointer_to_const_type = eightrefl::find_or_add_type<TestTypeDeductionStruct const* const>();
 
-        EXPECT("const_pointer_to_const_type", eightrefl::global.find("TestTypeDeductionStruct*") == const_pointer_to_const_type);
+        EXPECT("const_pointer_to_const_type", eightrefl::builtin()->find("TestTypeDeductionStruct*") == const_pointer_to_const_type);
     }
     {
         auto pointer_type_reference = eightrefl::find_or_add_type<TestTypeDeductionStruct*&>();
 
-        EXPECT("pointer_type_reference", eightrefl::global.find("TestTypeDeductionStruct**") == pointer_type_reference);
+        EXPECT("pointer_type_reference", eightrefl::builtin()->find("TestTypeDeductionStruct**") == pointer_type_reference);
     }
     {
         auto pointer_to_const_type_reference = eightrefl::find_or_add_type<TestTypeDeductionStruct const*&>();
 
-        EXPECT("pointer_to_const_type_reference", eightrefl::global.find("TestTypeDeductionStruct const**") == pointer_to_const_type_reference);
+        EXPECT("pointer_to_const_type_reference", eightrefl::builtin()->find("TestTypeDeductionStruct const**") == pointer_to_const_type_reference);
     }
     {
         auto const_pointer_to_const_type_reference = eightrefl::find_or_add_type<TestTypeDeductionStruct const* const&>();
 
-        EXPECT("const_pointer_to_const_type_reference", eightrefl::global.find("TestTypeDeductionStruct const**") == const_pointer_to_const_type_reference);
+        EXPECT("const_pointer_to_const_type_reference", eightrefl::builtin()->find("TestTypeDeductionStruct const**") == const_pointer_to_const_type_reference);
     }
     {
         auto mixed_type = eightrefl::find_or_add_type<TestTypeDeductionStruct const** const&>();
 
-        EXPECT("mixed_type", eightrefl::global.find("TestTypeDeductionStruct const***") == mixed_type);
+        EXPECT("mixed_type", eightrefl::builtin()->find("TestTypeDeductionStruct const***") == mixed_type);
     }
 }
 
@@ -611,17 +611,17 @@ TEST(TestLibrary, TestRTTIRegistry)
     auto const_pointer_to_const_type_reference = eightrefl::find_or_add_type<TestRTTIRegistryStruct const* const&>(); // will break to TestRTTIRegistryStruct const**
     auto mixed_type = eightrefl::find_or_add_type<TestRTTIRegistryStruct const** const&>();
 
-    EXPECT("type-typeid", eightrefl::global.find(typeid(TestRTTIRegistryStruct)) == type);
-    EXPECT("const_type-typeid", eightrefl::global.find(typeid(TestRTTIRegistryStruct const)) == const_type);
-    EXPECT("reference_type-typeid", eightrefl::global.find(typeid(TestRTTIRegistryStruct*)) == reference_type);
-    EXPECT("const_reference_type-typeid", eightrefl::global.find(typeid(TestRTTIRegistryStruct*)) == const_reference_type);
-    EXPECT("pointer_type-typeid", eightrefl::global.find(typeid(TestRTTIRegistryStruct*)) == pointer_type);
-    EXPECT("pointer_to_const_type-typeid", eightrefl::global.find(typeid(TestRTTIRegistryStruct*)) == pointer_to_const_type);
-    EXPECT("const_pointer_to_const_type-typeid", eightrefl::global.find(typeid(TestRTTIRegistryStruct*)) == const_pointer_to_const_type);
-    EXPECT("pointer_type_reference-typeid", eightrefl::global.find(typeid(TestRTTIRegistryStruct**)) == pointer_type_reference);
-    EXPECT("pointer_to_const_type_reference-typeid", eightrefl::global.find(typeid(TestRTTIRegistryStruct const**)) == pointer_to_const_type_reference);
-    EXPECT("const_pointer_to_const_type_reference-typeid", eightrefl::global.find(typeid(TestRTTIRegistryStruct const**)) == const_pointer_to_const_type_reference);
-    EXPECT("mixed_type-typeid", eightrefl::global.find(typeid(TestRTTIRegistryStruct const***)) == mixed_type);
+    EXPECT("type-typeid", eightrefl::global()->find(typeid(TestRTTIRegistryStruct)) == type);
+    EXPECT("const_type-typeid", eightrefl::global()->find(typeid(TestRTTIRegistryStruct const)) == const_type);
+    EXPECT("reference_type-typeid", eightrefl::builtin()->find(typeid(TestRTTIRegistryStruct*)) == reference_type);
+    EXPECT("const_reference_type-typeid", eightrefl::builtin()->find(typeid(TestRTTIRegistryStruct*)) == const_reference_type);
+    EXPECT("pointer_type-typeid", eightrefl::builtin()->find(typeid(TestRTTIRegistryStruct*)) == pointer_type);
+    EXPECT("pointer_to_const_type-typeid", eightrefl::builtin()->find(typeid(TestRTTIRegistryStruct*)) == pointer_to_const_type);
+    EXPECT("const_pointer_to_const_type-typeid", eightrefl::builtin()->find(typeid(TestRTTIRegistryStruct*)) == const_pointer_to_const_type);
+    EXPECT("pointer_type_reference-typeid", eightrefl::builtin()->find(typeid(TestRTTIRegistryStruct**)) == pointer_type_reference);
+    EXPECT("pointer_to_const_type_reference-typeid", eightrefl::builtin()->find(typeid(TestRTTIRegistryStruct const**)) == pointer_to_const_type_reference);
+    EXPECT("const_pointer_to_const_type_reference-typeid", eightrefl::builtin()->find(typeid(TestRTTIRegistryStruct const**)) == const_pointer_to_const_type_reference);
+    EXPECT("mixed_type-typeid", eightrefl::builtin()->find(typeid(TestRTTIRegistryStruct const***)) == mixed_type);
 }
 #endif // EIGHTREFL_RTTI_ALL_ENABLE
 
@@ -648,13 +648,13 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestImplicitRegistry)
 {
-    EXPECT("type", eightrefl::global.find("TestImplicitRegistryStruct") != nullptr);
-    EXPECT("type-property0", eightrefl::global.find("TestImplicitRegistryStruct***") != nullptr);
-    EXPECT("type-property1", eightrefl::global.find("TestImplicitRegistryStruct*") != nullptr);
+    EXPECT("type", eightrefl::global()->find("TestImplicitRegistryStruct") != nullptr);
+    EXPECT("type-property0", eightrefl::builtin()->find("TestImplicitRegistryStruct***") != nullptr);
+    EXPECT("type-property1", eightrefl::builtin()->find("TestImplicitRegistryStruct*") != nullptr);
 }
 
 
-#include <Eightrefl/BuiltIn/shared_ptr.hpp>
+#include <Eightrefl/Standard/shared_ptr.hpp>
 
 TEST_SPACE()
 {
@@ -690,7 +690,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestFactorArgumentsAndResult)
 {
-    auto type = eightrefl::global.find("TestFactorArgumentsAndResultStruct");
+    auto type = eightrefl::global()->find("TestFactorArgumentsAndResultStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -710,21 +710,21 @@ TEST(TestLibrary, TestFactorArgumentsAndResult)
 
         ASSERT("with_arguments_with_return", with_arguments_with_return != nullptr);
         EXPECT("with_arguments_with_return-result", with_arguments_with_return->result == type);
-        EXPECT("with_arguments_with_return-arguments", with_arguments_with_return->arguments.size() == 2 && with_arguments_with_return->arguments[0] == eightrefl::global.find("float*") && with_arguments_with_return->arguments[1] == eightrefl::global.find("unsigned int"));
+        EXPECT("with_arguments_with_return-arguments", with_arguments_with_return->arguments.size() == 2 && with_arguments_with_return->arguments[0] == eightrefl::builtin()->find("float*") && with_arguments_with_return->arguments[1] == eightrefl::builtin()->find("unsigned int"));
     }
     {
         auto without_arguments_withother_return = reflection->factory.find("std::shared_ptr<TestFactorArgumentsAndResultStruct>()");
 
         ASSERT("without_arguments_withother_return", without_arguments_withother_return != nullptr);
-        EXPECT("without_arguments_withother_return-result", without_arguments_withother_return->result == eightrefl::global.find("std::shared_ptr<TestFactorArgumentsAndResultStruct>"));
+        EXPECT("without_arguments_withother_return-result", without_arguments_withother_return->result == eightrefl::standard()->find("std::shared_ptr<TestFactorArgumentsAndResultStruct>"));
         EXPECT("without_arguments_withother_return-arguments", without_arguments_withother_return->arguments.size() == 0);
     }
     {
         auto with_arguments_withother_return = reflection->factory.find("TestFactorArgumentsAndResultProxy(TestFactorArgumentsAndResultStruct const&)");
 
         ASSERT("with_arguments_withother_return", with_arguments_withother_return != nullptr);
-        EXPECT("with_arguments_withother_return-result", with_arguments_withother_return->result == eightrefl::global.find("TestFactorArgumentsAndResultProxy"));
-        EXPECT("with_arguments_withother_return-arguments", with_arguments_withother_return->arguments.size() == 1 && with_arguments_withother_return->arguments[0] == eightrefl::global.find("TestFactorArgumentsAndResultStruct*"));
+        EXPECT("with_arguments_withother_return-result", with_arguments_withother_return->result == eightrefl::global()->find("TestFactorArgumentsAndResultProxy"));
+        EXPECT("with_arguments_withother_return-arguments", with_arguments_withother_return->arguments.size() == 1 && with_arguments_withother_return->arguments[0] == eightrefl::builtin()->find("TestFactorArgumentsAndResultStruct*"));
     }
 }
 
@@ -754,7 +754,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestFunctionArgumentsAndResult)
 {
-    auto type = eightrefl::global.find("TestFunctionArgumentsAndResultStruct");
+    auto type = eightrefl::global()->find("TestFunctionArgumentsAndResultStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -770,7 +770,7 @@ TEST(TestLibrary, TestFunctionArgumentsAndResult)
         auto without_arguments_without_return = without_arguments_without_return_overloads->find("void()");
 
         ASSERT("function-without_arguments_without_return", without_arguments_without_return != nullptr);
-        EXPECT("function-without_arguments_without_return-result", without_arguments_without_return->result == eightrefl::global.find("void"));
+        EXPECT("function-without_arguments_without_return-result", without_arguments_without_return->result == eightrefl::builtin()->find("void"));
         EXPECT("function-without_arguments_without_return-arguments", without_arguments_without_return->arguments.size() == 0);
     }
     {
@@ -781,7 +781,7 @@ TEST(TestLibrary, TestFunctionArgumentsAndResult)
         auto without_arguments_with_return = without_arguments_with_return_overloads->find("char const*()");
 
         ASSERT("function-without_arguments_with_return", without_arguments_with_return != nullptr);
-        EXPECT("function-without_arguments_with_return-result", without_arguments_with_return->result == eightrefl::global.find("char*"));
+        EXPECT("function-without_arguments_with_return-result", without_arguments_with_return->result == eightrefl::builtin()->find("char*"));
         EXPECT("function-without_arguments_with_return-arguments", without_arguments_with_return->arguments.size() == 0);
     }
     {
@@ -792,8 +792,8 @@ TEST(TestLibrary, TestFunctionArgumentsAndResult)
         auto with_arguments_without_return = with_arguments_without_return_overloads->find("void(int, std::type_identity_t<void()>*)");
 
         ASSERT("function-with_arguments_without_return", with_arguments_without_return != nullptr);
-        EXPECT("function-with_arguments_without_return-result", with_arguments_without_return->result == eightrefl::global.find("void"));
-        EXPECT("function-with_arguments_without_return-arguments-type", with_arguments_without_return->arguments.size() == 2 && with_arguments_without_return->arguments[0] == eightrefl::global.find("int") && with_arguments_without_return->arguments[1] == eightrefl::global.find("std::type_identity_t<void()>*"));
+        EXPECT("function-with_arguments_without_return-result", with_arguments_without_return->result == eightrefl::builtin()->find("void"));
+        EXPECT("function-with_arguments_without_return-arguments-type", with_arguments_without_return->arguments.size() == 2 && with_arguments_without_return->arguments[0] == eightrefl::builtin()->find("int") && with_arguments_without_return->arguments[1] == eightrefl::builtin()->find("std::type_identity_t<void()>*"));
     }
     {
         auto with_arguments_with_return_overloads = reflection->function.find("WithArgumentsWithReturn");
@@ -803,8 +803,8 @@ TEST(TestLibrary, TestFunctionArgumentsAndResult)
         auto with_arguments_with_return = with_arguments_with_return_overloads->find("bool(std::nullptr_t)");
 
         ASSERT("function-with_arguments_with_return", with_arguments_with_return != nullptr);
-        EXPECT("function-with_arguments_with_return-result", with_arguments_with_return->result == eightrefl::global.find("bool"));
-        EXPECT("function-with_arguments_with_return-arguments-type", with_arguments_with_return->arguments.size() == 1 && with_arguments_with_return->arguments[0] == eightrefl::global.find("std::nullptr_t"));
+        EXPECT("function-with_arguments_with_return-result", with_arguments_with_return->result == eightrefl::builtin()->find("bool"));
+        EXPECT("function-with_arguments_with_return-arguments-type", with_arguments_with_return->arguments.size() == 1 && with_arguments_with_return->arguments[0] == eightrefl::builtin()->find("std::nullptr_t"));
     }
 }
 
@@ -835,7 +835,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestConstReferenceQualifiedFunction)
 {
-    auto type = eightrefl::global.find("TestConstReferenceQualifiedFunctionStruct");
+    auto type = eightrefl::global()->find("TestConstReferenceQualifiedFunctionStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -922,7 +922,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestTypeContext)
 {
-    auto type = eightrefl::global.find("TestObjectContextStruct");
+    auto type = eightrefl::global()->find("TestObjectContextStruct");
 
     ASSERT("type", type != nullptr);
 

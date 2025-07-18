@@ -1,6 +1,6 @@
 #include <EightreflTestingBase.hpp>
 
-#include <cstdint>
+#include <cstdint> // int32_t
 
 TEST_SPACE()
 {
@@ -66,7 +66,7 @@ TEST(TestLibrary, TestUsing)
 {
     eightrefl::reflectable<TestContainerWithIteratorUsing<int>>();
 
-    auto type = eightrefl::global.find("TestContainerWithIteratorUsing<int>");
+    auto type = eightrefl::global()->find("TestContainerWithIteratorUsing<int>");
 
     ASSERT("type", type != nullptr);
 

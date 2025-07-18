@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/reference_wrapper.hpp>
+#include <Eightrefl/Standard/reference_wrapper.hpp>
 
 TEST(TestBuiltin, TestReferenceWrapper)
 {
     eightrefl::reflectable<std::reference_wrapper<int>>();
 
-    auto type = eightrefl::global.find("std::reference_wrapper<int>");
+    auto type = eightrefl::standard()->find("std::reference_wrapper<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::reference_wrapper<int>");

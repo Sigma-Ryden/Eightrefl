@@ -23,7 +23,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryProperty, TestFieldProperty)
 {
-    auto type = eightrefl::global.find("TestFieldPropertyStruct");
+    auto type = eightrefl::global()->find("TestFieldPropertyStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -82,7 +82,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryProperty, TestStaticFieldProperty)
 {
-    auto type = eightrefl::global.find("TestStaticFieldPropertyStruct");
+    auto type = eightrefl::global()->find("TestStaticFieldPropertyStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -152,7 +152,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryProperty, TestFreeFieldProperty)
 {
-    auto type = eightrefl::global.find("TestFreeFieldPropertyStruct");
+    auto type = eightrefl::global()->find("TestFreeFieldPropertyStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -244,7 +244,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryProperty, TestFunctionProperty)
 {
-    auto type = eightrefl::global.find("TestFunctionPropertyStruct");
+    auto type = eightrefl::global()->find("TestFunctionPropertyStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -367,7 +367,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryProperty, TestStaticFunctionProperty)
 {
-    auto type = eightrefl::global.find("TestStaticFunctionPropertyStruct");
+    auto type = eightrefl::global()->find("TestStaticFunctionPropertyStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -457,7 +457,7 @@ REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryProperty, TestFreeFunctionProperty)
 {
-    auto type = eightrefl::global.find("TestFreeFunctionPropertyStruct");
+    auto type = eightrefl::global()->find("TestFreeFunctionPropertyStruct");
 
     ASSERT("type", type != nullptr);
 

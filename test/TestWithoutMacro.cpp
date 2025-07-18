@@ -33,7 +33,7 @@ struct xxeightrefl_traits<TestWithoutMacroInjection>
 template <>
 struct xxeightrefl_traits<TestWithoutMacroBaseStruct>
 {
-    static auto registry() { return &eightrefl::global; }
+    static auto registry() { return eightrefl::global(); }
     static auto name() { return "TestWithoutMacroBaseStruct"; }
 };
 
@@ -50,7 +50,7 @@ struct xxeightrefl<TestWithoutMacroBaseStruct>
 template <>
 struct xxeightrefl_traits<TestWithoutMacroStruct>
 {
-    static auto registry() { return &eightrefl::global; }
+    static auto registry() { return eightrefl::global(); }
     static auto name() { return "TestWithoutMacroStruct"; }
 };
 
@@ -86,7 +86,7 @@ TEST(TestLibrary, TestWithoutMacro)
 {
     eightrefl::reflectable<TestWithoutMacroStruct>();
 
-    auto type = eightrefl::global.find("TestWithoutMacroStruct");
+    auto type = eightrefl::global()->find("TestWithoutMacroStruct");
 
     ASSERT("type", type != nullptr);
 

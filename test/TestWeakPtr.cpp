@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/weak_ptr.hpp>
+#include <Eightrefl/Standard/weak_ptr.hpp>
 
 TEST(TestBuiltin, TestWseakPtr)
 {
     eightrefl::reflectable<std::weak_ptr<int>>();
 
-    auto type = eightrefl::global.find("std::weak_ptr<int>");
+    auto type = eightrefl::standard()->find("std::weak_ptr<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::weak_ptr<int>");

@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/allocator.hpp>
+#include <Eightrefl/Standard/allocator.hpp>
 
 TEST(TestBuiltin, TestAllocator)
 {
     eightrefl::reflectable<std::allocator<int>>();
 
-    auto type = eightrefl::global.find("std::allocator<int>");
+    auto type = eightrefl::standard()->find("std::allocator<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::allocator<int>");

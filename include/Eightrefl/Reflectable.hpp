@@ -161,7 +161,7 @@ type_t* find_or_add_type()
     }
 
     auto xxname = name_of<dirty_reflectable_type>();
-    auto xxregistry = &global;
+    auto xxregistry = global();
 
     if constexpr (meta::is_custom_registry<dirty_reflectable_type>::value)
     {

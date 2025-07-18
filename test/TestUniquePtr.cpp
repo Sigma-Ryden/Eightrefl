@@ -1,12 +1,12 @@
 #include <EightreflTestingBase.hpp>
 
-#include <Eightrefl/BuiltIn/unique_ptr.hpp>
+#include <Eightrefl/Standard/unique_ptr.hpp>
 
 TEST(TestBuiltin, TestUniquePtr)
 {
     eightrefl::reflectable<std::unique_ptr<int>>();
 
-    auto type = eightrefl::global.find("std::unique_ptr<int>");
+    auto type = eightrefl::standard()->find("std::unique_ptr<int>");
 
     ASSERT("type", type != nullptr);
     EXPECT("type-name", type->name == "std::unique_ptr<int>");
