@@ -25,7 +25,12 @@ jobs:
       run: |
         cd ${Eightrefl}
         rm -rf Intermediate
-        cmake -S . -B Intermediate -G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DEIGHTREFL_FULLY_ENABLE=ON -DEIGHTREFL_RTTI_ALL_ENABLE=ON -DEIGHTREFL_DEV_ENABLE=ON -DEIGHTREFL_BUILD_TEST_LIBS=ON
+        cmake -S . -B Intermediate -G Ninja \
+          -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+          -DEIGHTREFL_FULLY_ENABLE=ON \
+          -DEIGHTREFL_RTTI_ALL_ENABLE=ON \
+          -DEIGHTREFL_DEV_ENABLE=ON \
+          -DEIGHTREFL_BUILD_TEST_LIBS=ON
         cmake --build Intermediate --parallel
 
     - name: "Package and Upload project"

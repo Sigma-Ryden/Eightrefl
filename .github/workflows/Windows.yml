@@ -18,17 +18,21 @@ jobs:
 
     - name: "Setup Windows (Dev)"
       run: |
-        choco install ninja cmake mingw -y
         cmake --version
-        gcc --version
-        g++ --version
+        clang --version
+        clang++ --version
 
     - name: "Regenerate and Rebuild project"
       shell: cmd
       run: |
         cd %Eightrefl%
         rmdir /s /q Intermediate
-        cmake -S . -B Intermediate -G Ninja -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DEIGHTREFL_FULLY_ENABLE=ON -DEIGHTREFL_RTTI_ALL_ENABLE=ON -DEIGHTREFL_DEV_ENABLE=ON -DEIGHTREFL_BUILD_TEST_LIBS=ON
+        cmake -S . -B Intermediate -G Ninja ^
+          -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ ^
+          -DEIGHTREFL_FULLY_ENABLE=ON ^
+          -DEIGHTREFL_RTTI_ALL_ENABLE=ON ^
+          -DEIGHTREFL_DEV_ENABLE=ON ^
+          -DEIGHTREFL_BUILD_TEST_LIBS=ON
         cmake --build Intermediate --parallel
 
     - name: "Package and Upload project"
