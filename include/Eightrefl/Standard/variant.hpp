@@ -37,10 +37,10 @@ TEMPLATE_REFLECTABLE
     FACTORY(R())
     FACTORY(R(R const&))
     FUNCTION(operator=, R&(R const&))
-    FUNCTION(index)
+//  FUNCTION(index)
 
     #ifdef EIGHTREFL_FULLY_ENABLE
-    FUNCTION(valueless_by_exception)
+//  FUNCTION(valueless_by_exception)
     FUNCTION(swap, void(R&))
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
