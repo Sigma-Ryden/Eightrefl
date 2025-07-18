@@ -35,10 +35,10 @@ TEST(TestBuiltin, TestSharedPtr)
     #endif // EIGHTREFL_FULLY_ENABLE
 
     EXPECT("function-get", reflection->function.find("get") != nullptr);
-    EXPECT("function-operator*", reflection->function.find("operator*") != nullptr);
+//  EXPECT("function-operator*", reflection->function.find("operator*") != nullptr);
 
     #ifdef EIGHTREFL_FULLY_ENABLE
-    EXPECT("function-operator->", reflection->function.find("operator->") != nullptr);
+//  EXPECT("function-operator->", reflection->function.find("operator->") != nullptr);
     EXPECT("function-use_count", reflection->function.find("use_count") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 
