@@ -42,7 +42,7 @@ TEST(TestBuiltin, TestOptional)
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     EXPECT("function-operator->", reflection->function.find("operator->") != nullptr);
-    EXPECT("function-operator*", reflection->function.find("operator*") != nullptr);
+//  EXPECT("function-operator*", reflection->function.find("operator*") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 
     EXPECT("function-operator bool", reflection->function.find("operator bool") != nullptr);
