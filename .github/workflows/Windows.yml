@@ -19,8 +19,7 @@ jobs:
     - name: "Setup Windows (Dev)"
       run: |
         cmake --version
-        gcc --version
-        g++ --version
+        clang --version
 
     - name: "Regenerate and Rebuild project"
       shell: cmd
