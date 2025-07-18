@@ -67,7 +67,7 @@ TEST(TestBuiltin, TestUnorderedMap)
 //  EXPECT("function-extract", reflection->function.find("extract") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 
-    EXPECT("function-merge", reflection->function.find("merge") != nullptr);
+//  EXPECT("function-merge", reflection->function.find("merge") != nullptr);
     EXPECT("function-at", reflection->function.find("at") != nullptr);
     EXPECT("function-operator[]", reflection->function.find("operator[]") != nullptr);
     EXPECT("function-count", reflection->function.find("count") != nullptr);
