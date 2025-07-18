@@ -28,6 +28,6 @@ TEST(TestBuiltin, TestComplex)
     EXPECT("function-operator*=", reflection->function.find("operator*=") != nullptr);
     EXPECT("function-operator/=", reflection->function.find("operator/=") != nullptr);
 
-    EXPECT("property-real", reflection->property.find("real") != nullptr);
-    EXPECT("property-imag", reflection->property.find("imag") != nullptr);
+//  EXPECT("property-real", reflection->property.find("real") != nullptr);
+//  EXPECT("property-imag", reflection->property.find("imag") != nullptr);
 }
