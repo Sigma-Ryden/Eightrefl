@@ -29,6 +29,7 @@ jobs:
         rm -rf Intermediate
         cmake -S . -B Intermediate -G Ninja \
           -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ \
+          -DCMAKE_BUILD_TYPE=Release \
           -DEIGHTREFL_FULLY_ENABLE=ON \
           -DEIGHTREFL_RTTI_ALL_ENABLE=ON \
           -DEIGHTREFL_DEV_ENABLE=ON \
