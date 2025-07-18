@@ -7,7 +7,7 @@ REFLECTABLE(std::type_info)
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     FUNCTION(before)
-    #endif // EIGHTREFL_CRE_MINIMAL
+    #endif // EIGHTREFL_FULLY_ENABLE
 
     FUNCTION(hash_code)
     FUNCTION(name)
