@@ -25,6 +25,8 @@ See last stable library version [here](https://github.com/Sigma-Ryden/Eightrefl/
 - static array
 - function 
 
+See full list [here](https://github.com/Sigma-Ryden/Eightrefl/tree/master/include/Eightrefl/BuiltIn). 
+
 ### Reflection of standard library types:
 - C++11:
   - Containers: vector, array, basic_string, list, forward_list, set, unorganized_set, map, unordered_map, deque, initializer_list
@@ -38,7 +40,7 @@ See last stable library version [here](https://github.com/Sigma-Ryden/Eightrefl/
 - C++20:
   - Compare: partial_ordering, weak_ordering, strong_ordering 
 
-See full list [here](https://github.com/Sigma-Ryden/Eightrefl/tree/master/include/Eightrefl/BuiltIn). 
+See full list [here](https://github.com/Sigma-Ryden/Eightrefl/tree/master/include/Eightrefl/Standard). 
 
 ### Reflection of custom types:
 - struct, class, union
@@ -54,13 +56,12 @@ See full list [here](https://github.com/Sigma-Ryden/Eightrefl/tree/master/includ
 ### Library features:
 - General:
   - [Reflectable injection](https://github.com/Sigma-Ryden/Eightrefl/blob/master/test/TestInjection.cpp)
-  - [Registry splitting](https://github.com/Sigma-Ryden/Eightrefl/blob/master/test/TestLibrary.cpp)
+  - [Registry splitting](https://github.com/Sigma-Ryden/Eightrefl/blob/master/src/Eightrefl/Standard/any.cpp)
   - [Reflectable using](https://github.com/Sigma-Ryden/Eightrefl/blob/master/test/TestUsing.cpp)
 - Builtin:
-  - [Template reflection](https://github.com/Sigma-Ryden/Eightrefl/blob/master/include/Eightrefl/Common.hpp)
-  - [Conditional reflection](https://github.com/Sigma-Ryden/Eightrefl/blob/master/include/Eightrefl/BuiltIn/set.hpp)
-  - [Reflection splitting](https://github.com/Sigma-Ryden/Eightrefl/blob/master/include/Eightrefl/Common.hpp)
-  - [Reflectable naming](https://github.com/Sigma-Ryden/Eightrefl/blob/master/include/Eightrefl/Common.hpp)
+  - [Template reflection](https://github.com/Sigma-Ryden/Eightrefl/blob/master/include/Eightrefl/Standard/stack.hpp)
+  - [Conditional reflection](https://github.com/Sigma-Ryden/Eightrefl/blob/master/include/Eightrefl/Standard/set.hpp)
+  - [Reflectable naming](https://github.com/Sigma-Ryden/Eightrefl/blob/master/include/Eightrefl/BuiltIn/Aliasing.hpp)
   - [Simple without macro](https://github.com/Sigma-Ryden/Eightrefl/blob/master/test/TestWithoutMacro.cpp)
   - [Reflection meta](https://github.com/Sigma-Ryden/Eightrefl/blob/master/test/TestMeta.cpp)
 ## Auto Tests:
