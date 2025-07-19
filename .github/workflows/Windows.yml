@@ -48,4 +48,4 @@ jobs:
       shell: cmd
       run: |
         cd "%Eightrefl%/Binaries"
-        Launcher.exe
+        EightestLauncher.exe

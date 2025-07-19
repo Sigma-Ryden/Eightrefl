@@ -46,4 +46,4 @@ jobs:
     - name: "Test project"
       run: |
         cd "${Eightrefl}/Binaries"
-        ./Launcher
+        ./EightestLauncher
