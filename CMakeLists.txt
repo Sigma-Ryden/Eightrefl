@@ -47,7 +47,7 @@ add_library(Eightrefl ${PROJECT_LIBS_TYPE} ${PROJECT_SOURCES_FILES})
 target_include_directories(Eightrefl PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include")
 
 if(EIGHTREFL_BUILD_SHARED_LIBS)
-    set_target_properties(Eightrefl PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+    set_target_properties(Eightrefl PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 endif()
 
 if(EIGHTREFL_FULLY_ENABLE)
